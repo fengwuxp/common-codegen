@@ -7,7 +7,6 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-@Builder
 public class TypeScriptClassMeta extends TypeScriptBaseMeta {
 
     //object
@@ -79,7 +78,6 @@ public class TypeScriptClassMeta extends TypeScriptBaseMeta {
     private String genericName;
 
     private TypeScriptClassMeta(String name, String genericName, ClassType classType, Boolean isAbstract, TypeScriptClassMeta superClass) {
-        super(name);
         this.genericName = genericName;
         this.classType = classType;
         this.isAbstract = isAbstract;

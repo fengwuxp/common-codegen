@@ -13,9 +13,6 @@ import java.util.Map;
 public class TypeScriptBaseMeta extends CommonBaseMeta {
 
 
-    public TypeScriptBaseMeta(String name) {
-        super(name);
-    }
 
     //注解
     protected Map<String/*注解*/, TypeScriptDecorator> annotations;

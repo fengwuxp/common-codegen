@@ -1,4 +1,4 @@
-package com.wuxp.codegen.core.mapping;
+package com.wuxp.codegen.model.mapping;
 
 
 import java.lang.reflect.Type;

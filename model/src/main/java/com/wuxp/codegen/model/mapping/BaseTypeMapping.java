@@ -1,6 +1,6 @@
-package com.wuxp.codegen.core.mapping;
+package com.wuxp.codegen.model.mapping;
 
-import com.wuxp.codegen.core.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.utils.JavaTypeUtil;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

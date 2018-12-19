@@ -44,18 +44,18 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     @Override
     public JavaClassMeta parse(Class<?> source) {
 
-        JavaClassMeta.ClassMetaBuilder classMetaBuilder = JavaClassMeta.builder();
+        JavaClassMeta.JavaClassMetaBuilder javaClassMetaBuilder = JavaClassMeta.builder();
 
         if (source.isInterface()) {
             //接口
-            classMetaBuilder.classType(ClassType.INTERFACE);
+            javaClassMetaBuilder.classType(ClassType.INTERFACE);
         } else if (source.isEnum()) {
             //枚举
-            classMetaBuilder.classType(ClassType.ENUM);
+            javaClassMetaBuilder.classType(ClassType.ENUM);
         } else if (source.isAnnotation()) {
-            classMetaBuilder.classType(ClassType.ANNOTATION);
+            javaClassMetaBuilder.classType(ClassType.ANNOTATION);
         } else {
-            classMetaBuilder.classType(ClassType.CLASS);
+            javaClassMetaBuilder.classType(ClassType.CLASS);
         }
 
         int modifiers = source.getModifiers();
@@ -77,7 +77,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             superType = superType.getSuperType();
         }
 
-        classMetaBuilder.className(source.getName())
+        javaClassMetaBuilder.className(source.getName())
                 .clazz(source)
                 .isAbstract(Modifier.isAbstract(modifiers))
                 .types(types)
@@ -85,11 +85,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .fieldMetas(this.getFields(source, onlyPublic));
 
 
-        JavaClassMeta classMeta = classMetaBuilder.build();
+        JavaClassMeta classMeta = javaClassMetaBuilder.build();
         classMeta.setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()));
         getAssessPermission(modifiers, classMeta);
         classMeta.setName(source.getSimpleName());
-        classMeta.setAnnotations(this.getClassAnnotationMap(source.getAnnotations()));
+        classMeta.setAnnotations(source.getAnnotations());
 
         classMeta.setInterfaces(source.getInterfaces());
         classMeta.setSuperClass(source.getSuperclass());
@@ -118,7 +118,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
             int modifiers = field.getModifiers();
-            JavaFieldMeta.FieldMetaBuilder builder = JavaFieldMeta.builder();
+            JavaFieldMeta.JavaFieldMetaBuilder builder = JavaFieldMeta.builder();
 
             JavaFieldMeta fieldMeta = builder
                     .types(genericsToClassType(ResolvableType.forField(field)))
@@ -128,7 +128,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             this.getAssessPermission(modifiers, fieldMeta);
             fieldMeta.setName(field.getName());
             Annotation[] annotations = field.getAnnotations();
-            fieldMeta.setAnnotations(getClassAnnotationMap(annotations));
+            fieldMeta.setAnnotations(annotations);
             fieldMetas.add(fieldMeta);
         }
 
@@ -155,9 +155,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
-            JavaMethodMeta.MethodMetaBuilder builder = JavaMethodMeta.builder();
+        for (Method method : methods) {
+            JavaMethodMeta.JavaMethodMetaBuilder builder = JavaMethodMeta.builder();
 
             //返回值
             ResolvableType returnType = ResolvableType.forMethodReturnType(method);
@@ -198,26 +197,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             JavaMethodMeta methodMeta = builder.build();
             this.getAssessPermission(modifiers, methodMeta);
             methodMeta.setName(method.getName());
-            methodMeta.setAnnotations(this.getClassAnnotationMap(method.getAnnotations()));
+            methodMeta.setAnnotations(method.getAnnotations());
             methodMetas.add(methodMeta);
         }
 
         return methodMetas.toArray(new JavaMethodMeta[]{});
 
-    }
-
-    /**
-     * 获取注解列表
-     *
-     * @param annotations
-     * @return
-     */
-    protected Map<Class<? extends Annotation>, Annotation> getClassAnnotationMap(Annotation[] annotations) {
-        Map<Class<? extends Annotation>, Annotation> annotationMap = new LinkedHashMap<>();
-        for (Annotation annotation : annotations) {
-            annotationMap.put(annotation.annotationType(), annotation);
-        }
-        return annotationMap;
     }
 
 

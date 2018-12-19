@@ -57,9 +57,9 @@ public class TypeScriptGenericParser extends AbstractLanguageParser<TypeScriptCl
         Arrays.stream(fieldMetas).map(m -> {
 
 
-            TypeScriptFieldMeta fieldMeta = TypeScriptFieldMeta.builder()
-                    .classType(this.typeMapping.mapping(m.getTypes()))
-                    .build();
+//            TypeScriptFieldMeta fieldMeta = TypeScriptFieldMeta.builder()
+//                    .classType(this.typeMapping.mapping(m.getTypes()))
+//                    .build();
 
 
             return null;

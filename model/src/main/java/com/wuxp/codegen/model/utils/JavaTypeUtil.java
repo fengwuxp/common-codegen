@@ -1,4 +1,4 @@
-package com.wuxp.codegen.core.utils;
+package com.wuxp.codegen.model.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
