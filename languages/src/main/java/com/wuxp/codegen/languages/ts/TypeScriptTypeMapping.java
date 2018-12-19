@@ -14,6 +14,8 @@ import java.util.*;
  */
 public class TypeScriptTypeMapping implements TypeMapping<TypeScriptClassMeta> {
 
+    public static final TypeScriptClassMeta DATE_MAPPING = TypeScriptClassMeta.NUMBER;
+
     private static final Map<Type, TypeScriptClassMeta> TYPE_MAPPING = new HashMap<>();
 
     static {
@@ -36,27 +38,30 @@ public class TypeScriptTypeMapping implements TypeMapping<TypeScriptClassMeta> {
         TYPE_MAPPING.put(Date.class, TypeScriptClassMeta.DATE);
     }
 
-    private TypeMapping<TypeScriptClassMeta> baseTypeMapping = new BaseTypeMapping<TypeScriptClassMeta>(TYPE_MAPPING);
+    private TypeMapping<TypeScriptClassMeta> baseTypeMapping;
 
-    //时间类型 希望装换的目标类型
-    private TypeScriptClassMeta dateToClassTarget = TypeScriptClassMeta.DATE;
+    public TypeScriptTypeMapping() {
+      this.baseTypeMapping=new BaseTypeMapping<TypeScriptClassMeta>(TYPE_MAPPING,DATE_MAPPING);
+    }
 
+
+    public TypeScriptTypeMapping(TypeMapping<TypeScriptClassMeta> baseTypeMapping) {
+        this.baseTypeMapping = baseTypeMapping;
+    }
 
     @Override
     public TypeScriptClassMeta mapping(Type[] classes) {
-
         if (classes == null) {
             return null;
         }
         Class<?> clazz = (Class<?>) classes[0];
-        if (JavaTypeUtil.isJavaBaseType(clazz)) {
-            if (JavaTypeUtil.isNumber(clazz)) {
-                return this.baseTypeMapping.mapping(new Type[]{Number.class});
-            }
-            if (JavaTypeUtil.isDate(clazz)) {
-                return this.dateToClassTarget;
-            }
-            return this.baseTypeMapping.mapping(classes);
+        if (JavaTypeUtil.isNumber(clazz)) {
+            //typescript中只有number类型
+            return this.baseTypeMapping.mapping(new Type[]{Number.class});
+        }
+        TypeScriptClassMeta mapping = this.baseTypeMapping.mapping(classes);
+        if (mapping != null) {
+            return mapping;
         }
 
         //类型处理

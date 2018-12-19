@@ -24,6 +24,7 @@
     <properties>
         <jdk.version>1.8</jdk.version>
         <project.src.encoding>UTF-8</project.src.encoding>
+        <spring.version>5.1.2.RELEASE</spring.version>
         <!--1.8编译参数 保留方法名称-->
         <compilerArgument>-parameters</compilerArgument>
         <maven-source-plugin.attach>false</maven-source-plugin.attach>
@@ -34,13 +35,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.14</version>
+            <version>1.16.22</version>
         </dependency>
 
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.23</version>
+            <version>2.3.28</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
@@ -55,7 +56,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
-            <scope>test</scope>
         </dependency>
 
 
@@ -63,13 +63,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.0.8.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.0.8.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/junit/junit -->
