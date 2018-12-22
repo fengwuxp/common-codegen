@@ -25,6 +25,12 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
     //访问权限控制
     protected AccessPermission accessPermission;
 
+    /**
+     * 注释列表
+     */
+    protected String[] comments;
+
+
     public CommonBaseMeta() {
 
     }

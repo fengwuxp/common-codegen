@@ -15,7 +15,6 @@
         <module>model</module>
         <module>scanner</module>
         <module>template</module>
-        <module>annotations-resolve</module>
         <module>languages</module>
         <module>oak-codegen</module>
         <module>swagger-codegen</module>
