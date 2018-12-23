@@ -45,7 +45,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 依赖
      */
-    protected Map<String, String> dependencies;
+    protected Map<String, CommonCodeGenClassMeta> dependencies;
 
     /**
      * 在有泛型时候的描述
@@ -64,4 +64,5 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * 属性列表
      */
     protected CommonCodeGenFiledMeta[] filedMetas;
+
 }

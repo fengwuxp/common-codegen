@@ -3,6 +3,9 @@ package com.wuxp.codegen.model;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * 通用的基础元数据类
@@ -29,6 +32,12 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
      * 注释列表
      */
     protected String[] comments;
+
+    /**
+     * 其他的描述信息
+     */
+    protected Map<String, Object> tags = new HashMap<>();
+    ;
 
 
     public CommonBaseMeta() {

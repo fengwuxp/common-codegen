@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @ApiModel("测试的API接口方法一的请求参数")
 public class TestMethodApiEvt extends BaseEvt {
 
-    @ApiModelProperty(value = "方法名称", example = "test method")
+    @ApiModelProperty(value = "方法名称", example = "test method", required = true)
     @Size(max = 50)
     String methodName;
 

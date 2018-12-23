@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import test.com.wuxp.swagger.evt.TestMethodApiEvt;
 import test.com.wuxp.swagger.resp.ServiceQueryResponse;
 import test.com.wuxp.swagger.resp.ServiceResponse;
+import test.com.wuxp.swagger.resp.TestMethodDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,8 +33,8 @@ public class StandardSwaggerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "age", value = "年龄", example = "22")
     })
-    public ServiceQueryResponse<String> testQuery(@ApiParam(value = "查询名称", required = true) @PathVariable("name") String name,
-                                                  Integer age) {
+    public ServiceQueryResponse<TestMethodDTO> testQuery(@ApiParam(value = "查询名称", required = true) @PathVariable("name") String name,
+                                                         Integer age) {
 
         return null;
     }

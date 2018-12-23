@@ -5,7 +5,9 @@ import lombok.Data;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Data
@@ -28,20 +30,18 @@ public class JavaBaseMeta extends CommonBaseMeta {
 
     public boolean hasAnnotation(Class<? extends Annotation> clazz) {
 
-        return this.findAnnotation(clazz).length > 0;
+        return this.findAnnotation(clazz).collect(Collectors.toList()).size() > 0;
     }
 
-    public Annotation[] findAnnotation(Class<? extends Annotation> clazz) {
+    public <T extends Annotation> Stream<T> findAnnotation(Class<T> clazz) {
 
         return Arrays.stream(this.annotations)
-                .filter(a -> a.getClass().equals(clazz))
-                .collect(Collectors.toList())
-                .toArray(new Annotation[]{});
+                .filter(a -> a.getClass().equals(clazz)).map(c -> (T) c);
     }
 
-    public Annotation getAnnotation(Class<? extends Annotation> clazz) {
-        Annotation[] annotations = this.findAnnotation(clazz);
-        return annotations.length > 0 ? annotations[0] : null;
+    public <T extends Annotation> T getAnnotation(Class<T> clazz) {
+        List<T> collects = this.findAnnotation(clazz).collect(Collectors.toList());
+        return collects.size() > 0 ? collects.get(0) : null;
     }
 
 }

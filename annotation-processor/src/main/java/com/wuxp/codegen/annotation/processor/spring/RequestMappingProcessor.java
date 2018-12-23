@@ -1,6 +1,7 @@
-package com.wuxp.codegen.processor.spring;
+package com.wuxp.codegen.annotation.processor.spring;
 
-import com.wuxp.codegen.processor.AnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationToString;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.annotation.Annotation;
 
 /**
+ * <p>
+ *
+ * @see RequestMapping
  * 处理spring mvc的RequestMapping相关注解
+ *
+ * <p>
  */
-public class RequestMappingProcessor implements AnnotationProcessor<RequestMappingProcessor.RequestMappingMate> {
+public class RequestMappingProcessor implements AnnotationProcessor<RequestMappingProcessor.RequestMappingMate, Annotation> {
 
     @Override
     public RequestMappingMate process(Annotation annotation) {
@@ -101,7 +107,7 @@ public class RequestMappingProcessor implements AnnotationProcessor<RequestMappi
 
     @Builder
     @Data
-    public static class RequestMappingMate {
+    public static class RequestMappingMate implements AnnotationToString {
 
         /**
          * 请求路径
@@ -146,5 +152,11 @@ public class RequestMappingProcessor implements AnnotationProcessor<RequestMappi
          * {@link RequestMapping#produces}.
          */
         String[] produces;
+
+
+        @Override
+        public String toComment() {
+            return "接口的请求方法为：" + this.method[0].name();
+        }
     }
 }
