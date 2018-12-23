@@ -16,21 +16,31 @@ public class JavaBaseMeta extends CommonBaseMeta {
     protected Annotation[] annotations;
 
 
-    public boolean hasAnnotation(Annotation annotation) {
+    public boolean hasAnnotation(Class<? extends Annotation>... classes) {
 
-        return this.findAnnotation(annotation).length > 0;
+        for (Class<? extends Annotation> clazz : classes) {
+            if (this.hasAnnotation(clazz)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public Annotation[] findAnnotation(Annotation annotation) {
+    public boolean hasAnnotation(Class<? extends Annotation> clazz) {
+
+        return this.findAnnotation(clazz).length > 0;
+    }
+
+    public Annotation[] findAnnotation(Class<? extends Annotation> clazz) {
 
         return Arrays.stream(this.annotations)
-                .filter(a -> a.equals(annotation))
+                .filter(a -> a.getClass().equals(clazz))
                 .collect(Collectors.toList())
                 .toArray(new Annotation[]{});
     }
 
-    public Annotation getAnnotation(Annotation annotation) {
-        Annotation[] annotations = this.findAnnotation(annotation);
+    public Annotation getAnnotation(Class<? extends Annotation> clazz) {
+        Annotation[] annotations = this.findAnnotation(clazz);
         return annotations.length > 0 ? annotations[0] : null;
     }
 

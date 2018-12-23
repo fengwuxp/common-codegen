@@ -1,13 +1,13 @@
 package com.wuxp.codegen.model.languages.typescript;
 
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
-import lombok.Builder;
-import lombok.Data;
 
-import java.util.Set;
 
-@Data
-public class TypeScriptClassMeta extends TypeScriptBaseMeta {
+/**
+ * 主要用定义 typescript 原本支持的类
+ */
+public final class TypeScriptClassMeta extends CommonCodeGenClassMeta {
 
     //object
     public final static TypeScriptClassMeta OBJECT = new TypeScriptClassMeta("object", null, ClassType.CLASS, false, null);
@@ -41,44 +41,8 @@ public class TypeScriptClassMeta extends TypeScriptBaseMeta {
     public final static TypeScriptClassMeta VOID = new TypeScriptClassMeta("void", null, ClassType.CLASS, false, null);
 
 
-    //属性类型 如果有泛型则有多个
-    private String[] types;
-
-    //类类型 interface，class enum
-    private ClassType classType;
-
-    //是否为抽象类
-    private Boolean isAbstract;
-
-    //所在包的路径
-    private String packagePath;
-
-    //导出的内容列表
-    private String[] exports;
-
-    //存在默认导出
-    private Boolean hasDefaultExport;
-
-    //成员变量列表
-    private TypeScriptFieldMeta[] fieldMetas;
-
-    //成员方法列表
-    private TypeScriptMethodMeta[] methodMetas;
-
-    //依赖类的列表
-    private Set<TypeScriptClassMeta> dependencyList;
-
-    //继承的接口列表
-    private TypeScriptClassMeta[] interfaces;
-
-    //继承的父类
-    private TypeScriptClassMeta superClass;
-
-    //在有泛型时候的名称
-    private String genericName;
-
     private TypeScriptClassMeta(String name, String genericName, ClassType classType, Boolean isAbstract, TypeScriptClassMeta superClass) {
-        this.genericName = genericName;
+        this.genericDescription = genericName;
         this.classType = classType;
         this.isAbstract = isAbstract;
         this.superClass = superClass;

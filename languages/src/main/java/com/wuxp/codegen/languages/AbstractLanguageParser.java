@@ -10,6 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Set;
 
 
+/**
+ * 抽象的语言解释器
+ * @param <C>   类
+ * @param <M>   方法
+ * @param <F>   属性
+ */
 @Slf4j
 public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C, JavaClassMeta> {
 
