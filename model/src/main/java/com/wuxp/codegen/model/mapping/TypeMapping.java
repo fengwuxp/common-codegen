@@ -6,9 +6,17 @@ import java.lang.reflect.Type;
 /**
  * 类型映射
  */
-public interface TypeMapping<T> {
+public interface TypeMapping<C extends Type, T> {
 
 
-    T mapping(Type[] classes);
+    /**
+     *
+     *<p>
+     *     类型映射
+     *</p>
+     * @param classes 类型列表，大于一个表示有泛型
+     * @return
+     */
+    T mapping(C[] classes);
 
 }

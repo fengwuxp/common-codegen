@@ -9,29 +9,29 @@ import java.util.Map;
 /**
  * 基础数据的类型映射
  */
-public class BaseTypeMapping<T> implements TypeMapping<T> {
+public class BaseTypeMapping<T> implements TypeMapping<Class<?>, T> {
 
-    private Map<Type, T> typeMapping = new HashMap<>();
+    private Map<Class<?>, T> typeMapping = new HashMap<>();
 
     //时间类型 希望装换的目标类型
     private T dateToClassTarget;
 
-    public BaseTypeMapping(Map<Type, T> typeMapping) {
+    public BaseTypeMapping(Map<Class<?>, T> typeMapping) {
         this.typeMapping = typeMapping;
     }
 
-    public BaseTypeMapping(Map<Type, T> typeMapping, T dateToClassTarget) {
+    public BaseTypeMapping(Map<Class<?>, T> typeMapping, T dateToClassTarget) {
         this.typeMapping = typeMapping;
         this.dateToClassTarget = dateToClassTarget;
     }
 
     @Override
-    public T mapping(Type[] classes) {
+    public T mapping(Class<?>[] classes) {
         if (classes == null) {
             return null;
         }
         Class<?> clazz = (Class<?>) classes[0];
-        if (JavaTypeUtil.isDate(clazz) && this.dateToClassTarget!=null) {
+        if (JavaTypeUtil.isDate(clazz) && this.dateToClassTarget != null) {
             return this.dateToClassTarget;
         }
         return this.typeMapping.get(clazz);

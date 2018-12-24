@@ -10,6 +10,7 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
 
     /**
      * 返回值描述
+     * 支持泛型的描述
      */
     private String returnType;
 

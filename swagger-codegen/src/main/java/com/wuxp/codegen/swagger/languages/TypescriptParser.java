@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger.languages;
 
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
+import com.wuxp.codegen.languages.AbstractTypescriptParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
@@ -9,12 +10,12 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.swagger.annotations.ApiModelPropertyProcessor;
 import com.wuxp.codegen.swagger.annotations.ApiProcessor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,21 +23,21 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
- * typeScript的
+ * typeScript的 parser
  */
 @Slf4j
-public class TypescriptParser extends AbstractLanguageParser<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
+public class TypescriptParser extends AbstractTypescriptParser {
 
 
     protected PackageMapStrategy packageMapStrategy;
 
 
     static {
-
+        //添加swagger相关的注解处理器
         ANNOTATION_PROCESSOR_MAP.put(Api.class, new ApiProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(ApiModelProperty.class, new ApiModelPropertyProcessor());
     }
 
 
@@ -77,16 +78,12 @@ public class TypescriptParser extends AbstractLanguageParser<CommonCodeGenClassM
             commonCodeGenFiledMeta.setAccessPermission(javaFieldMeta.getAccessPermission());
 
             List<String> comments = super.generateComments(javaFieldMeta.getAnnotations());
-            ApiModelProperty apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
-            if (StringUtils.hasText(apiModelProperty.value())) {
-                comments.add(apiModelProperty.value());
-            } else {
-                comments.add(apiModelProperty.notes());
-            }
             commonCodeGenFiledMeta.setComments(comments.toArray(new String[]{}));
-
+            ApiModelProperty apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
             //是否必填
             commonCodeGenFiledMeta.getTags().put("required", javaFieldMeta.hasAnnotation(NotNull.class) || apiModelProperty.required());
+
+
 
             return commonCodeGenFiledMeta;
         });

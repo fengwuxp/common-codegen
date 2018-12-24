@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 public final class JavaTypeUtil {
 
@@ -36,7 +34,12 @@ public final class JavaTypeUtil {
             return false;
         }
 
+        if (char.class.equals(clazz)) {
+            return true;
+        }
+
         if (clazz.getName().startsWith("java.lang.String")) {
+            //兼容 StringBuffer StringBuilder
             return true;
         }
 
@@ -90,6 +93,49 @@ public final class JavaTypeUtil {
         }
         return Boolean.class.equals(clazz);
     }
+
+    /**
+     * 是否为List 或继承自List
+     *
+     * @param clazz
+     * @return
+     */
+    public static boolean isList(Class<?> clazz) {
+
+
+        return isExtendsClass(clazz, List.class);
+
+    }
+
+    /**
+     * 是否为Collection 或继承自 Collection
+     * @param clazz
+     * @return
+     */
+    public static boolean isCollection(Class<?> clazz) {
+
+
+        return isExtendsClass(clazz, Collection.class);
+    }
+
+    /**
+     * 是否为Map或继承自 Map
+     * @param clazz
+     * @return
+     */
+    public static boolean isMap(Class<?> clazz){
+        return isExtendsClass(clazz, Map.class);
+    }
+
+    /**
+     * 是否为Set或继承自 Set
+     * @param clazz
+     * @return
+     */
+    public static boolean isSet(Class<?> clazz){
+        return isExtendsClass(clazz, Set.class);
+    }
+
 
     /**
      * 是否为一个数组 例如 String [] s;
@@ -171,15 +217,6 @@ public final class JavaTypeUtil {
     public static boolean isAssignableFrom(Class<?> clazz, Class<?> superClazz) {
 
         return superClazz.isAssignableFrom(clazz);
-    }
-
-
-
-    public static boolean isCollection(Class<?> clazz) {
-
-
-        return isExtendsClass(clazz, Collection.class);
-
     }
 
 
