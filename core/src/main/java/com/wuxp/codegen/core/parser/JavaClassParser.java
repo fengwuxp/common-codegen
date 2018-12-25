@@ -1,7 +1,6 @@
 package com.wuxp.codegen.core.parser;
 
 
-
 import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
@@ -61,7 +60,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         int modifiers = source.getModifiers();
         ResolvableType resolvableType = ResolvableType.forClass(source);
 
-        Map<Class<?>, Type[]> types = new LinkedHashMap<>();
+        Map<Class<?>, Class<?>[]> types = new LinkedHashMap<>();
         ResolvableType superType = resolvableType;
 
 
@@ -69,11 +68,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
             log.info(superType.getSuperType().getType().getTypeName());
             ResolvableType[] superTypeGenerics = superType.getGenerics();
-            List<Type> list = Arrays.stream(superTypeGenerics).map((type) -> {
+            List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
                 Class<?> rawClass = type.getRawClass();
-                return rawClass == null ? type.getType() : rawClass;
+                return rawClass == null ? (Class<?>) type.getType() : rawClass;
             }).collect(Collectors.toList());
-            types.put(superType.getRawClass(), list.toArray(new Type[]{}));
+            types.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
             superType = superType.getSuperType();
         }
 

@@ -84,6 +84,7 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
 
     /**
      * 通过注解获取注释
+     *
      * @param annotations
      * @return
      */
@@ -101,7 +102,20 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
 
             return processor.process(annotation).toComment();
         }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
 
+    /**
+     * 通过类型来获取注释
+     *
+     * @param classes
+     * @return
+     */
+    protected List<String> generateComments(Class<?>[] classes) {
+        if (classes == null || classes.length == 0) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(classes).map(clazz -> "java类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
     }
 
     /**

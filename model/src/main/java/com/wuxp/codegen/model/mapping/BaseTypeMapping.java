@@ -26,7 +26,7 @@ public class BaseTypeMapping<T> implements TypeMapping<Class<?>, T> {
     }
 
     @Override
-    public T mapping(Class<?>[] classes) {
+    public T mapping(Class<?>... classes) {
         if (classes == null) {
             return null;
         }

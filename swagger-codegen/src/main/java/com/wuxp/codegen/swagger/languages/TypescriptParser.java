@@ -10,6 +10,10 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
+import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
+import com.wuxp.codegen.model.mapping.TypeMapping;
+import com.wuxp.codegen.model.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.swagger.annotations.ApiModelPropertyProcessor;
 import com.wuxp.codegen.swagger.annotations.ApiProcessor;
 import io.swagger.annotations.Api;
@@ -33,6 +37,7 @@ public class TypescriptParser extends AbstractTypescriptParser {
 
     protected PackageMapStrategy packageMapStrategy;
 
+    protected TypeMapping<Class<?>, List<TypescriptClassMeta>> typescriptTypeMapping = new TypescriptTypeMapping();
 
     static {
         //添加swagger相关的注解处理器
@@ -69,26 +74,30 @@ public class TypescriptParser extends AbstractTypescriptParser {
 
 
     @Override
-    protected CommonCodeGenFiledMeta[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas) {
+    protected TypescriptFieldMate[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas) {
 
-        Arrays.stream(javaFieldMetas).map(javaFieldMeta -> {
-            CommonCodeGenFiledMeta commonCodeGenFiledMeta = new CommonCodeGenFiledMeta();
+        return Arrays.stream(javaFieldMetas).map(javaFieldMeta -> {
+            TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
 
-            commonCodeGenFiledMeta.setName(javaFieldMeta.getName());
-            commonCodeGenFiledMeta.setAccessPermission(javaFieldMeta.getAccessPermission());
+            typescriptFieldMate.setName(javaFieldMeta.getName());
+            typescriptFieldMate.setAccessPermission(javaFieldMeta.getAccessPermission());
 
+            //注释来源于注解和java的类类型
             List<String> comments = super.generateComments(javaFieldMeta.getAnnotations());
-            commonCodeGenFiledMeta.setComments(comments.toArray(new String[]{}));
+            comments.addAll(super.generateComments(javaFieldMeta.getTypes()));
+
+            typescriptFieldMate.setComments(comments.toArray(new String[]{}));
             ApiModelProperty apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
             //是否必填
-            commonCodeGenFiledMeta.getTags().put("required", javaFieldMeta.hasAnnotation(NotNull.class) || apiModelProperty.required());
+            typescriptFieldMate.setRequired(javaFieldMeta.hasAnnotation(NotNull.class) || apiModelProperty.required());
+
+            //类型解释
+//            typescriptFieldMate.setFiledType();
 
 
+            return typescriptFieldMate;
+        }).toArray(TypescriptFieldMate[]::new);
 
-            return commonCodeGenFiledMeta;
-        });
-
-        return new CommonCodeGenFiledMeta[0];
     }
 
     @Override

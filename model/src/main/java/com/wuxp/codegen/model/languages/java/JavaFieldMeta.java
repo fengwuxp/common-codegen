@@ -18,7 +18,7 @@ public class JavaFieldMeta extends JavaBaseMeta {
 
 
     //属性类型 如果有泛型则有多个
-    private Type[] types;
+    private Class<?>[] types;
 
 
     private Boolean isVolatile;

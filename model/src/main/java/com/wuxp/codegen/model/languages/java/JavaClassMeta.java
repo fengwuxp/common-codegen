@@ -17,7 +17,7 @@ import java.util.Set;
 public class JavaClassMeta extends JavaBaseMeta {
 
     //属性类型 如果有泛型则有多个
-    private Map<Class<?>, Type[]> types;
+    private Map<Class<?>/*类型，父类，接口，本身*/, Class<?>[]> types;
 
     //类类型 interface，class enum
     private ClassType classType;

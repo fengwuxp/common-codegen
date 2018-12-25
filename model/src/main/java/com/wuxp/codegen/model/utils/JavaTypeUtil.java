@@ -138,6 +138,16 @@ public final class JavaTypeUtil {
 
 
     /**
+     * 是否为 void
+     * @param clazz
+     * @return
+     */
+    public static boolean isVoid(Class<?> clazz){
+
+        return  void.class.equals(clazz);
+    }
+
+    /**
      * 是否为一个数组 例如 String [] s;
      *
      * @param clazz

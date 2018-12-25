@@ -1,9 +1,12 @@
 package com.wuxp.codegen.model;
 
 
+import lombok.Data;
+
 /**
  * 通用的代码生成 filed 元数据
  */
+@Data
 public class CommonCodeGenFiledMeta extends CommonBaseMeta {
 
 
