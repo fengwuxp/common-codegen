@@ -1,8 +1,17 @@
-package com.wuxp.codegen.model.mapping;
+package com.wuxp.codegen.mapping;
 
+import com.wuxp.codegen.core.parser.GenericParser;
+import com.wuxp.codegen.core.parser.JavaClassParser;
+import com.wuxp.codegen.languages.AbstractTypescriptParser;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
+import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
+import com.wuxp.codegen.model.mapping.BaseTypeMapping;
+import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,15 +21,12 @@ import java.util.stream.Collectors;
  * 处理typescript的类型映射
  */
 @Slf4j
-public class TypescriptTypeMapping implements TypeMapping<Class<?>, List<TypescriptClassMeta>> {
+public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMeta> {
 
-    /**
-     * 基础数据类型映射
-     */
-    protected static final Map<Class<?>, TypescriptClassMeta> BASE_TYPE_MAPPING = new LinkedHashMap<>();
 
-    static {
+    {
 
+        //设置基础的数据类型映射
         BASE_TYPE_MAPPING.put(Date.class, TypescriptClassMeta.DATE);
         BASE_TYPE_MAPPING.put(Boolean.class, TypescriptClassMeta.BOOLEAN);
         BASE_TYPE_MAPPING.put(String.class, TypescriptClassMeta.STRING);
@@ -33,8 +39,24 @@ public class TypescriptTypeMapping implements TypeMapping<Class<?>, List<Typescr
 
     }
 
+    /**
+     * 基础类型映射器
+     */
     protected TypeMapping<Class<?>, TypescriptClassMeta> baseTypeMapping = new BaseTypeMapping<TypescriptClassMeta>(BASE_TYPE_MAPPING);
 
+
+    /**
+     * java类的解析器
+     * 默认解析所有的属性 方法
+     */
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+
+    protected AbstractTypescriptParser typescriptParser;
+
+
+    public TypescriptTypeMapping(AbstractTypescriptParser typescriptParser) {
+        this.typescriptParser = typescriptParser;
+    }
 
     /**
      * @param classes 类型列表，大于一个表示有泛型
@@ -56,19 +78,26 @@ public class TypescriptTypeMapping implements TypeMapping<Class<?>, List<Typescr
 
         List<TypescriptClassMeta> list = new ArrayList<>(4);
 
-        if (JavaTypeUtil.isComplex(clazz)) {
-            //TODO 复杂的数据类型
-
+        if (JavaTypeUtil.isComplex(clazz) || clazz.isEnum()) {
+            //复杂的数据类型或枚举
+            CommonCodeGenClassMeta meta = this.typescriptParser.parse(this.javaParser.parse(clazz));
+            if (meta == null) {
+                return list;
+            }
+            TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
+            BeanUtils.copyProperties(meta, typescriptClassMeta);
+            list.add(typescriptClassMeta);
         } else {
             Class<?> upConversionType = this.tryUpConversionType(clazz);
             if (upConversionType != null) {
                 list.add(baseTypeMapping.mapping(upConversionType));
-            } else if (clazz.isEnum()) {
-                //TODO 枚举
             } else if (clazz.isArray()) {
                 //数组
-                list.addAll(this.mapping(clazz.getComponentType()));
                 list.add(TypescriptClassMeta.ARRAY);
+                list.addAll(this.mapping(clazz.getComponentType()));
+                return list;
+            } else {
+                throw new RuntimeException("Not Found clazz" + clazz.getName() + " mapping type");
             }
         }
 

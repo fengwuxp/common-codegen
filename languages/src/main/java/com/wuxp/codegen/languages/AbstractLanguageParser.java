@@ -1,7 +1,11 @@
 package com.wuxp.codegen.languages;
 
+import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
+import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -28,9 +32,7 @@ import java.util.stream.Collectors;
  * @param <F> 属性
  */
 @Slf4j
-public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C, JavaClassMeta> {
-
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(true);
+public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M, F> implements GenericParser<C, JavaClassMeta> {
 
 
     /**
@@ -42,10 +44,32 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
 
 
     /**
+     * 处理结果缓存
+     */
+    protected static final Map<Class<?>, Object> HANDLE_RESULT_CACHE = new ConcurrentHashMap<>();
+
+
+    /**
      * annotationProcessorMap
      */
     protected static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
 
+
+    /**
+     * java类的解析器
+     * 默认解析所有的属性 方法
+     */
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+
+    /**
+     * 包名映射策略
+     */
+    protected PackageMapStrategy packageMapStrategy;
+
+    /**
+     * 代码检查者
+     */
+    protected Collection<CodeDetect> codeDetects;
 
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
@@ -53,33 +77,27 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
         ANNOTATION_PROCESSOR_MAP.put(Pattern.class, new PatternProcessor());
     }
 
+    public AbstractLanguageParser(PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
+        this.packageMapStrategy = packageMapStrategy;
+        this.codeDetects = codeDetects;
+    }
+
+    public AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser, PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
+        this.javaParser = javaParser;
+        this.packageMapStrategy = packageMapStrategy;
+        this.codeDetects = codeDetects;
+    }
+
+
     /**
-     * 处理依赖列表
+     * 从缓存中获取解过
      *
-     * @param dependencies
+     * @param clazz
      * @return
      */
-    protected C handleDependencies(Set<Class<?>> dependencies) {
+    protected C getResultToLocalCache(Class<?> clazz) {
 
-        if (dependencies == null || dependencies.size() == 0) {
-            return null;
-        }
-
-        dependencies.stream().map(clazz -> {
-            JavaClassMeta meta = HANDLE_CLASS_CACHE.get(clazz);
-            if (meta == null) {
-                //判断是否被处理过，解决循环依赖的问题
-
-                meta = this.javaParser.parse(clazz);
-                HANDLE_CLASS_CACHE.put(clazz, meta);
-            }
-            return meta;
-
-        }).filter(Objects::nonNull)
-                .map(this::parse);
-
-
-        return null;
+        return (C) HANDLE_RESULT_CACHE.get(clazz);
     }
 
     /**
@@ -101,11 +119,12 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
             }
 
             return processor.process(annotation).toComment();
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }).filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     /**
-     * 通过类型来获取注释
+     * 通过类类型来获取注释
      *
      * @param classes
      * @return
@@ -115,33 +134,67 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
             return new ArrayList<>();
         }
 
-        return Arrays.stream(classes).map(clazz -> "java类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
+        return Arrays.stream(classes).map(clazz -> "在java中的类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
+    }
+
+
+    /**
+     * 将class列表装换为名称字符串
+     *
+     * @param classes
+     * @return
+     */
+    protected String classToNamedString(Class<?>[] classes) {
+        if (classes == null) {
+            return "";
+        }
+
+        return Arrays.stream(classes).map(Class::getName).collect(Collectors.joining(","));
     }
 
     /**
      * 转换属性列表
      *
      * @param javaFieldMetas
+     * @param classMeta
      * @return
      */
-    protected abstract F[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas);
+    protected abstract F[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta);
 
     /**
      * 转换方法列表
      *
      * @param javaMethodMetas
+     * @param classMeta
      * @return
      */
-    protected abstract M[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas);
+    protected abstract M[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta);
 
 
     /**
      * 抓取依赖列表
      *
-     * @param classes
+     * @param dependencies
      * @return
      */
-    protected abstract Set<C> fetchDependencies(Set<Class<?>> classes);
+    protected Map<String, C> fetchDependencies(Set<Class<?>> dependencies) {
+        if (dependencies == null || dependencies.size() == 0) {
+            return new HashMap<>();
+        }
+
+        return dependencies.stream().map(clazz -> {
+            JavaClassMeta meta = HANDLE_CLASS_CACHE.get(clazz);
+            if (meta == null) {
+                //判断是否被处理过，解决循环依赖的问题
+                meta = this.javaParser.parse(clazz);
+                HANDLE_CLASS_CACHE.put(clazz, meta);
+            }
+            return meta;
+
+        }).filter(Objects::nonNull)
+                .map(this::parse)
+                .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
+    }
 
     /**
      * 解析超类
@@ -153,4 +206,5 @@ public abstract class AbstractLanguageParser<C, M, F> implements GenericParser<C
 
         return this.parse(this.javaParser.parse(clazz));
     }
+
 }

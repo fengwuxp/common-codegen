@@ -18,17 +18,23 @@ public class JavaBaseMeta extends CommonBaseMeta {
     protected Annotation[] annotations;
 
 
-    public boolean hasAnnotation(Class<? extends Annotation>... classes) {
+    /**
+     * 是否有列表中的某个annotation
+     *
+     * @param classes 注解列表
+     * @return
+     */
+    public boolean existAnnotation(Class<? extends Annotation>... classes) {
 
         for (Class<? extends Annotation> clazz : classes) {
-            if (this.hasAnnotation(clazz)) {
+            if (this.existAnnotation(clazz)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean hasAnnotation(Class<? extends Annotation> clazz) {
+    public boolean existAnnotation(Class<? extends Annotation> clazz) {
 
         return this.findAnnotation(clazz).collect(Collectors.toList()).size() > 0;
     }

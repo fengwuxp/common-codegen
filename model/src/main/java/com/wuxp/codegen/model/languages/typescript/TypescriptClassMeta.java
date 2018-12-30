@@ -40,6 +40,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     //void
     public final static TypescriptClassMeta VOID = new TypescriptClassMeta("void", null, ClassType.CLASS, false, null);
 
+    public TypescriptClassMeta() {
+    }
 
     private TypescriptClassMeta(String name, String genericName, ClassType classType, Boolean isAbstract, TypescriptClassMeta superClass) {
         this.genericDescription = genericName;

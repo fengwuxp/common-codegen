@@ -11,10 +11,10 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
 
 
     /**
-     * 域对象类型描述
-     * 支持泛型的描述
+     * 域对象类型列表
+     * 大于一个表示有泛型泛型
      */
-    private String filedType;
+    private CommonCodeGenClassMeta[] filedTypes;
 
     /**
      * 注解
