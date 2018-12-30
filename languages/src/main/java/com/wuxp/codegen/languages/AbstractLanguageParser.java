@@ -97,6 +97,24 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
 
 
     /**
+     * 检查代码是否服务自定义的规则
+     * @param source
+     */
+    protected void detectJavaCode(JavaClassMeta source) {
+
+        //尝试检查代码
+        if (this.codeDetects == null) {
+            return;
+        }
+
+        this.codeDetects.forEach(codeDetect -> {
+            codeDetect.detect(source);
+        });
+
+        return;
+    }
+
+    /**
      * 从缓存中获取解过
      *
      * @param clazz
@@ -168,6 +186,17 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
      */
     protected abstract F[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta);
 
+
+    /**
+     * 增强处理 filed
+     *
+     * @param fieldMeta
+     * @param javaFieldMeta
+     * @param classMeta
+     */
+    protected abstract void enhancedProcessingField(F fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta);
+
+
     /**
      * 转换方法列表
      *
@@ -176,6 +205,16 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
      * @return
      */
     protected abstract M[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta);
+
+
+    /**
+     * 增强处理 method
+     *
+     * @param methodMeta
+     * @param javaMethodMeta
+     * @param classMeta
+     */
+    protected abstract void enhancedProcessingMethod(M methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta);
 
 
     /**
