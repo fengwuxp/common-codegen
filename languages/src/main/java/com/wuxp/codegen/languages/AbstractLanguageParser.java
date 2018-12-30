@@ -1,6 +1,8 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.CodeGenFilter;
+import com.wuxp.codegen.core.filter.FilterClassByLibrary;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
@@ -70,6 +72,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
      * 代码检查者
      */
     protected Collection<CodeDetect> codeDetects;
+
+    /**
+     * 过滤jar中的依赖
+     */
+    protected CodeGenFilter<Boolean, Class<?>> filterClassByLibrary = new FilterClassByLibrary();
 
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
@@ -182,16 +189,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
             return new HashMap<>();
         }
 
-        return dependencies.stream().map(clazz -> {
-            JavaClassMeta meta = HANDLE_CLASS_CACHE.get(clazz);
-            if (meta == null) {
-                //判断是否被处理过，解决循环依赖的问题
-                meta = this.javaParser.parse(clazz);
-                HANDLE_CLASS_CACHE.put(clazz, meta);
-            }
-            return meta;
+        return dependencies.stream()
+                .filter(this.filterClassByLibrary::filter)
+                .map(clazz -> {
+                    JavaClassMeta meta = HANDLE_CLASS_CACHE.get(clazz);
+                    if (meta == null) {
+                        //判断是否被处理过，解决循环依赖的问题
+                        meta = this.javaParser.parse(clazz);
+                        HANDLE_CLASS_CACHE.put(clazz, meta);
+                    }
+                    return meta;
 
-        }).filter(Objects::nonNull)
+                }).filter(Objects::nonNull)
                 .map(this::parse)
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
     }
