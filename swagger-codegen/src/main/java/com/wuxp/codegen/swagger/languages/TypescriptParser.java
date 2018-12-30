@@ -94,6 +94,10 @@ public class TypescriptParser extends AbstractTypescriptParser {
     @Override
     protected TypescriptFieldMate[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta) {
 
+        if (javaFieldMetas == null) {
+            return new TypescriptFieldMate[0];
+        }
+
         return Arrays.stream(javaFieldMetas).map(javaFieldMeta -> {
             TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
 
@@ -138,7 +142,15 @@ public class TypescriptParser extends AbstractTypescriptParser {
 
     @Override
     protected CommonCodeGenMethodMeta[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta) {
-        return new CommonCodeGenMethodMeta[0];
+        if (javaMethodMetas == null) {
+            return new CommonCodeGenMethodMeta[0];
+        }
+        return Arrays.stream(javaMethodMetas).map(javaMethodMeta -> {
+            CommonCodeGenMethodMeta genMethodMeta = new CommonCodeGenMethodMeta();
+            //TODO method转化
+
+            return genMethodMeta;
+        }).toArray(CommonCodeGenMethodMeta[]::new);
     }
 
 
