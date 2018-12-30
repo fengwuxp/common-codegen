@@ -3,15 +3,15 @@ package com.wuxp.codegen.core;
 
 /**
  * 代码生成filter
- * @param <T>
  * @param <P>
  */
-public interface CodeGenFilter<T, P> {
+@FunctionalInterface
+public interface CodeGenFilter<P> {
 
     /**
      * 过滤
      * @param data
      * @return
      */
-    T filter(P data);
+    boolean filter(P data);
 }

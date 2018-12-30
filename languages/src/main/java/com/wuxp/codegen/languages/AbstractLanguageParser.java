@@ -76,7 +76,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
     /**
      * 过滤jar中的依赖
      */
-    protected CodeGenFilter<Boolean, Class<?>> filterClassByLibrary = new FilterClassByLibrary();
+    protected CodeGenFilter<Class<?>> filterClassByLibrary = new FilterClassByLibrary();
 
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());

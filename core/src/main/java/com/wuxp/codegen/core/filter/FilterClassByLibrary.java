@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 过滤library的依赖
  */
-public class FilterClassByLibrary implements CodeGenFilter<Boolean, Class<?>> {
+public class FilterClassByLibrary implements CodeGenFilter<Class<?>> {
 
     public static final List<String> packageNames = new ArrayList<>();
 
@@ -23,9 +23,9 @@ public class FilterClassByLibrary implements CodeGenFilter<Boolean, Class<?>> {
     }
 
     @Override
-    public Boolean filter(Class<?> data) {
+    public boolean filter(Class<?> data) {
         if (data == null) {
-            return Boolean.FALSE;
+            return false;
         }
         return packageNames.stream().filter(name -> data.getName().startsWith(name)).isParallel();
     }
