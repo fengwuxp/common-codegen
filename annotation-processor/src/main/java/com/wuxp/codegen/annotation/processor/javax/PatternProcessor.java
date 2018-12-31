@@ -1,9 +1,7 @@
 package com.wuxp.codegen.annotation.processor.javax;
 
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationToString;
-import lombok.Builder;
-import lombok.Data;
+import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.Pattern;
 
@@ -12,38 +10,17 @@ import javax.validation.constraints.Pattern;
  *
  * @see Pattern
  */
-public class PatternProcessor implements AnnotationProcessor<PatternProcessor.PatternMate, Pattern> {
+public class PatternProcessor extends AbstractAnnotationProcessor<Pattern, PatternProcessor.PatternMate> {
 
 
     @Override
     public PatternMate process(Pattern annotation) {
-        if (annotation == null) {
-            return null;
-        }
-        return PatternMate.builder()
-                .flags(annotation.flags())
-                .regexp(annotation.regexp())
-                .message(annotation.message())
-                .build();
+
+        return super.newProxyMate(annotation, PatternMate.class);
     }
 
 
-    @Data
-    @Builder
-    public static class PatternMate implements AnnotationToString {
-
-        /**
-         * 正则表达式
-         */
-        private String regexp;
-
-        /**
-         *匹配模式
-         */
-        private Pattern.Flag[] flags;
-
-        private String message;
-
+    public static abstract class PatternMate implements AnnotationMate<Pattern>, Pattern {
 
         @Override
         public String toComment() {

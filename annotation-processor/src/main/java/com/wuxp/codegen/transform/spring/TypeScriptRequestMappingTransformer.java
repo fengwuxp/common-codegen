@@ -50,10 +50,8 @@ public class TypeScriptRequestMappingTransformer implements
 
         CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
 
-        RequestMethod[] requestMethods = mappingMate.getMethod();
-        if (requestMethods == null) {
-            throw new RuntimeException("RequestMapping method is null");
-        }
+        RequestMethod[] requestMethods = mappingMate.method();
+
         codeGenAnnotation.setName("@" + METHOD_NAME_MAP.get(requestMethods.length == 0 ? RequestMethod.POST : requestMethods[0].name()));
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -104,14 +102,14 @@ public class TypeScriptRequestMappingTransformer implements
      * @return
      */
     private String requestPath(RequestMappingProcessor.RequestMappingMate mappingMate) {
-        if (StringUtils.hasText(mappingMate.getName())) {
-            return mappingMate.getName();
+        if (StringUtils.hasText(mappingMate.name())) {
+            return mappingMate.name();
         }
-        String[] value = mappingMate.getValue();
+        String[] value = mappingMate.value();
         if (value.length != 0) {
             return value[0];
         }
-        String[] path = mappingMate.getPath();
+        String[] path = mappingMate.path();
         if (path.length != 0) {
             return path[0];
         }
@@ -125,7 +123,7 @@ public class TypeScriptRequestMappingTransformer implements
      * @return
      */
     private boolean methodIsPost(RequestMappingProcessor.RequestMappingMate mappingMate) {
-        return RequestMethod.POST.equals(mappingMate.getMethod()[0]);
+        return RequestMethod.POST.equals(mappingMate.method()[0]);
     }
 
 

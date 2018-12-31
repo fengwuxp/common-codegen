@@ -2,7 +2,6 @@ package com.wuxp.codegen.core.filter;
 
 import com.wuxp.codegen.core.CodeGenFilter;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

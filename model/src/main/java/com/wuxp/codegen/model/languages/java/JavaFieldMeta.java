@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.lang.reflect.Type;
-
 
 /**
  * 属性元数据信息

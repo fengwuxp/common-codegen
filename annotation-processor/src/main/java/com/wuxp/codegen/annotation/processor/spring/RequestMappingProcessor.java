@@ -1,12 +1,12 @@
 package com.wuxp.codegen.annotation.processor.spring;
 
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationToString;
-import lombok.Builder;
-import lombok.Data;
+import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -16,147 +16,98 @@ import java.lang.annotation.Annotation;
  *
  * <p>
  */
-public class RequestMappingProcessor implements AnnotationProcessor<RequestMappingProcessor.RequestMappingMate, Annotation> {
+public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
+
+
+    private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingMate>> ANNOTATION_CLASS_MAP = new ConcurrentHashMap<>();
+
+    static {
+        ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(PostMapping.class, PostMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(GetMapping.class, GetMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(DeleteMapping.class, DeleteMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(PutMapping.class, PutMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(PatchMapping.class, PatchMappingMate.class);
+    }
+
 
     @Override
     public RequestMappingMate process(Annotation annotation) {
 
-        if (annotation instanceof RequestMapping) {
-
-            RequestMapping mapping = (RequestMapping) annotation;
-            return RequestMappingMate.builder()
-                    .value(mapping.value())
-                    .name(mapping.name())
-                    .consumes(mapping.consumes())
-                    .produces(mapping.produces())
-                    .method(mapping.method())
-                    .headers(mapping.headers())
-                    .params(mapping.params())
-                    .path(mapping.path())
-                    .build();
-        } else if (annotation instanceof GetMapping) {
-
-            GetMapping mapping = (GetMapping) annotation;
-            return RequestMappingMate.builder()
-                    .value(mapping.value())
-                    .name(mapping.name())
-                    .consumes(mapping.consumes())
-                    .produces(mapping.produces())
-                    .method(new RequestMethod[]{RequestMethod.GET})
-                    .headers(mapping.headers())
-                    .params(mapping.params())
-                    .path(mapping.path())
-                    .build();
-        } else if (annotation instanceof PostMapping) {
-
-            PostMapping mapping = (PostMapping) annotation;
-            return RequestMappingMate.builder()
-                    .value(mapping.value())
-                    .name(mapping.name())
-                    .consumes(mapping.consumes())
-                    .produces(mapping.produces())
-                    .method(new RequestMethod[]{RequestMethod.POST})
-                    .headers(mapping.headers())
-                    .params(mapping.params())
-                    .path(mapping.path())
-                    .build();
-        } else if (annotation instanceof DeleteMapping) {
-
-            DeleteMapping mapping = (DeleteMapping) annotation;
-            return RequestMappingMate.builder()
-                    .value(mapping.value())
-                    .name(mapping.name())
-                    .consumes(mapping.consumes())
-                    .produces(mapping.produces())
-                    .method(new RequestMethod[]{RequestMethod.DELETE})
-                    .headers(mapping.headers())
-                    .params(mapping.params())
-                    .path(mapping.path())
-                    .build();
-        } else if (annotation instanceof PutMapping) {
-
-            PutMapping mapping = (PutMapping) annotation;
-            return RequestMappingMate.builder()
-                    .value(mapping.value())
-                    .name(mapping.name())
-                    .consumes(mapping.consumes())
-                    .produces(mapping.produces())
-                    .method(new RequestMethod[]{RequestMethod.PUT})
-                    .headers(mapping.headers())
-                    .params(mapping.params())
-                    .path(mapping.path())
-                    .build();
-        } else if (annotation instanceof PatchMapping) {
-
-            PatchMapping mapping = (PatchMapping) annotation;
-            return RequestMappingMate.builder()
-                    .value(mapping.value())
-                    .name(mapping.name())
-                    .consumes(mapping.consumes())
-                    .produces(mapping.produces())
-                    .method(new RequestMethod[]{RequestMethod.PATCH})
-                    .headers(mapping.headers())
-                    .params(mapping.params())
-                    .path(mapping.path())
-                    .build();
+        Class<? extends RequestMappingMate> clazz = ANNOTATION_CLASS_MAP.get(annotation.annotationType());
+        if (clazz == null) {
+            throw new RuntimeException("not spring mapping annotation，annotation name: " + annotation.annotationType().getName());
         }
 
-        return null;
+        return this.newProxyMate(annotation, clazz);
+
     }
 
 
-    @Builder
-    @Data
-    public static class RequestMappingMate implements AnnotationToString {
-
-        /**
-         * 请求路径
-         * {@link RequestMapping#name}.
-         */
-        String name;
-
-        /**
-         * {@link RequestMapping#value}.
-         */
-        String[] value;
-
-        /**
-         * {@link RequestMapping#path}.
-         */
-        String[] path;
-
-        /**
-         * {@link RequestMapping#method}.
-         */
-        RequestMethod[] method;
-
-        /**
-         * {@link RequestMapping#params}.
-         */
-        String[] params;
-
-
-        /**
-         * {@link RequestMapping#headers}.
-         */
-        String[] headers;
-
-
-        /**
-         * {@link RequestMapping#consumes}.
-         */
-        String[] consumes;
-
-
-        /**
-         * {@link RequestMapping#produces}.
-         */
-        String[] produces;
+    public static abstract class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
 
         @Override
         public String toComment() {
-            return "接口的请求方法为：" + this.method[0].name();
+            return "接口的请求方法为：" + this.method()[0].name();
         }
+    }
+
+    public static abstract class GetMappingMate extends RequestMappingMate {
+
+        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.GET};
+
+        @Override
+        public RequestMethod[] method() {
+            return methods;
+        }
+
+    }
+
+    public static abstract class PostMappingMate extends RequestMappingMate {
+
+        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.POST};
+
+        @Override
+        public RequestMethod[] method() {
+            return methods;
+        }
+    }
+
+    public static abstract class DeleteMappingMate extends RequestMappingMate {
+
+        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.DELETE};
+
+        @Override
+        public RequestMethod[] method() {
+            return methods;
+        }
+
+        @Override
+        public String toComment() {
+            return "接口的请求方法为：" + this.method()[0].name();
+        }
+    }
+
+    public static abstract class PutMappingMate extends RequestMappingMate {
+
+        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.PUT};
+
+        @Override
+        public RequestMethod[] method() {
+            return methods;
+        }
+
+    }
+
+    public static abstract class PatchMappingMate extends RequestMappingMate {
+
+        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.PATCH};
+
+        @Override
+        public RequestMethod[] method() {
+            return methods;
+        }
+
     }
 }

@@ -1,5 +1,9 @@
 package com.wuxp.codegen.languages;
 
+import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
+import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
+import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenFilter;
 import com.wuxp.codegen.core.filter.FilterClassByLibrary;
@@ -11,10 +15,6 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
-import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
-import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;

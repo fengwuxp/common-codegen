@@ -4,7 +4,6 @@ import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Builder;
 import lombok.Data;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;

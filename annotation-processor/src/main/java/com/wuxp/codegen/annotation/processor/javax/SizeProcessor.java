@@ -1,9 +1,7 @@
 package com.wuxp.codegen.annotation.processor.javax;
 
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationToString;
-import lombok.Builder;
-import lombok.Data;
+import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.Size;
 
@@ -12,46 +10,24 @@ import javax.validation.constraints.Size;
  *
  * @see Size
  */
-public class SizeProcessor implements AnnotationProcessor<SizeProcessor.SizeMate, Size> {
+public class SizeProcessor extends AbstractAnnotationProcessor<Size, SizeProcessor.SizeMate> {
 
 
     @Override
     public SizeMate process(Size annotation) {
-        if (annotation == null) {
-            return null;
-        }
-        return SizeMate.builder()
-                .max(annotation.max())
-                .min(annotation.min())
-                .message(annotation.message())
-                .build();
+        return super.newProxyMate(annotation, SizeMate.class);
     }
 
 
-    @Data
-    @Builder
-    public static class SizeMate implements AnnotationToString {
-
-        /**
-         * 输入字符串的最小长度
-         */
-        private int min;
-
-        /**
-         * 输入字符串的最大长度
-         */
-        private int max;
-
-        private String message;
-
+    public static abstract class SizeMate implements AnnotationMate<Size>, Size {
 
         @Override
         public String toComment() {
 
             return "输入字符串的最小长度为：" +
-                    this.min +
+                    this.min() +
                     "，输入字符串的最大长度为：" +
-                    this.max;
+                    this.max();
         }
     }
 }

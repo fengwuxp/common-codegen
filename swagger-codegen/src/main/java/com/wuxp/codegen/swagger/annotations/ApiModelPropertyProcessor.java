@@ -1,26 +1,24 @@
 package com.wuxp.codegen.swagger.annotations;
 
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationToString;
+import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
-import lombok.Data;
 
-public class ApiModelPropertyProcessor implements AnnotationProcessor<ApiModelPropertyProcessor.ApiModelPropertyMate, ApiModelProperty> {
+/**
+ * swagger 注解处理
+ *
+ * @see ApiModelProperty
+ */
+public class ApiModelPropertyProcessor extends AbstractAnnotationProcessor<ApiModelProperty, ApiModelPropertyProcessor.ApiModelPropertyMate> {
 
 
     @Override
     public ApiModelPropertyMate process(ApiModelProperty annotation) {
-        if (annotation == null) {
-            return null;
-        }
-        return ApiModelPropertyMate.builder()
-                .build();
+        return this.newProxyMate(annotation, ApiModelPropertyMate.class);
     }
 
-    @Data
-    @Builder
-    public static class ApiModelPropertyMate implements AnnotationToString {
+
+    public static abstract class ApiModelPropertyMate implements AnnotationMate<ApiModelProperty>, ApiModelProperty {
 
 
         @Override

@@ -1,9 +1,7 @@
 package com.wuxp.codegen.annotation.processor.javax;
 
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationToString;
-import lombok.Builder;
-import lombok.Data;
+import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,30 +10,24 @@ import javax.validation.constraints.NotNull;
  *
  * @see javax.validation.constraints.NotNull
  */
-public class NotNullProcessor implements AnnotationProcessor<NotNullProcessor.NotNullMate, NotNull> {
+public class NotNullProcessor extends AbstractAnnotationProcessor<NotNull, NotNullProcessor.NotNullMate> {
 
 
     @Override
     public NotNullMate process(NotNull annotation) {
-        if (annotation == null) {
-            return null;
-        }
-        return NotNullMate.builder()
-                .message(annotation.message())
-                .build();
+
+        return super.newProxyMate(annotation, NotNullMate.class);
     }
 
 
-    @Data
-    @Builder
-    public static class NotNullMate implements AnnotationToString {
+    public static abstract class NotNullMate implements AnnotationMate<NotNull>, NotNull {
 
-
-        private String message;
-
+        public NotNullMate() {
+        }
 
         @Override
         public String toComment() {
+
             return "必填项，不能为空";
         }
     }

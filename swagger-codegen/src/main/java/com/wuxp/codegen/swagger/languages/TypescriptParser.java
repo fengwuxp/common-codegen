@@ -14,7 +14,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 
-
 import java.util.Collection;
 
 /**
@@ -54,6 +53,7 @@ public class TypescriptParser extends AbstractTypescriptParser {
 
     @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+
 
     }
 }
