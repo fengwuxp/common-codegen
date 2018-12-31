@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
 
 
-    private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingMate>> ANNOTATION_CLASS_MAP = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
 
     static {
         ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingMate.class);
@@ -82,7 +83,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         public RequestMethod[] method() {
             return methods;
         }
-        
+
     }
 
     public static abstract class PutMappingMate extends RequestMappingMate {
