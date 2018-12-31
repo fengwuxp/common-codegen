@@ -28,18 +28,23 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
      * @param clazz
      * @return
      */
-    protected T newProxyMate(Annotation annotation, Class<?> clazz) {
+    protected T newProxyMate(Annotation annotation, Class<? extends AnnotationMate> clazz) {
         if (annotation == null) {
             return null;
         }
 
-        final Method[] methods = annotation.getClass().getMethods();
+
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
-        enhancer.setCallback((MethodInterceptor) (o, method, args, methodProxy) -> {
-            Optional<Method> optionalMethod = Arrays.stream(methods).filter(m -> method.getName().equals(m.getName())).findFirst();
 
+        final Method[] methods = annotation.getClass().getMethods();
+        enhancer.setCallback((MethodInterceptor) (o, method, args, methodProxy) -> {
+
+            //查找方法是否在注解中，通过方法名称匹配
+            Optional<Method> optionalMethod = Arrays.stream(methods)
+                    .filter(m -> method.getName().equals(m.getName()))
+                    .findFirst();
             if (optionalMethod.isPresent()) {
                 //返回注解中的内容
                 return method.invoke(annotation, args);
