@@ -82,11 +82,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         public RequestMethod[] method() {
             return methods;
         }
-
-        @Override
-        public String toComment() {
-            return "接口的请求方法为：" + this.method()[0].name();
-        }
+        
     }
 
     public static abstract class PutMappingMate extends RequestMappingMate {
