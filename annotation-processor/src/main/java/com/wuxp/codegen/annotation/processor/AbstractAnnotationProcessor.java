@@ -51,9 +51,9 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
                 return method.invoke(annotation, args);
             }
 
-            if (Modifier.isAbstract(method.getModifiers())) {
-                //TODO 如果是抽象方法
-            }
+//            if (Modifier.isAbstract(method.getModifiers())) {
+//                //TODO 如果是抽象方法
+//            }
 
 
             return methodProxy.invokeSuper(o, args);
