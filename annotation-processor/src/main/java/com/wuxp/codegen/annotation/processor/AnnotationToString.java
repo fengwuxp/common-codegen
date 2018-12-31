@@ -7,7 +7,7 @@ package com.wuxp.codegen.annotation.processor;
 public interface AnnotationToString {
 
     /**
-     * 转化为注释
+     * 转换为注释
      *
      * @return
      */
