@@ -3,6 +3,7 @@ package com.wuxp.codegen.languages;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -11,15 +12,16 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.TypeMapping;
+import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -163,10 +165,63 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
             //TODO 处理方法的参数
             //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
+            Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
+            //有效的参数
+            Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
+            methodMetaParams.forEach((key, classes) -> {
+                Class<?>[] array = Arrays.stream(classes)
+                        .filter(this.filterClassByLibrary::filter)
+                        .toArray(Class<?>[]::new);
+                if (array.length == 0) {
+                    return;
+                }
+                effectiveParams.put(key, array);
+            });
+
             //2: 合并参数列表，将参数列表中的简单类型参数和复杂的类型参数合并到一个列表中
+            //2.1：遍历展开参数列表
+
+
+            List<TypescriptFieldMate> typescriptFieldMates = new LinkedList<>();
+
+            effectiveParams.forEach((key, classes) -> {
+
+                Class<?> clazz = classes[0];
+                if (JavaTypeUtil.isComplex(clazz)) {
+                    //复杂的数据类型
+                    JavaClassMeta javaClassMeta = this.javaParser.parse(clazz);
+
+                    //转换
+
+                } else {
+                    Collection<TypescriptClassMeta> classMetas = this.typescriptTypeMapping.mapping(classes);
+                    TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
+                    typescriptFieldMate.setName(key);
+
+                    Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
+
+                    //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
+//                    Arrays.stream(annotations).filter(annotation -> {
+//                        annotation.annotationType().equals(Reque)
+//                        return true;
+//                    })
+
+//                    typescriptFieldMate.setRequired();
+                    typescriptFieldMates.add(typescriptFieldMate);
+                }
+
+
+            });
+
             //3: 重组，使用第二部得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
-
-
+            //参数的元数据类型信息
+            TypescriptClassMeta argsClassMeta = new TypescriptClassMeta();
+            argsClassMeta.setClassType(ClassType.INTERFACE);
+            argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
+            LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
+            //请求参数名称，固定为req
+            params.put("req", argsClassMeta);
+            genMethodMeta.setParams(params);
             //增强处理
             this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
 
