@@ -5,6 +5,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
@@ -152,6 +153,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
             //处理返回值
             Collection<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
+
             if (typescriptClassMetas != null) {
                 //域对象类型描述
                 genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
@@ -163,7 +165,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         this.classToNamedString(javaMethodMeta.getReturnType())));
             }
 
-            //TODO 处理方法的参数
+
+
+
+
+            //处理方法的参数
             //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
             Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
             //有效的参数
@@ -181,19 +187,42 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             //2: 合并参数列表，将参数列表中的简单类型参数和复杂的类型参数合并到一个列表中
             //2.1：遍历展开参数列表
 
-
-            List<TypescriptFieldMate> typescriptFieldMates = new LinkedList<>();
-
+            final List<TypescriptFieldMate> typescriptFieldMates = new LinkedList<TypescriptFieldMate>();
+            //参数的元数据类型信息
+            final TypescriptClassMeta argsClassMeta = new TypescriptClassMeta();
             effectiveParams.forEach((key, classes) -> {
 
                 Class<?> clazz = classes[0];
                 if (JavaTypeUtil.isComplex(clazz)) {
                     //复杂的数据类型
                     JavaClassMeta javaClassMeta = this.javaParser.parse(clazz);
-
+                    Class<?>[] interfaces = javaClassMeta.getInterfaces();
                     //转换
+                    argsClassMeta.setName(clazz.getSimpleName());
+                    argsClassMeta.setPackagePath(clazz.getPackage().getName());
+                    argsClassMeta.setAccessPermission(AccessPermission.PUBLIC);
+                    argsClassMeta.setInterfaces(Arrays.stream(interfaces).map(this::parseSupper).toArray(TypescriptClassMeta[]::new));
+                    argsClassMeta.setSuperClass(this.parseSupper(javaClassMeta.getSuperClass()));
+                    TypescriptFieldMate[] fields = this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta);
+                    typescriptFieldMates.addAll(Arrays.stream(fields).collect(Collectors.toList()));
 
-                } else {
+                } else if (clazz.isEnum()) {
+                    //枚举
+                    TypescriptFieldMate fieldMate = new TypescriptFieldMate();
+
+                    typescriptFieldMates.add(fieldMate);
+
+                } else if (clazz.isArray()) {
+                    //TODO　数组
+
+                } else if (JavaTypeUtil.isCollection(clazz)) {
+                    //TODO 集合
+                } else if (JavaTypeUtil.isSet(clazz)) {
+                    //TODO set
+                } else if (JavaTypeUtil.isMap(clazz)) {
+                    //TODO map
+                } else if (JavaTypeUtil.isJavaBaseType(clazz)) {
+                    //简单数据类型
                     Collection<TypescriptClassMeta> classMetas = this.typescriptTypeMapping.mapping(classes);
                     TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
                     typescriptFieldMate.setName(key);
@@ -208,14 +237,15 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
 //                    typescriptFieldMate.setRequired();
                     typescriptFieldMates.add(typescriptFieldMate);
+                } else {
+                    log.warn("未处理的类型{}", clazz.getName());
                 }
 
 
             });
 
             //3: 重组，使用第二部得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
-            //参数的元数据类型信息
-            TypescriptClassMeta argsClassMeta = new TypescriptClassMeta();
+
             argsClassMeta.setClassType(ClassType.INTERFACE);
             argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
             LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
