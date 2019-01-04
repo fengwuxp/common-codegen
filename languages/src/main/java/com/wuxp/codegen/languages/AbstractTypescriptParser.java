@@ -1,8 +1,10 @@
 package com.wuxp.codegen.languages;
 
+import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
@@ -73,7 +75,10 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
         }
         //类上的注释
-        meta.setComments(super.generateComments(source.getAnnotations()).toArray(new String[]{}));
+        meta.setComments(this.generateComments(source.getAnnotations()).toArray(new String[]{}));
+
+        //类上的注解
+        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
 
         //属性列表
         meta.setFiledMetas(this.converterFieldMetas(source.getFieldMetas(), source));
@@ -108,7 +113,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             List<String> comments = super.generateComments(javaFieldMeta.getAnnotations());
             comments.addAll(super.generateComments(javaFieldMeta.getTypes()));
 
+            //注解
             typescriptFieldMate.setComments(comments.toArray(new String[]{}));
+
+            //注解
+            typescriptFieldMate.setAnnotations(this.converterAnnotations(javaFieldMeta.getAnnotations(), javaFieldMeta));
 
             //是否必填
             typescriptFieldMate.setRequired(javaFieldMeta.existAnnotation(NotNull.class));
@@ -143,10 +152,14 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             CommonCodeGenMethodMeta genMethodMeta = new CommonCodeGenMethodMeta();
             //method转换
             genMethodMeta.setAccessPermission(javaMethodMeta.getAccessPermission());
+            //注解转注释
             List<String> comments = super.generateComments(javaMethodMeta.getAnnotations());
             comments.addAll(super.generateComments(javaMethodMeta.getReturnType()));
             genMethodMeta.setComments(comments.toArray(new String[]{}));
             genMethodMeta.setName(javaMethodMeta.getName());
+
+            //处理方法上的相关注解
+            genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta));
 
 
             //TODO support spring webflux
@@ -164,9 +177,6 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         javaMethodMeta.getName(),
                         this.classToNamedString(javaMethodMeta.getReturnType())));
             }
-
-
-
 
 
             //处理方法的参数

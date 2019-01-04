@@ -4,6 +4,7 @@ package com.wuxp.codegen.annotation.processor;
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -33,32 +34,38 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
             return null;
         }
 
-
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
+        enhancer.setCallback(new ProxyAnnotationMethodInterceptor(annotation));
 
-        final Method[] methods = annotation.getClass().getMethods();
-        enhancer.setCallback((MethodInterceptor) (o, method, args, methodProxy) -> {
+        return (T) enhancer.create();
 
+    }
+
+    private class ProxyAnnotationMethodInterceptor implements MethodInterceptor {
+
+        private final Annotation annotation;
+
+        private final Method[] methods;
+
+
+        private ProxyAnnotationMethodInterceptor(Annotation annotation) {
+            this.annotation = annotation;
+            this.methods = annotation.getClass().getMethods();
+        }
+
+        @Override
+        public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             //查找方法是否在注解中，通过方法名称匹配
             Optional<Method> optionalMethod = Arrays.stream(methods)
                     .filter(m -> method.getName().equals(m.getName()))
                     .findFirst();
             if (optionalMethod.isPresent()) {
-                //返回注解中的内容
-                return method.invoke(annotation, args);
+                return optionalMethod.get().invoke(annotation, args);
             }
 
-//            if (Modifier.isAbstract(method.getModifiers())) {
-//                //TODO 如果是抽象方法
-//            }
-
-
             return methodProxy.invokeSuper(o, args);
-        });
-
-        return (T) enhancer.create();
-
+        }
     }
 }

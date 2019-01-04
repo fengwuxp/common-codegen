@@ -3,6 +3,7 @@ package com.wuxp.codegen.model;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,10 +12,14 @@ import java.util.Map;
 @Data
 public class CommonCodeGenAnnotation extends CommonBaseMeta{
 
+
     /**
-     * 注解的配置or参数
-     * 如果是对象参数 key为参数的名称
-     * 如果是参数列表，key为参数的位置
+     * 命名参数
      */
-    private Map<String,String> options;
+    private Map<String,String> namedArguments;
+
+    /**
+     * 位置参数
+     */
+    private List<String> positionArguments;
 }

@@ -64,7 +64,7 @@ public class TypeScriptRequestMappingTransformer implements
         handleRequestHeader(annotations, params);
 
         //TODO 加入 consumes 和 produces的处理
-        codeGenAnnotation.setOptions(params);
+        codeGenAnnotation.setNamedArguments(params);
 
         return codeGenAnnotation;
     }

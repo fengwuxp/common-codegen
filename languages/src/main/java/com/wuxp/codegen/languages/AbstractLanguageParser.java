@@ -1,9 +1,11 @@
 package com.wuxp.codegen.languages;
 
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
+import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenFilter;
 import com.wuxp.codegen.core.filter.FilterClassByLibrary;
@@ -11,11 +13,13 @@ import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -78,10 +82,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
      */
     protected CodeGenFilter<Class<?>> filterClassByLibrary = new FilterClassByLibrary();
 
+
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Size.class, new SizeProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Pattern.class, new PatternProcessor());
+        RequestMappingProcessor mappingProcessor = new RequestMappingProcessor();
+        ANNOTATION_PROCESSOR_MAP.put(RequestMapping.class, mappingProcessor);
+        ANNOTATION_PROCESSOR_MAP.put(GetMapping.class, mappingProcessor);
+        ANNOTATION_PROCESSOR_MAP.put(PostMapping.class, mappingProcessor);
+        ANNOTATION_PROCESSOR_MAP.put(DeleteMapping.class, mappingProcessor);
+        ANNOTATION_PROCESSOR_MAP.put(PutMapping.class, mappingProcessor);
+        ANNOTATION_PROCESSOR_MAP.put(PatchMapping.class, mappingProcessor);
     }
 
     public AbstractLanguageParser(PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
@@ -98,6 +110,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
 
     /**
      * 检查代码是否服务自定义的规则
+     *
      * @param source
      */
     protected void detectJavaCode(JavaClassMeta source) {
@@ -216,6 +229,42 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
      */
     protected abstract void enhancedProcessingMethod(M methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta);
 
+
+    /**
+     * 转换注解列表
+     *
+     * @param annotations
+     * @param annotationOwner  注解持有者
+     * @return
+     */
+    protected CommonCodeGenAnnotation[] converterAnnotations(Annotation[] annotations,Object annotationOwner) {
+        if (annotations == null || annotations.length == 0) {
+            return new CommonCodeGenAnnotation[]{};
+        }
+
+        return Arrays.stream(annotations).map(annotation -> {
+            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+            if (processor == null) {
+                return null;
+            }
+
+            return processor.process(annotation).toAnnotation();
+        }).filter(Objects::nonNull)
+                .toArray(CommonCodeGenAnnotation[]::new);
+
+
+    }
+
+    ;
+
+    /**
+     * 增强处理 annotation
+     *
+     * @param codeGenAnnotation
+     * @param annotation
+     * @param annotationOwner
+     */
+    protected abstract void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner);
 
     /**
      * 抓取依赖列表

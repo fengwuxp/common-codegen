@@ -2,10 +2,14 @@ package com.wuxp.codegen.annotation.processor.spring;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.*;
+import sun.plugin.javascript.navig.LinkArray;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,10 +51,29 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     public static abstract class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
-
         @Override
         public String toComment() {
             return "接口的请求方法为：" + this.method()[0].name();
+        }
+
+        @Override
+        public CommonCodeGenAnnotation toAnnotation() {
+            CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
+            codeGenAnnotation.setName(this.annotationType().getSimpleName());
+
+            //注解命名参数
+            Map<String, String> arguments = new LinkedHashMap<>();
+            arguments.put("value", this.value()[0]);
+            arguments.put("method", "RequestMethod." + this.method()[0].name());
+            codeGenAnnotation.setNamedArguments(arguments);
+
+            //注解w位置参数
+            List<String> positionArguments = new LinkedList<>();
+            positionArguments.add(arguments.get("value"));
+            positionArguments.add(arguments.get("method"));
+            codeGenAnnotation.setPositionArguments(positionArguments);
+
+            return codeGenAnnotation;
         }
     }
 
