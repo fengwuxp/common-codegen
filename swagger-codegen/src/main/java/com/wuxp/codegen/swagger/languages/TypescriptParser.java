@@ -64,7 +64,7 @@ public class TypescriptParser extends AbstractTypescriptParser {
     @Override
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
         if (annotationOwner instanceof JavaClassMeta) {
-            if (((JavaClassMeta) annotationOwner).existAnnotation(Controller.class, RestController.class)) {
+            if (((JavaClassMeta) annotationOwner).isSpringController()) {
                 //是控制器类，不标记为feign代理
                 codeGenAnnotation.setName("Feign");
                 //TODO 设置api模块

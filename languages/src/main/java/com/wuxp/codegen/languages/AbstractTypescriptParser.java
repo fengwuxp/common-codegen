@@ -70,7 +70,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setClassType(source.getClassType());
         meta.setAccessPermission(source.getAccessPermission());
 
-        if (source.existAnnotation(Controller.class, RestController.class, RequestMapping.class)) {
+        if (source.isSpringController()) {
             //spring的控制器
 
         }

@@ -3,6 +3,9 @@ package com.wuxp.codegen.model.languages.java;
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.Objects;
@@ -46,6 +49,14 @@ public class JavaClassMeta extends JavaBaseMeta {
     //父类
     private Class<?> superClass;
 
+
+    /**
+     * 是否为spring的控制器
+     * @return
+     */
+    public boolean isSpringController(){
+        return this.existAnnotation(Controller.class, RestController.class, RequestMapping.class);
+    }
 
     @Override
     public boolean equals(Object o) {
