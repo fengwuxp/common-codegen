@@ -19,10 +19,10 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     @Override
     public String convert(Class<?> clazz) {
         //包名
-        String clazzName = clazz.getPackage().getName();
+        String packageName = clazz.getPackage().getName();
         Optional<String> packageNamePrefix = this.packageNameMap.keySet()
                 .stream()
-                .filter(clazzName::startsWith)
+                .filter(packageName::startsWith)
                 .findFirst();
         if (!packageNamePrefix.isPresent()) {
             return "";
@@ -32,7 +32,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         String val = this.packageNameMap.get(key);
 
         if (val == null) {
-            throw new RuntimeException("包名：" + clazzName + " 未找到装换映射关系");
+            throw new RuntimeException("包名：" + packageName + " 未找到装换映射关系");
         }
         return val;
     }

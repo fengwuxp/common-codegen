@@ -15,8 +15,6 @@ import com.wuxp.codegen.swagger.annotations.ApiProcessor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 

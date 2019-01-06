@@ -1,7 +1,7 @@
 package com.wuxp.codegen.core.strategy;
 
 /**
- * 模板策略
+ * 模板处理策略
  */
 public interface TemplateStrategy<T> {
 

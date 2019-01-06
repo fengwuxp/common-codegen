@@ -11,10 +11,9 @@ import com.wuxp.codegen.core.CodeGenFilter;
 import com.wuxp.codegen.core.filter.FilterClassByLibrary;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
+import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.model.CommonBaseMeta;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -38,7 +37,9 @@ import java.util.stream.Collectors;
  * @param <F> 属性
  */
 @Slf4j
-public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M, F> implements GenericParser<C, JavaClassMeta> {
+public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
+        M extends CommonCodeGenMethodMeta,
+        F extends CommonCodeGenFiledMeta> implements LanguageParser<C> {
 
 
     /**
@@ -123,8 +124,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
         this.codeDetects.forEach(codeDetect -> {
             codeDetect.detect(source);
         });
-
-        return;
     }
 
     /**
@@ -191,6 +190,41 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
     }
 
     /**
+     * 转换注解列表
+     *
+     * @param annotations
+     * @param annotationOwner 注解持有者
+     * @return
+     */
+    protected CommonCodeGenAnnotation[] converterAnnotations(Annotation[] annotations, Object annotationOwner) {
+        if (annotations == null || annotations.length == 0) {
+            return new CommonCodeGenAnnotation[]{};
+        }
+
+        return Arrays.stream(annotations).map(annotation -> {
+            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+            if (processor == null) {
+                return null;
+            }
+
+            return processor.process(annotation).toAnnotation();
+        }).filter(Objects::nonNull)
+                .toArray(CommonCodeGenAnnotation[]::new);
+    }
+
+    /**
+     * 是不是一个java bean 对象
+     *
+     * @param classMeta
+     * @return
+     */
+    protected boolean isJavaBean(JavaClassMeta classMeta) {
+
+        return !classMeta.isSpringController();
+    }
+
+
+    /**
      * 转换属性列表
      *
      * @param javaFieldMetas
@@ -231,33 +265,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
 
 
     /**
-     * 转换注解列表
-     *
-     * @param annotations
-     * @param annotationOwner  注解持有者
-     * @return
-     */
-    protected CommonCodeGenAnnotation[] converterAnnotations(Annotation[] annotations,Object annotationOwner) {
-        if (annotations == null || annotations.length == 0) {
-            return new CommonCodeGenAnnotation[]{};
-        }
-
-        return Arrays.stream(annotations).map(annotation -> {
-            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-            if (processor == null) {
-                return null;
-            }
-
-            return processor.process(annotation).toAnnotation();
-        }).filter(Objects::nonNull)
-                .toArray(CommonCodeGenAnnotation[]::new);
-
-
-    }
-
-    ;
-
-    /**
      * 增强处理 annotation
      *
      * @param codeGenAnnotation
@@ -279,16 +286,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
 
         return dependencies.stream()
                 .filter(this.filterClassByLibrary::filter)
-                .map(clazz -> {
-                    JavaClassMeta meta = HANDLE_CLASS_CACHE.get(clazz);
-                    if (meta == null) {
-                        //判断是否被处理过，解决循环依赖的问题
-                        meta = this.javaParser.parse(clazz);
-                        HANDLE_CLASS_CACHE.put(clazz, meta);
-                    }
-                    return meta;
-
-                }).filter(Objects::nonNull)
+                .filter(Objects::nonNull)
                 .map(this::parse)
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
     }
@@ -301,7 +299,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta, M
      */
     protected C parseSupper(Class<?> clazz) {
 
-        return this.parse(this.javaParser.parse(clazz));
+        return this.parse(clazz);
     }
 
 }

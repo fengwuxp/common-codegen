@@ -1,10 +1,7 @@
 package com.wuxp.codegen.mapping;
 
-import com.wuxp.codegen.core.parser.GenericParser;
-import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.languages.AbstractTypescriptParser;
+import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.model.mapping.BaseTypeMapping;
@@ -45,16 +42,10 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
     protected TypeMapping<Class<?>, TypescriptClassMeta> baseTypeMapping = new BaseTypeMapping<TypescriptClassMeta>(BASE_TYPE_MAPPING);
 
 
-    /**
-     * java类的解析器
-     * 默认解析所有的属性 方法
-     */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
-
-    protected AbstractTypescriptParser typescriptParser;
+    protected LanguageParser<TypescriptClassMeta> typescriptParser;
 
 
-    public TypescriptTypeMapping(AbstractTypescriptParser typescriptParser) {
+    public TypescriptTypeMapping(LanguageParser<TypescriptClassMeta> typescriptParser) {
         this.typescriptParser = typescriptParser;
     }
 
@@ -80,7 +71,7 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
 
         if (JavaTypeUtil.isComplex(clazz) || clazz.isEnum()) {
             //复杂的数据类型或枚举
-            CommonCodeGenClassMeta meta = this.typescriptParser.parse(this.javaParser.parse(clazz));
+            CommonCodeGenClassMeta meta = this.typescriptParser.parse(clazz);
             if (meta == null) {
                 return list;
             }

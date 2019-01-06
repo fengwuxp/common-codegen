@@ -8,7 +8,6 @@ import java.util.List;
  */
 public interface ScannerFilter {
 
-    @SuppressWarnings("unchecked")
     ScannerFilter filterByAnnotation(Class<? extends Annotation>... annotations);
 
     ScannerFilter filterBySuperClass(Class<?> superClazz);

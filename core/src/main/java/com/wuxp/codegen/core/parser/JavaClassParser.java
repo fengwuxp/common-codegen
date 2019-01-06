@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
+
+
+    private final static Map<Class<?>, JavaClassMeta> PARSER_CACHE = new ConcurrentHashMap<>();
 
 
     //spring 解析泛型是标记为空类型类名称
@@ -41,6 +45,13 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     @Override
     public JavaClassMeta parse(Class<?> source) {
+
+        if (source == null) {
+            return null;
+        }
+        if (PARSER_CACHE.containsKey(source)) {
+            return PARSER_CACHE.get(source);
+        }
 
         JavaClassMeta.JavaClassMetaBuilder javaClassMetaBuilder = JavaClassMeta.builder();
 
@@ -65,7 +76,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         //循环获取超类
         while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
-            log.info(superType.getSuperType().getType().getTypeName());
+
+            if (log.isDebugEnabled()) {
+                log.debug("查找类 {} 的超类", superType.getSuperType().getType().getTypeName());
+            }
+
             ResolvableType[] superTypeGenerics = superType.getGenerics();
             List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
                 Class<?> rawClass = type.getRawClass();
@@ -92,6 +107,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         classMeta.setInterfaces(source.getInterfaces());
         classMeta.setSuperClass(source.getSuperclass());
 
+        PARSER_CACHE.put(source,classMeta);
         return classMeta;
     }
 

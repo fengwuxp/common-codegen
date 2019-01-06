@@ -4,14 +4,12 @@ import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.*;
-import sun.plugin.javascript.navig.LinkArray;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>

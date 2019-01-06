@@ -30,10 +30,7 @@ public class SwaggerCodeGenAdapter implements CodeGenAdapter {
             return null;
         }
 
-        JavaClassMeta javaClassMeta = this.javaParser.parse(clazz);
 
-
-
-        return this.abstractLanguageParser.parse(javaClassMeta);
+        return this.abstractLanguageParser.parse(clazz);
     }
 }
