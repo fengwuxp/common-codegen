@@ -2,6 +2,7 @@ package com.oaknt.codegen;
 
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
 import freemarker.template.Template;
@@ -13,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * 负责将数据和模板合并，生成最终的文件
  * </p>
- *
- * @param <C>
  */
 @Slf4j
 public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGenClassMeta> {
@@ -33,7 +32,8 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
 
         //根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
         String templateName = null;
-        if (data.getMethodMetas().length > 0) {
+        CommonCodeGenMethodMeta[] methodMetas = data.getMethodMetas();
+        if (methodMetas == null || methodMetas.length == 0) {
             //api 接口
             templateName = TemplateStrategy.API_SERVICE_TEMPLATE_NAME;
         } else {

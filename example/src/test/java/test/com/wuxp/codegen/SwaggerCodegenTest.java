@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -53,6 +52,16 @@ public class SwaggerCodegenTest {
 
         codeGenerator.generate();
 
-
+//        ClassPathScanningCandidateComponentProvider candidateComponentProvider = new ClassPathScanningCandidateComponentProvider(true);
+//
+//        candidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Api.class));
+//        candidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
+//
+//        Set<BeanDefinition> candidateComponents = candidateComponentProvider
+//                .findCandidateComponents("com.wuxp.codegen.example.controller");
+//
+//        candidateComponents.stream().forEach(beanDefinition -> {
+//            System.out.println("beanDefinition.getBeanClassName(): " + beanDefinition.getBeanClassName());
+//        });
     }
 }

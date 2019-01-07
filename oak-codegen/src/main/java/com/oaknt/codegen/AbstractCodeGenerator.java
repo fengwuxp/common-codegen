@@ -5,14 +5,18 @@ import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.scanner.StaticClassPathScanner;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -20,6 +24,13 @@ import java.util.Set;
  */
 @Slf4j
 public abstract class AbstractCodeGenerator implements CodeGenerator {
+
+    protected static final ClassPathScanningCandidateComponentProvider CANDIDATE_COMPONENT_PROVIDER = new ClassPathScanningCandidateComponentProvider(true);
+
+    static {
+        CANDIDATE_COMPONENT_PROVIDER.addIncludeFilter(new AnnotationTypeFilter(Api.class));
+        CANDIDATE_COMPONENT_PROVIDER.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
+    }
 
     /**
      * 要进行生成的源代码包名列表
@@ -36,6 +47,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * 模板处理策略
      */
     protected TemplateStrategy<CommonCodeGenClassMeta> templateStrategy;
+
 
     public AbstractCodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         this.packagePaths = packagePaths;
@@ -61,9 +73,20 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      */
     protected Set<Class<?>> scanPackages() {
 
-        Set<Class<?>> classes = StaticClassPathScanner.scan(packagePaths)
-                .filterByAnnotation(Controller.class, RestController.class)
-                .getClasses();
+
+        Set<Class<?>> classes = Arrays.stream(packagePaths)
+                .map(s -> CANDIDATE_COMPONENT_PROVIDER.findCandidateComponents(s))
+                .flatMap(Collection::stream).map(BeanDefinition::getBeanClassName).map(className -> {
+                    try {
+                        return Thread.currentThread().getContextClassLoader().loadClass(className);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+
         log.debug("共扫描到{}个类文件", classes.size());
         return classes;
     }

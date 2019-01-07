@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -84,8 +85,17 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             ResolvableType[] superTypeGenerics = superType.getGenerics();
             List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
                 Class<?> rawClass = type.getRawClass();
-                return rawClass == null ? (Class<?>) type.getType() : rawClass;
-            }).collect(Collectors.toList());
+                if (rawClass == null) {
+                    Type typeType = type.getType();
+                    if (typeType instanceof Class) {
+                        return (Class<?>) typeType;
+                    } else {
+                        return null;
+                    }
+                }
+                return rawClass;
+            }).filter(Objects::nonNull)
+                    .collect(Collectors.toList());
             types.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
             superType = superType.getSuperType();
         }
@@ -107,7 +117,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         classMeta.setInterfaces(source.getInterfaces());
         classMeta.setSuperClass(source.getSuperclass());
 
-        PARSER_CACHE.put(source,classMeta);
+        PARSER_CACHE.put(source, classMeta);
         return classMeta;
     }
 

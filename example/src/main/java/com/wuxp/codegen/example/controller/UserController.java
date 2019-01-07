@@ -1,12 +1,14 @@
 package com.wuxp.codegen.example.controller;
 
 
+import com.wuxp.codegen.example.domain.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import com.wuxp.codegen.example.domain.User;
-import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.*;
 
 
 @Api("用户服务")
