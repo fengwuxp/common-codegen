@@ -80,7 +80,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
 
         Set<Class<?>> classes = Arrays.stream(packagePaths)
-                .map(s -> CANDIDATE_COMPONENT_PROVIDER.findCandidateComponents(s))
+                .map(CANDIDATE_COMPONENT_PROVIDER::findCandidateComponents)
                 .flatMap(Collection::stream).map(BeanDefinition::getBeanClassName).map(className -> {
                     try {
                         return Thread.currentThread().getContextClassLoader().loadClass(className);
