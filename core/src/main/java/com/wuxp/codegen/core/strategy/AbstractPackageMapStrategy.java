@@ -23,14 +23,14 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     public String convert(Class<?> clazz) {
         //包名
         Package aPackage = clazz.getPackage();
-        if (aPackage==null){
-            log.error("不需要生成的类{}",clazz.getName());
+        String clazzName = clazz.getName();
+        if (aPackage == null) {
+            log.error("不需要生成的类{}", clazzName);
             return null;
         }
-        String packageName = aPackage.getName();
         Optional<String> packageNamePrefix = this.packageNameMap.keySet()
                 .stream()
-                .filter(packageName::startsWith)
+                .filter(clazzName::startsWith)
                 .findFirst();
         if (!packageNamePrefix.isPresent()) {
             return "";
@@ -40,8 +40,14 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         String val = this.packageNameMap.get(key);
 
         if (val == null) {
-            throw new RuntimeException("包名：" + packageName + " 未找到装换映射关系");
+            throw new RuntimeException("包名：" + clazzName + " 未找到装换映射关系");
         }
-        return val;
+
+        return clazzName.replace(key, val);
+    }
+
+    @Override
+    public String convertClassName(String className) {
+        return className.replaceAll("Controller", "Service");
     }
 }

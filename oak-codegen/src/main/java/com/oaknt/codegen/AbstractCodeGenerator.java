@@ -60,6 +60,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         this.scanPackages().stream()
                 .map(this.languageParser::parse)
                 .filter(Objects::nonNull)
+                .filter(commonCodeGenClassMeta -> {
+                    boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
+                    boolean notFiled = commonCodeGenClassMeta.getFiledMetas() == null || commonCodeGenClassMeta.getFiledMetas().length == 0;
+                    return !(notFiled && notMethod);
+                })
                 .map(commonCodeGenClassMeta -> {
                     //模板处理，生成目标代码
                     this.templateStrategy.build(commonCodeGenClassMeta);

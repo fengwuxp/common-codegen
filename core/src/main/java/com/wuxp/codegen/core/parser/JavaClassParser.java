@@ -243,7 +243,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         } else if (Modifier.isProtected(modifiers)) {
             meta.setAccessPermission(AccessPermission.PROTECTED);
         } else if (Modifier.isPublic(modifiers)) {
-            meta.setAccessPermission(AccessPermission.PROTECTED);
+            meta.setAccessPermission(AccessPermission.PUBLIC);
         } else {
             meta.setAccessPermission(AccessPermission.DEFAULT);
         }

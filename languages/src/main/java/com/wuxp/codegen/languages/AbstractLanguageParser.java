@@ -19,6 +19,7 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -44,12 +45,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     /**
-     * 已经被处理过的class的缓存
-     * key    class
-     * value  处理结果
+     * 类被处理的次数
      */
-    protected static final Map<Class<?>, JavaClassMeta> HANDLE_CLASS_CACHE = new ConcurrentHashMap<>();
-
+    protected static final Map<Class<?>, Integer> HANDLE_COUNT = new ConcurrentHashMap<>();
 
     /**
      * 处理结果缓存
@@ -168,7 +166,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
 
             return processor.process(annotation).toComment();
-        }).filter(Objects::nonNull)
+        }).filter(StringUtils::hasText)
                 .collect(Collectors.toList());
     }
 
@@ -176,14 +174,16 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 通过类类型来获取注释
      *
      * @param classes
+     * @param isMethod
      * @return
      */
-    protected List<String> generateComments(Class<?>[] classes) {
+    protected List<String> generateComments(Class<?>[] classes, boolean isMethod) {
         if (classes == null || classes.length == 0) {
             return new ArrayList<>();
         }
 
-        return Arrays.stream(classes).map(clazz -> "在java中的类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
+
+        return Arrays.stream(classes).map(clazz -> (isMethod ? "返回值" : "") + "在java中的类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
     }
 
 

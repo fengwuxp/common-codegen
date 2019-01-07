@@ -191,6 +191,11 @@ public final class JavaTypeUtil {
                 JavaTypeUtil.isString(clazz) ||
                 JavaTypeUtil.isBoolean(clazz) ||
                 JavaTypeUtil.isDate(clazz) ||
+                JavaTypeUtil.isList(clazz) ||
+                JavaTypeUtil.isSet(clazz) ||
+                JavaTypeUtil.isMap(clazz) ||
+                JavaTypeUtil.isCollection(clazz) ||
+                JavaTypeUtil.isAnArray(clazz) ||
                 void.class.equals(clazz)||
                 Object.class.equals(clazz);
         return !b;
@@ -241,7 +246,7 @@ public final class JavaTypeUtil {
 //        System.out.println(isJavaBaseType(int.class));
 //        System.out.println(isJavaBaseType(Integer.class));
 //        System.out.println(isJavaBaseType("".getClass()));
-//        System.out.println(isString("".getClass()));
+        System.out.println(isNumber(Long.class));
         System.out.println(isExtendsClass(Integer.class, Object.class));
 //        System.out.println(isExtendsClass(ServiceEvt.class, Object.class));
     }

@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger.annotations;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.annotations.Api;
+import org.springframework.util.StringUtils;
 
 /**
  * swagger 注解处理
@@ -23,11 +24,13 @@ public class ApiProcessor extends AbstractAnnotationProcessor<Api, ApiProcessor.
         @Override
         public String toComment() {
             String[] tags = this.tags();
-            if (tags.length == 0) {
+            String tag = tags[0];
+            if (!StringUtils.hasText(tag)) {
                 return this.value();
             }
 
-            return tags[0];
+
+            return tag;
         }
     }
 }

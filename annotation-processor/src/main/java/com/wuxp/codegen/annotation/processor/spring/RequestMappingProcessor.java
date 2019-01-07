@@ -3,6 +3,7 @@ package com.wuxp.codegen.annotation.processor.spring;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
@@ -62,7 +63,10 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
             //注解命名参数
             Map<String, String> arguments = new LinkedHashMap<>();
-            arguments.put("value", this.value()[0]);
+            String val = this.value()[0];
+            if (StringUtils.hasText(val)) {
+                arguments.put("value", "'" + val + "'");
+            }
             arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
             codeGenAnnotation.setNamedArguments(arguments);
 
@@ -77,6 +81,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         /**
          * 获取请求方法
+         *
          * @return
          */
         protected RequestMethod getRequestMethod() {

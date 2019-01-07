@@ -61,7 +61,7 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         }
 
         Class<?> clazz = classes[0];
-        if (clazz==null){
+        if (clazz == null) {
             return null;
         }
 
@@ -72,6 +72,17 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
 
         List<TypescriptClassMeta> list = new ArrayList<>(4);
 
+        Class<?> upConversionType = this.tryUpConversionType(clazz);
+        if (upConversionType != null) {
+            list.add(baseTypeMapping.mapping(upConversionType));
+            if (classes.length > 1) {
+                list.addAll(this.mapping(Arrays.asList(classes).subList(1, classes.length).toArray(new Class<?>[]{})));
+            }
+            return list.stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+
         if (JavaTypeUtil.isComplex(clazz) || clazz.isEnum()) {
             //复杂的数据类型或枚举
             CommonCodeGenClassMeta meta = this.typescriptParser.parse(clazz);
@@ -81,27 +92,18 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
             BeanUtils.copyProperties(meta, typescriptClassMeta);
             list.add(typescriptClassMeta);
+        } else if (clazz.isArray()) {
+            //数组
+            list.add(TypescriptClassMeta.ARRAY);
+            list.addAll(this.mapping(clazz.getComponentType()));
+            return list;
         } else {
-            Class<?> upConversionType = this.tryUpConversionType(clazz);
-            if (upConversionType != null) {
-                list.add(baseTypeMapping.mapping(upConversionType));
-            } else if (clazz.isArray()) {
-                //数组
-                list.add(TypescriptClassMeta.ARRAY);
-                list.addAll(this.mapping(clazz.getComponentType()));
-                return list;
-            } else {
-                throw new RuntimeException("Not Found clazz" + clazz.getName() + " mapping type");
-            }
+            throw new RuntimeException("Not Found clazz " + clazz.getName() + " mapping type");
         }
 
-        //处理泛型
-        list.addAll(Arrays.stream(classes)
-                .filter(c -> c != clazz).map(this::mapping)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList()));
-
-        return list;
+        return list.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
     }
 

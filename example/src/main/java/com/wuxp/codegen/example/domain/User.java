@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @ApiModel("用户")
 @Data
 public class User {
@@ -17,5 +19,8 @@ public class User {
 
     @ApiModelProperty("年龄")
     private Integer age;
+
+    @ApiModelProperty("订单列表")
+    private List<Order> orderList;
 
 }

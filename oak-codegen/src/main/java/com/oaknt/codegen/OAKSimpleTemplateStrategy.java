@@ -1,12 +1,18 @@
 package com.oaknt.codegen;
 
+import com.oaknt.codegen.utils.FileUtil;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 
 
 /**
@@ -18,13 +24,28 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGenClassMeta> {
 
+    //在LAST_MODIFIED_MINUTE内生成的文件不在生成
+    public static final float LAST_MODIFIED_MINUTE = 0.1f;
+
     /**
      * 模板加载器
      */
     protected TemplateLoader<Template> templateLoader;
 
-    public OAKSimpleTemplateStrategy(TemplateLoader<Template> templateLoader) {
+    /**
+     * 输出的根目录
+     */
+    protected String outputPath;
+
+    /**
+     * 文件扩展名称
+     */
+    protected String extName;
+
+    public OAKSimpleTemplateStrategy(TemplateLoader<Template> templateLoader, String outputPath, String extName) {
         this.templateLoader = templateLoader;
+        this.outputPath = outputPath.endsWith("\\") ? outputPath : outputPath + "\\";
+        this.extName = extName;
     }
 
     @Override
@@ -47,8 +68,6 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
 
         }
 
-        log.info("生成类{}的文件，输出到{}目录", data.getName(), data.getPackagePath());
-
 
         Template template = this.templateLoader.load(templateName);
         if (template == null) {
@@ -56,5 +75,23 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
             return;
         }
 
+        String output = Paths.get(this.outputPath + data.getPackagePath() + "." + this.extName).toString();
+        File file = new File(output);
+        if (file.exists()) {
+            if (System.currentTimeMillis() - file.lastModified() <= LAST_MODIFIED_MINUTE * 60 * 1000) {
+                log.warn("文件{}在{}分钟内已经生成过，跳过生成", output, LAST_MODIFIED_MINUTE);
+                return;
+            }
+        }
+        FileUtil.createDirectory(output.substring(0, output.lastIndexOf("\\")));
+        log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
+        try {
+            //输出
+            Writer writer = new OutputStreamWriter(new FileOutputStream(output),
+                    StandardCharsets.UTF_8);
+            template.process(data, writer);
+        } catch (TemplateException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }

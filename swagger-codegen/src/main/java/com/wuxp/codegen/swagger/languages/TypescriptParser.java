@@ -62,6 +62,7 @@ public class TypescriptParser extends AbstractTypescriptParser {
             if (((JavaClassMeta) annotationOwner).isApiServiceClass()) {
                 //是控制器类，不标记为feign代理
                 codeGenAnnotation.setName("Feign");
+                codeGenAnnotation.getNamedArguments().remove("method");
                 //TODO 设置api模块
 //                codeGenAnnotation.getNamedArguments().put("apiModule","default");
             }

@@ -11,4 +11,12 @@ public interface PackageMapStrategy {
      * @return 导入该类的导入语句字符串
      */
     String convert(Class<?> clazz);
+
+
+    /**
+     * 转换 class Name
+     * @param className
+     * @return
+     */
+    String convertClassName(String className);
 }

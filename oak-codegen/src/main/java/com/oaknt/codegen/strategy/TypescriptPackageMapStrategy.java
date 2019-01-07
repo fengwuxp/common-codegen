@@ -21,6 +21,7 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
     public String convert(Class<?> clazz) {
         String path = super.convert(clazz);
 
-        return path.replaceAll("\\.", "\\\\");
+        return this.convertClassName(path.replaceAll("\\.", "/"));
+
     }
 }

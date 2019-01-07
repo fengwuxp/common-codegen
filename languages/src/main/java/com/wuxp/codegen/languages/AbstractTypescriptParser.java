@@ -3,6 +3,7 @@ package com.wuxp.codegen.languages;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -18,6 +19,8 @@ import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
@@ -48,6 +51,19 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             return null;
         }
 
+        if (HANDLE_COUNT.containsKey(source)) {
+            synchronized (source) {
+                //标记某个类被处理的次数如果超过2次，从缓存中返回
+                if (HANDLE_COUNT.get(source) > 2) {
+                    return this.getResultToLocalCache(source);
+                } else {
+                    HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
+                }
+            }
+        } else {
+            HANDLE_COUNT.put(source, 1);
+        }
+
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
         if (javaClassMeta.isApiServiceClass()) {
@@ -69,18 +85,16 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         this.detectJavaCode(javaClassMeta);
 
         meta = new TypescriptClassMeta();
-        meta.setName(source.getName());
-        Class<?> clazz = javaClassMeta.getClazz();
-        meta.setPackagePath(this.packageMapStrategy.convert(clazz));
+        meta.setName(this.packageMapStrategy.convertClassName(source.getSimpleName()));
+        meta.setPackagePath(this.packageMapStrategy.convert(source));
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
-
 
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations()).toArray(new String[]{}));
 
         //类上的注解
-        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
+        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), javaClassMeta));
 
         if (javaClassMeta.isApiServiceClass()) {
             //spring的控制器  生成方法列表
@@ -90,12 +104,10 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta));
         }
 
+
         //依赖列表
         meta.setDependencies(this.fetchDependencies(javaClassMeta.getDependencyList()));
-
-        //加入缓存列表
-        HANDLE_RESULT_CACHE.put(clazz, meta);
-
+        HANDLE_RESULT_CACHE.put(source, meta);
         return meta;
     }
 
@@ -149,7 +161,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                     //注释来源于注解和java的类类型
                     List<String> comments = super.generateComments(javaFieldMeta.getAnnotations());
-                    comments.addAll(super.generateComments(javaFieldMeta.getTypes()));
+                    comments.addAll(super.generateComments(javaFieldMeta.getTypes(), false));
 
                     //注解
                     typescriptFieldMate.setComments(comments.toArray(new String[]{}));
@@ -190,13 +202,14 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         }
         return Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
+                .filter(javaMethodMeta -> this.genMatchingStrategy.isMatchMethod(javaMethodMeta))
                 .map(javaMethodMeta -> {
                     CommonCodeGenMethodMeta genMethodMeta = new CommonCodeGenMethodMeta();
                     //method转换
                     genMethodMeta.setAccessPermission(javaMethodMeta.getAccessPermission());
                     //注解转注释
                     List<String> comments = super.generateComments(javaMethodMeta.getAnnotations());
-                    comments.addAll(super.generateComments(javaMethodMeta.getReturnType()));
+                    comments.addAll(super.generateComments(javaMethodMeta.getReturnType(), true));
                     genMethodMeta.setComments(comments.toArray(new String[]{}));
                     genMethodMeta.setName(javaMethodMeta.getName());
 
@@ -209,7 +222,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     //处理返回值
                     Collection<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
 
-                    if (typescriptClassMetas != null) {
+                    if (typescriptClassMetas != null && typescriptClassMetas.size() > 0) {
                         //域对象类型描述
                         genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
                     } else {
@@ -246,17 +259,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                         Class<?> clazz = classes[0];
                         if (JavaTypeUtil.isComplex(clazz)) {
-                            //复杂的数据类型
-                            JavaClassMeta javaClassMeta = this.javaParser.parse(clazz);
-                            Class<?>[] interfaces = javaClassMeta.getInterfaces();
-                            //转换
-                            argsClassMeta.setName(clazz.getSimpleName());
-                            argsClassMeta.setPackagePath(clazz.getPackage().getName());
-                            argsClassMeta.setAccessPermission(AccessPermission.PUBLIC);
-                            argsClassMeta.setInterfaces(Arrays.stream(interfaces).map(this::parseSupper).toArray(TypescriptClassMeta[]::new));
-                            argsClassMeta.setSuperClass(this.parseSupper(javaClassMeta.getSuperClass()));
-                            TypescriptFieldMate[] fields = this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta);
-                            typescriptFieldMates.addAll(Arrays.stream(fields).collect(Collectors.toList()));
+                            TypescriptClassMeta typescriptClassMeta = this.parse(clazz);
+                            BeanUtils.copyProperties(typescriptClassMeta, argsClassMeta);
 
                         } else if (clazz.isEnum()) {
                             //枚举
@@ -300,6 +304,16 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                     argsClassMeta.setClassType(ClassType.INTERFACE);
                     argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
+//                    if (effectiveParams.size() == 0) {
+//                        //无参数
+//                        argsClassMeta.setName("{}");
+//                    }
+                    if (!StringUtils.hasText(argsClassMeta.getName())) {
+                        //没有复杂对象的参数
+                        String name = ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()) + "Req";
+                        argsClassMeta.setName(name);
+                        argsClassMeta.setPackagePath("req/" + name);
+                    }
                     LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
                     //请求参数名称，固定为req
                     params.put("req", argsClassMeta);
