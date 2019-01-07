@@ -8,6 +8,7 @@ import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -64,6 +65,12 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
             if (optionalMethod.isPresent()) {
                 return optionalMethod.get().invoke(annotation, args);
             }
+
+            if (Modifier.isAbstract(method.getModifiers())) {
+                //抽象方法
+                return null;
+            }
+
 
             return methodProxy.invokeSuper(o, args);
         }

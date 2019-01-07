@@ -2,6 +2,7 @@ package com.wuxp.codegen.scanner.filter;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 扫描过滤器
@@ -16,5 +17,5 @@ public interface ScannerFilter {
 
     ScannerFilter filterByCustomFilter(ClassFilter filter);
 
-    List<Class<?>> getClasses();
+    Set<Class<?>> getClasses();
 }

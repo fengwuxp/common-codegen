@@ -84,6 +84,11 @@ public class FileStringUtils {
     }
 
     public static String substringPath(String fileName, String path) {
-        return fileName.replace(path, "").substring(1);
+
+        String replace = fileName.replace(path, "");
+        if (OsUtil.isWin()) {
+            return replace;
+        }
+        return replace.substring(1);
     }
 }

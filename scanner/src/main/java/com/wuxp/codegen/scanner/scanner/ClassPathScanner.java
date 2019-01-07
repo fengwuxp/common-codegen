@@ -16,22 +16,22 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ClassPathScanner implements Scanner<ScannerFilter, String[]> {
 
-    protected Scanner<List<String>, String> fullClassPathScanner = new FullClassPathScanner();
+    protected Scanner<Set<String>, String> fullClassPathScanner = new FullClassPathScanner();
 
     @Override
     public ScannerFilter scan(String[] packageNames) {
 
-        List<String> classNames = Arrays.stream(packageNames)
+        Set<String> classNames = Arrays.stream(packageNames)
                 .map(packageName -> this.fullClassPathScanner.scan(packageName))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         return new InnerFilter(ClassPathScanner.transform(classNames));
     }
 
 
-    private static List<Class<?>> transform(List<String> classNames) {
-        List<Class<?>> classes = new ArrayList<>();
+    private static Set<Class<?>> transform(Set<String> classNames) {
+        Set<Class<?>> classes = new HashSet<>();
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         for (String className : classNames) {
             try {
@@ -49,15 +49,15 @@ public class ClassPathScanner implements Scanner<ScannerFilter, String[]> {
 
     private class InnerFilter implements ScannerFilter {
 
-        private List<Class<?>> classes;
+        private Set<Class<?>> classes;
 
-        private InnerFilter(List<Class<?>> classes) {
+        private InnerFilter(Set<Class<?>> classes) {
             this.classes = classes;
         }
 
         @SafeVarargs
         public final ScannerFilter filterByAnnotation(Class<? extends Annotation>... annotations) {
-            List<Class<?>> filteredClasses = new ArrayList<>();
+            Set<Class<?>> filteredClasses = new HashSet<>();
             for (Class<?> clazz : classes) {
                 if (FilterUtils.isAnnotationsPresent(annotations, clazz)) {
                     filteredClasses.add(clazz);
@@ -68,7 +68,7 @@ public class ClassPathScanner implements Scanner<ScannerFilter, String[]> {
         }
 
         public ScannerFilter filterByName(String name) {
-            List<Class<?>> filteredClasses = new ArrayList<>();
+            Set<Class<?>> filteredClasses = new HashSet<>();
             for (Class<?> clazz : classes) {
                 if (FilterUtils.isClassNameContains(name, clazz)) {
                     filteredClasses.add(clazz);
@@ -79,7 +79,7 @@ public class ClassPathScanner implements Scanner<ScannerFilter, String[]> {
         }
 
         public ScannerFilter filterBySuperClass(Class<?> superClazz) {
-            List<Class<?>> filteredClasses = new ArrayList<>();
+            Set<Class<?>> filteredClasses = new HashSet<>();
             for (Class<?> clazz : classes) {
                 if (FilterUtils.isAssignableFrom(superClazz, clazz)) {
                     filteredClasses.add(clazz);
@@ -90,7 +90,7 @@ public class ClassPathScanner implements Scanner<ScannerFilter, String[]> {
         }
 
         public ScannerFilter filterByCustomFilter(ClassFilter classFilter) {
-            List<Class<?>> filteredClasses = new ArrayList<>();
+            Set<Class<?>> filteredClasses = new HashSet<>();
             for (Class<?> clazz : classes) {
                 if (classFilter.matches(clazz)) {
                     filteredClasses.add(clazz);
@@ -100,8 +100,8 @@ public class ClassPathScanner implements Scanner<ScannerFilter, String[]> {
             return new InnerFilter(filteredClasses);
         }
 
-        public List<Class<?>> getClasses() {
-            return Collections.unmodifiableList(classes);
+        public Set<Class<?>> getClasses() {
+            return Collections.unmodifiableSet(classes);
         }
     }
 }

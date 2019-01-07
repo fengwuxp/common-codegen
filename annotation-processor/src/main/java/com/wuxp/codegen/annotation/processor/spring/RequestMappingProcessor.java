@@ -51,7 +51,8 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         @Override
         public String toComment() {
-            return "接口的请求方法为：" + this.method()[0].name();
+
+            return "接口的请求方法为：" + this.getRequestMethod().name();
         }
 
         @Override
@@ -62,7 +63,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             //注解命名参数
             Map<String, String> arguments = new LinkedHashMap<>();
             arguments.put("value", this.value()[0]);
-            arguments.put("method", "RequestMethod." + this.method()[0].name());
+            arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
             codeGenAnnotation.setNamedArguments(arguments);
 
             //注解w位置参数
@@ -72,6 +73,21 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             codeGenAnnotation.setPositionArguments(positionArguments);
 
             return codeGenAnnotation;
+        }
+
+        /**
+         * 获取请求方法
+         * @return
+         */
+        protected RequestMethod getRequestMethod() {
+
+            RequestMethod[] requestMethods = this.method();
+
+            if (requestMethods.length == 0) {
+                return RequestMethod.POST;
+            } else {
+                return requestMethods[0];
+            }
         }
     }
 

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -45,6 +47,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     public void generate() {
         this.scanPackages().stream()
                 .map(this.languageParser::parse)
+                .filter(Objects::nonNull)
                 .forEach(commonCodeGenClassMeta -> {
                     //模板处理，生成目标代码
                     this.templateStrategy.build(commonCodeGenClassMeta);
@@ -56,10 +59,12 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      *
      * @return
      */
-    protected List<Class<?>> scanPackages() {
+    protected Set<Class<?>> scanPackages() {
 
-        return StaticClassPathScanner.scan(packagePaths)
+        Set<Class<?>> classes = StaticClassPathScanner.scan(packagePaths)
                 .filterByAnnotation(Controller.class, RestController.class)
                 .getClasses();
+        log.debug("共扫描到{}个类文件", classes.size());
+        return classes;
     }
 }
