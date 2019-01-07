@@ -214,7 +214,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return null;
             }
 
-            return processor.process(annotation).toAnnotation();
+            AnnotationMate annotationMate = processor.process(annotation);
+            CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation();
+
+            if (toAnnotation != null){
+                this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
+            }
+
+            return toAnnotation;
         }).filter(Objects::nonNull)
                 .toArray(CommonCodeGenAnnotation[]::new);
     }
