@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger.languages;
 
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractTypescriptParser;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
@@ -32,10 +33,9 @@ public class TypescriptParser extends AbstractTypescriptParser {
     }
 
 
-    public TypescriptParser(PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
-        super(packageMapStrategy, codeDetects);
+    public TypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
+        super(packageMapStrategy, genMatchingStrategy, codeDetects);
     }
-
 
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {

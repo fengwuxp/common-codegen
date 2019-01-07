@@ -9,6 +9,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageNames;
+import com.wuxp.codegen.swagger.SwaggerCodeGenMatchingStrategy;
 import com.wuxp.codegen.swagger.languages.TypescriptParser;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class SwaggerCodegenTest {
 
         PackageMapStrategy packageMapStrategy = new TypescriptPackageMapStrategy(packageMap);
 
-        LanguageParser languageParser = new TypescriptParser(packageMapStrategy, null);
+        LanguageParser languageParser = new TypescriptParser(packageMapStrategy, new SwaggerCodeGenMatchingStrategy(), null);
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new OAKSimpleTemplateStrategy(new FreemarkerTemplateLoader(LanguageNames.TYPESCRIPT));
 

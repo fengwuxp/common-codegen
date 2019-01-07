@@ -104,15 +104,20 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(PatchMapping.class, mappingProcessor);
     }
 
-    public AbstractLanguageParser(PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
+    public AbstractLanguageParser(PackageMapStrategy packageMapStrategy,
+                                  CodeGenMatchingStrategy genMatchingStrategy,
+                                  Collection<CodeDetect> codeDetects) {
         this.packageMapStrategy = packageMapStrategy;
+        this.genMatchingStrategy = genMatchingStrategy;
         this.codeDetects = codeDetects;
     }
 
-    public AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser, PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
+    public AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+                                  PackageMapStrategy packageMapStrategy,
+                                  CodeGenMatchingStrategy genMatchingStrategy,
+                                  Collection<CodeDetect> codeDetects) {
+        this(packageMapStrategy, genMatchingStrategy, codeDetects);
         this.javaParser = javaParser;
-        this.packageMapStrategy = packageMapStrategy;
-        this.codeDetects = codeDetects;
     }
 
 
@@ -217,7 +222,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             AnnotationMate annotationMate = processor.process(annotation);
             CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation();
 
-            if (toAnnotation != null){
+            if (toAnnotation != null) {
                 this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
             }
 

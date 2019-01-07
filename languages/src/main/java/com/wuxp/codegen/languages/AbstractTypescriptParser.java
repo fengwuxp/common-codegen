@@ -1,6 +1,7 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.CommonBaseMeta;
@@ -36,8 +37,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
      */
     protected TypeMapping<Class<?>, Collection<TypescriptClassMeta>> typescriptTypeMapping = new TypescriptTypeMapping(this);
 
-    public AbstractTypescriptParser(PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
-        super(packageMapStrategy, codeDetects);
+    public AbstractTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
+        super(packageMapStrategy, genMatchingStrategy, codeDetects);
     }
 
     @Override

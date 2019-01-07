@@ -42,7 +42,8 @@ public class JavaBaseMeta extends CommonBaseMeta {
     public <T extends Annotation> Stream<T> findAnnotation(Class<T> clazz) {
 
         return Arrays.stream(this.annotations)
-                .filter(a -> a.getClass().equals(clazz)).map(c -> (T) c);
+                .filter(a -> a.annotationType().equals(clazz))
+                .map(c -> (T) c);
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> clazz) {
