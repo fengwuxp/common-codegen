@@ -1,5 +1,7 @@
 package com.wuxp.codegen.core.strategy;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -7,6 +9,7 @@ import java.util.Optional;
 /**
  * 抽象的包名映射策略
  */
+@Slf4j
 public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 
     protected Map<String/*类的包名前缀*/, String/*output path*/> packageNameMap;
@@ -19,7 +22,12 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     @Override
     public String convert(Class<?> clazz) {
         //包名
-        String packageName = clazz.getPackage().getName();
+        Package aPackage = clazz.getPackage();
+        if (aPackage==null){
+            log.error("不需要生成的类{}",clazz.getName());
+            return null;
+        }
+        String packageName = aPackage.getName();
         Optional<String> packageNamePrefix = this.packageNameMap.keySet()
                 .stream()
                 .filter(packageName::startsWith)

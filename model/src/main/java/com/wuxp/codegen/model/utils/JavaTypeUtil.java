@@ -17,7 +17,9 @@ public final class JavaTypeUtil {
      * @return
      */
     public static boolean isJavaBaseType(Class<?> clazz) {
-
+        if (clazz == null) {
+            return true;
+        }
 
         return ClassUtils.isPrimitiveOrWrapper(clazz) || isString(clazz) || isDate(clazz);
     }
@@ -109,6 +111,7 @@ public final class JavaTypeUtil {
 
     /**
      * 是否为Collection 或继承自 Collection
+     *
      * @param clazz
      * @return
      */
@@ -120,31 +123,34 @@ public final class JavaTypeUtil {
 
     /**
      * 是否为Map或继承自 Map
+     *
      * @param clazz
      * @return
      */
-    public static boolean isMap(Class<?> clazz){
+    public static boolean isMap(Class<?> clazz) {
         return isExtendsClass(clazz, Map.class);
     }
 
     /**
      * 是否为Set或继承自 Set
+     *
      * @param clazz
      * @return
      */
-    public static boolean isSet(Class<?> clazz){
+    public static boolean isSet(Class<?> clazz) {
         return isExtendsClass(clazz, Set.class);
     }
 
 
     /**
      * 是否为 void
+     *
      * @param clazz
      * @return
      */
-    public static boolean isVoid(Class<?> clazz){
+    public static boolean isVoid(Class<?> clazz) {
 
-        return  void.class.equals(clazz);
+        return void.class.equals(clazz);
     }
 
     /**
@@ -185,7 +191,8 @@ public final class JavaTypeUtil {
                 JavaTypeUtil.isString(clazz) ||
                 JavaTypeUtil.isBoolean(clazz) ||
                 JavaTypeUtil.isDate(clazz) ||
-                void.class.equals(clazz);
+                void.class.equals(clazz)||
+                Object.class.equals(clazz);
         return !b;
     }
 

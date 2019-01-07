@@ -24,7 +24,8 @@ public class JavaBaseMeta extends CommonBaseMeta {
      * @param classes 注解列表
      * @return
      */
-    public boolean existAnnotation(Class<? extends Annotation>... classes) {
+    @SafeVarargs
+    public final boolean existAnnotation(Class<? extends Annotation>... classes) {
 
         for (Class<? extends Annotation> clazz : classes) {
             if (this.existAnnotation(clazz)) {
@@ -34,12 +35,12 @@ public class JavaBaseMeta extends CommonBaseMeta {
         return false;
     }
 
-    public boolean existAnnotation(Class<? extends Annotation> clazz) {
+    private boolean existAnnotation(Class<? extends Annotation> clazz) {
 
         return this.findAnnotation(clazz).collect(Collectors.toList()).size() > 0;
     }
 
-    public <T extends Annotation> Stream<T> findAnnotation(Class<T> clazz) {
+    private <T extends Annotation> Stream<T> findAnnotation(Class<T> clazz) {
 
         return Arrays.stream(this.annotations)
                 .filter(a -> a.annotationType().equals(clazz))

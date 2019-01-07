@@ -296,6 +296,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(this.filterClassByLibrary::filter)
                 .filter(Objects::nonNull)
                 .map(this::parse)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
     }
 

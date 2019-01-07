@@ -44,7 +44,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     @Override
     public TypescriptClassMeta parse(Class<?> source) {
 
-        if (source == null) {
+        if (!this.filterClassByLibrary.filter(source)) {
             return null;
         }
 
@@ -70,7 +70,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
         meta = new TypescriptClassMeta();
         meta.setName(source.getName());
-        meta.setPackagePath(this.packageMapStrategy.convert(javaClassMeta.getClazz()));
+        Class<?> clazz = javaClassMeta.getClazz();
+        meta.setPackagePath(this.packageMapStrategy.convert(clazz));
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
 
@@ -93,7 +94,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setDependencies(this.fetchDependencies(javaClassMeta.getDependencyList()));
 
         //加入缓存列表
-        HANDLE_RESULT_CACHE.put(javaClassMeta.getClazz(), meta);
+        HANDLE_RESULT_CACHE.put(clazz, meta);
 
         return meta;
     }
@@ -201,7 +202,6 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                     //处理方法上的相关注解
                     genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta));
-
 
 
                     //TODO support spring webflux

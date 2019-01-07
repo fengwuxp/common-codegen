@@ -60,6 +60,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         this.scanPackages().stream()
                 .map(this.languageParser::parse)
                 .filter(Objects::nonNull)
+                .map(commonCodeGenClassMeta -> {
+                    //模板处理，生成目标代码
+                    this.templateStrategy.build(commonCodeGenClassMeta);
+                    return commonCodeGenClassMeta.getDependencies().values();
+                }).flatMap(Collection::stream)
                 .forEach(commonCodeGenClassMeta -> {
                     //模板处理，生成目标代码
                     this.templateStrategy.build(commonCodeGenClassMeta);

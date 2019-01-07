@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.filter;
 
 import com.wuxp.codegen.core.CodeGenFilter;
+import com.wuxp.codegen.model.utils.JavaTypeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +20,18 @@ public class FilterClassByLibrary implements CodeGenFilter<Class<?>> {
         packageNames.add("lombok.");
 //        packageNames.add("javax.persistence.");
         packageNames.add("javax.servlet.");
+        packageNames.add("java.");
     }
 
     @Override
-    public boolean filter(Class<?> data) {
-        if (data == null) {
+    public boolean filter(Class<?> clazz) {
+        if (clazz == null) {
             return false;
         }
-        return packageNames.stream().filter(name -> data.getName().startsWith(name)).isParallel();
+
+        if (!JavaTypeUtil.isComplex(clazz) || clazz.isAnnotation()) {
+            return false;
+        }
+        return packageNames.stream().noneMatch(name -> clazz.getName().startsWith(name));
     }
 }

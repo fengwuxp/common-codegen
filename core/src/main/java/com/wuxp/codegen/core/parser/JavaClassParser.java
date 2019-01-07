@@ -77,7 +77,9 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         //循环获取超类
         while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
-
+            if (superType.getSuperType().getType().equals(Object.class)) {
+                break;
+            }
             if (log.isDebugEnabled()) {
                 log.debug("查找类 {} 的超类", superType.getSuperType().getType().getTypeName());
             }
@@ -192,15 +194,14 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
             //参数类型列表
             Class<?>[] parameterTypes = method.getParameterTypes();
+
             //参数上的注解
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            ;
+
             //参数名称列表
             String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
 
             if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {
-                log.info("参数名称列表：" + parameterNames.length);
-                log.info("参数列表：" + parameterTypes.length);
                 for (int k = 0; k < parameterTypes.length; k++) {
                     String parameterName = parameterNames[k];
                     params.put(parameterName, genericsToClassType(ResolvableType.forClass(parameterTypes[k])));
@@ -272,7 +273,9 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             }
         }
 
-        return classes.toArray(new Class<?>[]{});
+        return classes.stream()
+                .filter(Objects::nonNull)
+                .toArray(Class<?>[]::new);
     }
 
 

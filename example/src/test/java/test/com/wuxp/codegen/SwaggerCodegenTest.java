@@ -53,16 +53,5 @@ public class SwaggerCodegenTest {
 
         codeGenerator.generate();
 
-//        ClassPathScanningCandidateComponentProvider candidateComponentProvider = new ClassPathScanningCandidateComponentProvider(true);
-//
-//        candidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Api.class));
-//        candidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
-//
-//        Set<BeanDefinition> candidateComponents = candidateComponentProvider
-//                .findCandidateComponents("com.wuxp.codegen.example.controller");
-//
-//        candidateComponents.stream().forEach(beanDefinition -> {
-//            System.out.println("beanDefinition.getBeanClassName(): " + beanDefinition.getBeanClassName());
-//        });
     }
 }

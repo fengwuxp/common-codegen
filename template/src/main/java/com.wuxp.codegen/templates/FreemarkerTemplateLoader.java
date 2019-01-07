@@ -19,13 +19,13 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public FreemarkerTemplateLoader(String language) {
         super(language);
         //创建一个合适的Configuration对象
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_0);
-        configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_0).build());
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
+        configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_28).build());
         //这个一定要设置，不然在生成的页面中 会乱码
         configuration.setDefaultEncoding("UTF-8");
 
         //支持从jar中加载模板
-        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class.getClassLoader().getClass(), language);
+        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class.getClassLoader().getClass(), "/" + language);
         this.configuration = configuration;
     }
 

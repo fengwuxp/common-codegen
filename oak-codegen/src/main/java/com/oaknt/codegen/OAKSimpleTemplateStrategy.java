@@ -34,9 +34,6 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
         String templateName = null;
         CommonCodeGenMethodMeta[] methodMetas = data.getMethodMetas();
         if (methodMetas == null || methodMetas.length == 0) {
-            //api 接口
-            templateName = TemplateStrategy.API_SERVICE_TEMPLATE_NAME;
-        } else {
             //DTO or enum
             if (ClassType.ENUM.equals(data.getClassType())) {
                 templateName = TemplateStrategy.API_ENUM_TEMPLATE_NAME;
@@ -44,12 +41,20 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
                 //区分请求对象还是响应对象
                 templateName = TemplateStrategy.API_REQUEST_TEMPLATE_NAME;
             }
+        } else {
+            //api 接口
+            templateName = TemplateStrategy.API_SERVICE_TEMPLATE_NAME;
+
         }
 
-//        data.getClassType()
+        log.info("生成类{}的文件，输出到{}目录", data.getName(), data.getPackagePath());
 
 
-//        this.templateLoader.load()
+        Template template = this.templateLoader.load(templateName);
+        if (template == null) {
+            log.warn("没有找到模板{}", templateName);
+            return;
+        }
 
     }
 }

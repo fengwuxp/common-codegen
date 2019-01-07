@@ -61,6 +61,9 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         }
 
         Class<?> clazz = classes[0];
+        if (clazz==null){
+            return null;
+        }
 
         //1. 类型转换，如果是简单的java类型，则尝试做装换
         //2. 处理枚举类型
