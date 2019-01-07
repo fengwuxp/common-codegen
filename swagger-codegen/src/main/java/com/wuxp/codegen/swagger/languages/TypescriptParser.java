@@ -31,9 +31,6 @@ public class TypescriptParser extends AbstractTypescriptParser {
         ANNOTATION_PROCESSOR_MAP.put(ApiModelProperty.class, new ApiModelPropertyProcessor());
     }
 
-    public TypescriptParser() {
-        super(null, null);
-    }
 
     public TypescriptParser(PackageMapStrategy packageMapStrategy, Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, codeDetects);

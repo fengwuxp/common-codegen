@@ -31,7 +31,7 @@ public class StandardSwaggerController {
     @ApiOperation(value = "测试查询方法", tags = "分组标签")
     @RequestMapping("test_{name}")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "age", value = "年龄", example = "22")
+            @ApiImplicitParam(name = "age", value = "年龄")
     })
     public ServiceQueryResponse<TestMethodDTO> testQuery(@ApiParam(value = "查询名称", required = true) @PathVariable("name") String name,
                                                          Integer age) {
