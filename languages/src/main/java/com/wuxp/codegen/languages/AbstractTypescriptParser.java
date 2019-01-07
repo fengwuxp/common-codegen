@@ -47,8 +47,16 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             return null;
         }
 
-        JavaClassMeta javaClassMeta = this.javaParser.parse(source);
 
+        JavaClassMeta javaClassMeta = this.javaParser.parse(source);
+        if (javaClassMeta.isApiServiceClass()) {
+            //要生成的服务，判断是否需要生成
+            if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
+                //跳过
+                log.warn("跳过类{}", source.getName());
+                return null;
+            }
+        }
 
         TypescriptClassMeta meta = this.getResultToLocalCache(source);
 
@@ -72,14 +80,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //类上的注解
         meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
 
-        if (this.isJavaBean(javaClassMeta)) {
-            // 普通的java bean DTO
-            //属性列表
-            meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta));
-        } else {
-            //spring的控制器
-            //方法列表
+        if (javaClassMeta.isApiServiceClass()) {
+            //spring的控制器  生成方法列表
             meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta));
+        } else {
+            // 普通的java bean DTO  生成属性列表
+            meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta));
         }
 
         //依赖列表
@@ -183,124 +189,124 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         return Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
                 .map(javaMethodMeta -> {
-            CommonCodeGenMethodMeta genMethodMeta = new CommonCodeGenMethodMeta();
-            //method转换
-            genMethodMeta.setAccessPermission(javaMethodMeta.getAccessPermission());
-            //注解转注释
-            List<String> comments = super.generateComments(javaMethodMeta.getAnnotations());
-            comments.addAll(super.generateComments(javaMethodMeta.getReturnType()));
-            genMethodMeta.setComments(comments.toArray(new String[]{}));
-            genMethodMeta.setName(javaMethodMeta.getName());
+                    CommonCodeGenMethodMeta genMethodMeta = new CommonCodeGenMethodMeta();
+                    //method转换
+                    genMethodMeta.setAccessPermission(javaMethodMeta.getAccessPermission());
+                    //注解转注释
+                    List<String> comments = super.generateComments(javaMethodMeta.getAnnotations());
+                    comments.addAll(super.generateComments(javaMethodMeta.getReturnType()));
+                    genMethodMeta.setComments(comments.toArray(new String[]{}));
+                    genMethodMeta.setName(javaMethodMeta.getName());
 
-            //处理方法上的相关注解
-            genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta));
-
-
-            //TODO support spring webflux
-
-            //处理返回值
-            Collection<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
-
-            if (typescriptClassMetas != null) {
-                //域对象类型描述
-                genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
-            } else {
-                //解析失败
-                throw new RuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",
-                        classMeta.getClassName(),
-                        javaMethodMeta.getName(),
-                        this.classToNamedString(javaMethodMeta.getReturnType())));
-            }
+                    //处理方法上的相关注解
+                    genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta));
 
 
-            //处理方法的参数
-            //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
-            Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
-            //有效的参数
-            Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
-            methodMetaParams.forEach((key, classes) -> {
-                Class<?>[] array = Arrays.stream(classes)
-                        .filter(this.filterClassByLibrary::filter)
-                        .toArray(Class<?>[]::new);
-                if (array.length == 0) {
-                    return;
-                }
-                effectiveParams.put(key, array);
-            });
+                    //TODO support spring webflux
 
-            //2: 合并参数列表，将参数列表中的简单类型参数和复杂的类型参数合并到一个列表中
-            //2.1：遍历展开参数列表
+                    //处理返回值
+                    Collection<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
 
-            final List<TypescriptFieldMate> typescriptFieldMates = new LinkedList<TypescriptFieldMate>();
-            //参数的元数据类型信息
-            final TypescriptClassMeta argsClassMeta = new TypescriptClassMeta();
-            effectiveParams.forEach((key, classes) -> {
+                    if (typescriptClassMetas != null) {
+                        //域对象类型描述
+                        genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
+                    } else {
+                        //解析失败
+                        throw new RuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",
+                                classMeta.getClassName(),
+                                javaMethodMeta.getName(),
+                                this.classToNamedString(javaMethodMeta.getReturnType())));
+                    }
 
-                Class<?> clazz = classes[0];
-                if (JavaTypeUtil.isComplex(clazz)) {
-                    //复杂的数据类型
-                    JavaClassMeta javaClassMeta = this.javaParser.parse(clazz);
-                    Class<?>[] interfaces = javaClassMeta.getInterfaces();
-                    //转换
-                    argsClassMeta.setName(clazz.getSimpleName());
-                    argsClassMeta.setPackagePath(clazz.getPackage().getName());
-                    argsClassMeta.setAccessPermission(AccessPermission.PUBLIC);
-                    argsClassMeta.setInterfaces(Arrays.stream(interfaces).map(this::parseSupper).toArray(TypescriptClassMeta[]::new));
-                    argsClassMeta.setSuperClass(this.parseSupper(javaClassMeta.getSuperClass()));
-                    TypescriptFieldMate[] fields = this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta);
-                    typescriptFieldMates.addAll(Arrays.stream(fields).collect(Collectors.toList()));
 
-                } else if (clazz.isEnum()) {
-                    //枚举
-                    TypescriptFieldMate fieldMate = new TypescriptFieldMate();
+                    //处理方法的参数
+                    //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
+                    Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
+                    //有效的参数
+                    Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
+                    methodMetaParams.forEach((key, classes) -> {
+                        Class<?>[] array = Arrays.stream(classes)
+                                .filter(this.filterClassByLibrary::filter)
+                                .toArray(Class<?>[]::new);
+                        if (array.length == 0) {
+                            return;
+                        }
+                        effectiveParams.put(key, array);
+                    });
 
-                    typescriptFieldMates.add(fieldMate);
+                    //2: 合并参数列表，将参数列表中的简单类型参数和复杂的类型参数合并到一个列表中
+                    //2.1：遍历展开参数列表
 
-                } else if (clazz.isArray()) {
-                    //TODO　数组
+                    final List<TypescriptFieldMate> typescriptFieldMates = new LinkedList<TypescriptFieldMate>();
+                    //参数的元数据类型信息
+                    final TypescriptClassMeta argsClassMeta = new TypescriptClassMeta();
+                    effectiveParams.forEach((key, classes) -> {
 
-                } else if (JavaTypeUtil.isCollection(clazz)) {
-                    //TODO 集合
-                } else if (JavaTypeUtil.isSet(clazz)) {
-                    //TODO set
-                } else if (JavaTypeUtil.isMap(clazz)) {
-                    //TODO map
-                } else if (JavaTypeUtil.isJavaBaseType(clazz)) {
-                    //简单数据类型
-                    Collection<TypescriptClassMeta> classMetas = this.typescriptTypeMapping.mapping(classes);
-                    TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
-                    typescriptFieldMate.setName(key);
+                        Class<?> clazz = classes[0];
+                        if (JavaTypeUtil.isComplex(clazz)) {
+                            //复杂的数据类型
+                            JavaClassMeta javaClassMeta = this.javaParser.parse(clazz);
+                            Class<?>[] interfaces = javaClassMeta.getInterfaces();
+                            //转换
+                            argsClassMeta.setName(clazz.getSimpleName());
+                            argsClassMeta.setPackagePath(clazz.getPackage().getName());
+                            argsClassMeta.setAccessPermission(AccessPermission.PUBLIC);
+                            argsClassMeta.setInterfaces(Arrays.stream(interfaces).map(this::parseSupper).toArray(TypescriptClassMeta[]::new));
+                            argsClassMeta.setSuperClass(this.parseSupper(javaClassMeta.getSuperClass()));
+                            TypescriptFieldMate[] fields = this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta);
+                            typescriptFieldMates.addAll(Arrays.stream(fields).collect(Collectors.toList()));
 
-                    Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
+                        } else if (clazz.isEnum()) {
+                            //枚举
+                            TypescriptFieldMate fieldMate = new TypescriptFieldMate();
 
-                    //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
+                            typescriptFieldMates.add(fieldMate);
+
+                        } else if (clazz.isArray()) {
+                            //TODO　数组
+
+                        } else if (JavaTypeUtil.isCollection(clazz)) {
+                            //TODO 集合
+                        } else if (JavaTypeUtil.isSet(clazz)) {
+                            //TODO set
+                        } else if (JavaTypeUtil.isMap(clazz)) {
+                            //TODO map
+                        } else if (JavaTypeUtil.isJavaBaseType(clazz)) {
+                            //简单数据类型
+                            Collection<TypescriptClassMeta> classMetas = this.typescriptTypeMapping.mapping(classes);
+                            TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
+                            typescriptFieldMate.setName(key);
+
+                            Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
+
+                            //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
 //                    Arrays.stream(annotations).filter(annotation -> {
 //                        annotation.annotationType().equals(Reque)
 //                        return true;
 //                    })
 
 //                    typescriptFieldMate.setRequired();
-                    typescriptFieldMates.add(typescriptFieldMate);
-                } else {
-                    log.warn("未处理的类型{}", clazz.getName());
-                }
+                            typescriptFieldMates.add(typescriptFieldMate);
+                        } else {
+                            log.warn("未处理的类型{}", clazz.getName());
+                        }
 
 
-            });
+                    });
 
-            //3: 重组，使用第二部得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
+                    //3: 重组，使用第二部得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
 
-            argsClassMeta.setClassType(ClassType.INTERFACE);
-            argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
-            LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
-            //请求参数名称，固定为req
-            params.put("req", argsClassMeta);
-            genMethodMeta.setParams(params);
-            //增强处理
-            this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
+                    argsClassMeta.setClassType(ClassType.INTERFACE);
+                    argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
+                    LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
+                    //请求参数名称，固定为req
+                    params.put("req", argsClassMeta);
+                    genMethodMeta.setParams(params);
+                    //增强处理
+                    this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
 
-            return genMethodMeta;
-        }).toArray(CommonCodeGenMethodMeta[]::new);
+                    return genMethodMeta;
+                }).toArray(CommonCodeGenMethodMeta[]::new);
     }
 
 }

@@ -1,11 +1,13 @@
 package com.wuxp.codegen.model.languages.java;
 
+import com.wuxp.codegen.model.MatchApiServiceClass;
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +18,14 @@ import java.util.Set;
  */
 @Data
 @Builder
-public class JavaClassMeta extends JavaBaseMeta {
+public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass {
+
+
+    static {
+        MatchApiServiceClass.API_SERVICE_ANNOTATIONS.add(Controller.class);
+        MatchApiServiceClass.API_SERVICE_ANNOTATIONS.add(RequestMapping.class);
+        MatchApiServiceClass.API_SERVICE_ANNOTATIONS.add(RestController.class);
+    }
 
     //属性类型 如果有泛型则有多个
     private Map<Class<?>/*类型，父类，接口，本身*/, Class<?>[]> types;
@@ -52,10 +61,11 @@ public class JavaClassMeta extends JavaBaseMeta {
 
     /**
      * 是否为spring的控制器
+     *
      * @return
      */
-    public boolean isSpringController(){
-        return this.existAnnotation(Controller.class, RestController.class, RequestMapping.class);
+    public boolean isApiServiceClass() {
+        return this.existAnnotation(MatchApiServiceClass.API_SERVICE_ANNOTATIONS.toArray(new Class[]{}));
     }
 
     @Override

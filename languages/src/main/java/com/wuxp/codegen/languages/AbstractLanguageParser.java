@@ -12,6 +12,7 @@ import com.wuxp.codegen.core.filter.FilterClassByLibrary;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -82,6 +83,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 过滤jar中的依赖
      */
     protected CodeGenFilter<Class<?>> filterClassByLibrary = new FilterClassByLibrary();
+
+
+    /**
+     * 生成匹配策略
+     */
+    protected CodeGenMatchingStrategy genMatchingStrategy;
 
 
     static {
@@ -210,17 +217,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return processor.process(annotation).toAnnotation();
         }).filter(Objects::nonNull)
                 .toArray(CommonCodeGenAnnotation[]::new);
-    }
-
-    /**
-     * 是不是一个java bean 对象
-     *
-     * @param classMeta
-     * @return
-     */
-    protected boolean isJavaBean(JavaClassMeta classMeta) {
-
-        return !classMeta.isSpringController();
     }
 
 

@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 
 /**
- * typeScript的 parser
+ * swagger typeScript的 parser
  */
 @Slf4j
 public class TypescriptParser extends AbstractTypescriptParser {
@@ -62,7 +62,7 @@ public class TypescriptParser extends AbstractTypescriptParser {
     @Override
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
         if (annotationOwner instanceof JavaClassMeta) {
-            if (((JavaClassMeta) annotationOwner).isSpringController()) {
+            if (((JavaClassMeta) annotationOwner).isApiServiceClass()) {
                 //是控制器类，不标记为feign代理
                 codeGenAnnotation.setName("Feign");
                 //TODO 设置api模块
