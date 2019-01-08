@@ -1,6 +1,10 @@
 
 import {Enum} from "oak_weex_common/src/enums/Enum";
 
+/**
+ * 性别
+**/
+
 export default class Sex{
 
    constructor() {}

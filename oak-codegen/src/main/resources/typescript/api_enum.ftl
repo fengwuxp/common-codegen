@@ -1,6 +1,12 @@
 
 import {Enum} from "oak_weex_common/src/enums/Enum";
 
+/**
+<#list comments as cmment>
+ * ${cmment}
+</#list>
+**/
+
 export default class ${name}{
 
    constructor() {}
