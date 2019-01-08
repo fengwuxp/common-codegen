@@ -246,7 +246,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     //处理返回值
                     List<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
                     if (!typescriptClassMetas.contains(TypescriptClassMeta.PROMISE)){
-                        typescriptClassMetas.set(0,TypescriptClassMeta.PROMISE);
+                        typescriptClassMetas.add(0,TypescriptClassMeta.PROMISE);
                     }
 
                     if ( typescriptClassMetas.size() > 0) {

@@ -41,15 +41,6 @@ export default class UserService{
         })
     getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
     /**
-        * 1:接口的请求方法为：DELETE
-        * 2:返回值在java中的类型为：String
-    **/
-        @RequestMapping({
-            value:'/{id}',
-            method:RequestMethod.DELETE,
-        })
-    deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
-    /**
         * 1:接口的请求方法为：PUT
         * 2:返回值在java中的类型为：String
     **/
@@ -58,4 +49,13 @@ export default class UserService{
             method:RequestMethod.PUT,
         })
     putUser:(req: User, option?: FetchOptions) => Promise<string>;
+    /**
+        * 1:接口的请求方法为：DELETE
+        * 2:返回值在java中的类型为：String
+    **/
+        @RequestMapping({
+            value:'/{id}',
+            method:RequestMethod.DELETE,
+        })
+    deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
 }
