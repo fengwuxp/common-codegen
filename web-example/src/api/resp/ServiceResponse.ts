@@ -3,7 +3,7 @@
  * 服务响应对象
 **/
 
-export interface  ServiceResponse<PageInfo<T>> {
+export interface  ServiceResponse<T> {
 
         /**
             *响应数据消息

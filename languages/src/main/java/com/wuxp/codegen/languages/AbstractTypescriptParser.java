@@ -161,7 +161,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setSuperTypeVariables(superTypeVariables);
         if (meta.getSuperClass() != null && superTypeVariables.size() > 0) {
             CommonCodeGenClassMeta[] supperClassTypeVariables = superTypeVariables.get(meta.getSuperClass().getName());
-            meta.getSuperClass().setTypeVariables(supperClassTypeVariables);
+            CommonCodeGenClassMeta superClass = meta.getSuperClass();
+            //做一次值复制，防止改变缓存中的值
+            CommonCodeGenClassMeta newSupperClass=new CommonCodeGenClassMeta();
+            BeanUtils.copyProperties(superClass,newSupperClass);
+            newSupperClass.setTypeVariables(supperClassTypeVariables);
+            meta.setSuperClass(newSupperClass);
         }
 
         HANDLE_RESULT_CACHE.put(source, meta);

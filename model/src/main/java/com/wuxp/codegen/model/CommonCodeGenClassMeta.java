@@ -92,6 +92,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
                         .map(CommonCodeGenClassMeta::getGenericDescription)
                         .collect(Collectors.joining(","));
                 this.genericDescription = this.name + "<" + typeDesc + ">";
+//                return this.name + "<" + typeDesc + ">";
             }
         }
         return genericDescription;
