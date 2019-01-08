@@ -4,6 +4,7 @@ import com.wuxp.codegen.model.CommonBaseMeta;
 import lombok.Data;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +17,11 @@ public class JavaBaseMeta extends CommonBaseMeta {
 
     //注解
     protected Annotation[] annotations;
+
+    /**
+     * 类型参数, 泛型
+     */
+    protected Type[] typeVariables;
 
 
     /**

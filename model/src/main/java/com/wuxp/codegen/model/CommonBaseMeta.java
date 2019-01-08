@@ -40,10 +40,7 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
      */
     protected Map<String, Object> tags = new HashMap<>();
 
-    /**
-     * 类型参数, 泛型
-     */
-    protected Type[] typeVariables;
+
 
 
     public CommonBaseMeta() {

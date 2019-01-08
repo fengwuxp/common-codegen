@@ -21,7 +21,14 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     protected Class<?> source;
 
-    //属性类型 如果有泛型则有多个
+    /**
+     * 类型参数, 泛型
+     */
+    protected CommonCodeGenClassMeta[] typeVariables;
+
+    /**
+     * 属性类型 如果有泛型则有多个
+     */
     private Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables;
 
     /**
@@ -81,7 +88,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     public String getGenericDescription() {
         if (!StringUtils.hasText(genericDescription)) {
             if (this.typeVariables != null && this.typeVariables.length > 0) {
-                String typeDesc = Arrays.stream(this.typeVariables).map(Type::getTypeName).collect(Collectors.joining(","));
+                String typeDesc = Arrays.stream(this.typeVariables).map(CommonBaseMeta::getName).collect(Collectors.joining(","));
                 this.genericDescription = this.name + "<" + typeDesc + ">";
             }
         }

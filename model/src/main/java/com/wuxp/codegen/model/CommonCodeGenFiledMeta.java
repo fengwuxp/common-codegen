@@ -3,6 +3,7 @@ package com.wuxp.codegen.model;
 
 import lombok.Data;
 
+
 /**
  * 通用的代码生成 filed 元数据
  */
@@ -21,4 +22,8 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
      */
     private CommonCodeGenAnnotation[] annotations;
 
+    /**
+     * 类型参数, 泛型
+     */
+    protected CommonCodeGenClassMeta[] typeVariables;
 }

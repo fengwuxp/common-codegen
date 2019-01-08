@@ -92,7 +92,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setPackagePath(this.packageMapStrategy.convert(source));
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
-        meta.setTypeVariables(javaClassMeta.getTypeVariables());
+        meta.setTypeVariables(Arrays.stream(javaClassMeta
+                .getTypeVariables())
+                .filter(type -> !(type instanceof Class)).map(type -> (Class)type)
+                .map(this::parse)
+                .filter(Objects::nonNull)
+                .toArray(CommonCodeGenClassMeta[]::new));
         meta.setSuperClass(this.parse(javaClassMeta.getSuperClass()));
 
         //类上的注释
@@ -123,15 +128,16 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
             TypescriptClassMeta typescriptClassMeta = this.parse(superClazz);
 
-//            CommonCodeGenClassMeta[] classMetas = Arrays.stream(val).map(clazz -> {
-//                TypescriptClassMeta classMeta = this.parse(clazz);
-//                if (JavaTypeUtil.isComplex(clazz)) {
-//                    metaDependencies.put(classMeta.getName(), classMeta);
-//                }
-//                return classMeta;
-//            }).filter(Objects::nonNull).toArray(CommonCodeGenClassMeta[]::new);
+            CommonCodeGenClassMeta[] classMetas = Arrays.stream(val).map(clazz -> {
+                TypescriptClassMeta classMeta = this.parse(clazz);
+                if (JavaTypeUtil.isComplex(clazz)) {
+                    metaDependencies.put(classMeta.getName(), classMeta);
+                }
+                return classMeta;
+            }).filter(Objects::nonNull)
+                    .toArray(CommonCodeGenClassMeta[]::new);
 
-            typescriptClassMeta.setTypeVariables(val);
+            typescriptClassMeta.setTypeVariables(classMetas);
 
             superTypeVariables.put(superClazz.getSimpleName(), new CommonCodeGenClassMeta[]{typescriptClassMeta});
         });

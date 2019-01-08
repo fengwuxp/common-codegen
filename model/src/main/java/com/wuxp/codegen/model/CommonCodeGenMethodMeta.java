@@ -32,4 +32,9 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
      */
     private CommonCodeGenAnnotation[]  annotations;
 
+    /**
+     * 类型参数, 泛型
+     */
+    protected CommonCodeGenClassMeta[] typeVariables;
+
 }
