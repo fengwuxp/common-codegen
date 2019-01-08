@@ -37,8 +37,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     //regExp
     public final static TypescriptClassMeta REGEXP = new TypescriptClassMeta("RegExp", null, ClassType.CLASS, false, OBJECT);
 
-    //regExp
-    public final static TypescriptClassMeta DATE = new TypescriptClassMeta("date", null, ClassType.CLASS, false, OBJECT);
+    //Date
+    public final static TypescriptClassMeta DATE = new TypescriptClassMeta("Date", null, ClassType.CLASS, false, OBJECT);
 
 
     //void

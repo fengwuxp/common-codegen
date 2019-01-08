@@ -7,7 +7,7 @@ export interface  Order{
 
     /**
     **/
-    addTime: date;
+    addTime: Date;
     /**
         * 1:在java中的类型为：Long
     **/

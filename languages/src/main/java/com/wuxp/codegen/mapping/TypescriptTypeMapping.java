@@ -63,7 +63,7 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
     public List<TypescriptClassMeta> mapping(Class<?>... classes) {
 
         if (classes == null || classes.length == 0) {
-            return null;
+            return new ArrayList<>();
         }
 
         Set<TypescriptClassMeta> classMetas = new LinkedHashSet<>(4);

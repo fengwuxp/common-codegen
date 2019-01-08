@@ -154,7 +154,27 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             fieldMeta.setName(field.getName());
             Annotation[] annotations = field.getAnnotations();
             fieldMeta.setAnnotations(annotations);
-            Type[] typeVariables = { field.getGenericType()};
+            Type genericType = field.getGenericType();
+
+            //自动类型的泛型描述
+            Type[] typeVariables = null;
+            if (genericType instanceof ParameterizedType) {
+                typeVariables = ((ParameterizedType) genericType).getActualTypeArguments();
+            } else if (genericType instanceof TypeVariable) {
+                typeVariables = new Type[]{genericType};
+            }
+            if (typeVariables != null) {
+                //判断类上面是否存在这个泛型描述的变量
+                List<String> clazzTypeVariables = Arrays.stream(clazz.getTypeParameters())
+                        .map(Type::getTypeName)
+                        .collect(Collectors.toList());
+
+                typeVariables = Arrays.stream(typeVariables)
+                        .filter(type -> clazzTypeVariables.contains(type.getTypeName()))
+                        .toArray(Type[]::new);
+            }
+
+
             fieldMeta.setTypeVariables(typeVariables);
             fieldMetas.add(fieldMeta);
         }

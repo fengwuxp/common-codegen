@@ -28,14 +28,18 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         }
         int length = codeGenClassMetas.length;
         CommonCodeGenClassMeta genClassMeta = codeGenClassMetas[0];
+        String genClassMetaName = genClassMeta.getName();
         if (length == 1) {
-            return genClassMeta.getName();
+            if (!StringUtils.hasText(genClassMetaName)) {
+                return genClassMeta.getGenericDescription();
+            }
+            return genClassMetaName;
         }
 
         //存在泛型
         String genericDescription = genClassMeta.getGenericDescription();
         if (!StringUtils.hasText(genericDescription)) {
-            throw new RuntimeException("泛型描述不存在，" + genClassMeta.getName());
+            throw new RuntimeException("泛型描述不存在，" + genClassMetaName);
         }
         List<String> genericDescriptors = this.matchGenericDescriptors(genericDescription);
 

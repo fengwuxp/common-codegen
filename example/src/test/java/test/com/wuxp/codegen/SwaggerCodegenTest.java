@@ -72,7 +72,7 @@ public class SwaggerCodegenTest {
     public void testCodeGenApi() {
 
         codeGenerator.generate();
-//        JavaClassMeta parse = genericParser.parse(OrderController.class);
+//        JavaClassMeta parse = genericParser.parse(ServiceResponse.class);
 //        System.out.println(parse);
 
     }
