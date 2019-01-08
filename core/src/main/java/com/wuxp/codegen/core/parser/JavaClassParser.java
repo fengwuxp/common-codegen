@@ -66,20 +66,20 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         int modifiers = source.getModifiers();
-        ResolvableType resolvableType = ResolvableType.forClass(source);
 
-        Map<Class<?>, Class<?>[]> types = new LinkedHashMap<>();
-        ResolvableType superType = resolvableType;
+        Map<Class<?>, Class<?>[]> superTypeVariables = new LinkedHashMap<>();
 
+        //超类
+        ResolvableType superType = ResolvableType.forClass(source).getSuperType();
 
-        //循环获取超类
+       //循环获取超类
         while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
-            if (superType.getSuperType().getType().equals(Object.class)) {
-                break;
-            }
+            Type subType = superType.getSuperType().getType();
+
             if (log.isDebugEnabled()) {
-                log.debug("查找类 {} 的超类", superType.getSuperType().getType().getTypeName());
+                log.debug("查找类 {} 的超类", subType.getTypeName());
             }
+
 
             ResolvableType[] superTypeGenerics = superType.getGenerics();
             List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
@@ -92,22 +92,34 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                         return null;
                     }
                 }
+
+
                 return rawClass;
             }).filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            types.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
+
+            superTypeVariables.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
             superType = superType.getSuperType();
+
+            if (Object.class.equals(subType)) {
+                break;
+            }
         }
+
 
         javaClassMetaBuilder.className(source.getName())
                 .clazz(source)
                 .isAbstract(Modifier.isAbstract(modifiers))
-                .types(types)
+                .superTypeVariables(superTypeVariables)
                 .methodMetas(this.getMethods(source, onlyPublic))
                 .fieldMetas(this.getFields(source, onlyPublic));
 
 
         JavaClassMeta classMeta = javaClassMetaBuilder.build();
+
+
+        classMeta.setTypeVariables(source.getTypeParameters());
+
         classMeta.setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()));
         getAssessPermission(modifiers, classMeta);
         classMeta.setName(source.getSimpleName());
@@ -115,8 +127,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         classMeta.setInterfaces(source.getInterfaces());
         classMeta.setSuperClass(source.getSuperclass());
-        TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
-        classMeta.setTypeVariables(typeParameters);
 
         PARSER_CACHE.put(source, classMeta);
         return classMeta;
@@ -141,7 +151,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         List<JavaFieldMeta> fieldMetas = new ArrayList<>();
 
         for (int i = 0; i < fields.length; i++) {
+
             Field field = fields[i];
+            String fieldName = field.getName();
+            if (clazz.isEnum()) {
+                //枚举，忽略$VALUES
+                if (fieldName.equals("$VALUES")) {
+                    continue;
+                }
+            }
+
             int modifiers = field.getModifiers();
             JavaFieldMeta.JavaFieldMetaBuilder builder = JavaFieldMeta.builder();
 
@@ -151,7 +170,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                     .isVolatile(Modifier.isVolatile(modifiers))
                     .build();
             this.getAssessPermission(modifiers, fieldMeta);
-            fieldMeta.setName(field.getName());
+
+            fieldMeta.setName(fieldName);
             Annotation[] annotations = field.getAnnotations();
             fieldMeta.setAnnotations(annotations);
             Type genericType = field.getGenericType();

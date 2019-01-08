@@ -4,6 +4,7 @@ import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +21,8 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     protected Class<?> source;
 
+    //属性类型 如果有泛型则有多个
+    private Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables;
 
     /**
      * 类类型
@@ -78,10 +81,40 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     public String getGenericDescription() {
         if (!StringUtils.hasText(genericDescription)) {
             if (this.typeVariables != null && this.typeVariables.length > 0) {
-                String typeDesc = Arrays.stream(this.typeVariables).map(type -> type.getTypeName()).collect(Collectors.joining(","));
+                String typeDesc = Arrays.stream(this.typeVariables).map(Type::getTypeName).collect(Collectors.joining(","));
                 this.genericDescription = this.name + "<" + typeDesc + ">";
             }
         }
         return genericDescription;
+    }
+
+    /**
+     * 获取最终的类名称，合并了泛型描述
+     *
+     * @return
+     */
+    public String getFinallyClassName() {
+        if (this.typeVariables != null && this.typeVariables.length > 0) {
+            return this.getGenericDescription();
+        }
+        return this.name;
+    }
+
+    /**
+     * 获取超类的最终名称
+     * @param supperName
+     * @return
+     */
+    public String getSupperClassFinallyName(String supperName) {
+        if (this.superTypeVariables == null) {
+            return null;
+        }
+        CommonCodeGenClassMeta[] commonCodeGenClassMetas = this.superTypeVariables.get(supperName);
+        if (commonCodeGenClassMetas == null) {
+            return null;
+        }
+        String typeDesc = Arrays.stream(commonCodeGenClassMetas).map(CommonBaseMeta::getName)
+                .collect(Collectors.joining(","));
+        return null;
     }
 }

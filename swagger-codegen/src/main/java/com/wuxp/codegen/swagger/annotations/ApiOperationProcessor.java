@@ -9,22 +9,20 @@ import io.swagger.annotations.ApiOperation;
  *
  * @see ApiOperation
  */
-public class ApiOperationProcessor extends AbstractAnnotationProcessor<ApiOperation, ApiOperationProcessor.ApiOperationMate> {
+public class ApiOperationProcessor extends AbstractAnnotationProcessor<ApiOperation, ApiOperationProcessor.ApiOperationMeta> {
 
 
     @Override
-    public ApiOperationMate process(ApiOperation annotation) {
-
-        return this.newProxyMate(annotation, ApiOperationMate.class);
+    public ApiOperationMeta process(ApiOperation annotation) {
+        return this.newProxyMate(annotation, ApiOperationMeta.class);
     }
 
-
-    public static abstract class ApiOperationMate implements AnnotationMate<ApiOperation>, ApiOperation {
+    public static abstract class ApiOperationMeta implements AnnotationMate<ApiOperation>, ApiOperation {
 
 
         @Override
         public String toComment() {
-            return null;
+            return this.value();
         }
     }
 }

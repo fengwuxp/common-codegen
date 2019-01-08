@@ -13,7 +13,6 @@
     <modules>
         <module>core</module>
         <module>model</module>
-        <module>scanner</module>
         <module>template</module>
         <module>languages</module>
         <module>oak-codegen</module>
@@ -23,12 +22,18 @@
     </modules>
 
     <properties>
-        <jdk.version>1.8</jdk.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>${maven.compiler.target}</java.version>
         <project.src.encoding>UTF-8</project.src.encoding>
-        <spring.version>5.1.2.RELEASE</spring.version>
+
         <!--1.8编译参数 保留方法名称-->
         <compilerArgument>-parameters</compilerArgument>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven-source-plugin.attach>false</maven-source-plugin.attach>
+
+        <spring.version>5.1.2.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -127,27 +132,175 @@
 
     </dependencies>
 
+
+    <profiles>
+        <profile>
+            <id>编译时保留方法参数名称</id>
+
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+
+            <properties>
+                <!--1.8编译参数-保留方法名称-->
+                <compilerArgument>-parameters</compilerArgument>
+            </properties>
+
+        </profile>
+
+        <profile>
+            <id>跳过测试</id>
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+
+        </profile>
+
+
+        <profile>
+            <id>上传源代码到 Maven</id>
+
+            <properties>
+                <maven-source-plugin.attach>true</maven-source-plugin.attach>
+            </properties>
+
+        </profile>
+
+    </profiles>
+
+
+    <!--
+        <scm>
+            &lt;!&ndash;tag：说明project所在的目录tag，默认是HEAD，表示根目录&ndash;&gt;
+            <tag>HEAD</tag>
+            <connection>scm:svn:http://somerepository.com/svn_repo/trunk</connection>
+            <developerConnection>scm:svn:https://somerepository.com/svn_repo/trunk</developerConnection>
+            &lt;!&ndash;url：公开的可浏览repository&ndash;&gt;
+            <url>http://somerepository.com/view.cvs</url>
+        </scm>
+    -->
+    <distributionManagement>
+
+        <repository>
+            <!-- id 要查看setting.xml文件中的server配置，上传时需要用户和密码-->
+            <id>${dist-repo}</id>
+            <url>${dist-repo.releases.url}</url>
+
+        </repository>
+
+        <snapshotRepository>
+            <id>${dist-repo}</id>
+            <url>${dist-repo.snapshots.url}</url>
+        </snapshotRepository>
+
+    </distributionManagement>
+
+    <organization>
+        <name>wupxp</name>
+        <url>https://github.com/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>fengwuxp</id>
+        </developer>
+    </developers>
+
     <build>
 
         <plugins>
 
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                        <delimiter>@{*}</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+
+            <!--<plugin>-->
+                <!--<groupId>org.jetbrains.kotlin</groupId>-->
+                <!--<artifactId>kotlin-maven-plugin</artifactId>-->
+
+                <!--<executions>-->
+
+                    <!--<execution>-->
+                        <!--<id>compile</id>-->
+                        <!--<phase>compile</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+
+                    <!--<execution>-->
+                        <!--<id>test-compile</id>-->
+                        <!--<phase>test-compile</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>test-compile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+
+                <!--</executions>-->
+
+                <!--<configuration>-->
+                    <!--<jvmTarget>${maven.compiler.target}</jvmTarget>-->
+                <!--</configuration>-->
+
+            <!--</plugin>-->
+
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <!--<version>1.5</version>-->
+
+                <configuration>
+                    <providerSelection>${maven.compiler.target}</providerSelection>
+                    <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+                    <!-- 用maven编译时需要加encoding：mvn -Dfile.encoding=UTF-8 compile  -->
+                    <source/>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <encoding>${project.src.encoding}</encoding>
                     <debug>true</debug>
                     <compilerArgument>${compilerArgument}</compilerArgument>
+
                 </configuration>
-                <!--<inherited>true</inherited>-->
+                <inherited>true</inherited>
             </plugin>
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <inherited>true</inherited>
+                <configuration>
+                    <uniqueVersion>true</uniqueVersion>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -173,8 +326,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <inherited>true</inherited>
             </plugin>
-
         </plugins>
-
     </build>
 </project>

@@ -93,6 +93,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
         meta.setTypeVariables(javaClassMeta.getTypeVariables());
+        meta.setSuperClass(this.parse(javaClassMeta.getSuperClass()));
 
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations()).toArray(new String[]{}));
@@ -113,6 +114,30 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             meta.setDependencies(this.fetchDependencies(javaClassMeta.getDependencyList()));
         }
 
+        Map<String, TypescriptClassMeta> metaDependencies = meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, TypescriptClassMeta>) meta.getDependencies();
+
+        Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
+
+        //处理类上面的类型变量
+        javaClassMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
+
+            TypescriptClassMeta typescriptClassMeta = this.parse(superClazz);
+
+//            CommonCodeGenClassMeta[] classMetas = Arrays.stream(val).map(clazz -> {
+//                TypescriptClassMeta classMeta = this.parse(clazz);
+//                if (JavaTypeUtil.isComplex(clazz)) {
+//                    metaDependencies.put(classMeta.getName(), classMeta);
+//                }
+//                return classMeta;
+//            }).filter(Objects::nonNull).toArray(CommonCodeGenClassMeta[]::new);
+
+            typescriptClassMeta.setTypeVariables(val);
+
+            superTypeVariables.put(superClazz.getSimpleName(), new CommonCodeGenClassMeta[]{typescriptClassMeta});
+        });
+        meta.setDependencies(metaDependencies);
+        meta.setSuperTypeVariables(superTypeVariables);
+
         HANDLE_RESULT_CACHE.put(source, meta);
         return meta;
     }
@@ -129,36 +154,44 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 .map(CommonBaseMeta::getName)
                 .collect(Collectors.toList());
 
-        //如果是java bean 需要合并get方法
-        // 找出java bean中不存在属性定义的get或 is方法
-        List<TypescriptFieldMate> typescriptFieldMates = Arrays.stream(classMeta.getMethodMetas())
-                .filter(javaMethodMeta -> {
-                    //匹配getXX 或isXxx方法
-                    return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
-                })
-                .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
-                .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
-                .filter(javaMethodMeta -> {
-                    //属性是否已经存在
-                    return !fieldNameList.contains(JavaMethodNameUtil.replaceGetOrIsPrefix(javaMethodMeta.getName()));
-                })
-                .map(javaMethodMeta -> {
-                    //从get方法或is方法中生成field
-                    TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
+        boolean isEnum = classMeta.getClazz().isEnum();
 
-                    typescriptFieldMate.setName(JavaMethodNameUtil.replaceGetOrIsPrefix(javaMethodMeta.getName()));
-                    typescriptFieldMate.setRequired(true);
-                    typescriptFieldMate.setAccessPermission(AccessPermission.PUBLIC);
-                    typescriptFieldMate.setIsFinal(false);
-                    typescriptFieldMate.setIsStatic(false);
-                    typescriptFieldMate.setFiledTypes(this.typescriptTypeMapping
-                            .mapping(javaMethodMeta.getReturnType())
-                            .toArray(new TypescriptClassMeta[]{}));
-                    return typescriptFieldMate;
-                }).collect(Collectors.toList());
+        List<TypescriptFieldMate> typescriptFieldMates = null;
+        if (!isEnum) {
+
+            //如果是java bean 需要合并get方法
+            // 找出java bean中不存在属性定义的get或 is方法
+            typescriptFieldMates = Arrays.stream(classMeta.getMethodMetas())
+                    .filter(javaMethodMeta -> {
+                        //匹配getXX 或isXxx方法
+                        return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
+                    })
+                    .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
+                    .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
+                    .filter(javaMethodMeta -> {
+                        //属性是否已经存在
+                        return !fieldNameList.contains(JavaMethodNameUtil.replaceGetOrIsPrefix(javaMethodMeta.getName()));
+                    })
+                    .map(javaMethodMeta -> {
+                        //从get方法或is方法中生成field
+                        TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
+
+                        typescriptFieldMate.setName(JavaMethodNameUtil.replaceGetOrIsPrefix(javaMethodMeta.getName()));
+                        typescriptFieldMate.setRequired(true);
+                        typescriptFieldMate.setAccessPermission(AccessPermission.PUBLIC);
+                        typescriptFieldMate.setIsFinal(false);
+                        typescriptFieldMate.setIsStatic(false);
+                        typescriptFieldMate.setFiledTypes(this.typescriptTypeMapping
+                                .mapping(javaMethodMeta.getReturnType())
+                                .toArray(new TypescriptClassMeta[]{}));
+                        return typescriptFieldMate;
+                    }).collect(Collectors.toList());
+        } else {
+            typescriptFieldMates = new ArrayList<>();
+        }
 
         typescriptFieldMates.addAll(Arrays.stream(javaFieldMetas)
-                .filter(javaFieldMeta -> !javaFieldMeta.getIsStatic())
+                .filter(javaFieldMeta -> !javaFieldMeta.getIsStatic() || isEnum)
                 .map(javaFieldMeta -> {
                     TypescriptFieldMate typescriptFieldMate = new TypescriptFieldMate();
 
@@ -167,7 +200,13 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                     //注释来源于注解和java的类类型
                     List<String> comments = super.generateComments(javaFieldMeta.getAnnotations());
-                    comments.addAll(super.generateComments(javaFieldMeta.getTypes(), false));
+                    if (!isEnum) {
+                        comments.addAll(super.generateComments(javaFieldMeta.getTypes(), false));
+                    } else {
+                        if (comments.size() == 0) {
+                            log.error("枚举没有加上描述相关的注解");
+                        }
+                    }
 
                     //注解
                     typescriptFieldMate.setComments(comments.toArray(new String[]{}));

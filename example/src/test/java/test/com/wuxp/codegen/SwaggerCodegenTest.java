@@ -10,6 +10,7 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.example.controller.OrderController;
+import com.wuxp.codegen.example.enums.Sex;
 import com.wuxp.codegen.example.resp.PageInfo;
 import com.wuxp.codegen.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.example.resp.ServiceResponse;
@@ -71,9 +72,9 @@ public class SwaggerCodegenTest {
     @Test
     public void testCodeGenApi() {
 
-        codeGenerator.generate();
-//        JavaClassMeta parse = genericParser.parse(ServiceResponse.class);
-//        System.out.println(parse);
+//        codeGenerator.generate();
+        JavaClassMeta parse = genericParser.parse(ServiceQueryResponse.class);
+        System.out.println(parse);
 
     }
 }

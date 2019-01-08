@@ -7,8 +7,8 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
     import {PageInfo} from "@/src/api/resp/PageInfo";
     import {ServiceResponse} from "@/src/api/resp/ServiceResponse";
     import {User} from "@/src/api/domain/User";
-    import {QueryOrderEvt} from "@/src/api/evt/QueryOrderEvt";
     import {CreateOrderEvt} from "@/src/api/evt/CreateOrderEvt";
+    import {QueryOrderEvt} from "@/src/api/evt/QueryOrderEvt";
     import {ServiceQueryResponse} from "@/src/api/resp/ServiceQueryResponse";
 
 /**
@@ -21,16 +21,6 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
     })
 export default class OrderService{
 
-    /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：Order
-    **/
-        @GetMapping({
-            value:'getOrder',
-            method:RequestMethod.GET,
-        })
-    getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
     /**
         * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：PageInfo
@@ -50,6 +40,16 @@ export default class OrderService{
             method:RequestMethod.POST,
         })
     queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<PageInfo<Order>>;
+    /**
+        * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：List
+        * 3:返回值在java中的类型为：Order
+    **/
+        @GetMapping({
+            value:'getOrder',
+            method:RequestMethod.GET,
+        })
+    getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
     /**
         * 1:接口的请求方法为：POST
         * 2:返回值在java中的类型为：ServiceResponse

@@ -1,19 +1,22 @@
 
 /**
-**/
+ **/
 
-export interface  PageInfo{
+export interface  PageInfo<T> {
 
     /**
-        * 1:在java中的类型为：List
-    **/
+     *响应集合列表
+     *在java中的类型为：List
+     **/
     records?: Array<T>;
     /**
-        * 1:在java中的类型为：Integer
-    **/
+     *查询页码
+     *在java中的类型为：Integer
+     **/
     queryPage?: number;
     /**
-        * 1:在java中的类型为：Integer
-    **/
+     *查询大小
+     *在java中的类型为：Integer
+     **/
     querySize?: number;
 }

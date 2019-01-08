@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -27,7 +29,7 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
     }
 
     //属性类型 如果有泛型则有多个
-    private Map<Class<?>/*类型，父类，接口，本身*/, Class<?>[]> types;
+    private Map<Class<?>/*类型，父类，接口，本身*/, Class<?>[]> superTypeVariables;
 
     //类类型 interface，class enum
     private ClassType classType;
@@ -56,6 +58,7 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
 
     //父类
     private Class<?> superClass;
+
 
 
     /**

@@ -66,12 +66,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     return !(notFiled && notMethod);
                 })
                 .map(commonCodeGenClassMeta -> {
-                    //模板处理，生成目标代码
+                    //模板处理，生成服务
+                    this.templateStrategy.build(commonCodeGenClassMeta);
+                    return commonCodeGenClassMeta.getDependencies().values();
+                }).flatMap(Collection::stream)
+                .map(commonCodeGenClassMeta -> {
+                    //模板处理，生成目控制器或服务的依赖（DTO）
                     this.templateStrategy.build(commonCodeGenClassMeta);
                     return commonCodeGenClassMeta.getDependencies().values();
                 }).flatMap(Collection::stream)
                 .forEach(commonCodeGenClassMeta -> {
-                    //模板处理，生成目标代码
+                    //模板处理，生成DTO的依赖（其他DTO或枚举）
                     this.templateStrategy.build(commonCodeGenClassMeta);
                 });
     }

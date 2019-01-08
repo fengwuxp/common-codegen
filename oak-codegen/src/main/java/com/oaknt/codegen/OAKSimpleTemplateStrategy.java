@@ -31,8 +31,6 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
     public static final float LAST_MODIFIED_MINUTE = 0.1f;
 
 
-
-
     /**
      * 模板加载器
      */

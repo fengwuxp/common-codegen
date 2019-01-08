@@ -7,9 +7,9 @@
 
 /**
 <#list comments as cmment>
-    * ${cmment_index+1}:${cmment}
+ * ${cmment}
 </#list>
-**/
+ **/
 
 <#list annotations as annotation>
     @${annotation.name}({
@@ -18,14 +18,14 @@
     </#list>
     })
 </#list>
-export interface  ${name}{
+export interface  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
 <#list filedMetas as field>
     /**
     <#list field.comments as cmment>
-        * ${cmment_index+1}:${cmment}
+     *${cmment}
     </#list>
-    **/
+     **/
     ${field.name}<#if !field.required>?</#if>: ${customize_method.combineType(field.filedTypes)};
 </#list>
 }

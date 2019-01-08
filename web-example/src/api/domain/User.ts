@@ -2,32 +2,37 @@
     import {Sex} from "@/src/api/enums/Sex";
 
 /**
-**/
+ **/
 
-export interface  User{
+export interface  User {
 
     /**
-    **/
+     **/
     boy: boolean;
     /**
-        * 1:在java中的类型为：Long
-    **/
+     *id
+     *在java中的类型为：Long
+     **/
     id?: number;
     /**
-        * 1:在java中的类型为：String
-    **/
+     *名称
+     *在java中的类型为：String
+     **/
     name?: string;
     /**
-        * 1:在java中的类型为：Integer
-    **/
+     *年龄
+     *在java中的类型为：Integer
+     **/
     age?: number;
     /**
-        * 1:在java中的类型为：List
-        * 2:在java中的类型为：Order
-    **/
+     *订单列表
+     *在java中的类型为：List
+     *在java中的类型为：Order
+     **/
     orderList?: Array<Order>;
     /**
-        * 1:在java中的类型为：Sex
-    **/
+     *性别
+     *在java中的类型为：Sex
+     **/
     sex?: Sex;
 }
