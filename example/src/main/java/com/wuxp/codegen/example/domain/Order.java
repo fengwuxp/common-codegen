@@ -21,6 +21,7 @@ public class Order {
     private User user;
 
 
+    @ApiModelProperty("添加时间")
     public Date getAddTime(){
         return new Date();
     }

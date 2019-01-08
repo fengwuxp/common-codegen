@@ -11,10 +11,8 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
-import com.wuxp.codegen.swagger.annotations.ApiModelPropertyProcessor;
-import com.wuxp.codegen.swagger.annotations.ApiProcessor;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
+import com.wuxp.codegen.swagger.annotations.*;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
@@ -29,7 +27,10 @@ public class TypescriptParser extends AbstractTypescriptParser {
     static {
         //添加swagger相关的注解处理器
         ANNOTATION_PROCESSOR_MAP.put(Api.class, new ApiProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(ApiModel.class, new ApiModelProcessor());
         ANNOTATION_PROCESSOR_MAP.put(ApiModelProperty.class, new ApiModelPropertyProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(ApiOperation.class, new ApiOperationProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(ApiParam.class, new ApiParamProcessor());
     }
 
 

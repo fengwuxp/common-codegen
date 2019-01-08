@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,8 +95,15 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
         meta.setTypeVariables(Arrays.stream(javaClassMeta
                 .getTypeVariables())
-                .filter(type -> !(type instanceof Class)).map(type -> (Class)type)
-                .map(this::parse)
+                .map(type -> {
+                    if (type instanceof Class) {
+                        return this.parse((Class) type);
+                    } else if (type instanceof TypeVariable) {
+                        return TypescriptClassMeta.TYPE_VARIABLE;
+                    } else {
+                        return null;
+                    }
+                })
                 .filter(Objects::nonNull)
                 .toArray(CommonCodeGenClassMeta[]::new));
         meta.setSuperClass(this.parse(javaClassMeta.getSuperClass()));
@@ -123,26 +131,38 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
         Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
 
-        //处理类上面的类型变量
+        //处理超类上面的类型变量
         javaClassMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
 
-            TypescriptClassMeta typescriptClassMeta = this.parse(superClazz);
+            if (val == null || val.length == 0) {
+                return;
+            }
 
-            CommonCodeGenClassMeta[] classMetas = Arrays.stream(val).map(clazz -> {
-                TypescriptClassMeta classMeta = this.parse(clazz);
-                if (JavaTypeUtil.isComplex(clazz)) {
-                    metaDependencies.put(classMeta.getName(), classMeta);
-                }
-                return classMeta;
-            }).filter(Objects::nonNull)
+            TypescriptClassMeta typescriptClassMeta = this.parse(superClazz);
+            if (typescriptClassMeta == null) {
+                return;
+            }
+
+            CommonCodeGenClassMeta[] classMetas = Arrays.stream(val)
+                    .map(clazz -> {
+                        TypescriptClassMeta classMeta = this.parse(clazz);
+                        if (JavaTypeUtil.isComplex(clazz)) {
+                            metaDependencies.put(classMeta.getName(), classMeta);
+                        }
+                        return classMeta;
+                    })
+                    .filter(Objects::nonNull)
                     .toArray(CommonCodeGenClassMeta[]::new);
 
-            typescriptClassMeta.setTypeVariables(classMetas);
-
-            superTypeVariables.put(superClazz.getSimpleName(), new CommonCodeGenClassMeta[]{typescriptClassMeta});
+            superTypeVariables.put(typescriptClassMeta.getName(), classMetas);
         });
+
         meta.setDependencies(metaDependencies);
         meta.setSuperTypeVariables(superTypeVariables);
+        if (meta.getSuperClass() != null && superTypeVariables.size() > 0) {
+            CommonCodeGenClassMeta[] supperClassTypeVariables = superTypeVariables.get(meta.getSuperClass().getName());
+            meta.getSuperClass().setTypeVariables(supperClassTypeVariables);
+        }
 
         HANDLE_RESULT_CACHE.put(source, meta);
         return meta;
@@ -190,6 +210,9 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         typescriptFieldMate.setFiledTypes(this.typescriptTypeMapping
                                 .mapping(javaMethodMeta.getReturnType())
                                 .toArray(new TypescriptClassMeta[]{}));
+                        List<String> comments = this.generateComments(javaMethodMeta.getAnnotations());
+                        comments.addAll(this.generateComments(javaMethodMeta.getReturnType(),false));
+                        typescriptFieldMate.setComments(comments.toArray(new String[]{}));
                         return typescriptFieldMate;
                     }).collect(Collectors.toList());
         } else {

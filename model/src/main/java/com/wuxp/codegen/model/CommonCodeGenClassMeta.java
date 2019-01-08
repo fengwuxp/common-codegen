@@ -88,7 +88,9 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     public String getGenericDescription() {
         if (!StringUtils.hasText(genericDescription)) {
             if (this.typeVariables != null && this.typeVariables.length > 0) {
-                String typeDesc = Arrays.stream(this.typeVariables).map(CommonBaseMeta::getName).collect(Collectors.joining(","));
+                String typeDesc = Arrays.stream(this.typeVariables)
+                        .map(CommonCodeGenClassMeta::getGenericDescription)
+                        .collect(Collectors.joining(","));
                 this.genericDescription = this.name + "<" + typeDesc + ">";
             }
         }
@@ -112,16 +114,16 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * @param supperName
      * @return
      */
-    public String getSupperClassFinallyName(String supperName) {
-        if (this.superTypeVariables == null) {
-            return null;
-        }
-        CommonCodeGenClassMeta[] commonCodeGenClassMetas = this.superTypeVariables.get(supperName);
-        if (commonCodeGenClassMetas == null) {
-            return null;
-        }
-        String typeDesc = Arrays.stream(commonCodeGenClassMetas).map(CommonBaseMeta::getName)
-                .collect(Collectors.joining(","));
-        return null;
-    }
+//    public String getSupperClassFinallyName(String supperName) {
+//        if (this.superTypeVariables == null) {
+//            return null;
+//        }
+//        CommonCodeGenClassMeta[] commonCodeGenClassMetas = this.superTypeVariables.get(supperName);
+//        if (commonCodeGenClassMetas == null) {
+//            return null;
+//        }
+//        String typeDesc = Arrays.stream(commonCodeGenClassMetas).map(CommonBaseMeta::getName)
+//                .collect(Collectors.joining(","));
+//        return null;
+//    }
 }

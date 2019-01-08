@@ -16,25 +16,38 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 export default class UserService{
 
     /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：String
+        * 1:创建用户
+        * 2:接口的请求方法为：POST
+        * 3:返回值在java中的类型为：String
     **/
         @RequestMapping({
             method:RequestMethod.POST,
         })
     postUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：User
+        * 1:获取用户列表
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：List
+        * 4:返回值在java中的类型为：User
     **/
         @RequestMapping({
             method:RequestMethod.GET,
         })
     getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
     /**
-        * 1:接口的请求方法为：DELETE
-        * 2:返回值在java中的类型为：String
+        * 1:获取用户详细信息
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：User
+    **/
+        @RequestMapping({
+            value:'/{id}',
+            method:RequestMethod.GET,
+        })
+    getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
+    /**
+        * 1:删除用户
+        * 2:接口的请求方法为：DELETE
+        * 3:返回值在java中的类型为：String
     **/
         @RequestMapping({
             value:'/{id}',
@@ -42,21 +55,13 @@ export default class UserService{
         })
     deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:接口的请求方法为：PUT
-        * 2:返回值在java中的类型为：String
+        * 1:更新用户详细信息
+        * 2:接口的请求方法为：PUT
+        * 3:返回值在java中的类型为：String
     **/
         @RequestMapping({
             value:'/{id}',
             method:RequestMethod.PUT,
         })
     putUser:(req: User, option?: FetchOptions) => Promise<string>;
-    /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：User
-    **/
-        @RequestMapping({
-            value:'/{id}',
-            method:RequestMethod.GET,
-        })
-    getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
 }

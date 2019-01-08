@@ -28,6 +28,7 @@ public class User {
     private Sex sex;
 
 
+    @ApiModelProperty("是否为男孩")
     public Boolean isBoy() {
         return false;
     }

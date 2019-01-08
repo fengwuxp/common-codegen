@@ -9,7 +9,7 @@
 <#list comments as cmment>
  * ${cmment}
 </#list>
- **/
+**/
 
 <#list annotations as annotation>
     @${annotation.name}({
@@ -20,12 +20,14 @@
 </#list>
 export interface  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
-<#list filedMetas as field>
-    /**
-    <#list field.comments as cmment>
-     *${cmment}
+<#if filedMetas??>
+    <#list filedMetas as field>
+        /**
+        <#list field.comments as cmment>
+            *${cmment}
+        </#list>
+        **/
+        ${field.name}<#if !field.required>?</#if>: ${customize_method.combineType(field.filedTypes)};
     </#list>
-     **/
-    ${field.name}<#if !field.required>?</#if>: ${customize_method.combineType(field.filedTypes)};
-</#list>
+</#if>
 }
