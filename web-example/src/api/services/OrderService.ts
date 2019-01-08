@@ -22,15 +22,6 @@ export default class OrderService{
 
     /**
         * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：PageInfo
-        * 3:返回值在java中的类型为：Order
-    **/
-        @RequestMapping({
-            method:RequestMethod.GET,
-        })
-    queryOrder:(req: QueryOrderEvt, option?: FetchOptions) => Promise<PageInfo<Order>>;
-    /**
-        * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：List
         * 3:返回值在java中的类型为：Order
     **/
@@ -40,6 +31,15 @@ export default class OrderService{
         })
     getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
     /**
+        * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：PageInfo
+        * 3:返回值在java中的类型为：Order
+    **/
+        @RequestMapping({
+            method:RequestMethod.GET,
+        })
+    queryOrder:(req: QueryOrderEvt, option?: FetchOptions) => Promise<PageInfo<Order>>;
+    /**
         * 1:接口的请求方法为：POST
         * 2:返回值在java中的类型为：ServiceQueryResponse
         * 3:返回值在java中的类型为：Order
@@ -48,7 +48,7 @@ export default class OrderService{
             value:'queryOrder2',
             method:RequestMethod.POST,
         })
-    queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<ServiceQueryResponse<Order>>;
+    queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<Promise<Order>>;
     /**
         * 1:接口的请求方法为：POST
         * 2:返回值在java中的类型为：ServiceResponse
@@ -58,5 +58,5 @@ export default class OrderService{
             value:'createOrder',
             method:RequestMethod.POST,
         })
-    createOrder:(req: CreateOrderEvt, option?: FetchOptions) => Promise<ServiceResponse<number>>;
+    createOrder:(req: CreateOrderEvt, option?: FetchOptions) => Promise<Promise<number>>;
 }

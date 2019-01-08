@@ -39,7 +39,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     /**
      * 映射java类和typeScript类之间的关系
      */
-    protected TypeMapping<Class<?>, Collection<TypescriptClassMeta>> typescriptTypeMapping = new TypescriptTypeMapping(this);
+    protected TypeMapping<Class<?>, List<TypescriptClassMeta>> typescriptTypeMapping = new TypescriptTypeMapping(this);
 
     public AbstractTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, genMatchingStrategy, codeDetects);
@@ -244,9 +244,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     //TODO support spring webflux
 
                     //处理返回值
-                    Collection<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
+                    List<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
+                    if (!typescriptClassMetas.contains(TypescriptClassMeta.PROMISE)){
+                        typescriptClassMetas.set(0,TypescriptClassMeta.PROMISE);
+                    }
 
-                    if (typescriptClassMetas != null && typescriptClassMetas.size() > 0) {
+                    if ( typescriptClassMetas.size() > 0) {
                         //域对象类型描述
                         genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
                     } else {

@@ -38,6 +38,6 @@ export default class ${name}{
         </#list>
         })
     </#list>
-    ${method.name}:(req: ${method.params["req"].name}, option?: FetchOptions) => Promise<${combineType(method.returnTypes)}>;
+    ${method.name}:(req: ${method.params["req"].name}, option?: FetchOptions) => ${combineType(method.returnTypes)};
 </#list>
 }

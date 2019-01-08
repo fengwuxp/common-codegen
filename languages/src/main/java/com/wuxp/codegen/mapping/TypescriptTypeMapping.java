@@ -60,10 +60,13 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             return null;
         }
 
-        return Arrays.stream(classes).filter(Objects::nonNull)
+        Set<TypescriptClassMeta> classMetas = new LinkedHashSet<>(4);
+        Arrays.stream(classes).filter(Objects::nonNull)
                 .map(this::mapping)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .forEach(classMetas::add);
+        return new ArrayList<>(classMetas);
+
     }
 
 
@@ -76,7 +79,13 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         Class<?> upConversionType = this.tryUpConversionType(clazz);
         if (upConversionType != null) {
             return baseTypeMapping.mapping(upConversionType);
+        } else {
+            TypescriptClassMeta classMeta = baseTypeMapping.mapping(clazz);
+            if (classMeta != null) {
+                return classMeta;
+            }
         }
+
 
         if (JavaTypeUtil.isComplex(clazz) || clazz.isEnum()) {
             //复杂的数据类型或枚举
