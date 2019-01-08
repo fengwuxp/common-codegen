@@ -1,5 +1,6 @@
 package com.wuxp.codegen.model.mapping;
 
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 
 import java.util.HashMap;
@@ -8,18 +9,18 @@ import java.util.Map;
 /**
  * 基础数据的类型映射
  */
-public class BaseTypeMapping<T> implements TypeMapping<Class<?>, T> {
+public class BaseTypeMapping<T extends CommonCodeGenClassMeta> implements TypeMapping<Class<?>, T> {
 
-    private Map<Class<?>, T> typeMapping = new HashMap<>();
+    private Map<Class<?>, CommonCodeGenClassMeta> typeMapping = new HashMap<>();
 
     //时间类型 希望装换的目标类型
     private T dateToClassTarget;
 
-    public BaseTypeMapping(Map<Class<?>, T> typeMapping) {
+    public BaseTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> typeMapping) {
         this.typeMapping = typeMapping;
     }
 
-    public BaseTypeMapping(Map<Class<?>, T> typeMapping, T dateToClassTarget) {
+    public BaseTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> typeMapping, T dateToClassTarget) {
         this.typeMapping = typeMapping;
         this.dateToClassTarget = dateToClassTarget;
     }
@@ -33,6 +34,6 @@ public class BaseTypeMapping<T> implements TypeMapping<Class<?>, T> {
         if (JavaTypeUtil.isDate(clazz) && this.dateToClassTarget != null) {
             return this.dateToClassTarget;
         }
-        return this.typeMapping.get(clazz);
+        return (T) this.typeMapping.get(clazz);
     }
 }

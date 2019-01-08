@@ -4,7 +4,9 @@ import com.wuxp.codegen.core.CodeGenFilter;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -13,6 +15,9 @@ import java.util.List;
 public class FilterClassByLibrary implements CodeGenFilter<Class<?>> {
 
     public static final List<String> packageNames = new ArrayList<>();
+
+    //忽略处理的类
+//    public static final Set<Class<?>> IGNORE_CLASSES = new HashSet<>();
 
     static {
         packageNames.add("org.springframework");

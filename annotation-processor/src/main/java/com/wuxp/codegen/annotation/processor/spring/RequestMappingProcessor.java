@@ -63,7 +63,14 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
             //注解命名参数
             Map<String, String> arguments = new LinkedHashMap<>();
-            String val = this.value()[0];
+            String[] value = this.value();
+            String val = null;
+            if (value.length == 0) {
+
+            } else {
+                val = value[0];
+            }
+
             if (StringUtils.hasText(val)) {
                 arguments.put("value", "'" + val + "'");
             }

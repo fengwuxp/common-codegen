@@ -11,16 +11,7 @@ public abstract class AbstractTypeMapping<T> implements TypeMapping<Class<?>, Co
     /**
      * 基础数据类型映射
      */
-    protected final Map<Class<?>, T> BASE_TYPE_MAPPING = new LinkedHashMap<Class<?>, T>();
+    public static final Map<Class<?>,CommonCodeGenClassMeta> BASE_TYPE_MAPPING = new LinkedHashMap<>();
 
 
-    /**
-     * 生成枚举的元数据依赖
-     * @param clazz
-     * @return
-     */
-    protected Collection<CommonCodeGenClassMeta> generateEnumMeta(Class<?> clazz){
-
-        return null;
-    }
 }

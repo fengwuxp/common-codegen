@@ -30,6 +30,10 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     //set
     public final static TypescriptClassMeta SET = new TypescriptClassMeta("Set", "Set<V>", ClassType.CLASS, false, OBJECT);
 
+
+    //promise
+    public final static TypescriptClassMeta PROMISE = new TypescriptClassMeta("Promise", "Promise<V>", ClassType.CLASS, false, OBJECT);
+
     //regExp
     public final static TypescriptClassMeta REGEXP = new TypescriptClassMeta("RegExp", null, ClassType.CLASS, false, OBJECT);
 
@@ -39,6 +43,10 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
 
     //void
     public final static TypescriptClassMeta VOID = new TypescriptClassMeta("void", null, ClassType.CLASS, false, null);
+
+
+    //type variable 类型变量
+    public final static TypescriptClassMeta TYPE_VARIABLE = new TypescriptClassMeta("T", "T", ClassType.CLASS, false, OBJECT);
 
     public TypescriptClassMeta() {
     }

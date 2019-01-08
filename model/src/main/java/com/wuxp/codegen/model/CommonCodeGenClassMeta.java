@@ -2,14 +2,23 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 通用的代码生成 class 元数据
  */
 @Data
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
+
+
+    /**
+     * 原目标类
+     */
+    protected Class<?> source;
 
 
     /**
@@ -45,7 +54,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 依赖
      */
-    protected Map<String,? extends CommonCodeGenClassMeta> dependencies;
+    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies;
 
     /**
      * 在有泛型时候的描述
@@ -65,4 +74,14 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     protected CommonCodeGenFiledMeta[] filedMetas;
 
+
+    public String getGenericDescription() {
+        if (!StringUtils.hasText(genericDescription)) {
+            if (this.typeVariables != null && this.typeVariables.length > 0) {
+                String typeDesc = Arrays.stream(this.typeVariables).map(type -> type.getTypeName()).collect(Collectors.joining(","));
+                this.genericDescription = this.name + "<" + typeDesc + ">";
+            }
+        }
+        return genericDescription;
+    }
 }

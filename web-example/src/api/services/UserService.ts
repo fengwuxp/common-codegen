@@ -2,7 +2,6 @@ import {RequestMapping} from "common_fetch/src/annotations/mapping/RequestMappin
 import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
-
     import {User} from "@/src/api/domain/User";
 
 /**
@@ -40,16 +39,7 @@ export default class UserService{
         @RequestMapping({
             method:RequestMethod.GET,
         })
-    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array>;
-    /**
-        * 1:接口的请求方法为：PUT
-        * 2:返回值在java中的类型为：String
-    **/
-        @RequestMapping({
-            value:'/{id}',
-            method:RequestMethod.PUT,
-        })
-    putUser:(req: User, option?: FetchOptions) => Promise<string>;
+    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
     /**
         * 1:接口的请求方法为：DELETE
         * 2:返回值在java中的类型为：String
@@ -59,4 +49,13 @@ export default class UserService{
             method:RequestMethod.DELETE,
         })
     deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
+    /**
+        * 1:接口的请求方法为：PUT
+        * 2:返回值在java中的类型为：String
+    **/
+        @RequestMapping({
+            value:'/{id}',
+            method:RequestMethod.PUT,
+        })
+    putUser:(req: User, option?: FetchOptions) => Promise<string>;
 }

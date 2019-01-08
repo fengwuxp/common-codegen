@@ -1,6 +1,8 @@
 package com.oaknt.codegen;
 
+import com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
 import com.oaknt.codegen.utils.FileUtil;
+import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
@@ -26,6 +28,9 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
 
     //在LAST_MODIFIED_MINUTE内生成的文件不在生成
     public static final float LAST_MODIFIED_MINUTE = 0.1f;
+
+
+
 
     /**
      * 模板加载器
@@ -89,6 +94,7 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
             //输出
             Writer writer = new OutputStreamWriter(new FileOutputStream(output),
                     StandardCharsets.UTF_8);
+
             template.process(data, writer);
         } catch (TemplateException | IOException e) {
             e.printStackTrace();

@@ -2,6 +2,8 @@ import {RequestMapping} from "common_fetch/src/annotations/mapping/RequestMappin
 import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
+<#--创建这个对象保存好-->
+<#assign combineType = "com.oaknt.codegen.freemarker.CombineTypeMethod"?new() />
 
 <#--依赖导入处理-->
 <#list dependencies as key,val >
@@ -36,6 +38,6 @@ export default class ${name}{
         </#list>
         })
     </#list>
-    ${method.name}:(req: ${method.params["req"].name}, option?: FetchOptions) => Promise<${method.returnTypes[0].name}>;
+    ${method.name}:(req: ${method.params["req"].name}, option?: FetchOptions) => Promise<${combineType(method.returnTypes)}>;
 </#list>
 }

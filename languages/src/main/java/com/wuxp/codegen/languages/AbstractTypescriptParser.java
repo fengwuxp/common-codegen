@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -85,10 +86,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         this.detectJavaCode(javaClassMeta);
 
         meta = new TypescriptClassMeta();
+        meta.setSource(source);
         meta.setName(this.packageMapStrategy.convertClassName(source.getSimpleName()));
         meta.setPackagePath(this.packageMapStrategy.convert(source));
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
+        meta.setTypeVariables(javaClassMeta.getTypeVariables());
 
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations()).toArray(new String[]{}));
@@ -178,8 +181,29 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         //域对象类型描述
                         typescriptFieldMate.setFiledTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
                     } else {
-                        //解析失败
-                        throw new RuntimeException(String.format("解析类 %s 上的属性 %s 的类型 %s 失败", classMeta.getClassName(), javaFieldMeta.getName(), this.classToNamedString(javaFieldMeta.getTypes())));
+                        //从泛型中解析
+                        Type[] typeVariables = javaFieldMeta.getTypeVariables();
+                        if (typeVariables != null && typeVariables.length > 0) {
+
+                            TypescriptClassMeta[] classMetas = Arrays.stream(typeVariables)
+                                    .filter(Objects::nonNull)
+                                    .map(Type::getTypeName).map(name -> {
+                                        TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
+                                        BeanUtils.copyProperties(TypescriptClassMeta.TYPE_VARIABLE, typescriptClassMeta);
+                                        typescriptClassMeta.setName(name);
+
+                                        return typescriptClassMeta;
+                                    }).toArray(TypescriptClassMeta[]::new);
+                            typescriptFieldMate.setFiledTypes(classMetas);
+
+                        } else {
+                            //解析失败
+                            throw new RuntimeException(String.format("解析类 %s 上的属性 %s 的类型 %s 失败",
+                                    classMeta.getClassName(),
+                                    javaFieldMeta.getName(),
+                                    this.classToNamedString(javaFieldMeta.getTypes())));
+                        }
+
                     }
 
                     //TODO 注解转化

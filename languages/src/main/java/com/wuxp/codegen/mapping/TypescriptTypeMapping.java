@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMeta> {
 
 
-    {
+    static {
 
         //设置基础的数据类型映射
         BASE_TYPE_MAPPING.put(Date.class, TypescriptClassMeta.DATE);
@@ -60,51 +60,39 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             return null;
         }
 
-        Class<?> clazz = classes[0];
-        if (clazz == null) {
-            return null;
-        }
+        return Arrays.stream(classes).filter(Objects::nonNull)
+                .map(this::mapping)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+
+    protected TypescriptClassMeta mapping(Class<?> clazz) {
 
         //1. 类型转换，如果是简单的java类型，则尝试做装换
         //2. 处理枚举类型
         //3. 循环获取泛型
         //4. 处理复杂的数据类型（自定义的java类）
-
-        List<TypescriptClassMeta> list = new ArrayList<>(4);
-
         Class<?> upConversionType = this.tryUpConversionType(clazz);
         if (upConversionType != null) {
-            list.add(baseTypeMapping.mapping(upConversionType));
-            if (classes.length > 1) {
-                list.addAll(this.mapping(Arrays.asList(classes).subList(1, classes.length).toArray(new Class<?>[]{})));
-            }
-            return list.stream()
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+            return baseTypeMapping.mapping(upConversionType);
         }
 
         if (JavaTypeUtil.isComplex(clazz) || clazz.isEnum()) {
             //复杂的数据类型或枚举
             CommonCodeGenClassMeta meta = this.typescriptParser.parse(clazz);
             if (meta == null) {
-                return list;
+                return null;
             }
             TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
             BeanUtils.copyProperties(meta, typescriptClassMeta);
-            list.add(typescriptClassMeta);
+            return typescriptClassMeta;
         } else if (clazz.isArray()) {
             //数组
-            list.add(TypescriptClassMeta.ARRAY);
-            list.addAll(this.mapping(clazz.getComponentType()));
-            return list;
+            return TypescriptClassMeta.ARRAY;
         } else {
             throw new RuntimeException("Not Found clazz " + clazz.getName() + " mapping type");
         }
-
-        return list.stream()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
     }
 
     /**

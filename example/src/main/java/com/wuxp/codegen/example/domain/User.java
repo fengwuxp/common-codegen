@@ -1,6 +1,7 @@
 package com.wuxp.codegen.example.domain;
 
 
+import com.wuxp.codegen.example.enums.Sex;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,4 +24,11 @@ public class User {
     @ApiModelProperty("订单列表")
     private List<Order> orderList;
 
+    @ApiModelProperty("性别")
+    private Sex sex;
+
+
+    public Boolean isBoy() {
+        return false;
+    }
 }

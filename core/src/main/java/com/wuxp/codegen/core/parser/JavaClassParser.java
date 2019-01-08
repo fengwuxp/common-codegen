@@ -13,10 +13,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -118,6 +115,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         classMeta.setInterfaces(source.getInterfaces());
         classMeta.setSuperClass(source.getSuperclass());
+        TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
+        classMeta.setTypeVariables(typeParameters);
 
         PARSER_CACHE.put(source, classMeta);
         return classMeta;
@@ -155,6 +154,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             fieldMeta.setName(field.getName());
             Annotation[] annotations = field.getAnnotations();
             fieldMeta.setAnnotations(annotations);
+            Type[] typeVariables = { field.getGenericType()};
+            fieldMeta.setTypeVariables(typeVariables);
             fieldMetas.add(fieldMeta);
         }
 

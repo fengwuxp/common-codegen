@@ -3,12 +3,12 @@ package com.wuxp.codegen.example.controller;
 
 import com.wuxp.codegen.example.domain.Order;
 import com.wuxp.codegen.example.domain.User;
+import com.wuxp.codegen.example.evt.CreateOrderEvt;
 import com.wuxp.codegen.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.example.resp.PageInfo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import com.wuxp.codegen.example.resp.ServiceQueryResponse;
+import com.wuxp.codegen.example.resp.ServiceResponse;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -28,9 +28,32 @@ public class OrderController {
     }
 
     @ApiOperation(value = "获取订单列表", notes = "")
-    @RequestMapping(value = {"getOrder"}, method = RequestMethod.GET)
-    public PageInfo<Order> queryOrder(@RequestBody  QueryOrderEvt evt) {
+    @RequestMapping(method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder(@RequestBody QueryOrderEvt evt) {
         return new PageInfo<Order>();
+    }
+
+
+    @ApiOperation(value = "获取订单列表", notes = "")
+    @PostMapping(value = {"queryOrder2"})
+    public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
+                                                   @RequestParam(name = "order_id", required = false) Long oderId,
+                                                   @ApiParam(value = "订单号", required = false) String sn) {
+
+        return new ServiceQueryResponse<>();
+    }
+
+
+    @ApiOperation(value = "创建订单", notes = "")
+    @PostMapping(value = {"createOrder"})
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true, dataType = "CreateOrderEvt"),
+            }
+    )
+    public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
+
+        return new ServiceResponse<>();
     }
 
 }

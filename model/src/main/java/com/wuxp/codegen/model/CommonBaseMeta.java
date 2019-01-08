@@ -3,6 +3,8 @@ package com.wuxp.codegen.model;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import lombok.Data;
 
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +39,11 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
      * 其他的描述信息
      */
     protected Map<String, Object> tags = new HashMap<>();
-    ;
+
+    /**
+     * 类型参数, 泛型
+     */
+    protected Type[] typeVariables;
 
 
     public CommonBaseMeta() {
