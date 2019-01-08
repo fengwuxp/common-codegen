@@ -16,6 +16,8 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
     private Configuration configuration;
 
+    private String language;
+
     public FreemarkerTemplateLoader(String language) {
         super(language);
         //创建一个合适的Configuration对象
@@ -25,7 +27,9 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         configuration.setDefaultEncoding("UTF-8");
 
         //支持从jar中加载模板
-        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class.getClassLoader().getClass(), "/" + language);
+        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class.getClassLoader().getClass(), "/");
+        this.language = language;
+
         this.configuration = configuration;
     }
 
@@ -33,7 +37,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public Template load(String templateName) {
 
         try {
-            return configuration.getTemplate(templateName);
+            return configuration.getTemplate(this.language +"/"+ templateName);
         } catch (IOException e) {
             log.error("获取模板失败，模板名称：" + templateName, e);
         }

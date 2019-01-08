@@ -1,5 +1,6 @@
 package com.oaknt.codegen;
 
+import com.oaknt.codegen.freemarker.CombineTypeMethod;
 import com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
 import com.oaknt.codegen.utils.FileUtil;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
@@ -94,7 +95,8 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
             //输出
             Writer writer = new OutputStreamWriter(new FileOutputStream(output),
                     StandardCharsets.UTF_8);
-
+            //添加自定义方法
+            template.setCustomAttribute("combineType",new CombineTypeMethod());
             template.process(data, writer);
         } catch (TemplateException | IOException e) {
             e.printStackTrace();

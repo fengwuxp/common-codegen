@@ -245,11 +245,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                     //处理返回值
                     List<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
-                    if (!typescriptClassMetas.contains(TypescriptClassMeta.PROMISE)){
-                        typescriptClassMetas.add(0,TypescriptClassMeta.PROMISE);
+                    if (!typescriptClassMetas.contains(TypescriptClassMeta.PROMISE)) {
+                        typescriptClassMetas.add(0, TypescriptClassMeta.PROMISE);
                     }
 
-                    if ( typescriptClassMetas.size() > 0) {
+                    if (typescriptClassMetas.size() > 0) {
                         //域对象类型描述
                         genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
                     } else {
@@ -311,6 +311,9 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                             typescriptFieldMate.setName(key);
 
                             Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
+                            List<String> generateComments = this.generateComments(annotations);
+                            generateComments.addAll(this.generateComments(new Class[]{clazz}, false));
+                            typescriptFieldMate.setComments(generateComments.toArray(new String[]{}));
 
                             //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
 //                    Arrays.stream(annotations).filter(annotation -> {

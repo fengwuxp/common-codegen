@@ -22,18 +22,18 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
     protected String name;
 
     //是否为静态
-    protected Boolean isStatic;
+    protected Boolean isStatic = false;
 
     //是否为final
-    protected Boolean isFinal;
+    protected Boolean isFinal = false;
 
     //访问权限控制
-    protected AccessPermission accessPermission;
+    protected AccessPermission accessPermission = AccessPermission.PUBLIC;
 
     /**
      * 注释列表
      */
-    protected String[] comments;
+    protected String[] comments = new String[]{};
 
     /**
      * 其他的描述信息
