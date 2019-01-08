@@ -3,11 +3,11 @@ import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
     import {Order} from "@/src/api/domain/Order";
-    import {PageInfo} from "@/src/api/resp/PageInfo";
     import {ServiceResponse} from "@/src/api/resp/ServiceResponse";
+    import {PageInfo} from "@/src/api/resp/PageInfo";
     import {User} from "@/src/api/domain/User";
-    import {QueryOrderEvt} from "@/src/api/evt/QueryOrderEvt";
     import {CreateOrderEvt} from "@/src/api/evt/CreateOrderEvt";
+    import {QueryOrderEvt} from "@/src/api/evt/QueryOrderEvt";
     import {ServiceQueryResponse} from "@/src/api/resp/ServiceQueryResponse";
 
 /**
@@ -20,6 +20,26 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
     })
 export default class OrderService{
 
+    /**
+        * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：List
+        * 3:返回值在java中的类型为：Order
+    **/
+        @GetMapping({
+            value:'getOrder',
+            method:RequestMethod.GET,
+        })
+    getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
+    /**
+        * 1:接口的请求方法为：POST
+        * 2:返回值在java中的类型为：ServiceQueryResponse
+        * 3:返回值在java中的类型为：Order
+    **/
+        @PostMapping({
+            value:'queryOrder2',
+            method:RequestMethod.POST,
+        })
+    queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<PageInfo<Order>>;
     /**
         * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：PageInfo
@@ -39,24 +59,4 @@ export default class OrderService{
             method:RequestMethod.POST,
         })
     createOrder:(req: CreateOrderEvt, option?: FetchOptions) => Promise<number>;
-    /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：ServiceQueryResponse
-        * 3:返回值在java中的类型为：Order
-    **/
-        @PostMapping({
-            value:'queryOrder2',
-            method:RequestMethod.POST,
-        })
-    queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<Order>;
-    /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：Order
-    **/
-        @GetMapping({
-            value:'getOrder',
-            method:RequestMethod.GET,
-        })
-    getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
 }

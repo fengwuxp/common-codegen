@@ -5,6 +5,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.model.mapping.BaseTypeMapping;
+import com.wuxp.codegen.model.mapping.CustomizeJavaTypeMapping;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,11 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
      */
     protected TypeMapping<Class<?>, TypescriptClassMeta> baseTypeMapping = new BaseTypeMapping<TypescriptClassMeta>(BASE_TYPE_MAPPING);
 
+    /**
+     * 自定义的类型映射
+     */
+    protected TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping = new CustomizeJavaTypeMapping(CUSTOMIZE_TYPE_MAPPING);
+
 
     protected LanguageParser<TypescriptClassMeta> typescriptParser;
 
@@ -61,7 +67,11 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         }
 
         Set<TypescriptClassMeta> classMetas = new LinkedHashSet<>(4);
-        Arrays.stream(classes).filter(Objects::nonNull)
+        Arrays.stream(classes)
+                .filter(Objects::nonNull)
+                .map(this.customizeJavaTypeMapping::mapping)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .map(this::mapping)
                 .filter(Objects::nonNull)
                 .forEach(classMetas::add);
@@ -80,9 +90,9 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         if (upConversionType != null) {
             return baseTypeMapping.mapping(upConversionType);
         } else {
-            TypescriptClassMeta classMeta = baseTypeMapping.mapping(clazz);
-            if (classMeta != null) {
-                return classMeta;
+            TypescriptClassMeta mapping = this.baseTypeMapping.mapping(clazz);
+            if (mapping != null) {
+                return mapping;
             }
         }
 

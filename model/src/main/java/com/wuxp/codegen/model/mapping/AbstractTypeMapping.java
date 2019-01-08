@@ -14,5 +14,10 @@ public abstract class AbstractTypeMapping<T> implements TypeMapping<Class<?>, Li
      */
     public static final Map<Class<?>,CommonCodeGenClassMeta> BASE_TYPE_MAPPING = new LinkedHashMap<>();
 
+    /**
+     * 自定义的类型映射
+     */
+    public static final Map<Class<?>,Class<?>[]> CUSTOMIZE_TYPE_MAPPING = new LinkedHashMap<>();
+
 
 }

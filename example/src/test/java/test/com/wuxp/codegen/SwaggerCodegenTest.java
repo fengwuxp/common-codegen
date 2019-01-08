@@ -10,6 +10,7 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.example.controller.OrderController;
+import com.wuxp.codegen.example.resp.PageInfo;
 import com.wuxp.codegen.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.example.resp.ServiceResponse;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -44,6 +45,8 @@ public class SwaggerCodegenTest {
 
         AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
         AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
+
+        AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(ServiceQueryResponse.class,new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         Map<String, String> packageMap = new LinkedHashMap<>();
         packageMap.put("com.wuxp.codegen.example.controller", "api\\services");
