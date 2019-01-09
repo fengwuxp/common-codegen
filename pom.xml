@@ -24,6 +24,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <jdk.version>${maven.compiler.target}</jdk.version>
         <java.version>${maven.compiler.target}</java.version>
         <project.src.encoding>UTF-8</project.src.encoding>
 
