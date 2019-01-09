@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -104,7 +103,7 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         }
 
 
-        if (JavaTypeUtil.isComplex(clazz) || clazz.isEnum()) {
+        if (JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isEnum()) {
             //复杂的数据类型或枚举
             CommonCodeGenClassMeta meta = this.typescriptParser.parse(clazz);
             if (meta == null) {

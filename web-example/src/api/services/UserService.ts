@@ -6,9 +6,9 @@ import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 
-    import {DeleteUserReq} from "@api/req/DeleteUserReq";
     import {GetUserListReq} from "@api/req/GetUserListReq";
     import {GetUserReq} from "@api/req/GetUserReq";
+    import {DeleteUserReq} from "@api/req/DeleteUserReq";
     import {User} from "@api/domain/User";
 
 /**
@@ -21,6 +21,16 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
     })
 export default class UserService{
 
+    /**
+        * 1:获取用户列表
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：List
+        * 4:返回值在java中的类型为：User
+    **/
+        @RequestMapping({
+            method:RequestMethod.GET,
+        })
+    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
     /**
         * 1:创建用户
         * 2:接口的请求方法为：POST
@@ -41,26 +51,6 @@ export default class UserService{
         })
     putUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:删除用户
-        * 2:接口的请求方法为：DELETE
-        * 3:返回值在java中的类型为：String
-    **/
-        @RequestMapping({
-            value:'/{id}',
-            method:RequestMethod.DELETE,
-        })
-    deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
-    /**
-        * 1:获取用户列表
-        * 2:接口的请求方法为：GET
-        * 3:返回值在java中的类型为：List
-        * 4:返回值在java中的类型为：User
-    **/
-        @RequestMapping({
-            method:RequestMethod.GET,
-        })
-    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
-    /**
         * 1:获取用户详细信息
         * 2:接口的请求方法为：GET
         * 3:返回值在java中的类型为：User
@@ -70,4 +60,14 @@ export default class UserService{
             method:RequestMethod.GET,
         })
     getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
+    /**
+        * 1:删除用户
+        * 2:接口的请求方法为：DELETE
+        * 3:返回值在java中的类型为：String
+    **/
+        @RequestMapping({
+            value:'/{id}',
+            method:RequestMethod.DELETE,
+        })
+    deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
 }

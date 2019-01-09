@@ -2,9 +2,7 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -85,15 +83,16 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     protected CommonCodeGenFiledMeta[] filedMetas;
 
 
-    public String getGenericDescription() {
-        if (!StringUtils.hasText(genericDescription)) {
-            if (this.typeVariables != null && this.typeVariables.length > 0) {
-                String typeDesc = Arrays.stream(this.typeVariables)
-                        .map(CommonCodeGenClassMeta::getGenericDescription)
-                        .collect(Collectors.joining(","));
-                this.genericDescription = this.name + "<" + typeDesc + ">";
-//                return this.name + "<" + typeDesc + ">";
-            }
+    /**
+     * 获取最终的泛型描述
+     * @return
+     */
+    public String getFinallyGenericDescription() {
+        if (this.typeVariables != null && this.typeVariables.length > 0) {
+            String typeDesc = Arrays.stream(this.typeVariables)
+                    .map(CommonCodeGenClassMeta::getFinallyGenericDescription)
+                    .collect(Collectors.joining(","));
+            return this.name + "<" + typeDesc + ">";
         }
         return genericDescription;
     }
@@ -105,26 +104,9 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     public String getFinallyClassName() {
         if (this.typeVariables != null && this.typeVariables.length > 0) {
-            return this.getGenericDescription();
+            return this.getFinallyGenericDescription();
         }
         return this.name;
     }
 
-    /**
-     * 获取超类的最终名称
-     * @param supperName
-     * @return
-     */
-//    public String getSupperClassFinallyName(String supperName) {
-//        if (this.superTypeVariables == null) {
-//            return null;
-//        }
-//        CommonCodeGenClassMeta[] commonCodeGenClassMetas = this.superTypeVariables.get(supperName);
-//        if (commonCodeGenClassMetas == null) {
-//            return null;
-//        }
-//        String typeDesc = Arrays.stream(commonCodeGenClassMetas).map(CommonBaseMeta::getName)
-//                .collect(Collectors.joining(","));
-//        return null;
-//    }
 }

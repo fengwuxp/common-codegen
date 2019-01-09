@@ -19,7 +19,6 @@ import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,6 @@ import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 
@@ -134,7 +132,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (clazz == null) {
             return false;
         }
-        boolean needGen = JavaTypeUtil.isComplex(clazz) || clazz.isAnnotation();
+        boolean needGen = JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation();
         boolean noIgnore = this.filterClassByLibrary.filter(clazz);
 
         return noIgnore && needGen;

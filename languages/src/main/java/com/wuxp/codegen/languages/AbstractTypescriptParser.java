@@ -15,7 +15,6 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
-import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
@@ -122,7 +121,10 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         .toArray(new TypescriptFieldMate[]{}));
             }
         }
+
+        //依赖处理
         final Map<String, TypescriptClassMeta> metaDependencies = meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, TypescriptClassMeta>) meta.getDependencies();
+
         if (count == 1) {
             //依赖列表
             Map<String, TypescriptClassMeta> dependencies = this.fetchDependencies(javaClassMeta.getDependencyList());
@@ -137,32 +139,35 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             if (val == null || val.length == 0) {
                 return;
             }
-
+            //处理超类
             TypescriptClassMeta typescriptClassMeta = this.parse(superClazz);
             if (typescriptClassMeta == null) {
                 return;
             }
 
-            CommonCodeGenClassMeta[] classMetas = Arrays.stream(val)
+            //处理超类上的类型变量 例如 A<T,E> extends B<C<T>,E> 这种情况
+            CommonCodeGenClassMeta[] typeVariables = Arrays.stream(val)
                     .map(clazz -> {
-                        TypescriptClassMeta classMeta = this.parse(clazz);
-                        if (JavaTypeUtil.isComplex(clazz)) {
-                            metaDependencies.put(classMeta.getName(), classMeta);
+                        TypescriptClassMeta typeVariable = this.parse(clazz);
+                        if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
+                            metaDependencies.put(typeVariable.getName(), typeVariable);
                         }
-                        return classMeta;
+                        return typeVariable;
                     })
                     .filter(Objects::nonNull)
                     .toArray(CommonCodeGenClassMeta[]::new);
 
-            superTypeVariables.put(typescriptClassMeta.getName(), classMetas);
+            superTypeVariables.put(typescriptClassMeta.getName(), typeVariables);
         });
 
         meta.setDependencies(metaDependencies);
-
         meta.setSuperTypeVariables(superTypeVariables);
+
+        //当超类不为空，且超类的类型变量不为空的时候，重新设置一下超类的类型变量
         if (meta.getSuperClass() != null && superTypeVariables.size() > 0) {
             CommonCodeGenClassMeta[] supperClassTypeVariables = superTypeVariables.get(meta.getSuperClass().getName());
             CommonCodeGenClassMeta superClass = meta.getSuperClass();
+
             //做一次值复制，防止改变缓存中的值
             CommonCodeGenClassMeta newSupperClass = new CommonCodeGenClassMeta();
             BeanUtils.copyProperties(superClass, newSupperClass);
@@ -311,7 +316,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         effectiveParams.forEach((key, classes) -> {
 
             Class<?> clazz = classes[0];
-            if (JavaTypeUtil.isComplex(clazz)) {
+            if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
                 TypescriptClassMeta typescriptClassMeta = this.parse(clazz);
                 BeanUtils.copyProperties(typescriptClassMeta, argsClassMeta);
 
@@ -371,6 +376,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             //这个时候没有依赖
             argsClassMeta.setDependencies(new LinkedHashMap<>());
             argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
+            argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
             //加入依赖列表
             Map<String, ? extends CommonCodeGenClassMeta> dependencies = codeGenClassMeta.getDependencies();
             if (dependencies == null) {

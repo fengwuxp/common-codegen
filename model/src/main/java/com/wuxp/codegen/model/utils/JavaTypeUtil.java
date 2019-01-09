@@ -175,16 +175,16 @@ public final class JavaTypeUtil {
      */
     public static boolean isComplexAnArray(Class<?> clazz) {
 
-        return isAnArray(clazz) && isComplex(clazz.getComponentType());
+        return isAnArray(clazz) && isNoneJdkComplex(clazz.getComponentType());
     }
 
     /**
-     * 是否为复杂对象
+     * 是否为非jdk中的复杂对象
      *
      * @param clazz
      * @return
      */
-    public static boolean isComplex(Class<?> clazz) {
+    public static boolean isNoneJdkComplex(Class<?> clazz) {
 
         if (clazz == null) {
             return false;

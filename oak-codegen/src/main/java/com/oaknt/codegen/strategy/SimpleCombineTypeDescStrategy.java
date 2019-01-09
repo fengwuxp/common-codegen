@@ -31,13 +31,13 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         String genClassMetaName = genClassMeta.getName();
         if (length == 1) {
             if (!StringUtils.hasText(genClassMetaName)) {
-                return genClassMeta.getGenericDescription();
+                return genClassMeta.getFinallyGenericDescription();
             }
             return genClassMetaName;
         }
 
         //存在泛型
-        String genericDescription = genClassMeta.getGenericDescription();
+        String genericDescription = genClassMeta.getFinallyGenericDescription();
         if (!StringUtils.hasText(genericDescription)) {
             throw new RuntimeException("泛型描述不存在，" + genClassMetaName);
         }

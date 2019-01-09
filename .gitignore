@@ -2,5 +2,4 @@
 .idea
 **/target
 *.iml
-node_modules
-package-lock.json
+web-example
