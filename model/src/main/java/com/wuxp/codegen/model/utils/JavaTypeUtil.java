@@ -186,8 +186,12 @@ public final class JavaTypeUtil {
      */
     public static boolean isComplex(Class<?> clazz) {
 
+        if (clazz == null) {
+            return false;
+        }
 
-        boolean b = JavaTypeUtil.isJavaBaseType(clazz) ||
+
+        boolean isSimple = JavaTypeUtil.isJavaBaseType(clazz) ||
                 JavaTypeUtil.isString(clazz) ||
                 JavaTypeUtil.isBoolean(clazz) ||
                 JavaTypeUtil.isDate(clazz) ||
@@ -196,9 +200,14 @@ public final class JavaTypeUtil {
                 JavaTypeUtil.isMap(clazz) ||
                 JavaTypeUtil.isCollection(clazz) ||
                 JavaTypeUtil.isAnArray(clazz) ||
-                void.class.equals(clazz)||
+                void.class.equals(clazz) ||
                 Object.class.equals(clazz);
-        return !b;
+
+        if (!isSimple && clazz.getName().startsWith("java.")) {
+            //不是简单的类类型，且是jdk提供的包
+            return false;
+        }
+        return !isSimple;
     }
 
     /**
@@ -242,14 +251,7 @@ public final class JavaTypeUtil {
     }
 
 
-    public static void main(String[] args) {
-//        System.out.println(isJavaBaseType(int.class));
-//        System.out.println(isJavaBaseType(Integer.class));
-//        System.out.println(isJavaBaseType("".getClass()));
-        System.out.println(isNumber(Long.class));
-        System.out.println(isExtendsClass(Integer.class, Object.class));
-//        System.out.println(isExtendsClass(ServiceEvt.class, Object.class));
-    }
+
 
 
 }

@@ -4,9 +4,7 @@ import com.wuxp.codegen.core.CodeGenFilter;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -14,18 +12,20 @@ import java.util.Set;
  */
 public class FilterClassByLibrary implements CodeGenFilter<Class<?>> {
 
-    public static final List<String> packageNames = new ArrayList<>();
+    public static final List<String> IGNORE_PACKAGE_LIST = new ArrayList<>();
 
     //忽略处理的类
 //    public static final Set<Class<?>> IGNORE_CLASSES = new HashSet<>();
 
     static {
-        packageNames.add("org.springframework");
-        packageNames.add("org.slf4j.");
-        packageNames.add("lombok.");
-//        packageNames.add("javax.persistence.");
-        packageNames.add("javax.servlet.");
-        packageNames.add("java.");
+        IGNORE_PACKAGE_LIST.add("org.springframework");
+        IGNORE_PACKAGE_LIST.add("org.slf4j.");
+        IGNORE_PACKAGE_LIST.add("lombok.");
+        IGNORE_PACKAGE_LIST.add("javax.persistence.");
+        IGNORE_PACKAGE_LIST.add("javax.servlet.");
+//        IGNORE_PACKAGE_LIST.add("java.util.");
+//        IGNORE_PACKAGE_LIST.add("java.net.");
+        IGNORE_PACKAGE_LIST.add("sun.");
     }
 
     @Override
@@ -34,9 +34,7 @@ public class FilterClassByLibrary implements CodeGenFilter<Class<?>> {
             return false;
         }
 
-        if (!JavaTypeUtil.isComplex(clazz) || clazz.isAnnotation()) {
-            return false;
-        }
-        return packageNames.stream().noneMatch(name -> clazz.getName().startsWith(name));
+        //不在忽略列表里面则返回true
+        return IGNORE_PACKAGE_LIST.stream().noneMatch(name -> (clazz.getName().startsWith(name)|| clazz.getName().equals(name)));
     }
 }

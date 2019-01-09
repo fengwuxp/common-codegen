@@ -1,5 +1,5 @@
-    import {Order} from "@/src/api/domain/Order";
-    import {Sex} from "@/src/api/enums/Sex";
+    import {Order} from "@api/api/domain/Order";
+    import {Sex} from "@api/api/enums/Sex";
 
 /**
  * 用户

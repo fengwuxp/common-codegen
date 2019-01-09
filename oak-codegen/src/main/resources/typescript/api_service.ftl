@@ -1,4 +1,7 @@
 import {RequestMapping} from "common_fetch/src/annotations/mapping/RequestMapping";
+import {PostMapping} from "common_fetch/src/annotations/mapping/PostMapping";
+import {GetMapping} from "common_fetch/src/annotations/mapping/GetMapping";
+import {DeleteMapping} from "common_fetch/src/annotations/mapping/DeleteMapping";
 import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
@@ -7,7 +10,7 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 
 <#--依赖导入处理-->
 <#list dependencies as key,val >
-    import {${key}} from "@/src/${val.packagePath}";
+    import {${key}} from "@api/${val.packagePath}";
 </#list>
 
 /**

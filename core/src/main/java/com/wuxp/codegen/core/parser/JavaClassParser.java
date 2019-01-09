@@ -238,9 +238,14 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
             //参数上的注解
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+            String[] parameterNames = new String[0];
 
-            //参数名称列表
-            String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
+            try {
+                //参数名称列表
+                parameterNames = parameterNameDiscoverer.getParameterNames(method);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {
                 for (int k = 0; k < parameterTypes.length; k++) {

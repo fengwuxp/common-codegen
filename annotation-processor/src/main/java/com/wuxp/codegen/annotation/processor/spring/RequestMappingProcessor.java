@@ -65,16 +65,16 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             Map<String, String> arguments = new LinkedHashMap<>();
             String[] value = this.value();
             String val = null;
-            if (value.length == 0) {
-
-            } else {
+            if (value.length > 0) {
                 val = value[0];
             }
 
             if (StringUtils.hasText(val)) {
                 arguments.put("value", "'" + val + "'");
             }
-            arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
+            if (this.annotationType().equals(RequestMapping.class)){
+                arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
+            }
             codeGenAnnotation.setNamedArguments(arguments);
 
             //注解w位置参数

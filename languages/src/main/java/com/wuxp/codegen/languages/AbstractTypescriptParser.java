@@ -49,7 +49,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     @Override
     public TypescriptClassMeta parse(Class<?> source) {
 
-        if (!this.filterClassByLibrary.filter(source)) {
+        if (!this.isMatchGenCodeRule(source)) {
             return null;
         }
 
@@ -116,7 +116,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         if (count == 1) {
             if (javaClassMeta.isApiServiceClass()) {
                 //spring的控制器  生成方法列表
-                meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta));
+                meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta));
             } else {
                 // 普通的java bean DTO  生成属性列表
                 meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta));
@@ -158,13 +158,14 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         });
 
         meta.setDependencies(metaDependencies);
+
         meta.setSuperTypeVariables(superTypeVariables);
         if (meta.getSuperClass() != null && superTypeVariables.size() > 0) {
             CommonCodeGenClassMeta[] supperClassTypeVariables = superTypeVariables.get(meta.getSuperClass().getName());
             CommonCodeGenClassMeta superClass = meta.getSuperClass();
             //做一次值复制，防止改变缓存中的值
-            CommonCodeGenClassMeta newSupperClass=new CommonCodeGenClassMeta();
-            BeanUtils.copyProperties(superClass,newSupperClass);
+            CommonCodeGenClassMeta newSupperClass = new CommonCodeGenClassMeta();
+            BeanUtils.copyProperties(superClass, newSupperClass);
             newSupperClass.setTypeVariables(supperClassTypeVariables);
             meta.setSuperClass(newSupperClass);
         }
@@ -216,7 +217,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                                 .mapping(javaMethodMeta.getReturnType())
                                 .toArray(new TypescriptClassMeta[]{}));
                         List<String> comments = this.generateComments(javaMethodMeta.getAnnotations());
-                        comments.addAll(this.generateComments(javaMethodMeta.getReturnType(),false));
+                        comments.addAll(this.generateComments(javaMethodMeta.getReturnType(), false));
                         typescriptFieldMate.setComments(comments.toArray(new String[]{}));
                         return typescriptFieldMate;
                     }).collect(Collectors.toList());
@@ -295,7 +296,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
 
     @Override
-    protected CommonCodeGenMethodMeta[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta) {
+    protected CommonCodeGenMethodMeta[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, TypescriptClassMeta codeGenClassMeta) {
         if (javaMethodMetas == null) {
             return new CommonCodeGenMethodMeta[0];
         }
@@ -418,11 +419,19 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         String name = ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()) + "Req";
                         argsClassMeta.setName(name);
                         argsClassMeta.setPackagePath("req/" + name);
+                        //加入依赖列表
+                        Map<String, ? extends CommonCodeGenClassMeta> dependencies = codeGenClassMeta.getDependencies();
+                        if (dependencies == null) {
+                            dependencies = new LinkedHashMap<>();
+                        }
+                        ((Map<String, TypescriptClassMeta>) dependencies).put(name, argsClassMeta);
+                        codeGenClassMeta.setDependencies(dependencies);
                     }
                     LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
                     //请求参数名称，固定为req
                     params.put("req", argsClassMeta);
                     genMethodMeta.setParams(params);
+
                     //增强处理
                     this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
 

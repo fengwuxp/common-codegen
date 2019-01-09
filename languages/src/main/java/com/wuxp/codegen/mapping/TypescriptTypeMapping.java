@@ -67,6 +67,11 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         }
 
         Set<TypescriptClassMeta> classMetas = new LinkedHashSet<>(4);
+
+        //1. 类型转换，如果是简单的java类型，则尝试做装换
+        //2. 处理枚举类型
+        //3. 循环获取泛型
+        //4. 处理复杂的数据类型（自定义的java类）
         Arrays.stream(classes)
                 .filter(Objects::nonNull)
                 .map(this.customizeJavaTypeMapping::mapping)
@@ -80,16 +85,18 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
     }
 
 
+    /**
+     * 获取类型映射
+     * @param clazz
+     * @return
+     */
     protected TypescriptClassMeta mapping(Class<?> clazz) {
 
-        //1. 类型转换，如果是简单的java类型，则尝试做装换
-        //2. 处理枚举类型
-        //3. 循环获取泛型
-        //4. 处理复杂的数据类型（自定义的java类）
         Class<?> upConversionType = this.tryUpConversionType(clazz);
         if (upConversionType != null) {
             return baseTypeMapping.mapping(upConversionType);
         } else {
+            //尝试用本类型去获取一次映射关系
             TypescriptClassMeta mapping = this.baseTypeMapping.mapping(clazz);
             if (mapping != null) {
                 return mapping;
@@ -110,7 +117,9 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             //数组
             return TypescriptClassMeta.ARRAY;
         } else {
-            throw new RuntimeException("Not Found clazz " + clazz.getName() + " mapping type");
+            //未处理的类型
+            log.warn("Not Found clazz " + clazz.getName() + " mapping type");
+            return null;
         }
     }
 

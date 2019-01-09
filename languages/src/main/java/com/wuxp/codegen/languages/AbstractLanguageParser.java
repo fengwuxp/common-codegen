@@ -18,6 +18,7 @@ import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -118,6 +119,22 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         this.javaParser = javaParser;
     }
 
+
+    /**
+     * 是否匹配生成的规则
+     *
+     * @param clazz
+     * @return
+     */
+    protected boolean isMatchGenCodeRule(Class<?> clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        boolean needGen = JavaTypeUtil.isComplex(clazz) || clazz.isAnnotation();
+        boolean noIgnore = this.filterClassByLibrary.filter(clazz);
+
+        return noIgnore && needGen;
+    }
 
     /**
      * 检查代码是否服务自定义的规则
@@ -259,7 +276,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param classMeta
      * @return
      */
-    protected abstract M[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta);
+    protected abstract M[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, C mate);
 
 
     /**
@@ -293,7 +310,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         return dependencies.stream()
-                .filter(this.filterClassByLibrary::filter)
+                .filter(this::isMatchGenCodeRule)
                 .filter(Objects::nonNull)
                 .map(this::parse)
                 .filter(Objects::nonNull)

@@ -1,4 +1,4 @@
-    import {BaseQueryEvt} from "@/src/api/evt/BaseQueryEvt";
+    import {BaseQueryEvt} from "@api/api/evt/BaseQueryEvt";
 
 /**
  * 测试的API接口方法一的请求参数

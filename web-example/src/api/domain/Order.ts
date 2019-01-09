@@ -1,4 +1,4 @@
-    import {User} from "@/src/api/domain/User";
+    import {User} from "@api/api/domain/User";
 
 /**
  * 订单
