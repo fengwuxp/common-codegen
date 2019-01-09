@@ -1,5 +1,5 @@
-    import {ServiceResponse} from "@api/api/resp/ServiceResponse";
-    import {PageInfo} from "@api/api/resp/PageInfo";
+    import {ServiceResponse} from "@api/resp/ServiceResponse";
+    import {PageInfo} from "@api/resp/PageInfo";
 
 /**
  * 统一的查询响应对象

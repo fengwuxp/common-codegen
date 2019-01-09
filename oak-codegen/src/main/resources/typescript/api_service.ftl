@@ -10,7 +10,7 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 
 <#--依赖导入处理-->
 <#list dependencies as key,val >
-    import {${key}} from "@api/${val.packagePath}";
+    import {${key}} from "@api${val.packagePath}";
 </#list>
 
 /**

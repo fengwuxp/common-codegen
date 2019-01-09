@@ -1,5 +1,5 @@
-    import {Order} from "@api/api/domain/Order";
-    import {Sex} from "@api/api/enums/Sex";
+    import {Order} from "@api/domain/Order";
+    import {Sex} from "@api/enums/Sex";
 
 /**
  * 用户
@@ -7,11 +7,6 @@
 
 export interface  User {
 
-        /**
-            *是否为男孩
-            *在java中的类型为：Boolean
-        **/
-        boy: boolean;
         /**
             *id
             *在java中的类型为：Long
@@ -38,4 +33,9 @@ export interface  User {
             *在java中的类型为：Sex
         **/
         sex?: Sex;
+        /**
+            *是否为男孩
+            *在java中的类型为：Boolean
+        **/
+        boy?: boolean;
 }

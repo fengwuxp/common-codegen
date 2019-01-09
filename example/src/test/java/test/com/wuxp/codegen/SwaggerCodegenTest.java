@@ -50,8 +50,8 @@ public class SwaggerCodegenTest {
         AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(ServiceQueryResponse.class,new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         Map<String, String> packageMap = new LinkedHashMap<>();
-        packageMap.put("com.wuxp.codegen.example.controller", "api\\services");
-        packageMap.put("com.wuxp.codegen.example", "api");
+        packageMap.put("com.wuxp.codegen.example.controller", "services");
+        packageMap.put("com.wuxp.codegen.example", "");
 
         PackageMapStrategy packageMapStrategy = new TypescriptPackageMapStrategy(packageMap);
 
@@ -59,7 +59,7 @@ public class SwaggerCodegenTest {
 
         FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT.getName());
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new OAKSimpleTemplateStrategy(
-                templateLoader, Paths.get(System.getProperty("user.dir")).resolveSibling("web-example\\src").toString(),
+                templateLoader, Paths.get(System.getProperty("user.dir")).resolveSibling("web-example\\src\\api").toString(),
                 LanguageDescription.TYPESCRIPT.getSuffixName());
 
         String[] packagePaths = {"com.wuxp.codegen.example.controller"};

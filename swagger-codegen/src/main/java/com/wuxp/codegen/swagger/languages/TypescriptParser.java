@@ -40,6 +40,9 @@ public class TypescriptParser extends AbstractTypescriptParser {
 
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
+        if (javaFieldMeta==null){
+            return;
+        }
         ApiModelProperty apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
         if (apiModelProperty == null) {
             log.warn("类{}上的属性{}没有ApiModelProperty注解", classMeta.getClassName(), javaFieldMeta.getName());

@@ -1,4 +1,4 @@
-    import {User} from "@api/api/domain/User";
+    import {User} from "@api/domain/User";
 
 /**
  * 订单
@@ -6,11 +6,6 @@
 
 export interface  Order {
 
-        /**
-            *添加时间
-            *在java中的类型为：Date
-        **/
-        addTime: Date;
         /**
             *id
             *在java中的类型为：Long
@@ -26,4 +21,9 @@ export interface  Order {
             *在java中的类型为：User
         **/
         user?: User;
+        /**
+            *添加时间
+            *在java中的类型为：Date
+        **/
+        addTime?: Date;
 }

@@ -15,10 +15,13 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.model.*;
+import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,7 @@ import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 
@@ -198,8 +202,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (classes == null || classes.length == 0) {
             return new ArrayList<>();
         }
-
-
         return Arrays.stream(classes).map(clazz -> (isMethod ? "返回值" : "") + "在java中的类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
     }
 
@@ -256,8 +258,73 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param classMeta
      * @return
      */
-    protected abstract F[] converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta);
+    protected List<F> converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta) {
+        if (javaFieldMetas == null) {
+            return Collections.EMPTY_LIST;
+        }
 
+
+        final List<String> fieldNameList = Arrays.stream(javaFieldMetas)
+                .map(CommonBaseMeta::getName)
+                .collect(Collectors.toList());
+
+        boolean isEnum = classMeta.getClazz().isEnum();
+
+        List<JavaFieldMeta> fieldMetas = new ArrayList<>(Arrays.asList(javaFieldMetas));
+
+        if (!isEnum) {
+            //如果是java bean 需要合并get方法
+            // 找出java bean中不存在属性定义的get或 is方法
+            fieldMetas.addAll(Arrays.stream(classMeta.getMethodMetas())
+                    .filter(javaMethodMeta -> {
+                        //匹配getXX 或isXxx方法
+                        return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
+                    })
+                    .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
+                    .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
+                    .filter(javaMethodMeta -> {
+                        //属性是否已经存在
+                        return !fieldNameList.contains(JavaMethodNameUtil.replaceGetOrIsPrefix(javaMethodMeta.getName()));
+                    })
+                    .map(methodMeta -> {
+                        //从get方法或is方法中生成field
+
+                        //mock javaField
+                        JavaFieldMeta fieldMeta = JavaFieldMeta
+                                .builder()
+                                .isVolatile(false)
+                                .isTransient(false)
+                                .types(methodMeta.getReturnType())
+                                .build();
+                        fieldMeta.setName(JavaMethodNameUtil.replaceGetOrIsPrefix(methodMeta.getName()));
+                        fieldMeta.setAccessPermission(AccessPermission.PUBLIC);
+                        fieldMeta.setAnnotations(methodMeta.getAnnotations());
+                        fieldMeta.setIsStatic(false);
+                        fieldMeta.setIsFinal(false);
+
+
+                        return fieldMeta;
+                    }).collect(Collectors.toList()));
+        }
+
+        return fieldMetas.stream()
+                .map(javaFieldMeta -> this.converterField(javaFieldMeta, classMeta))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+    }
+
+    ;
+
+
+    /**
+     * 转换属性
+     *
+     * @param javaFieldMeta
+     * @param classMeta
+     * @return
+     */
+    protected abstract F converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta);
 
     /**
      * 增强处理 filed
@@ -276,8 +343,21 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param classMeta
      * @return
      */
-    protected abstract M[] converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, C mate);
+    protected List<M> converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, C codeGenClassMeta) {
+        if (javaMethodMetas == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return Arrays.stream(javaMethodMetas)
+                .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
+                .filter(javaMethodMeta -> this.genMatchingStrategy.isMatchMethod(javaMethodMeta))
+                .map(methodMeta -> this.converterMethod(methodMeta, classMeta, codeGenClassMeta))
+                .collect(Collectors.toList());
 
+
+    }
+
+
+    protected abstract M converterMethod(JavaMethodMeta javaMethodMetas, JavaClassMeta classMeta, C codeGenClassMeta);
 
     /**
      * 增强处理 method

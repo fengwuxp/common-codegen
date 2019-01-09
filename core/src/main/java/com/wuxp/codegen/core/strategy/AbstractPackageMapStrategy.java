@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.strategy;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.Optional;
@@ -41,6 +42,9 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 
         if (val == null) {
             throw new RuntimeException("包名：" + clazzName + " 未找到装换映射关系");
+        }
+        if (!StringUtils.hasText(val)){
+
         }
 
         return clazzName.replace(key, val);

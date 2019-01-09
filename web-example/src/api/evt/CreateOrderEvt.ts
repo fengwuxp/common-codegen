@@ -1,4 +1,4 @@
-    import {BaseEvt} from "@api/api/evt/BaseEvt";
+    import {BaseEvt} from "@api/evt/BaseEvt";
 
 /**
  * 创建订单
