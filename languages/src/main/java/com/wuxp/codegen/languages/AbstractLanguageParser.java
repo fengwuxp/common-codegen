@@ -395,12 +395,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return dependencies.stream()
                 .filter(this::isMatchGenCodeRule)
                 .filter(Objects::nonNull)
-//                .filter(clazz -> {
-//                    //不是spring的组件
-//                    Annotation service = clazz.getAnnotation(Service.class);
-//                    Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
-//                    return service == null && clazzAnnotation == null;
-//                })
                 .map(this::parse)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
