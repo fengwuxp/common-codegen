@@ -31,6 +31,14 @@ public class User {
     @ApiModelProperty("其他")
     private Map<String,String> other;
 
+    @ApiModelProperty("其他2")
+    private Map other2;
+
+    @ApiModelProperty("list")
+    private List<?> list;
+
+    private List list2;
+
 
     @ApiModelProperty("是否为男孩")
     public Boolean isBoy() {

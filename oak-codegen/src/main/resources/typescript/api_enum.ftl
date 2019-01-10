@@ -7,7 +7,7 @@ import {Enum} from "oak_weex_common/src/enums/Enum";
 </#list>
 **/
 
-export default class ${name}{
+export class ${name}{
 
    constructor() {}
 

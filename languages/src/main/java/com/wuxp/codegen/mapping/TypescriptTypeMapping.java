@@ -65,7 +65,7 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             return new ArrayList<>();
         }
 
-        Set<TypescriptClassMeta> classMetas = new LinkedHashSet<>(4);
+        List<TypescriptClassMeta> classMetas = new ArrayList<>(4);
 
         //1. 类型转换，如果是简单的java类型，则尝试做装换
         //2. 处理枚举类型

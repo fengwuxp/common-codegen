@@ -1,6 +1,6 @@
 package com.oaknt.codegen.freemarker;
 
-import com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
+import test.com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import freemarker.template.*;
@@ -24,6 +24,9 @@ public class CombineTypeMethod implements TemplateMethodModelEx {
         DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.get(0);
 
         CommonCodeGenClassMeta[] commonCodeGenClassMetas = (CommonCodeGenClassMeta[]) arrayAdapter.getAdaptedObject(CommonCodeGenClassMeta.class);
+
+
+        log.debug("要合并的泛型描述，length={}",commonCodeGenClassMetas.length);
 
         return this.combineTypeDescStrategy.combine(commonCodeGenClassMetas);
     }

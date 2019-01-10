@@ -2,15 +2,14 @@ package test.com.wuxp.codegen;
 
 import com.oaknt.codegen.OAKCodeGenerator;
 import com.oaknt.codegen.OAKSimpleTemplateStrategy;
-import com.oaknt.codegen.strategy.TypescriptPackageMapStrategy;
+import com.wuxp.codegen.example.domain.User;
+import test.com.oaknt.codegen.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.example.controller.OrderController;
-import com.wuxp.codegen.example.enums.Sex;
 import com.wuxp.codegen.example.resp.PageInfo;
 import com.wuxp.codegen.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.example.resp.ServiceResponse;
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -50,7 +48,10 @@ public class SwaggerCodegenTest {
         AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(ServiceQueryResponse.class,new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         Map<String, String> packageMap = new LinkedHashMap<>();
+        //控制器的包所在
         packageMap.put("com.wuxp.codegen.example.controller", "services");
+
+        //其他类（DTO）所在的包
         packageMap.put("com.wuxp.codegen.example", "");
 
         PackageMapStrategy packageMapStrategy = new TypescriptPackageMapStrategy(packageMap);
@@ -72,9 +73,9 @@ public class SwaggerCodegenTest {
     @Test
     public void testCodeGenApi() {
 
+        JavaClassMeta parse = genericParser.parse(User.class);
+
         codeGenerator.generate();
-//        JavaClassMeta parse = genericParser.parse(ServiceQueryResponse.class);
-//        System.out.println(parse);
 
     }
 }

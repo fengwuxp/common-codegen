@@ -27,7 +27,7 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
     </#list>
     })
 </#list>
-export default class ${name}{
+ class ${name}{
 
 <#list methodMetas as method>
     /**
@@ -45,3 +45,5 @@ export default class ${name}{
     ${method.name}:(req: ${method.params["req"].name}, option?: FetchOptions) => ${customize_method.combineType(method.returnTypes)};
 </#list>
 }
+
+export default new ${name}();

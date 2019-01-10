@@ -72,7 +72,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         //超类
         ResolvableType superType = ResolvableType.forClass(source).getSuperType();
 
-       //循环获取超类
+        //循环获取超类
         while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
             Type subType = superType.getSuperType().getType();
 
@@ -118,7 +118,10 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         JavaClassMeta classMeta = javaClassMetaBuilder.build();
 
 
-        classMeta.setTypeVariables(source.getTypeParameters());
+        TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
+
+        classMeta.setTypeVariables(typeParameters);
+        classMeta.setTypeVariableNum(typeParameters.length);
 
         classMeta.setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()));
         getAssessPermission(modifiers, classMeta);
@@ -176,13 +179,21 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             fieldMeta.setAnnotations(annotations);
             Type genericType = field.getGenericType();
 
+
             //自动类型的泛型描述
             Type[] typeVariables = null;
             if (genericType instanceof ParameterizedType) {
                 typeVariables = ((ParameterizedType) genericType).getActualTypeArguments();
             } else if (genericType instanceof TypeVariable) {
                 typeVariables = new Type[]{genericType};
+            } else {
+                typeVariables = field.getType().getTypeParameters();
             }
+
+            if (typeVariables != null) {
+                fieldMeta.setTypeVariableNum(typeVariables.length);
+            }
+
             if (typeVariables != null) {
                 //判断类上面是否存在这个泛型描述的变量
                 List<String> clazzTypeVariables = Arrays.stream(clazz.getTypeParameters())
@@ -196,6 +207,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
 
             fieldMeta.setTypeVariables(typeVariables);
+
+
             fieldMetas.add(fieldMeta);
         }
 
@@ -268,8 +281,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             JavaMethodMeta methodMeta = builder.build();
             this.getAssessPermission(modifiers, methodMeta);
             methodMeta.setName(method.getName());
+            TypeVariable<Method>[] typeParameters = method.getTypeParameters();
+            methodMeta.setTypeVariables(typeParameters);
+            methodMeta.setTypeVariableNum(typeParameters.length);
             methodMeta.setAnnotations(method.getAnnotations());
             methodMetas.add(methodMeta);
+
         }
 
         return methodMetas.toArray(new JavaMethodMeta[]{});

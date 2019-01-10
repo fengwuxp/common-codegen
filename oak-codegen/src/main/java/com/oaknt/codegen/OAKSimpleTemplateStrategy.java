@@ -1,9 +1,7 @@
 package com.oaknt.codegen;
 
 import com.oaknt.codegen.freemarker.CombineTypeMethod;
-import com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
 import com.oaknt.codegen.utils.FileUtil;
-import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;

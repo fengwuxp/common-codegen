@@ -12,6 +12,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     //object
     public final static TypescriptClassMeta OBJECT = new TypescriptClassMeta("object", null, ClassType.CLASS, false, null);
 
+    public final static TypescriptClassMeta ANY = new TypescriptClassMeta("any", "any", ClassType.CLASS, false, null);
+
     //string
     public final static TypescriptClassMeta STRING = new TypescriptClassMeta("string", null, ClassType.CLASS, false, OBJECT);
 

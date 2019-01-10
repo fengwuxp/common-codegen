@@ -23,6 +23,11 @@ public class JavaBaseMeta extends CommonBaseMeta {
      */
     protected Type[] typeVariables;
 
+    /**
+     * 类型参数的个数
+     */
+    protected Integer typeVariableNum = 0;
+
 
     /**
      * 是否有列表中的某个annotation

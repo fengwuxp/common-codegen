@@ -19,7 +19,7 @@ import java.util.*;
 @Api("订单服务")
 @RestController
 @RequestMapping(value = "/order")
-public class OrderController {
+public class OrderController extends BaseController {
 
     static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
 

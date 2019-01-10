@@ -1,4 +1,4 @@
-package com.oaknt.codegen.strategy;
+package test.com.oaknt.codegen.strategy;
 
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import lombok.extern.slf4j.Slf4j;

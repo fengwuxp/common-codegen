@@ -48,7 +48,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
         //符合匹配规则，或非集合类型和Map的的子类进行
         if (!this.isMatchGenCodeRule(source) ||
-                JavaTypeUtil.isMap(source)||
+                JavaTypeUtil.isMap(source) ||
                 JavaTypeUtil.isCollection(source)) {
             return null;
         }
@@ -196,6 +196,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             return null;
         }
 
+
         boolean isEnum = classMeta.getClazz().isEnum();
         if (javaFieldMeta.getIsStatic() && !isEnum) {
             //不处理静态类型的字段
@@ -241,7 +242,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         return typescriptClassMeta;
                     }).collect(Collectors.toList()));
         }
-
+        //如果类型属性上的泛型秒数小于实际期望的泛型描述参数个数，则加入any
+        int i = javaFieldMeta.getTypeVariableNum() - typescriptClassMetas.size() + 1;
+        while (i > 0) {
+            typescriptClassMetas.add(TypescriptClassMeta.ANY);
+            i--;
+        }
         if (typescriptClassMetas.size() > 0) {
             //域对象类型描述
             typescriptFieldMate.setFiledTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
@@ -252,8 +258,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     classMeta.getClassName(),
                     javaFieldMeta.getName(),
                     this.classToNamedString(javaFieldMeta.getTypes())));
-
         }
+
 
         //TODO 注解转化
 
