@@ -132,10 +132,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             //依赖列表
             Set<Class<?>> dependencyList = javaClassMeta.getDependencyList();
             if (javaClassMeta.isApiServiceClass()) {
-                //忽略所有接口的依赖
                 dependencyList = dependencyList.stream().
                         filter(Objects::nonNull)
+                        //忽略所有接口的依赖
                         .filter(clazz -> !clazz.isInterface())
+                        //忽略超类的依赖
+                        .filter(clazz -> !javaClassMeta.getSuperClass().equals(clazz))
                         .collect(Collectors.toSet());
             }
             Map<String, TypescriptClassMeta> dependencies = this.fetchDependencies(dependencyList);
