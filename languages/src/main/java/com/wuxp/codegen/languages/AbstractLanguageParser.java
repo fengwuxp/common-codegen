@@ -100,6 +100,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     {
         codeGenMatchers.add(this.packageNameCodeGenMatcher);
+
         //根据java 类进行匹配
         codeGenMatchers.add(clazz -> JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation());
 
@@ -156,9 +157,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         int size = this.codeGenMatchers.size();
 
         //必须满足所有的匹配器才能进行生成
-        return codeGenMatchers.stream()
+        int result = codeGenMatchers.stream()
                 .map(codeGenMatcher -> codeGenMatcher.match(clazz))
-                .collect(Collectors.toList()).size() == size;
+                .filter(r -> r)
+                .collect(Collectors.toList())
+                .size();
+        if (result == size) {
+            log.debug("符号生成条件的类：{}", clazz.getName());
+        }
+        return result == size;
     }
 
     /**
