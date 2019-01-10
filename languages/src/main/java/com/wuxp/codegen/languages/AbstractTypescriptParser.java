@@ -46,7 +46,10 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     @Override
     public TypescriptClassMeta parse(Class<?> source) {
 
-        if (!this.isMatchGenCodeRule(source)) {
+        //符合匹配规则，或非集合类型和Map的的子类进行
+        if (!this.isMatchGenCodeRule(source) ||
+                JavaTypeUtil.isMap(source)||
+                JavaTypeUtil.isCollection(source)) {
             return null;
         }
 

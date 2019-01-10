@@ -137,6 +137,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         boolean needGen = JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation();
         boolean noIgnore = this.filterClassByLibrary.filter(clazz);
 
+
         Annotation service = clazz.getAnnotation(Service.class);
         Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
         boolean isNoneSpringComponent = service == null && clazzAnnotation == null;
