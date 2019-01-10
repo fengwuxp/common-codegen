@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 
+@ApiIgnore
 @Api("hello")
 @RestController
 public class HelloController {

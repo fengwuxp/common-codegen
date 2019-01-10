@@ -8,7 +8,9 @@ import com.wuxp.codegen.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.example.resp.PageInfo;
 import com.wuxp.codegen.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.example.resp.ServiceResponse;
+import com.wuxp.codegen.example.services.UserService;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -20,6 +22,9 @@ import java.util.*;
 public class OrderController {
 
     static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
+
+    @Autowired
+    private UserService userService;
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @GetMapping(value = {"getOrder"})

@@ -24,8 +24,7 @@ public class PathResolveMethod implements TemplateMethodModelEx {
         if (arguments.size() == 0) {
             throw new RuntimeException("arguments size is 0");
         }
-        List<Object> args = (List<Object>) arguments;
-        List<String> paths = args.stream()
+        List<String> paths = ((List<Object>) arguments).stream()
                 .map(a -> ((SimpleScalar) a).getAsString())
                 .collect(Collectors.toList());
 

@@ -22,6 +22,8 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -390,6 +392,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return dependencies.stream()
                 .filter(this::isMatchGenCodeRule)
                 .filter(Objects::nonNull)
+                .filter(clazz -> {
+                    //不是spring的组件
+                    Annotation service = clazz.getAnnotation(Service.class);
+                    Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
+                    return service == null && clazzAnnotation == null;
+                })
                 .map(this::parse)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
