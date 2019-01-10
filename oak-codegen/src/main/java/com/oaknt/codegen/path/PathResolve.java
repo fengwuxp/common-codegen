@@ -46,7 +46,12 @@ public class PathResolve {
 
         if (this.isFile(paths.get(paths.size() - 1).toString())) {
             //如果最后一个路径是文件，裁剪掉第一个..\
-            result = result.substring(3);
+            if (result.trim().length() > 3) {
+                result = result.substring(3);
+            } else {
+                log.warn("相对路径的解析结果小于3 ，path result = {}", result);
+            }
+
         }
         result = result.replaceAll("\\\\", "/");
 
