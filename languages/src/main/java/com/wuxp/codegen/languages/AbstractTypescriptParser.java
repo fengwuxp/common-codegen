@@ -318,7 +318,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
         methodMetaParams.forEach((key, classes) -> {
             Class<?>[] array = Arrays.stream(classes)
-                    .filter(this.filterClassByLibrary::filter)
+                    .filter(this.packageNameCodeGenMatcher::match)
                     .toArray(Class<?>[]::new);
             if (array.length == 0) {
                 return;
@@ -361,7 +361,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
 
                 //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
-//                    Arrays.stream(annotations).filter(annotation -> {
+//                    Arrays.stream(annotations).macth(annotation -> {
 //                        annotation.annotationType().equals(Reque)
 //                        return true;
 //                    })

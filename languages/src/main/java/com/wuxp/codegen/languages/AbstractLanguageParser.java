@@ -7,8 +7,8 @@ import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeDetect;
-import com.wuxp.codegen.core.CodeGenFilter;
-import com.wuxp.codegen.core.filter.FilterClassByLibrary;
+import com.wuxp.codegen.core.CodeGenMatcher;
+import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
@@ -83,9 +83,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     protected Collection<CodeDetect> codeDetects;
 
     /**
-     * 过滤jar中的依赖
+     * 根据包名进行匹配
      */
-    protected CodeGenFilter<Class<?>> filterClassByLibrary = new FilterClassByLibrary();
+    protected CodeGenMatcher packageNameCodeGenMatcher = new PackageNameCodeGenMatcher();
 
 
     /**
@@ -93,6 +93,24 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected CodeGenMatchingStrategy genMatchingStrategy;
 
+    /**
+     * 匹配器链
+     */
+    protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+
+    {
+        codeGenMatchers.add(this.packageNameCodeGenMatcher);
+        //根据java 类进行匹配
+        codeGenMatchers.add(clazz -> JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation());
+
+        //根据是否为spring的组件进行匹配
+        codeGenMatchers.add(clazz -> {
+            Annotation service = clazz.getAnnotation(Service.class);
+            Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
+            //不是spring的组件
+            return service == null && clazzAnnotation == null;
+        });
+    }
 
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
@@ -134,14 +152,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (clazz == null) {
             return false;
         }
-        boolean needGen = JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation();
-        boolean noIgnore = this.filterClassByLibrary.filter(clazz);
 
+        int size = this.codeGenMatchers.size();
 
-        Annotation service = clazz.getAnnotation(Service.class);
-        Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
-        boolean isNoneSpringComponent = service == null && clazzAnnotation == null;
-        return noIgnore && needGen && isNoneSpringComponent;
+        //必须满足所有的匹配器才能进行生成
+        return codeGenMatchers.stream()
+                .map(codeGenMatcher -> codeGenMatcher.match(clazz))
+                .collect(Collectors.toList()).size() == size;
     }
 
     /**
