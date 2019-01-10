@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @ApiModel("用户")
 @Data
@@ -26,6 +27,9 @@ public class User {
 
     @ApiModelProperty("性别")
     private Sex sex;
+
+    @ApiModelProperty("其他")
+    private Map<String,String> other;
 
 
     @ApiModelProperty("是否为男孩")
