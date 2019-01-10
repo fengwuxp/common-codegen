@@ -132,7 +132,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 //忽略所有接口的依赖
                 dependencyList = dependencyList.stream().
                         filter(Objects::nonNull)
-                        .filter(Class::isInterface)
+                        .filter(clazz -> !clazz.isInterface())
                         .collect(Collectors.toSet());
             }
             Map<String, TypescriptClassMeta> dependencies = this.fetchDependencies(dependencyList);
