@@ -34,4 +34,7 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
         return "/" + convertClassName;
 
     }
+
+
+
 }

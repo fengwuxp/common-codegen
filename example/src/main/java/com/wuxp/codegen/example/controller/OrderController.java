@@ -43,6 +43,18 @@ public class OrderController {
         return new ServiceQueryResponse<>();
     }
 
+    @ApiOperation(value = "查询分页", notes = "")
+    @PostMapping(value = {"queryPage"})
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "id", value = "订单", required = true, dataType = "String"),
+            }
+    )
+    public ServiceResponse<PageInfo<Order>> queryPage(String id) {
+
+        return new ServiceResponse<>();
+    }
+
 
     @ApiOperation(value = "创建订单", notes = "")
     @PostMapping(value = {"createOrder"})
