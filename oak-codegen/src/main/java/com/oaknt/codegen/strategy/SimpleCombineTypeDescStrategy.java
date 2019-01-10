@@ -51,7 +51,8 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             }
             String name = this.combine(Arrays.asList(codeGenClassMetas)
                     .subList(i, length).toArray(new CommonCodeGenClassMeta[]{}));
-            genericDescription = genericDescription.replaceAll(d, name);
+            //精确匹配
+            genericDescription = genericDescription.replaceAll("<"+d+">", name);
             i++;
         }
 
