@@ -140,7 +140,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         Annotation service = clazz.getAnnotation(Service.class);
         Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
         boolean isNoneSpringComponent = service == null && clazzAnnotation == null;
-        return noIgnore && needGen && !isNoneSpringComponent;
+        return noIgnore && needGen && isNoneSpringComponent;
     }
 
     /**
