@@ -18,7 +18,7 @@ public class ApiProcessor extends AbstractAnnotationProcessor<Api, ApiProcessor.
         return this.newProxyMate(annotation, ApiMate.class);
     }
 
-    public static abstract class ApiMate implements AnnotationMate<Api>, Api {
+    public abstract static class ApiMate implements AnnotationMate<Api>, Api {
 
 
         @Override

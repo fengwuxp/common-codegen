@@ -48,7 +48,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     }
 
 
-    public static abstract class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
+    public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
         @Override
         public String toComment() {
@@ -103,7 +103,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         }
     }
 
-    public static abstract class GetMappingMate extends RequestMappingMate {
+    public abstract static class GetMappingMate extends RequestMappingMate {
 
         protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.GET};
 
@@ -114,7 +114,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     }
 
-    public static abstract class PostMappingMate extends RequestMappingMate {
+    public abstract static class PostMappingMate extends RequestMappingMate {
 
         protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.POST};
 
@@ -124,7 +124,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         }
     }
 
-    public static abstract class DeleteMappingMate extends RequestMappingMate {
+    public abstract static class DeleteMappingMate extends RequestMappingMate {
 
         protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.DELETE};
 
@@ -135,7 +135,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     }
 
-    public static abstract class PutMappingMate extends RequestMappingMate {
+    public abstract static class PutMappingMate extends RequestMappingMate {
 
         protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.PUT};
 
@@ -146,7 +146,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     }
 
-    public static abstract class PatchMappingMate extends RequestMappingMate {
+    public abstract static class PatchMappingMate extends RequestMappingMate {
 
         protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.PATCH};
 

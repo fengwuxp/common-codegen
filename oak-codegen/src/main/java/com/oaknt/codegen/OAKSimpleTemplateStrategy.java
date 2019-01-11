@@ -87,15 +87,24 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
         }
         FileUtil.createDirectory(output.substring(0, output.lastIndexOf("\\")));
         log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
+        Writer writer = null;
         try {
             //输出
-            Writer writer = new OutputStreamWriter(new FileOutputStream(output),
+            writer = new OutputStreamWriter(new FileOutputStream(output),
                     StandardCharsets.UTF_8);
             //添加自定义方法
-            template.setCustomAttribute("combineType",new CombineTypeMethod());
+            template.setCustomAttribute("combineType", new CombineTypeMethod());
             template.process(data, writer);
         } catch (TemplateException | IOException e) {
             e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

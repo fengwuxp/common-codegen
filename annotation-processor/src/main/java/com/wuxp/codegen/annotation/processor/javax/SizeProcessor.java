@@ -19,7 +19,7 @@ public class SizeProcessor extends AbstractAnnotationProcessor<Size, SizeProcess
     }
 
 
-    public static abstract class SizeMate implements AnnotationMate<Size>, Size {
+    public abstract static class SizeMate implements AnnotationMate<Size>, Size {
 
         @Override
         public String toComment() {

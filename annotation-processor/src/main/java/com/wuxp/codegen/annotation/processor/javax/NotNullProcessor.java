@@ -20,7 +20,7 @@ public class NotNullProcessor extends AbstractAnnotationProcessor<NotNull, NotNu
     }
 
 
-    public static abstract class NotNullMate implements AnnotationMate<NotNull>, NotNull {
+    public abstract static class NotNullMate implements AnnotationMate<NotNull>, NotNull {
 
         public NotNullMate() {
         }

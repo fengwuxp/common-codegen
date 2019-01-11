@@ -5,6 +5,9 @@ package com.wuxp.codegen.core.utils;
  */
 public final class ToggleCaseUtil {
 
+    private ToggleCaseUtil() {
+    }
+
     /**
      * 将字符串的第一个字符大小写取反
      *

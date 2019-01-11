@@ -27,7 +27,7 @@ public class PathResolve {
      * @return
      */
     public String relativizeResolve(String baseDir, String... args) {
-        if (args == null && args.length == 0) {
+        if (args == null || args.length == 0) {
             return null;
         }
         Path basePath = Paths.get(baseDir);

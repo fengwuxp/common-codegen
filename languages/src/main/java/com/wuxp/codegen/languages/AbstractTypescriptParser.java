@@ -44,7 +44,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     }
 
     @Override
-    public TypescriptClassMeta parse(Class<?> source) {
+    public TypescriptClassMeta parse( Class<?> source) {
 
         //符合匹配规则，或非集合类型和Map的的子类进行
         if (!this.isMatchGenCodeRule(source) ||
@@ -54,13 +54,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         }
 
         if (HANDLE_COUNT.containsKey(source)) {
-            synchronized (source) {
-                //标记某个类被处理的次数如果超过2次，从缓存中返回
-                if (HANDLE_COUNT.get(source) > 2) {
-                    return this.getResultToLocalCache(source);
-                } else {
-                    HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
-                }
+            //标记某个类被处理的次数如果超过2次，从缓存中返回
+            if (HANDLE_COUNT.get(source) > 2) {
+                return this.getResultToLocalCache(source);
+            } else {
+                HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
             }
         } else {
             HANDLE_COUNT.put(source, 1);

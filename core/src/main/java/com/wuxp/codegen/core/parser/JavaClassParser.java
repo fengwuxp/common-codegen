@@ -257,7 +257,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 //参数名称列表
                 parameterNames = parameterNameDiscoverer.getParameterNames(method);
             } catch (Exception e) {
-                e.printStackTrace();
+               log.error("获取参数名称异常",e);
             }
 
             if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {

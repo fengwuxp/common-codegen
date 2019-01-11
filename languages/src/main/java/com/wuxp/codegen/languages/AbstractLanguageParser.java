@@ -188,8 +188,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 从缓存中获取解过
      *
-     * @param clazz
-     * @return
+     * @param clazz 类类型
+     * @return 返回来自缓存的解析对象
      */
     protected C getResultToLocalCache(Class<?> clazz) {
 

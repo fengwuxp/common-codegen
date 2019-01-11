@@ -20,7 +20,7 @@ public class PatternProcessor extends AbstractAnnotationProcessor<Pattern, Patte
     }
 
 
-    public static abstract class PatternMate implements AnnotationMate<Pattern>, Pattern {
+    public abstract static class PatternMate implements AnnotationMate<Pattern>, Pattern {
 
         @Override
         public String toComment() {

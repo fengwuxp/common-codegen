@@ -49,7 +49,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected TemplateStrategy<CommonCodeGenClassMeta> templateStrategy;
 
 
-    public AbstractCodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
+    AbstractCodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         this.packagePaths = packagePaths;
         this.languageParser = languageParser;
         this.templateStrategy = templateStrategy;
@@ -85,9 +85,9 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     /**
      * 包扫描 获的需要生成的类
      *
-     * @return
+     * @return 需要生成的类
      */
-    protected Set<Class<?>> scanPackages() {
+    private Set<Class<?>> scanPackages() {
 
 
         Set<Class<?>> classes = Arrays.stream(packagePaths)
@@ -96,7 +96,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     try {
                         return Thread.currentThread().getContextClassLoader().loadClass(className);
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        log.error("加载类失败", e);
                     }
                     return null;
                 }).filter(Objects::nonNull)

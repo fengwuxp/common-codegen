@@ -8,11 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 类的元数据
@@ -21,11 +19,15 @@ import java.util.Set;
 @Builder
 public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass {
 
+    /**
+     * 属于api 服务的注解
+     */
+    private static final Set<Class<? extends Annotation>> API_SERVICE_ANNOTATIONS = new LinkedHashSet<>();
 
     static {
-        MatchApiServiceClass.API_SERVICE_ANNOTATIONS.add(Controller.class);
-        MatchApiServiceClass.API_SERVICE_ANNOTATIONS.add(RequestMapping.class);
-        MatchApiServiceClass.API_SERVICE_ANNOTATIONS.add(RestController.class);
+        JavaClassMeta.API_SERVICE_ANNOTATIONS.add(Controller.class);
+        JavaClassMeta.API_SERVICE_ANNOTATIONS.add(RequestMapping.class);
+        JavaClassMeta.API_SERVICE_ANNOTATIONS.add(RestController.class);
     }
 
     //属性类型 如果有泛型则有多个
@@ -60,14 +62,13 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
     private Class<?> superClass;
 
 
-
     /**
      * 是否为spring的控制器
      *
      * @return
      */
     public boolean isApiServiceClass() {
-        return this.existAnnotation(MatchApiServiceClass.API_SERVICE_ANNOTATIONS.toArray(new Class[]{}));
+        return this.existAnnotation(JavaClassMeta.API_SERVICE_ANNOTATIONS.toArray(new Class[]{}));
     }
 
     @Override

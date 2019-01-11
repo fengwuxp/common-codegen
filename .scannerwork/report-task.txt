@@ -1,0 +1,6 @@
+projectKey=common-codegen
+serverUrl=http://localhost:19000
+serverVersion=7.5.0.20543
+dashboardUrl=http://localhost:19000/dashboard?id=common-codegen
+ceTaskId=AWg9DiuIA9imAGwQvZrV
+ceTaskUrl=http://localhost:19000/api/ce/task?id=AWg9DiuIA9imAGwQvZrV

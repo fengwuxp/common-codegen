@@ -9,7 +9,7 @@ import java.util.Set;
  */
 public interface MatchApiServiceClass {
 
-    Set<Class<? extends Annotation>> API_SERVICE_ANNOTATIONS = new LinkedHashSet<>();
+
 
 
     boolean isApiServiceClass();
