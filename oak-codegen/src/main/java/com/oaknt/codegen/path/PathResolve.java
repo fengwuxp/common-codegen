@@ -32,11 +32,15 @@ public class PathResolve {
         }
         Path basePath = Paths.get(baseDir);
 
-
         List<Path> paths = Arrays.stream(args)
                 .filter(StringUtils::hasText)
                 .map(path -> basePath.resolveSibling(Paths.get(path)))
                 .collect(Collectors.toList());
+
+        if (paths.size() == 0) {
+            log.error("根路径{}，需要导入依赖的文件，导入的依赖路径", baseDir, args[0], args[1]);
+            return null;
+        }
 
         Path p = paths.get(0);
         for (int i = 1; i < paths.size(); i++) {
