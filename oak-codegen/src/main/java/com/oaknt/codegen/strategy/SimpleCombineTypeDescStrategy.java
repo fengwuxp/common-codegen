@@ -1,4 +1,4 @@
-package test.com.oaknt.codegen.strategy;
+package com.oaknt.codegen.strategy;
 
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;

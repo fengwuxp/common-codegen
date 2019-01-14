@@ -3,7 +3,7 @@ package test.com.wuxp.codegen;
 import com.oaknt.codegen.OAKCodeGenerator;
 import com.oaknt.codegen.OAKSimpleTemplateStrategy;
 import com.wuxp.codegen.example.domain.User;
-import test.com.oaknt.codegen.strategy.TypescriptPackageMapStrategy;
+import com.oaknt.codegen.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;

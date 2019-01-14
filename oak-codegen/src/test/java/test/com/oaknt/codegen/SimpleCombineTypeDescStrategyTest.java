@@ -1,4 +1,4 @@
-package test.com.oaknt.codegen.strategy;
+package test.com.oaknt.codegen;
 
 import org.junit.Test;
 

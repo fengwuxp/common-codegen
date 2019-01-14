@@ -1,6 +1,6 @@
 package com.oaknt.codegen.freemarker;
 
-import test.com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
+import com.oaknt.codegen.strategy.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import freemarker.template.*;
