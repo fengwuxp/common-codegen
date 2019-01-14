@@ -48,6 +48,11 @@ public class OAKSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGen
         this.templateLoader = templateLoader;
         this.outputPath = outputPath.endsWith("\\") ? outputPath : outputPath + "\\";
         this.extName = extName;
+
+        //删除原本的目录
+        boolean r = FileUtil.deleteDirectory(this.outputPath);
+        log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
+
     }
 
     @Override

@@ -60,7 +60,8 @@ public class SwaggerCodegenTest {
 
         FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT.getName());
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new OAKSimpleTemplateStrategy(
-                templateLoader, Paths.get(System.getProperty("user.dir")).resolveSibling("web-example\\src\\api").toString(),
+                templateLoader,
+                Paths.get(System.getProperty("user.dir")).resolveSibling("web-example\\src\\api").toString(),
                 LanguageDescription.TYPESCRIPT.getSuffixName());
 
         String[] packagePaths = {"com.wuxp.codegen.example.controller"};
