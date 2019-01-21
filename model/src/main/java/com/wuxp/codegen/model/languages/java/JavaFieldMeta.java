@@ -4,6 +4,7 @@ package com.wuxp.codegen.model.languages.java;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 
 /**
@@ -11,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@Accessors(chain = true)
 public class JavaFieldMeta extends JavaBaseMeta {
 
 

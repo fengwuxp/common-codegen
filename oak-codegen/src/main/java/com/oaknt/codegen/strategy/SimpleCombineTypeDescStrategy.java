@@ -1,13 +1,12 @@
 package com.oaknt.codegen.strategy;
 
+import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
 
-    protected static final String GENERIC_DESCRIPTOR = "\\<+(.*?)\\>$+";
+
 
     @Override
     public String combine(CommonCodeGenClassMeta[] codeGenClassMetas) {
@@ -75,7 +74,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         String typeNme = names.get(0);
 
         //泛型描述列表 例如： T、K、V
-        List<String> descriptors = this.matchGenericDescriptors(typeNme);
+        List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(typeNme);
 
         //存在泛型描述
         if (descriptors.size() > 0) {
@@ -119,7 +118,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
         for (int i = 0; i < genericDescriptors.size(); i++) {
             String genericDescription = genericDescriptors.get(i);
-            List<String> descriptors = this.matchGenericDescriptors(genericDescription);
+            List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(genericDescription);
             int size = descriptors.size();
             if (size > 0) {
                 //有泛型描述符号
@@ -147,29 +146,6 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
     }
 
 
-    /**
-     * 抓取泛型描述符列表 例如：Map<K,V> ==>[K,V]
-     *
-     * @param genericDescription
-     * @return
-     */
-    private List<String> matchGenericDescriptors(String genericDescription) {
-        Pattern pattern = Pattern.compile(GENERIC_DESCRIPTOR);
 
-        Matcher matcher = pattern.matcher(genericDescription);
-        List<String> list = new ArrayList<>();
-        while (matcher.find()) {
-            String group = matcher.group(1);
-            if (group.endsWith(">>")) {
-                //不是最里面的泛型
-                list.addAll(this.matchGenericDescriptors(group));
-            } else {
-                List<String> c = Arrays.asList(group.split(","));
-                list.addAll(c);
-            }
-
-        }
-        return list;
-    }
 
 }

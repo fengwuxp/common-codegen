@@ -2,11 +2,17 @@ package com.wuxp.codegen.model.languages.typescript;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 
 /**
  * 主要用定义 typescript 原本支持的类
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Accessors(chain = true)
 public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
 
     //object

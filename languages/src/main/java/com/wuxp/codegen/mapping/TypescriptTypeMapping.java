@@ -1,6 +1,7 @@
 package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -75,17 +77,59 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
                 .filter(Objects::nonNull)
                 .map(this.customizeJavaTypeMapping::mapping)
                 .flatMap(Collection::stream)
+                .map(clazz -> {
+                    List<Class<?>> list = new ArrayList<>();
+                    if (clazz.isArray()) {
+                        //数组
+                        list.add(List.class);
+                        list.add(clazz.getComponentType());
+                    } else {
+                        list.add(clazz);
+                    }
+                    return list;
+                })
+                .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .map(this::mapping)
                 .filter(Objects::nonNull)
                 .forEach(classMetas::add);
-        return new ArrayList<>(classMetas);
+
+        //匹配泛型的个数是否充足，不足的用any补足
+        int index = 0;
+        boolean hasGeneric = false;
+        for (; index < classMetas.size(); index++) {
+            //查找是否存在泛型的元数据
+            if (classMetas.get(index).getGenericDescription() == null) {
+                continue;
+            }
+            hasGeneric = true;
+            break;
+        }
+        if (hasGeneric) {
+            //有泛型
+            TypescriptClassMeta typescriptClassMeta = classMetas.get(index);
+            String finallyGenericDescription = typescriptClassMeta.getFinallyGenericDescription();
+            List<String> genericDescriptors = GrabGenericVariablesHelper.matchGenericDescriptors(finallyGenericDescription);
+
+            //计算期望的泛型个数，和事件泛型个数的差值，+1是因为要去除本身
+            int num = genericDescriptors.size() - classMetas.size() + index + 1;
+            if (num > 0) {
+                //泛型不够
+                for (int i = 0; i < num; i++) {
+                    //填充通用类型
+                    classMetas.add(TypescriptClassMeta.ANY);
+                }
+            }
+        }
+
+        return classMetas;
 
     }
 
 
     /**
      * 获取类型映射
+     *
      * @param clazz
      * @return
      */
@@ -112,9 +156,6 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
             BeanUtils.copyProperties(meta, typescriptClassMeta);
             return typescriptClassMeta;
-        } else if (clazz.isArray()) {
-            //数组
-            return TypescriptClassMeta.ARRAY;
         } else {
             //未处理的类型
             log.warn("Not Found clazz " + clazz.getName() + " mapping type");

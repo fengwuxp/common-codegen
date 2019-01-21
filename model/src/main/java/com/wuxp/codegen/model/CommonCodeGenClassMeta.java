@@ -2,6 +2,8 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,7 +12,9 @@ import java.util.stream.Collectors;
 /**
  * 通用的代码生成 class 元数据
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
 

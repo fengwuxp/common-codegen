@@ -2,6 +2,7 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.AccessPermission;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -13,6 +14,7 @@ import java.util.Map;
  * 通用的基础元数据类
  */
 @Data
+@Accessors(chain = true)
 public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
 
     /**

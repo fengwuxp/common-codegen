@@ -2,12 +2,16 @@ package com.wuxp.codegen.model;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 
 /**
  * 通用的代码生成 filed 元数据
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Accessors(chain = true)
 public class CommonCodeGenFiledMeta extends CommonBaseMeta {
 
 

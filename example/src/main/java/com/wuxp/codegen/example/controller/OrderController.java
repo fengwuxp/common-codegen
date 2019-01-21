@@ -73,4 +73,12 @@ public class OrderController extends BaseController {
         return new ServiceResponse<>();
     }
 
+
+    @ApiOperation(value = "test hello", notes = "")
+    @PostMapping(value = {"hello"})
+    public ServiceResponse hello() {
+
+        return new ServiceResponse<>();
+    }
+
 }

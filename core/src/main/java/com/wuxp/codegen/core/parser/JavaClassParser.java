@@ -51,18 +51,18 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             return PARSER_CACHE.get(source);
         }
 
-        JavaClassMeta.JavaClassMetaBuilder javaClassMetaBuilder = JavaClassMeta.builder();
+        JavaClassMeta classMeta = new JavaClassMeta();
 
         if (source.isInterface()) {
             //接口
-            javaClassMetaBuilder.classType(ClassType.INTERFACE);
+            classMeta.setClassType(ClassType.INTERFACE);
         } else if (source.isEnum()) {
             //枚举
-            javaClassMetaBuilder.classType(ClassType.ENUM);
+            classMeta.setClassType(ClassType.ENUM);
         } else if (source.isAnnotation()) {
-            javaClassMetaBuilder.classType(ClassType.ANNOTATION);
+            classMeta.setClassType(ClassType.ANNOTATION);
         } else {
-            javaClassMetaBuilder.classType(ClassType.CLASS);
+            classMeta.setClassType(ClassType.CLASS);
         }
 
         int modifiers = source.getModifiers();
@@ -107,31 +107,26 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
 
-        javaClassMetaBuilder.className(source.getName())
-                .clazz(source)
-                .isAbstract(Modifier.isAbstract(modifiers))
-                .superTypeVariables(superTypeVariables)
-                .methodMetas(this.getMethods(source, onlyPublic))
-                .fieldMetas(this.getFields(source, onlyPublic));
-
-
-        JavaClassMeta classMeta = javaClassMetaBuilder.build();
-
-
         TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
 
-        classMeta.setTypeVariables(typeParameters);
-        classMeta.setTypeVariableNum(typeParameters.length);
-
-        classMeta.setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()));
         getAssessPermission(modifiers, classMeta);
-        classMeta.setName(source.getSimpleName());
-        classMeta.setAnnotations(source.getAnnotations());
 
-        classMeta.setInterfaces(source.getInterfaces());
-        classMeta.setSuperClass(source.getSuperclass());
+        classMeta.setClassName(source.getName())
+                .setClazz(source)
+                .setIsAbstract(Modifier.isAbstract(modifiers))
+                .setSuperTypeVariables(superTypeVariables)
+                .setMethodMetas(this.getMethods(source, onlyPublic))
+                .setFieldMetas(this.getFields(source, onlyPublic))
+                .setInterfaces(source.getInterfaces())
+                .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
+                .setSuperClass(source.getSuperclass())
+                .setAnnotations(source.getAnnotations())
+                .setTypeVariables(typeParameters)
+                .setTypeVariableNum(typeParameters.length)
+                .setName(source.getSimpleName());
 
         PARSER_CACHE.put(source, classMeta);
+
         return classMeta;
     }
 
@@ -164,15 +159,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 }
             }
 
-            int modifiers = field.getModifiers();
-            JavaFieldMeta.JavaFieldMetaBuilder builder = JavaFieldMeta.builder();
+            JavaFieldMeta fieldMeta = new JavaFieldMeta();
 
-            JavaFieldMeta fieldMeta = builder
-                    .types(genericsToClassType(ResolvableType.forField(field)))
-                    .isTransient(Modifier.isTransient(modifiers))
-                    .isVolatile(Modifier.isVolatile(modifiers))
-                    .build();
+            int modifiers = field.getModifiers();
+            //设置访问权限
             this.getAssessPermission(modifiers, fieldMeta);
+
+            fieldMeta.setTypes(genericsToClassType(ResolvableType.forField(field)))
+                    .setIsTransient(Modifier.isTransient(modifiers))
+                    .setIsVolatile(Modifier.isVolatile(modifiers));
+
 
             fieldMeta.setName(fieldName);
             Annotation[] annotations = field.getAnnotations();
@@ -205,10 +201,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                         .toArray(Type[]::new);
             }
 
-
             fieldMeta.setTypeVariables(typeVariables);
-
-
             fieldMetas.add(fieldMeta);
         }
 
@@ -236,11 +229,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
         for (Method method : methods) {
-            JavaMethodMeta.JavaMethodMetaBuilder builder = JavaMethodMeta.builder();
+
+            JavaMethodMeta methodMeta = new JavaMethodMeta();
 
             //返回值
             ResolvableType returnType = ResolvableType.forMethodReturnType(method);
-            builder.returnType(genericsToClassType(returnType));
+            methodMeta.setReturnType(genericsToClassType(returnType));
 
             //方法参数列表
             Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
@@ -257,7 +251,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 //参数名称列表
                 parameterNames = parameterNameDiscoverer.getParameterNames(method);
             } catch (Exception e) {
-               log.error("获取参数名称异常",e);
+                log.error("获取参数名称异常", e);
             }
 
             if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {
@@ -271,20 +265,19 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
 
             int modifiers = method.getModifiers();
-            builder.params(params)
-                    .isAbstract(Modifier.isAbstract(modifiers))
-                    .isSynchronized(Modifier.isSynchronized(modifiers))
-                    .paramAnnotations(paramAnnotations)
-                    .owner(clazz)
-                    .isNative(Modifier.isNative(modifiers));
-
-            JavaMethodMeta methodMeta = builder.build();
             this.getAssessPermission(modifiers, methodMeta);
-            methodMeta.setName(method.getName());
             TypeVariable<Method>[] typeParameters = method.getTypeParameters();
-            methodMeta.setTypeVariables(typeParameters);
-            methodMeta.setTypeVariableNum(typeParameters.length);
-            methodMeta.setAnnotations(method.getAnnotations());
+            methodMeta.setParams(params)
+                    .setIsAbstract(Modifier.isAbstract(modifiers))
+                    .setIsSynchronized(Modifier.isSynchronized(modifiers))
+                    .setParamAnnotations(paramAnnotations)
+                    .setOwner(clazz)
+                    .setIsNative(Modifier.isNative(modifiers))
+                    .setTypeVariables(method.getTypeParameters())
+                    .setTypeVariableNum(typeParameters.length)
+                    .setAnnotations(method.getAnnotations())
+                    .setName(method.getName());
+
             methodMetas.add(methodMeta);
 
         }

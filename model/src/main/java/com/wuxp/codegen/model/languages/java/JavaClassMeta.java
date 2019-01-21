@@ -4,6 +4,8 @@ import com.wuxp.codegen.model.MatchApiServiceClass;
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +18,7 @@ import java.util.*;
  * 类的元数据
  */
 @Data
-@Builder
+@Accessors(chain = true)
 public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass {
 
     /**

@@ -2,6 +2,8 @@ package com.wuxp.codegen.model.languages.java;
 
 import com.wuxp.codegen.model.CommonBaseMeta;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -11,7 +13,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Accessors(chain = true)
 public class JavaBaseMeta extends CommonBaseMeta {
 
 

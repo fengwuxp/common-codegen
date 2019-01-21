@@ -1,8 +1,9 @@
 package com.wuxp.codegen.model.languages.java;
 
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -10,8 +11,9 @@ import java.util.Map;
 /**
  * 方法元数据信息
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@Accessors(chain = true)
 public class JavaMethodMeta extends JavaBaseMeta {
 
 

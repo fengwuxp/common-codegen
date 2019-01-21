@@ -318,17 +318,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         //从get方法或is方法中生成field
 
                         //mock javaField
-                        JavaFieldMeta fieldMeta = JavaFieldMeta
-                                .builder()
-                                .isVolatile(false)
-                                .isTransient(false)
-                                .types(methodMeta.getReturnType())
-                                .build();
-                        fieldMeta.setName(JavaMethodNameUtil.replaceGetOrIsPrefix(methodMeta.getName()));
-                        fieldMeta.setAccessPermission(AccessPermission.PUBLIC);
-                        fieldMeta.setAnnotations(methodMeta.getAnnotations());
-                        fieldMeta.setIsStatic(false);
-                        fieldMeta.setIsFinal(false);
+                        JavaFieldMeta fieldMeta = new JavaFieldMeta();
+                        fieldMeta.setIsVolatile(false)
+                                .setIsTransient(false)
+                                .setTypes(methodMeta.getReturnType())
+                                .setAnnotations(methodMeta.getAnnotations())
+                                .setAccessPermission(AccessPermission.PUBLIC)
+                                .setName(JavaMethodNameUtil.replaceGetOrIsPrefix(methodMeta.getName()))
+                                .setIsStatic(false)
+                                .setIsFinal(false);
 
 
                         return fieldMeta;
