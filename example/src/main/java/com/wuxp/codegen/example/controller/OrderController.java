@@ -11,9 +11,12 @@ import com.wuxp.codegen.example.resp.ServiceResponse;
 import com.wuxp.codegen.example.services.UserService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 
 
 @Api("订单服务")
@@ -40,7 +43,7 @@ public class OrderController extends BaseController {
 
 
     @ApiOperation(value = "获取订单列表", notes = "")
-    @PostMapping(value = {"queryOrder2"})
+    @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
                                                    @RequestParam(name = "order_id", required = false) Long oderId,
                                                    @ApiParam(value = "订单号", required = false) String sn) {
@@ -49,7 +52,7 @@ public class OrderController extends BaseController {
     }
 
     @ApiOperation(value = "查询分页", notes = "")
-    @PostMapping(value = {"queryPage"})
+    @PostMapping(value = {"queryPage"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     @ApiImplicitParams(
             {
                     @ApiImplicitParam(name = "id", value = "订单", required = true, dataType = "String"),

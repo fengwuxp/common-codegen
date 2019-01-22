@@ -18,6 +18,7 @@ import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -304,6 +305,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     javaMethodMeta.getName(),
                     this.classToNamedString(javaMethodMeta.getReturnType())));
         }
+
 
 
         //处理方法的参数

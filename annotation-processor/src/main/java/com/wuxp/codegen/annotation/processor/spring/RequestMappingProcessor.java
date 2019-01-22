@@ -1,5 +1,6 @@
 package com.wuxp.codegen.annotation.processor.spring;
 
+import com.alibaba.fastjson.JSON;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
@@ -72,15 +73,29 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             if (StringUtils.hasText(val)) {
                 arguments.put("value", "'" + val + "'");
             }
-            if (this.annotationType().equals(RequestMapping.class)){
+            if (this.annotationType().equals(RequestMapping.class)) {
                 arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
             }
+
+            //客户端和服务的produces consumes 逻辑对调
+            String[] consumes = this.consumes();
+            if (consumes.length > 0) {
+                arguments.put("produces", JSON.toJSONString(consumes));
+            }
+            String[] produces = this.produces();
+            if (produces.length > 0) {
+                arguments.put("consumes", JSON.toJSONString(produces));
+            }
+
             codeGenAnnotation.setNamedArguments(arguments);
 
-            //注解w位置参数
+            //注解位置参数
             List<String> positionArguments = new LinkedList<>();
             positionArguments.add(arguments.get("value"));
             positionArguments.add(arguments.get("method"));
+            positionArguments.add(arguments.get("produces"));
+            positionArguments.add(arguments.get("produces"));
+
             codeGenAnnotation.setPositionArguments(positionArguments);
 
             return codeGenAnnotation;

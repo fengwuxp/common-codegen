@@ -5,6 +5,7 @@ import {DeleteMapping} from "common_fetch/src/annotations/mapping/DeleteMapping"
 import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
+import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
 <#import "../common/customize_method.ftl" as customize_method/>
 

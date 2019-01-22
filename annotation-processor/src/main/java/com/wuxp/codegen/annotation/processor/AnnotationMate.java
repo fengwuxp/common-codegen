@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation;
  *
  * @param <T>
  */
-public interface AnnotationMate<T extends Annotation> extends AnnotationToString {
+public interface AnnotationMate<T extends Annotation> extends AnnotationToString ,Annotation {
 
 
     /**
