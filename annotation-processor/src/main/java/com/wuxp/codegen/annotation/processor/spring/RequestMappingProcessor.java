@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * <p>
@@ -26,6 +28,10 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
 
+
+    //媒体类型映射
+    private static final Map<String, String> MEDIA_TYPE_MAPPING = new LinkedHashMap<>();
+
     static {
         ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingMate.class);
         ANNOTATION_CLASS_MAP.put(PostMapping.class, PostMappingMate.class);
@@ -33,6 +39,9 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         ANNOTATION_CLASS_MAP.put(DeleteMapping.class, DeleteMappingMate.class);
         ANNOTATION_CLASS_MAP.put(PutMapping.class, PutMappingMate.class);
         ANNOTATION_CLASS_MAP.put(PatchMapping.class, PatchMappingMate.class);
+
+        MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.FORM_DATA");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.JSON");
     }
 
 
@@ -80,11 +89,30 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             //客户端和服务的produces consumes 逻辑对调
             String[] consumes = this.consumes();
             if (consumes.length > 0) {
-                arguments.put("produces", JSON.toJSONString(consumes));
+
+                //尝试转化
+                String consume = consumes[0];
+                String produces = MEDIA_TYPE_MAPPING.get(consume);
+                if (consume == null) {
+                    produces = JSON.toJSONString(produces);
+                } else {
+                    produces = "[" + produces + "]";
+                }
+                arguments.put("produces", produces);
             }
+
             String[] produces = this.produces();
             if (produces.length > 0) {
-                arguments.put("consumes", JSON.toJSONString(produces));
+
+                //尝试转化
+                String produce = produces[0];
+                String _consumes = MEDIA_TYPE_MAPPING.get(produce);
+                if (produce == null) {
+                    _consumes = JSON.toJSONString(produces);
+                } else {
+                    _consumes = "[" + _consumes + "]";
+                }
+                arguments.put("consumes", _consumes);
             }
 
             codeGenAnnotation.setNamedArguments(arguments);

@@ -413,6 +413,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
         }
         if (annotationOwner instanceof JavaMethodMeta) {
+            //spring的mapping注解
             if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
 
                 JavaMethodMeta javaMethodMeta = (JavaMethodMeta) annotationOwner;
