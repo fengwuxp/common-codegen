@@ -6,7 +6,7 @@
 - 3.实例化要生成的目标语言的解析器，包名映射策略，模板加载
 - 4.通过第三方实例化的对象，构造代码生成器
 
-- 具体可以参考[SwaggerCodegenTypescriptTest](../example/swagger-2/src/test/java/test/com/wuxp/codegen/typescript/SwaggerCodegenTypescriptTest.java)
+- 具体可以参考[SwaggerCodegenTypescriptTest.java](../example/swagger-2/src/test/java/test/com/wuxp/codegen/typescript/SwaggerCodegenTypescriptTest.java)
 
 ##### 生成过程截图
 
