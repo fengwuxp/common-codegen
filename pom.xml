@@ -18,7 +18,7 @@
         <module>oak-codegen</module>
         <module>swagger-codegen</module>
         <module>annotation-processor</module>
-        <module>example</module>
+        <module>examples</module>
     </modules>
 
     <properties>
