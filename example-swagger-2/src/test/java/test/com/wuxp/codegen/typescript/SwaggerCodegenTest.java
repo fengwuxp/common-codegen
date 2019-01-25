@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen;
+package test.com.wuxp.codegen.typescript;
 
 import com.oaknt.codegen.OAKCodeGenerator;
 import com.oaknt.codegen.OAKSimpleTemplateStrategy;
@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 测试swagger 生成
+ * 测试swagger 生成 typescript的 api sdk
  */
 @Slf4j
 public class SwaggerCodegenTest {
@@ -41,41 +41,48 @@ public class SwaggerCodegenTest {
     @Before
     public void before() {
 
-
+        //设置基础数据类型的映射关系
         AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
         AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
 
-        AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(ServiceQueryResponse.class,new Class<?>[]{ServiceResponse.class, PageInfo.class});
+        //自定义的类型映射
+        AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
+        //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
+
         //控制器的包所在
         packageMap.put("com.wuxp.codegen.example.controller", "services");
-
-        //其他类（DTO）所在的包
+        //其他类（DTO、VO等）所在的包
         packageMap.put("com.wuxp.codegen.example", "");
 
+        //实例化包名映射策略
         PackageMapStrategy packageMapStrategy = new TypescriptPackageMapStrategy(packageMap);
 
+        //实例化语言解析器
         LanguageParser languageParser = new TypescriptParser(packageMapStrategy, new SwaggerCodeGenMatchingStrategy(), null);
 
-        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT.getName());
+        String language = LanguageDescription.TYPESCRIPT.getName();
+
+        //实例化模板加载器
+        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(language);
+
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new OAKSimpleTemplateStrategy(
                 templateLoader,
-                Paths.get(System.getProperty("user.dir")).resolveSibling("web-example\\src\\api").toString(),
+                Paths.get(System.getProperty("user.dir")).resolveSibling("codegen-result-example\\src\\" + language.toLowerCase()+"\\api").toString(),
                 LanguageDescription.TYPESCRIPT.getSuffixName());
 
         String[] packagePaths = {"com.wuxp.codegen.example.controller"};
 
+        //创建代码生成器
         this.codeGenerator = new OAKCodeGenerator(packagePaths, languageParser, templateStrategy);
     }
 
-    protected GenericParser<JavaClassMeta, Class<?>> genericParser = new JavaClassParser(false);
 
     @Test
     public void testCodeGenApi() {
 
-//        JavaClassMeta parse = genericParser.parse(User.class);
-
+        //生成
         codeGenerator.generate();
 
     }

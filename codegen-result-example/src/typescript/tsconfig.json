@@ -10,7 +10,7 @@
     "sourceMap": true,
     "allowJs": true,
     "compileOnSave": false,
-    "baseUrl": "./src",
+    "baseUrl": "../api",
     "paths": {
       "@src/*": [
         "./*"

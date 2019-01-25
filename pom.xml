@@ -18,7 +18,7 @@
         <module>oak-codegen</module>
         <module>swagger-codegen</module>
         <module>annotation-processor</module>
-        <module>example</module>
+        <module>example-swagger-2</module>
     </modules>
 
     <properties>
@@ -132,8 +132,6 @@
         </dependency>
 
 
-
-
     </dependencies>
 
 
@@ -230,32 +228,32 @@
             </plugin>
 
             <!--<plugin>-->
-                <!--<groupId>org.jetbrains.kotlin</groupId>-->
-                <!--<artifactId>kotlin-maven-plugin</artifactId>-->
+            <!--<groupId>org.jetbrains.kotlin</groupId>-->
+            <!--<artifactId>kotlin-maven-plugin</artifactId>-->
 
-                <!--<executions>-->
+            <!--<executions>-->
 
-                    <!--<execution>-->
-                        <!--<id>compile</id>-->
-                        <!--<phase>compile</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>compile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>compile</id>-->
+            <!--<phase>compile</phase>-->
+            <!--<goals>-->
+            <!--<goal>compile</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
 
-                    <!--<execution>-->
-                        <!--<id>test-compile</id>-->
-                        <!--<phase>test-compile</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>test-compile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>test-compile</id>-->
+            <!--<phase>test-compile</phase>-->
+            <!--<goals>-->
+            <!--<goal>test-compile</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
 
-                <!--</executions>-->
+            <!--</executions>-->
 
-                <!--<configuration>-->
-                    <!--<jvmTarget>${maven.compiler.target}</jvmTarget>-->
-                <!--</configuration>-->
+            <!--<configuration>-->
+            <!--<jvmTarget>${maven.compiler.target}</jvmTarget>-->
+            <!--</configuration>-->
 
             <!--</plugin>-->
 

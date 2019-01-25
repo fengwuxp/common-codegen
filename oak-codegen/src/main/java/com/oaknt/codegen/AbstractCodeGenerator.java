@@ -25,9 +25,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractCodeGenerator implements CodeGenerator {
 
+    /**
+     * spring 的包扫描组件
+     */
     protected static final ClassPathScanningCandidateComponentProvider CANDIDATE_COMPONENT_PROVIDER = new ClassPathScanningCandidateComponentProvider(true);
 
     static {
+        //设置扫描过滤器
         CANDIDATE_COMPONENT_PROVIDER.addIncludeFilter(new AnnotationTypeFilter(Api.class));
         CANDIDATE_COMPONENT_PROVIDER.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
     }
