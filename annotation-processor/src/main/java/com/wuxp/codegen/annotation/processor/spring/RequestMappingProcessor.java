@@ -9,6 +9,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,8 +63,14 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
         @Override
-        public String toComment() {
+        public String toComment(Class<?> annotationOwner) {
 
+            return "接口的请求方法为：" + this.getRequestMethod().name();
+        }
+
+
+        @Override
+        public String toComment(Method annotationOwner) {
             return "接口的请求方法为：" + this.getRequestMethod().name();
         }
 

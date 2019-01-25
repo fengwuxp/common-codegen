@@ -160,6 +160,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             }
 
             JavaFieldMeta fieldMeta = new JavaFieldMeta();
+            fieldMeta.setField(field)
+                    .setIsEnumConstant(field.isEnumConstant());
 
             int modifiers = field.getModifiers();
             //设置访问权限
@@ -231,7 +233,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         for (Method method : methods) {
 
             JavaMethodMeta methodMeta = new JavaMethodMeta();
-
+            methodMeta.setMethod(method);
             //返回值
             ResolvableType returnType = ResolvableType.forMethodReturnType(method);
             methodMeta.setReturnType(genericsToClassType(returnType));

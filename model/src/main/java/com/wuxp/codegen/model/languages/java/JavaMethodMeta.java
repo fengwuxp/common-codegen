@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -16,6 +17,9 @@ import java.util.Map;
 @Accessors(chain = true)
 public class JavaMethodMeta extends JavaBaseMeta {
 
+
+    //所属的方法
+    private Method method;
 
     //返回值类型，如果有泛型则有多个 void是为null
     private Class<?>[] returnType;

@@ -5,6 +5,8 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.annotations.Api;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+
 /**
  * swagger 注解处理
  *
@@ -22,7 +24,7 @@ public class ApiProcessor extends AbstractAnnotationProcessor<Api, ApiProcessor.
 
 
         @Override
-        public String toComment() {
+        public String toComment(Field annotationOwner) {
             String[] tags = this.tags();
             String tag = tags[0];
             if (!StringUtils.hasText(tag)) {

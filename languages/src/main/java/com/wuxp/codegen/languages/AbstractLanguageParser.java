@@ -31,6 +31,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -199,10 +201,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 通过注解获取注释
      *
-     * @param annotations
+     * @param annotations 组件列表
+     * @param owner       注解所有者
      * @return
      */
-    protected List<String> generateComments(Annotation[] annotations) {
+    protected List<String> generateComments(Annotation[] annotations, Object owner) {
         if (annotations == null || annotations.length == 0) {
             return new ArrayList<>();
         }
@@ -213,8 +216,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             if (processor == null) {
                 return null;
             }
+            if (owner instanceof Class) {
+                return processor.process(annotation).toComment((Class<?>) owner);
+            } else if (owner instanceof Field) {
+                return processor.process(annotation).toComment((Field) owner);
+            } else {
+                return processor.process(annotation).toComment((Method) owner);
+            }
 
-            return processor.process(annotation).toComment();
         }).filter(StringUtils::hasText)
                 .collect(Collectors.toList());
     }

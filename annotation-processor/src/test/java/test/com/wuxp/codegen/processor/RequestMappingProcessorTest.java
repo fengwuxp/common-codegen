@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -41,12 +42,13 @@ public class RequestMappingProcessorTest {
     @Test
     public void testNotNullProcess() throws Exception {
         TestController controller = new TestController();
-        NotNull annotation = controller.getClass().getField("name").getAnnotation(NotNull.class);
+        Field field = controller.getClass().getField("name");
+        NotNull annotation = field.getAnnotation(NotNull.class);
         NotNullProcessor.NotNullMate notNullMate = new NotNullProcessor()
                 .process(annotation);
         String message = notNullMate.message();
         System.out.println("message: " + message);
-        System.out.println("commont: " + notNullMate.toComment());
+        System.out.println("comment: " + notNullMate.toComment(field));
     }
 
     public static class TestController {

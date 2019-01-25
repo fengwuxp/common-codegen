@@ -4,6 +4,7 @@ import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Field;
 
 /**
  * javax 验证注解处理
@@ -26,9 +27,9 @@ public class NotNullProcessor extends AbstractAnnotationProcessor<NotNull, NotNu
         }
 
         @Override
-        public String toComment() {
+        public String toComment(Field annotationOwner) {
 
-            return "必填项，不能为空";
+            return "属性：" + annotationOwner.getName() + "为必填项，不能为空";
         }
     }
 }

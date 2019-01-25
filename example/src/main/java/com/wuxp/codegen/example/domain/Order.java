@@ -17,7 +17,7 @@ public class Order {
     @ApiModelProperty("sn")
     private String sn;
 
-    @ApiModelProperty("下单用户")
+    @ApiModelProperty(value = "下单用户")
     private User user;
 
 

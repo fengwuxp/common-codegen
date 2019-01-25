@@ -110,7 +110,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setSuperClass(this.parse(javaClassMeta.getSuperClass()));
 
         //类上的注释
-        meta.setComments(this.generateComments(source.getAnnotations()).toArray(new String[]{}));
+        meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
         meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), javaClassMeta));
 
@@ -211,7 +211,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         typescriptFieldMate.setAccessPermission(javaFieldMeta.getAccessPermission());
 
         //注释来源于注解和java的类类型
-        List<String> comments = super.generateComments(javaFieldMeta.getAnnotations());
+        List<String> comments = super.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
         if (!isEnum) {
             comments.addAll(super.generateComments(javaFieldMeta.getTypes(), false));
         } else {
@@ -278,7 +278,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //method转换
         genMethodMeta.setAccessPermission(javaMethodMeta.getAccessPermission());
         //注解转注释
-        List<String> comments = super.generateComments(javaMethodMeta.getAnnotations());
+        List<String> comments = super.generateComments(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod());
         comments.addAll(super.generateComments(javaMethodMeta.getReturnType(), true));
         genMethodMeta.setComments(comments.toArray(new String[]{}));
         genMethodMeta.setName(javaMethodMeta.getName());
@@ -305,7 +305,6 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     javaMethodMeta.getName(),
                     this.classToNamedString(javaMethodMeta.getReturnType())));
         }
-
 
 
         //处理方法的参数

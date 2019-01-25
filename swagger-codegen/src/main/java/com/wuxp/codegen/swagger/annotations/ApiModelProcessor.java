@@ -5,6 +5,8 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.annotations.ApiModel;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+
 /**
  * swagger 注解处理
  *
@@ -22,7 +24,7 @@ public class ApiModelProcessor extends AbstractAnnotationProcessor<ApiModel, Api
 
 
         @Override
-        public String toComment() {
+        public String toComment(Class<?> annotationOwner) {
             String description = this.description();
             if (!StringUtils.hasText(description)) {
                 return this.value();
