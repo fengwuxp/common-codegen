@@ -33,7 +33,7 @@ import java.util.Map;
  * 测试swagger 生成 typescript的 api sdk
  */
 @Slf4j
-public class SwaggerCodegenTest {
+public class SwaggerCodegenTypescriptTest {
 
 
     private CodeGenerator codeGenerator;
