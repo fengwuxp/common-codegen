@@ -13,7 +13,12 @@
     </parent>
 
     <groupId>com.wuxp.codegen</groupId>
-    <artifactId>wuxp-codegen-example-swagger-2</artifactId>
+    <artifactId>wuxp-codegen-example</artifactId>
+    <packaging>pom</packaging>
+    
+    <modules>
+        <module>swagger-2</module>
+    </modules>
     <modelVersion>4.0.0</modelVersion>
 
     <properties>

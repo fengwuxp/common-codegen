@@ -6,23 +6,23 @@
 - 3.实例化要生成的目标语言的解析器，包名映射策略，模板加载
 - 4.通过第三方实例化的对象，构造代码生成器
 
-- 具体可以参考[SwaggerCodegenTypescriptTest](../example-swagger-2/src/test/java/test/com/wuxp/codegen/typescript/SwaggerCodegenTypescriptTest.java)
+- 具体可以参考[SwaggerCodegenTypescriptTest](../example/swagger-2/src/test/java/test/com/wuxp/codegen/typescript/SwaggerCodegenTypescriptTest.java)
 
 ##### 生成过程截图
 
 <p align="center">
   <h1>swagger-2的文档页面</h1>
-  <img src="./codegen-example-image/1.png">
-  <img  src="./codegen-example-image/2.png">
+  <img src="./codegen-example-images/1.png">
+  <img  src="./codegen-example-images/2.png">
   <h1>生成的结果(typescript)</h1>
   <p>控制器生成的结果</p>
-  <img src="./codegen-example-image/3.png">
+  <img src="./codegen-example-images/3.png">
    <p>请求对象或方法参数生成的结果</p>
-  <img src="./codegen-example-image/4.png">
+  <img src="./codegen-example-images/4.png">
    <p>响应对象</p>
-  <img src="./codegen-example-image/5.png">
+  <img src="./codegen-example-images/5.png">
   <p>统一响应对象</p>
-  <img src="./codegen-example-image/7.png">
+  <img src="./codegen-example-images/7.png">
   <p>枚举</p>
-  <img src="./codegen-example-image/6.png">
+  <img src="./codegen-example-images/6.png">
 </p>

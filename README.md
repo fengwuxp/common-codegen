@@ -5,16 +5,17 @@
 
 #### 模块说明
 ```
-|--annotation-processor   注解处理(和编译器的注解处理器不同，应该叫注解解析更合适)
-|--core                   核心模块，定义了顶层的接口
-|--docs                   说明文档
-|--example-swagger-2      写了一个
-|--languages              不同语言的处理
-|--model                  数据模型
-|--oak-codegen            "oak" 风格的代码生成（风格主要是指模板，解析规则等）
-|--swagger-codegen        基于swagger注解规则的生成
-|--template               模板的通用处理
-|--codegen-result-example 生成结果
+|--annotation-processor      注解处理(和编译器的注解处理器不同，应该叫注解解析更合适)
+|--core                      核心模块，定义了顶层的接口
+|--docs                      说明文档
+|--example                   生成例子集合
+|-----swagger-2              基于swagger-2的生成例子
+|--languages                 不同语言的处理
+|--model                     数据模型
+|--oak-codegen               "oak" 风格的代码生成（风格主要是指模板，解析规则等）
+|--swagger-codegen           基于swagger注解规则的生成
+|--template                  模板的通用处理
+|--codegen-result-example    生成结果
 ```
 
 - 期望（目标）

@@ -69,7 +69,7 @@ public class SwaggerCodegenTypescriptTest {
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new OAKSimpleTemplateStrategy(
                 templateLoader,
-                Paths.get(System.getProperty("user.dir")).resolveSibling("codegen-result-example\\src\\" + language.toLowerCase()+"\\api").toString(),
+                Paths.get(System.getProperty("user.dir")).resolveSibling("codegen-result\\src\\" + language.toLowerCase()+"\\api").toString(),
                 LanguageDescription.TYPESCRIPT.getSuffixName());
 
         String[] packagePaths = {"com.wuxp.codegen.example.controller"};
