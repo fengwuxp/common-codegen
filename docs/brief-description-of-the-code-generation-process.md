@@ -11,10 +11,10 @@
 ##### 生成过程截图
 
 <p align="center">
-  <h5>swagger-2的文档页面</h5>
+  <h1>swagger-2的文档页面</h1>
   <img src="./codegen-example-image/1.png">
   <img  src="./codegen-example-image/2.png">
-  <h5>生成的结果(typescript)</h5>
+  <h1>生成的结果(typescript)</h1>
   <p>控制器生成的结果</p>
   <img src="./codegen-example-image/3.png">
    <p>请求对象或方法参数生成的结果</p>
