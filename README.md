@@ -9,6 +9,7 @@
 |--core                      核心模块，定义了顶层的接口
 |--docs                      说明文档
 |--example                   生成例子集合
+|-----codegen-result         生成结果目录,不同的语言会生成到不同的目录下
 |-----swagger-2              基于swagger-2的生成例子
 |--languages                 不同语言的处理
 |--model                     数据模型
