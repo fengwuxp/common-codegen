@@ -16,11 +16,20 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
     * 1:接口的请求方法为：POST
 **/
 
-    @Feign({
+    @RequestMapping({
         value:'/users',
+        method:RequestMethod.POST,
     })
  class UserService{
 
+    /**
+        * 1:接口的请求方法为：POST
+        * 2:返回值在java中的类型为：String
+    **/
+        @RequestMapping({
+            method:RequestMethod.POST,
+        })
+    postUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
         * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：User
@@ -28,9 +37,17 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         @RequestMapping({
             value:'/{id}',
             method:RequestMethod.GET,
-            produces:[MediaType.FORM_DATA],
         })
     getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
+    /**
+        * 1:接口的请求方法为：PUT
+        * 2:返回值在java中的类型为：String
+    **/
+        @RequestMapping({
+            value:'/{id}',
+            method:RequestMethod.PUT,
+        })
+    putUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
         * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：List
@@ -47,27 +64,8 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         @RequestMapping({
             value:'/{id}',
             method:RequestMethod.DELETE,
-            produces:[MediaType.FORM_DATA],
         })
     deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
-    /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：String
-    **/
-        @RequestMapping({
-            method:RequestMethod.POST,
-        })
-    postUser:(req: User, option?: FetchOptions) => Promise<string>;
-    /**
-        * 1:接口的请求方法为：PUT
-        * 2:返回值在java中的类型为：String
-    **/
-        @RequestMapping({
-            value:'/{id}',
-            method:RequestMethod.PUT,
-            produces:[MediaType.FORM_DATA],
-        })
-    putUser:(req: User, option?: FetchOptions) => Promise<string>;
 }
 
 export default new UserService();

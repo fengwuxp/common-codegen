@@ -112,7 +112,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
-        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), javaClassMeta));
+        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), javaClassMeta.getClass()));
 
         if (count == 1) {
             if (javaClassMeta.isApiServiceClass()) {
@@ -224,7 +224,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         typescriptFieldMate.setComments(comments.toArray(new String[]{}));
 
         //注解
-        typescriptFieldMate.setAnnotations(this.converterAnnotations(javaFieldMeta.getAnnotations(), javaFieldMeta));
+        typescriptFieldMate.setAnnotations(this.converterAnnotations(javaFieldMeta.getAnnotations(), javaFieldMeta.getField()));
 
         //是否必填
         typescriptFieldMate.setRequired(javaFieldMeta.existAnnotation(NotNull.class, NotBlank.class, NotEmpty.class));
@@ -284,7 +284,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         genMethodMeta.setName(javaMethodMeta.getName());
 
         //处理方法上的相关注解
-        genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta));
+        genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod()));
 
 
         //TODO support spring webflux

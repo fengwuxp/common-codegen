@@ -32,7 +32,7 @@ public class RequestMappingProcessorTest {
 
             Arrays.stream(annotations).forEach(annotation -> {
                 RequestMappingProcessor.RequestMappingMate mappingMate = annotationProcessor.process(annotation);
-                System.out.println(mappingMate.toAnnotation());
+                System.out.println(mappingMate.toAnnotation(method));
                 System.out.println(mappingMate.annotationType().getSimpleName());
             });
 

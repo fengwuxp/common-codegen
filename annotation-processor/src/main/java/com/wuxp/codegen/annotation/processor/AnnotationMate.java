@@ -3,6 +3,8 @@ package com.wuxp.codegen.annotation.processor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 
 /**
@@ -10,13 +12,55 @@ import java.lang.annotation.Annotation;
  *
  * @param <T>
  */
-public interface AnnotationMate<T extends Annotation> extends AnnotationToString ,Annotation {
+public interface AnnotationMate<T extends Annotation> extends AnnotationToString, Annotation {
 
 
     /**
      * 注解转换
-     * @param <A>
+     *
+     * @param annotationOwner 注解所有者
      * @return
      */
-    <A extends CommonCodeGenAnnotation> A toAnnotation();
+    default CommonCodeGenAnnotation toAnnotation(Object annotationOwner) {
+        if (annotationOwner == null) {
+            return null;
+        }
+        if (annotationOwner instanceof Class) {
+            return this.toAnnotation((Class<?>) annotationOwner);
+        } else if (annotationOwner instanceof Field) {
+            return this.toAnnotation((Field) annotationOwner);
+        } else {
+            return this.toAnnotation((Method) annotationOwner);
+        }
+    }
+
+    /**
+     * 注解转换
+     *
+     * @param annotationOwner 注解所有者
+     * @return
+     */
+    default CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner) {
+        return null;
+    }
+
+    /**
+     * 注解转换
+     *
+     * @param annotationOwner 注解所有者
+     * @return
+     */
+    default CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
+        return null;
+    }
+
+    /**
+     * 注解转换
+     *
+     * @param annotationOwner 注解所有者
+     * @return
+     */
+    default CommonCodeGenAnnotation toAnnotation(Method annotationOwner) {
+        return null;
+    }
 }

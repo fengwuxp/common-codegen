@@ -74,8 +74,26 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             return "接口的请求方法为：" + this.getRequestMethod().name();
         }
 
+
         @Override
-        public CommonCodeGenAnnotation toAnnotation() {
+        public CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner) {
+
+            return this.genAnnotation(annotationOwner.getSimpleName());
+        }
+
+        @Override
+        public CommonCodeGenAnnotation toAnnotation(Method annotationOwner) {
+
+            return this.genAnnotation(annotationOwner.getName());
+        }
+
+        /**
+         * 生成 RequestMapping 相关注解
+         *
+         * @param ownerName 所有者的name 如果ownerName和value中的一致，则不生成value
+         * @return
+         */
+        protected CommonCodeGenAnnotation genAnnotation(String ownerName) {
             CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
             codeGenAnnotation.setName(this.annotationType().getSimpleName());
 
@@ -87,7 +105,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
                 val = value[0];
             }
 
-            if (StringUtils.hasText(val)) {
+            if (StringUtils.hasText(val) && !ownerName.equals(val)) {
                 arguments.put("value", "'" + val + "'");
             }
             if (this.annotationType().equals(RequestMapping.class)) {

@@ -9,6 +9,26 @@ import java.lang.reflect.Method;
  */
 public interface AnnotationToString {
 
+
+    /**
+     * 注解转换
+     *
+     * @param annotationOwner 注解所有者
+     * @return
+     */
+    default String toComment(Object annotationOwner) {
+        if (annotationOwner == null) {
+            return null;
+        }
+        if (annotationOwner instanceof Class) {
+            return this.toComment((Class<?>) annotationOwner);
+        } else if (annotationOwner instanceof Field) {
+            return this.toComment((Field) annotationOwner);
+        } else {
+            return this.toComment((Method) annotationOwner);
+        }
+    }
+
     /**
      * 转换为注释
      *

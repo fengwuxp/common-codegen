@@ -216,14 +216,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             if (processor == null) {
                 return null;
             }
-            if (owner instanceof Class) {
-                return processor.process(annotation).toComment((Class<?>) owner);
-            } else if (owner instanceof Field) {
-                return processor.process(annotation).toComment((Field) owner);
-            } else {
-                return processor.process(annotation).toComment((Method) owner);
-            }
-
+            return processor.process(annotation).toComment(owner);
         }).filter(StringUtils::hasText)
                 .collect(Collectors.toList());
     }
@@ -276,7 +269,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
 
             AnnotationMate annotationMate = processor.process(annotation);
-            CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation();
+            CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation(annotationOwner);
 
             if (toAnnotation != null) {
                 this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
