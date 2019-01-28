@@ -85,7 +85,11 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         @Override
         public CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner) {
 
-            return this.genAnnotation(annotationOwner.getSimpleName());
+            CommonCodeGenAnnotation codeGenAnnotation = this.genAnnotation(annotationOwner.getSimpleName());
+            //将类上的注解改为feign
+            codeGenAnnotation.setName("Feign");
+            codeGenAnnotation.getPositionArguments().remove("method");
+            return codeGenAnnotation;
         }
 
         @Override

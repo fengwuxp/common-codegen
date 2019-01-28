@@ -405,28 +405,21 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param annotationOwner
      */
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
-        if (annotationOwner instanceof JavaClassMeta) {
-            if (((JavaClassMeta) annotationOwner).isApiServiceClass()) {
-                //是控制器类，不标记为feign代理
-                codeGenAnnotation.setName("Feign");
-                codeGenAnnotation.getNamedArguments().remove("method");
-                //TODO 设置api模块
-//                codeGenAnnotation.getNamedArguments().put("apiModule","default");
-            }
+        if (annotationOwner instanceof Class) {
+
         }
-        if (annotationOwner instanceof JavaMethodMeta) {
+        if (annotationOwner instanceof Method) {
             //spring的mapping注解
             if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
 
-                JavaMethodMeta javaMethodMeta = (JavaMethodMeta) annotationOwner;
+                Method method = (Method) annotationOwner;
                 //判断方法参数是否有RequestBody注解
-                boolean hasRequestBodyAnnotation = (javaMethodMeta.getParamAnnotations().values()
-                        .stream()
+                boolean hasRequestBodyAnnotation = Arrays.stream(method.getParameterAnnotations())
                         .filter(Objects::nonNull)
                         .filter(annotations -> annotations.length > 0)
                         .map(Arrays::asList)
                         .flatMap(Collection::stream)
-                        .allMatch(a -> RequestBody.class.equals(a.annotationType())));
+                        .allMatch(a -> RequestBody.class.equals(a.annotationType()));
 
                 if (!hasRequestBodyAnnotation) {
                     //如果没有则认为是已表单的方式提交的参数
