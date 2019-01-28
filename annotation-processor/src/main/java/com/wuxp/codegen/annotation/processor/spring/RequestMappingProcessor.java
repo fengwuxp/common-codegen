@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -28,7 +25,11 @@ import java.util.Map;
 public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
 
 
+    //Mapping和mapping元数据的对应
     private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
+
+    //请求方法和Mapping名称的对应
+    private static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new HashMap<>();
 
 
     //媒体类型映射
@@ -41,6 +42,12 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         ANNOTATION_CLASS_MAP.put(DeleteMapping.class, DeleteMappingMate.class);
         ANNOTATION_CLASS_MAP.put(PutMapping.class, PutMappingMate.class);
         ANNOTATION_CLASS_MAP.put(PatchMapping.class, PatchMappingMate.class);
+
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.GET, "GetMapping");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.POST, "PostMapping");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.DELETE, "DeleteMapping");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, "PutMapping");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, "PatchMapping");
 
         MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.FORM_DATA");
         MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.JSON");
@@ -87,73 +94,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             return this.genAnnotation(annotationOwner.getName());
         }
 
-        /**
-         * 生成 RequestMapping 相关注解
-         *
-         * @param ownerName 所有者的name 如果ownerName和value中的一致，则不生成value
-         * @return
-         */
-        protected CommonCodeGenAnnotation genAnnotation(String ownerName) {
-            CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
-            codeGenAnnotation.setName(this.annotationType().getSimpleName());
-
-            //注解命名参数
-            Map<String, String> arguments = new LinkedHashMap<>();
-            String[] value = this.value();
-            String val = null;
-            if (value.length > 0) {
-                val = value[0];
-            }
-
-            if (StringUtils.hasText(val) && !ownerName.equals(val)) {
-                arguments.put("value", "'" + val + "'");
-            }
-            if (this.annotationType().equals(RequestMapping.class)) {
-                arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
-            }
-
-            //客户端和服务的produces consumes 逻辑对调
-            String[] consumes = this.consumes();
-            if (consumes.length > 0) {
-
-                //尝试转化
-                String consume = consumes[0];
-                String produces = MEDIA_TYPE_MAPPING.get(consume);
-                if (consume == null) {
-                    produces = JSON.toJSONString(produces);
-                } else {
-                    produces = "[" + produces + "]";
-                }
-                arguments.put("produces", produces);
-            }
-
-            String[] produces = this.produces();
-            if (produces.length > 0) {
-
-                //尝试转化
-                String produce = produces[0];
-                String _consumes = MEDIA_TYPE_MAPPING.get(produce);
-                if (produce == null) {
-                    _consumes = JSON.toJSONString(produces);
-                } else {
-                    _consumes = "[" + _consumes + "]";
-                }
-                arguments.put("consumes", _consumes);
-            }
-
-            codeGenAnnotation.setNamedArguments(arguments);
-
-            //注解位置参数
-            List<String> positionArguments = new LinkedList<>();
-            positionArguments.add(arguments.get("value"));
-            positionArguments.add(arguments.get("method"));
-            positionArguments.add(arguments.get("produces"));
-            positionArguments.add(arguments.get("produces"));
-
-            codeGenAnnotation.setPositionArguments(positionArguments);
-
-            return codeGenAnnotation;
-        }
 
         /**
          * 获取请求方法
@@ -169,6 +109,87 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             } else {
                 return requestMethods[0];
             }
+        }
+
+        /**
+         * 生成 RequestMapping 相关注解
+         *
+         * @param ownerName 所有者的name 如果ownerName和value中的一致，则不生成value
+         * @return
+         */
+        private CommonCodeGenAnnotation genAnnotation(String ownerName) {
+            CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
+            codeGenAnnotation.setName(this.annotationType().getSimpleName());
+
+            //注解命名参数
+            Map<String, String> arguments = new LinkedHashMap<>();
+            String[] value = this.value();
+            String val = null;
+            if (value.length > 0) {
+                val = value[0];
+            }
+
+            //如果val不存在或者ownerName和value中的一致，则不生成value
+            if (StringUtils.hasText(val) && !ownerName.equals(val)) {
+                arguments.put("value", "'" + val + "'");
+            }
+            if (this.annotationType().equals(RequestMapping.class)) {
+//                arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
+                //将RequestMapping 转换为其他明确的Mapping类型
+                RequestMethod requestMethod = this.getRequestMethod();
+                if (requestMethod == null) {
+                    //默认的为GET
+                    requestMethod = RequestMethod.GET;
+                }
+                String name = METHOD_MAPPING_NAME_MAP.get(requestMethod);
+                codeGenAnnotation.setName(name);
+            }
+
+
+            Map<String, String[]> mediaTypes = new HashMap<>();
+            //在注解中属性名称
+            String[] attrNames = {"produces", "consumes"};
+            //客户端和服务的produces consumes 逻辑对调
+            mediaTypes.put(attrNames[0], this.consumes());
+            mediaTypes.put(attrNames[1], this.produces());
+
+            for (Map.Entry<String, String[]> entry : mediaTypes.entrySet()) {
+                //尝试转化
+                String[] entryValue = entry.getValue();
+                if (entryValue.length == 0) {
+                    continue;
+                }
+                String mediaType = entryValue[0];
+
+                if (mediaType == null) {
+                    continue;
+                }
+                //如果是json 则不生成，json 是默认策略
+                if (MediaType.APPLICATION_JSON_VALUE.equals(mediaType)) {
+                    continue;
+                }
+
+                String _mediaType = MEDIA_TYPE_MAPPING.get(mediaType);
+                if (_mediaType == null) {
+                    throw new RuntimeException("unsupported media type：" + mediaType);
+                }
+                _mediaType = "[" + _mediaType + "]";
+                arguments.put(entry.getKey(), _mediaType);
+            }
+
+
+            codeGenAnnotation.setNamedArguments(arguments);
+
+            //注解位置参数
+            List<String> positionArguments = new LinkedList<>();
+            positionArguments.add(arguments.get("value"));
+            positionArguments.add(arguments.get("method"));
+            positionArguments.add(arguments.get("produces"));
+            positionArguments.add(arguments.get("produces"));
+
+            codeGenAnnotation.setPositionArguments(positionArguments);
+
+            return codeGenAnnotation;
         }
     }
 
