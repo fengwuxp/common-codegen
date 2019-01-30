@@ -15,8 +15,8 @@
         <module>model</module>
         <module>template</module>
         <module>languages</module>
-        <module>oak-codegen</module>
-        <module>swagger-codegen</module>
+        <module>dragon-codegen</module>
+        <module>swagger2-codegen</module>
         <module>annotation-processor</module>
         <module>examples</module>
     </modules>

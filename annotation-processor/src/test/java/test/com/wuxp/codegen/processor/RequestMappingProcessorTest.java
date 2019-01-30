@@ -1,8 +1,8 @@
 package test.com.wuxp.codegen.processor;
 
-import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
-import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.dragon.annotation.processor.AnnotationProcessor;
+import com.wuxp.codegen.dragon.annotation.processor.javax.NotNullProcessor;
+import com.wuxp.codegen.dragon.annotation.processor.spring.RequestMappingProcessor;
 import org.junit.Test;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

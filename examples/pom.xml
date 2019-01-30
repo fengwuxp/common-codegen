@@ -65,7 +65,7 @@
 
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
-            <artifactId>oak-codegen</artifactId>
+            <artifactId>wuxp-codegen-dragon</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
