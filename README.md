@@ -9,14 +9,13 @@
 |--core                      核心模块，定义了顶层的接口
 |--docs                      说明文档
 |--dragon-codegen            dragon codegen 通用的代码生成，这里会聚合其他的代码生成器
-|--example                   生成例子集合
+|--examples                  生成例子集合
 |-----codegen-result         生成结果目录,不同的语言会生成到不同的目录下
 |-----swagger-2              基于swagger-2的生成例子
 |--languages                 不同语言的处理
 |--model                     数据模型
 |--swagger-codegen           基于swagger注解规则的生成
 |--template                  模板的通用处理
-|--codegen-result-example    生成结果
 ```
 
 - 期望（目标）
