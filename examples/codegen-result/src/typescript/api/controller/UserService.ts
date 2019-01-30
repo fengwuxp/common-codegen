@@ -8,9 +8,9 @@ import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
+    import {GetUserListReq} from "../req/GetUserListReq";
     import {GetUserReq} from "../req/GetUserReq";
     import {DeleteUserReq} from "../req/DeleteUserReq";
-    import {GetUserListReq} from "../req/GetUserListReq";
     import {User} from "../domain/User";
 
 /**
@@ -24,6 +24,14 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
     /**
         * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：List
+        * 3:返回值在java中的类型为：User
+    **/
+        @GetMapping({
+        })
+    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
+    /**
+        * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：User
     **/
         @GetMapping({
@@ -31,15 +39,6 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
             produces:[MediaType.FORM_DATA],
         })
     getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
-    /**
-        * 1:接口的请求方法为：PUT
-        * 2:返回值在java中的类型为：String
-    **/
-        @PutMapping({
-            value:'/{id}',
-            produces:[MediaType.FORM_DATA],
-        })
-    putUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
         * 1:接口的请求方法为：DELETE
         * 2:返回值在java中的类型为：String
@@ -57,13 +56,14 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         })
     postUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：User
+        * 1:接口的请求方法为：PUT
+        * 2:返回值在java中的类型为：String
     **/
-        @GetMapping({
+        @PutMapping({
+            value:'/{id}',
+            produces:[MediaType.FORM_DATA],
         })
-    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
+    putUser:(req: User, option?: FetchOptions) => Promise<string>;
 }
 
 export default new UserService();

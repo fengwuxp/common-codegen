@@ -1,8 +1,8 @@
 package com.wuxp.codegen.dragon.strategy;
 
-import com.wuxp.codegen.dragon.helper.GrabGenericVariablesHelper;
-import com.wuxp.codegen.dragon.core.strategy.CombineTypeDescStrategy;
-import com.wuxp.codegen.dragon.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
+import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

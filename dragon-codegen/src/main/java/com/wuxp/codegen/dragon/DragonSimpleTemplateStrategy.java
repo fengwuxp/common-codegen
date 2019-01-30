@@ -1,12 +1,12 @@
 package com.wuxp.codegen.dragon;
 
-import com.wuxp.codegen.dragon.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.freemarker.CombineTypeMethod;
-import com.wuxp.codegen.dragon.templates.TemplateLoader;
+import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.dragon.utils.FileUtil;
-import com.wuxp.codegen.dragon.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.dragon.model.CommonCodeGenMethodMeta;
-import com.wuxp.codegen.dragon.model.enums.ClassType;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.enums.ClassType;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;

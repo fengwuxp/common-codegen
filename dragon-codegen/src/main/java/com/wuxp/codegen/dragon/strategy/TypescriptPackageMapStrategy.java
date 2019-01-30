@@ -1,6 +1,6 @@
 package com.wuxp.codegen.dragon.strategy;
 
-import com.wuxp.codegen.dragon.core.strategy.AbstractPackageMapStrategy;
+import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

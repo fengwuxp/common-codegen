@@ -1,6 +1,6 @@
 package com.wuxp.codegen.dragon.utils;
 
-import com.wuxp.codegen.dragon.core.utils.ToggleCaseUtil;
+import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 
 import java.util.regex.Pattern;
 

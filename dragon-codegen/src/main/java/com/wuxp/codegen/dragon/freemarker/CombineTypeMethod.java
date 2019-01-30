@@ -1,8 +1,8 @@
 package com.wuxp.codegen.dragon.freemarker;
 
-import com.wuxp.codegen.dragon.core.strategy.CombineTypeDescStrategy;
+import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.dragon.strategy.SimpleCombineTypeDescStrategy;
-import com.wuxp.codegen.dragon.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import freemarker.template.*;
 import lombok.extern.slf4j.Slf4j;
 

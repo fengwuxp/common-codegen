@@ -5,20 +5,19 @@
 
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.5.RELEASE</version>
-        <!-- lookup parent from repository -->
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>wuxp-codegen</artifactId>
+        <groupId>com.wuxp.codegen</groupId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.wuxp.codegen</groupId>
     <artifactId>wuxp-codegen-examples</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    
+
     <modules>
         <module>swagger-2</module>
     </modules>
+
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -44,29 +43,29 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-dragon</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--servlet-->
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

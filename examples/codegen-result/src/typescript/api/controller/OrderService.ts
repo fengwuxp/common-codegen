@@ -9,15 +9,15 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
     import {QueryPageReq} from "../req/QueryPageReq";
-    import {QueryOrder2Req} from "../req/QueryOrder2Req";
     import {GetOrderReq} from "../req/GetOrderReq";
+    import {QueryOrder2Req} from "../req/QueryOrder2Req";
     import {HelloReq} from "../req/HelloReq";
     import {Order} from "../domain/Order";
-    import {ServiceResponse} from "../resp/ServiceResponse";
     import {PageInfo} from "../resp/PageInfo";
+    import {ServiceResponse} from "../resp/ServiceResponse";
     import {User} from "../domain/User";
-    import {CreateOrderEvt} from "../evt/CreateOrderEvt";
     import {QueryOrderEvt} from "../evt/QueryOrderEvt";
+    import {CreateOrderEvt} from "../evt/CreateOrderEvt";
     import {ServiceQueryResponse} from "../resp/ServiceQueryResponse";
 
 /**
@@ -39,6 +39,14 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         })
     queryPage:(req: QueryPageReq, option?: FetchOptions) => Promise<PageInfo<Order>>;
     /**
+        * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：List
+        * 3:返回值在java中的类型为：Order
+    **/
+        @GetMapping({
+        })
+    getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
+    /**
         * 1:接口的请求方法为：POST
         * 2:返回值在java中的类型为：ServiceQueryResponse
         * 3:返回值在java中的类型为：Order
@@ -47,14 +55,6 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
             produces:[MediaType.FORM_DATA],
         })
     queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<PageInfo<Order>>;
-    /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：Order
-    **/
-        @GetMapping({
-        })
-    getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
     /**
         * 1:接口的请求方法为：POST
         * 2:返回值在java中的类型为：ServiceResponse

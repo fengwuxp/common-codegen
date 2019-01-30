@@ -1,8 +1,8 @@
 package com.wuxp.codegen.dragon;
 
-import com.wuxp.codegen.dragon.core.parser.LanguageParser;
-import com.wuxp.codegen.dragon.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.dragon.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 
 
