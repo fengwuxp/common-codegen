@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractTypescriptParser;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
@@ -13,7 +14,8 @@ import com.wuxp.codegen.swagger2.annotations.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 /**
  * swagger2 typeScript的 parser
@@ -62,7 +64,49 @@ public class TypescriptParser extends AbstractTypescriptParser {
     @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
 
+        if (!javaMethodMeta.existAnnotation(ApiImplicitParam.class, ApiImplicitParams.class)) {
+            return;
+        }
+        CommonCodeGenClassMeta commonCodeGenClassMeta = methodMeta.getParams().get("req");
+        if (commonCodeGenClassMeta == null) {
+            return;
+        }
+        Arrays.stream(commonCodeGenClassMeta.getFiledMetas())
+                .forEach(genFiledMeta -> {
+                    final TypescriptFieldMate typescriptFieldMate = (TypescriptFieldMate) genFiledMeta;
+                    final String name = typescriptFieldMate.getName();
+                    Arrays.stream(javaMethodMeta.getAnnotations())
+                            .map(annotation -> {
+                                Class<? extends Annotation> annotationType = annotation.annotationType();
+                                if (annotationType.equals(ApiImplicitParams.class)) {
+                                    ApiImplicitParams apiImplicitParams = (ApiImplicitParams) annotation;
+                                    Optional<ApiImplicitParam> optionalApiImplicitParam = Arrays.stream(apiImplicitParams.value())
+                                            .filter(apiImplicitParam -> name.equals(apiImplicitParam.name())).findFirst();
+                                    if (optionalApiImplicitParam.isPresent()) {
+                                        return optionalApiImplicitParam.get();
+                                    }
 
+                                } else if (annotationType.equals(ApiImplicitParam.class)) {
+                                    if (name.equals(((ApiImplicitParam) annotation).name())) {
+                                        return annotation;
+                                    }
+                                }
+                                return null;
+                            })
+                            .filter(Objects::nonNull)
+                            .forEach(annotation -> {
+
+                                ApiImplicitParam apiImplicitParam = (ApiImplicitParam) annotation;
+
+                                //强化注释
+                                List<String> comments = new ArrayList<>(Arrays.asList(genFiledMeta.getComments()));
+                                comments.add((apiImplicitParam).value());
+                                typescriptFieldMate.setComments(comments.toArray(new String[]{}));
+
+                                //是否必填
+                                typescriptFieldMate.setRequired(typescriptFieldMate.getRequired() || apiImplicitParam.required());
+                            });
+                });
     }
 
 

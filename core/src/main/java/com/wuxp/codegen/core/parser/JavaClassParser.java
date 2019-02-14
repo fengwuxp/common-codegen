@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.parser;
 
 
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
@@ -130,6 +131,66 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         return classMeta;
     }
 
+
+    /**
+     * 获取单个方法的元数据
+     *
+     * @param method
+     * @param owner  可以为空
+     * @return
+     */
+    public JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner) {
+
+        JavaMethodMeta methodMeta = new JavaMethodMeta();
+        methodMeta.setMethod(method);
+        //返回值
+        ResolvableType returnType = ResolvableType.forMethodReturnType(method);
+        methodMeta.setReturnType(genericsToClassType(returnType));
+
+        //方法参数列表
+        Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
+        Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
+
+        //参数类型列表
+        Class<?>[] parameterTypes = method.getParameterTypes();
+
+        //参数上的注解
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        String[] parameterNames = new String[0];
+
+        try {
+            //参数名称列表
+            parameterNames = parameterNameDiscoverer.getParameterNames(method);
+        } catch (Exception e) {
+            log.error("获取参数名称异常", e);
+        }
+
+        if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {
+            for (int k = 0; k < parameterTypes.length; k++) {
+                String parameterName = parameterNames[k];
+                params.put(parameterName, genericsToClassType(ResolvableType.forClass(parameterTypes[k])));
+                paramAnnotations.put(parameterName, parameterAnnotations[k]);
+            }
+
+        }
+
+
+        int modifiers = method.getModifiers();
+        this.getAssessPermission(modifiers, methodMeta);
+        TypeVariable<Method>[] typeParameters = method.getTypeParameters();
+        methodMeta.setParams(params)
+                .setIsAbstract(Modifier.isAbstract(modifiers))
+                .setIsSynchronized(Modifier.isSynchronized(modifiers))
+                .setParamAnnotations(paramAnnotations)
+                .setOwner(owner)
+                .setIsNative(Modifier.isNative(modifiers))
+                .setTypeVariables(method.getTypeParameters())
+                .setTypeVariableNum(typeParameters.length)
+                .setAnnotations(method.getAnnotations())
+                .setName(method.getName());
+        return methodMeta;
+    }
+
     /**
      * 获取属性列表
      *
@@ -151,63 +212,71 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         for (int i = 0; i < fields.length; i++) {
 
             Field field = fields[i];
-            String fieldName = field.getName();
-            if (clazz.isEnum()) {
-                //枚举，忽略$VALUES
-                if (fieldName.equals("$VALUES")) {
-                    continue;
-                }
-            }
-
-            JavaFieldMeta fieldMeta = new JavaFieldMeta();
-            fieldMeta.setField(field)
-                    .setIsEnumConstant(field.isEnumConstant());
-
-            int modifiers = field.getModifiers();
-            //设置访问权限
-            this.getAssessPermission(modifiers, fieldMeta);
-
-            fieldMeta.setTypes(genericsToClassType(ResolvableType.forField(field)))
-                    .setIsTransient(Modifier.isTransient(modifiers))
-                    .setIsVolatile(Modifier.isVolatile(modifiers));
-
-
-            fieldMeta.setName(fieldName);
-            Annotation[] annotations = field.getAnnotations();
-            fieldMeta.setAnnotations(annotations);
-            Type genericType = field.getGenericType();
-
-
-            //自动类型的泛型描述
-            Type[] typeVariables = null;
-            if (genericType instanceof ParameterizedType) {
-                typeVariables = ((ParameterizedType) genericType).getActualTypeArguments();
-            } else if (genericType instanceof TypeVariable) {
-                typeVariables = new Type[]{genericType};
-            } else {
-                typeVariables = field.getType().getTypeParameters();
-            }
-
-            if (typeVariables != null) {
-                fieldMeta.setTypeVariableNum(typeVariables.length);
-            }
-
-            if (typeVariables != null) {
-                //判断类上面是否存在这个泛型描述的变量
-                List<String> clazzTypeVariables = Arrays.stream(clazz.getTypeParameters())
-                        .map(Type::getTypeName)
-                        .collect(Collectors.toList());
-
-                typeVariables = Arrays.stream(typeVariables)
-                        .filter(type -> clazzTypeVariables.contains(type.getTypeName()))
-                        .toArray(Type[]::new);
-            }
-
-            fieldMeta.setTypeVariables(typeVariables);
+            JavaFieldMeta fieldMeta = getJavaFieldMeta(field, clazz);
+            if (fieldMeta == null) continue;
             fieldMetas.add(fieldMeta);
         }
 
-        return fieldMetas.toArray(new JavaFieldMeta[]{});
+        return fieldMetas.stream()
+                .sorted(Comparator.comparing(CommonBaseMeta::getName))
+                .toArray(JavaFieldMeta[]::new);
+    }
+
+    protected JavaFieldMeta getJavaFieldMeta(Field field, Class<?> owner) {
+        String fieldName = field.getName();
+        if (owner.isEnum()) {
+            //枚举，忽略$VALUES
+            if (fieldName.equals("$VALUES")) {
+                return null;
+            }
+        }
+
+        JavaFieldMeta fieldMeta = new JavaFieldMeta();
+        fieldMeta.setField(field)
+                .setIsEnumConstant(field.isEnumConstant());
+
+        int modifiers = field.getModifiers();
+        //设置访问权限
+        this.getAssessPermission(modifiers, fieldMeta);
+
+        fieldMeta.setTypes(genericsToClassType(ResolvableType.forField(field)))
+                .setIsTransient(Modifier.isTransient(modifiers))
+                .setIsVolatile(Modifier.isVolatile(modifiers));
+
+
+        fieldMeta.setName(fieldName);
+        Annotation[] annotations = field.getAnnotations();
+        fieldMeta.setAnnotations(annotations);
+        Type genericType = field.getGenericType();
+
+
+        //自动类型的泛型描述
+        Type[] typeVariables = null;
+        if (genericType instanceof ParameterizedType) {
+            typeVariables = ((ParameterizedType) genericType).getActualTypeArguments();
+        } else if (genericType instanceof TypeVariable) {
+            typeVariables = new Type[]{genericType};
+        } else {
+            typeVariables = field.getType().getTypeParameters();
+        }
+
+        if (typeVariables != null) {
+            fieldMeta.setTypeVariableNum(typeVariables.length);
+        }
+
+        if (typeVariables != null) {
+            //判断类上面是否存在这个泛型描述的变量
+            List<String> clazzTypeVariables = Arrays.stream(owner.getTypeParameters())
+                    .map(Type::getTypeName)
+                    .collect(Collectors.toList());
+
+            typeVariables = Arrays.stream(typeVariables)
+                    .filter(type -> clazzTypeVariables.contains(type.getTypeName()))
+                    .toArray(Type[]::new);
+        }
+
+        fieldMeta.setTypeVariables(typeVariables);
+        return fieldMeta;
     }
 
 
@@ -232,62 +301,17 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
         for (Method method : methods) {
 
-            JavaMethodMeta methodMeta = new JavaMethodMeta();
-            methodMeta.setMethod(method);
-            //返回值
-            ResolvableType returnType = ResolvableType.forMethodReturnType(method);
-            methodMeta.setReturnType(genericsToClassType(returnType));
-
-            //方法参数列表
-            Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
-            Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
-
-            //参数类型列表
-            Class<?>[] parameterTypes = method.getParameterTypes();
-
-            //参数上的注解
-            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            String[] parameterNames = new String[0];
-
-            try {
-                //参数名称列表
-                parameterNames = parameterNameDiscoverer.getParameterNames(method);
-            } catch (Exception e) {
-                log.error("获取参数名称异常", e);
-            }
-
-            if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {
-                for (int k = 0; k < parameterTypes.length; k++) {
-                    String parameterName = parameterNames[k];
-                    params.put(parameterName, genericsToClassType(ResolvableType.forClass(parameterTypes[k])));
-                    paramAnnotations.put(parameterName, parameterAnnotations[k]);
-                }
-
-            }
-
-
-            int modifiers = method.getModifiers();
-            this.getAssessPermission(modifiers, methodMeta);
-            TypeVariable<Method>[] typeParameters = method.getTypeParameters();
-            methodMeta.setParams(params)
-                    .setIsAbstract(Modifier.isAbstract(modifiers))
-                    .setIsSynchronized(Modifier.isSynchronized(modifiers))
-                    .setParamAnnotations(paramAnnotations)
-                    .setOwner(clazz)
-                    .setIsNative(Modifier.isNative(modifiers))
-                    .setTypeVariables(method.getTypeParameters())
-                    .setTypeVariableNum(typeParameters.length)
-                    .setAnnotations(method.getAnnotations())
-                    .setName(method.getName());
+            JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz);
 
             methodMetas.add(methodMeta);
 
         }
 
-        return methodMetas.toArray(new JavaMethodMeta[]{});
+        return methodMetas.stream()
+                .sorted(Comparator.comparing(CommonBaseMeta::getName))
+                .toArray(JavaMethodMeta[]::new);
 
     }
-
 
     /**
      * 获取访问权限 static final等描述

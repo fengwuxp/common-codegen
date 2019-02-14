@@ -7,6 +7,7 @@ export interface  GetUserReq {
 
         /**
             *在java中的类型为：Long
+            *用户ID
         **/
-        id?: number;
+        id: number;
 }

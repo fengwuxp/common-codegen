@@ -8,9 +8,11 @@ import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
-    import {GetUserListReq} from "../req/GetUserListReq";
-    import {GetUserReq} from "../req/GetUserReq";
     import {DeleteUserReq} from "../req/DeleteUserReq";
+    import {GetUserReq} from "../req/GetUserReq";
+    import {GetUserListReq} from "../req/GetUserListReq";
+    import {PutUserReq} from "../req/PutUserReq";
+    import {SampleReq} from "../req/SampleReq";
     import {User} from "../domain/User";
 
 /**
@@ -23,13 +25,14 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
  class UserService{
 
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：User
+        * 1:接口的请求方法为：DELETE
+        * 2:返回值在java中的类型为：String
     **/
-        @GetMapping({
+        @DeleteMapping({
+            value:'/{id}',
+            produces:[MediaType.FORM_DATA],
         })
-    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
+    deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
     /**
         * 1:接口的请求方法为：GET
         * 2:返回值在java中的类型为：User
@@ -40,14 +43,14 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         })
     getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
     /**
-        * 1:接口的请求方法为：DELETE
-        * 2:返回值在java中的类型为：String
+        * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：List
+        * 3:返回值在java中的类型为：User
     **/
-        @DeleteMapping({
-            value:'/{id}',
+        @GetMapping({
             produces:[MediaType.FORM_DATA],
         })
-    deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
+    getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
     /**
         * 1:接口的请求方法为：POST
         * 2:返回值在java中的类型为：String
@@ -63,7 +66,15 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
             value:'/{id}',
             produces:[MediaType.FORM_DATA],
         })
-    putUser:(req: User, option?: FetchOptions) => Promise<string>;
+    putUser:(req: PutUserReq, option?: FetchOptions) => Promise<string>;
+    /**
+        * 1:接口的请求方法为：GET
+        * 2:返回值在java中的类型为：String
+    **/
+        @GetMapping({
+            produces:[MediaType.FORM_DATA],
+        })
+    sample:(req: SampleReq, option?: FetchOptions) => Promise<string>;
 }
 
 export default new UserService();

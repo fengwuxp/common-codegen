@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -413,12 +414,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
                 Method method = (Method) annotationOwner;
                 //判断方法参数是否有RequestBody注解
-                boolean hasRequestBodyAnnotation = Arrays.stream(method.getParameterAnnotations())
+                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
                         .filter(Objects::nonNull)
                         .filter(annotations -> annotations.length > 0)
                         .map(Arrays::asList)
                         .flatMap(Collection::stream)
-                        .allMatch(a -> RequestBody.class.equals(a.annotationType()));
+                        .collect(Collectors.toList());
+                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
 
                 if (!hasRequestBodyAnnotation) {
                     //如果没有则认为是已表单的方式提交的参数

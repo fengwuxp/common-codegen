@@ -8,31 +8,35 @@
 export interface  User {
 
         /**
+            *属性说明：年龄，示例输入：
+            *在java中的类型为：Integer
+        **/
+        age?: number;
+        /**
             *属性说明：id，示例输入：
             *在java中的类型为：Long
         **/
         id?: number;
+        /**
+            *属性说明：list，示例输入：
+            *在java中的类型为：List
+        **/
+        list?: Array<any>;
+        /**
+            *在java中的类型为：List
+        **/
+        list2?: Array<any>;
         /**
             *属性说明：名称，示例输入：
             *在java中的类型为：String
         **/
         name?: string;
         /**
-            *属性说明：年龄，示例输入：
-            *在java中的类型为：Integer
-        **/
-        age?: number;
-        /**
             *属性说明：订单列表，示例输入：
             *在java中的类型为：List
             *在java中的类型为：Order
         **/
         orderList?: Array<Order>;
-        /**
-            *属性说明：性别，示例输入：
-            *在java中的类型为：Sex
-        **/
-        sex?: Sex;
         /**
             *属性说明：其他，示例输入：
             *在java中的类型为：Map
@@ -46,14 +50,10 @@ export interface  User {
         **/
         other2?: Map<any,any>;
         /**
-            *属性说明：list，示例输入：
-            *在java中的类型为：List
+            *属性说明：性别，示例输入：
+            *在java中的类型为：Sex
         **/
-        list?: Array<any>;
-        /**
-            *在java中的类型为：List
-        **/
-        list2?: Array<any>;
+        sex?: Sex;
         /**
             *在java中的类型为：Boolean
         **/

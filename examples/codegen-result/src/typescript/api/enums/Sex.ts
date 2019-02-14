@@ -14,15 +14,15 @@ export class Sex{
       ordinal:0,
       desc: "男"
     };
-    public static readonly WOMAN:Enum={
-      name:"WOMAN",
-      ordinal:1,
-      desc: "女"
-    };
     public static readonly NONE:Enum={
       name:"NONE",
-      ordinal:2,
+      ordinal:1,
       desc: "未知"
+    };
+    public static readonly WOMAN:Enum={
+      name:"WOMAN",
+      ordinal:2,
+      desc: "女"
     };
 
 
