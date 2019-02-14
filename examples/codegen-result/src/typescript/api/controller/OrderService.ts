@@ -8,16 +8,16 @@ import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
+    import {CreateOrderEvt} from "../evt/CreateOrderEvt";
     import {GetOrderReq} from "../req/GetOrderReq";
     import {HelloReq} from "../req/HelloReq";
+    import {QueryOrderEvt} from "../evt/QueryOrderEvt";
     import {QueryOrder2Req} from "../req/QueryOrder2Req";
     import {QueryPageReq} from "../req/QueryPageReq";
     import {Order} from "../domain/Order";
     import {ServiceResponse} from "../resp/ServiceResponse";
     import {PageInfo} from "../resp/PageInfo";
     import {User} from "../domain/User";
-    import {QueryOrderEvt} from "../evt/QueryOrderEvt";
-    import {CreateOrderEvt} from "../evt/CreateOrderEvt";
     import {ServiceQueryResponse} from "../resp/ServiceQueryResponse";
 
 /**

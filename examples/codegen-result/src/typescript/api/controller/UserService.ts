@@ -11,9 +11,9 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
     import {DeleteUserReq} from "../req/DeleteUserReq";
     import {GetUserReq} from "../req/GetUserReq";
     import {GetUserListReq} from "../req/GetUserListReq";
-    import {PutUserReq} from "../req/PutUserReq";
-    import {SampleReq} from "../req/SampleReq";
     import {User} from "../domain/User";
+    import {PutUserReq} from "../domain/PutUserReq";
+    import {SampleReq} from "../req/SampleReq";
 
 /**
     * 1:接口的请求方法为：POST

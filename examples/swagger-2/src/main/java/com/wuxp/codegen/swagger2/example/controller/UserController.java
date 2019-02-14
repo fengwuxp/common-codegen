@@ -46,11 +46,11 @@ public class UserController {
             @ApiImplicitParam(name = "name", value = "用户详细实体user", required = true, dataType = "User")
     })
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public String putUser(@PathVariable Long id, String name) {
-//        User u = users.get(id);
-//        u.setName(user.getName());
-//        u.setAge(user.getAge());
-//        users.put(id, u);
+    public String putUser(@PathVariable Long id, @RequestBody User user) {
+        User u = users.get(id);
+        u.setName(user.getName());
+        u.setAge(user.getAge());
+        users.put(id, u);
         return "success";
     }
 
@@ -65,7 +65,7 @@ public class UserController {
     @ApiOperation(value = "sample", notes = "sample")
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
     @RequestMapping(value = "sample", method = RequestMethod.GET)
-    public String sample(Long id, String name) {
+    public String sample(Long[] ids, String name) {
         return "success";
     }
 

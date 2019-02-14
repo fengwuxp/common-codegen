@@ -7,6 +7,7 @@ import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -28,6 +29,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -326,7 +328,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //2: 合并参数列表，将参数列表中的简单类型参数和复杂的类型参数合并到一个列表中
         //2.1：遍历展开参数列表
 
-        final List<TypescriptFieldMate> typescriptFieldMates = new LinkedList<TypescriptFieldMate>();
+        final Set<TypescriptFieldMate> typescriptFieldMates = new LinkedHashSet<>();
         //参数的元数据类型信息
         final TypescriptClassMeta argsClassMeta = new TypescriptClassMeta();
         effectiveParams.forEach((key, classes) -> {
@@ -380,8 +382,23 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             }
 
         });
-        //3: 重组，使用第二部得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
+        //3: 重组，使用第二步得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
         argsClassMeta.setClassType(ClassType.INTERFACE);
+        if (argsClassMeta.getFiledMetas() != null) {
+            Arrays.asList(argsClassMeta.getFiledMetas()).forEach(genFiledMeta -> {
+                TypescriptFieldMate target = new TypescriptFieldMate();
+                BeanUtils.copyProperties(genFiledMeta, target);
+                boolean isExist = typescriptFieldMates.stream()
+                        .filter(typescriptFieldMate -> typescriptFieldMate.getName().equals(genFiledMeta.getName()))
+                        .toArray().length > 0;
+                if (isExist) {
+                    log.error("{}方法中的参数{}在类{}中已经存在", javaMethodMeta.getName(), genFiledMeta.getName(), argsClassMeta.getPackagePath() + argsClassMeta.getName());
+                } else {
+                    typescriptFieldMates.add(target);
+                }
+
+            });
+        }
         argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
         if (!StringUtils.hasText(argsClassMeta.getName())) {
             //没有复杂对象的参数
@@ -392,15 +409,32 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             argsClassMeta.setDependencies(new LinkedHashMap<>());
             argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
             argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
-            //加入依赖列表
-            Map<String, ? extends CommonCodeGenClassMeta> dependencies = codeGenClassMeta.getDependencies();
-            if (dependencies == null) {
-                dependencies = new LinkedHashMap<>();
+        } else {
+            boolean hasComplex = false, hasSimple = false;
+            for (Class[] classes : effectiveParams.values()) {
+                Class<?> clazz = classes[0];
+                if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
+                    hasComplex = true;
+                } else {
+                    hasSimple = true;
+                }
             }
-            ((Map<String, TypescriptClassMeta>) dependencies).put(name, argsClassMeta);
-            codeGenClassMeta.setDependencies(dependencies);
+            if (hasSimple && hasSimple) {
+                //参数列表中有复杂对象，并且有额外的简单对象，将类的名称替换，重新生成过一个新的对象
+                String name = ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()) + "Req";
+                argsClassMeta.setPackagePath(argsClassMeta.getPackagePath().replace(argsClassMeta.getName(), name));
+                argsClassMeta.setName(name);
+            }
+
         }
+        //加入依赖列表
+        Map<String, ? extends CommonCodeGenClassMeta> dependencies = codeGenClassMeta.getDependencies();
+        if (dependencies == null) {
+            dependencies = new LinkedHashMap<>();
+        }
+        ((Map<String, TypescriptClassMeta>) dependencies).put(argsClassMeta.getName(), argsClassMeta);
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
+        codeGenClassMeta.setDependencies(dependencies);
         //请求参数名称，固定为req
         params.put("req", argsClassMeta);
         genMethodMeta.setParams(params);
