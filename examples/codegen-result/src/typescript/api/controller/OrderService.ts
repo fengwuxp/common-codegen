@@ -30,52 +30,58 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
  class OrderService{
 
     /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：ServiceResponse
-        * 3:返回值在java中的类型为：Long
+        * 1:创建订单
+        * 2:接口的请求方法为：POST
+        * 3:返回值在java中的类型为：ServiceResponse
+        * 4:返回值在java中的类型为：Long
     **/
         @PostMapping({
         })
     createOrder:(req: CreateOrderEvt, option?: FetchOptions) => Promise<number>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：Order
+        * 1:获取订单列表
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：List
+        * 4:返回值在java中的类型为：Order
     **/
         @GetMapping({
             produces:[MediaType.FORM_DATA],
         })
     getOrder:(req: GetOrderReq, option?: FetchOptions) => Promise<Array<Order>>;
     /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：ServiceResponse
+        * 1:test hello
+        * 2:接口的请求方法为：POST
+        * 3:返回值在java中的类型为：ServiceResponse
     **/
         @PostMapping({
             produces:[MediaType.FORM_DATA],
         })
     hello:(req: HelloReq, option?: FetchOptions) => Promise<any>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：PageInfo
-        * 3:返回值在java中的类型为：Order
+        * 1:获取订单列表
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：PageInfo
+        * 4:返回值在java中的类型为：Order
     **/
         @GetMapping({
         })
     queryOrder:(req: QueryOrderEvt, option?: FetchOptions) => Promise<PageInfo<Order>>;
     /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：ServiceQueryResponse
-        * 3:返回值在java中的类型为：Order
+        * 1:获取订单列表
+        * 2:接口的请求方法为：POST
+        * 3:返回值在java中的类型为：ServiceQueryResponse
+        * 4:返回值在java中的类型为：Order
     **/
         @PostMapping({
             produces:[MediaType.FORM_DATA],
         })
     queryOrder2:(req: QueryOrder2Req, option?: FetchOptions) => Promise<PageInfo<Order>>;
     /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：ServiceResponse
-        * 3:返回值在java中的类型为：PageInfo
-        * 4:返回值在java中的类型为：Order
+        * 1:查询分页
+        * 2:接口的请求方法为：POST
+        * 3:返回值在java中的类型为：ServiceResponse
+        * 4:返回值在java中的类型为：PageInfo
+        * 5:返回值在java中的类型为：Order
     **/
         @PostMapping({
             produces:[MediaType.FORM_DATA],

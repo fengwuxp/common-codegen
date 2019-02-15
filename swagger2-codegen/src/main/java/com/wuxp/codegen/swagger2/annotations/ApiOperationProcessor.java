@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.annotations.ApiOperation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * swagger2 注解处理
@@ -24,6 +25,10 @@ public class ApiOperationProcessor extends AbstractAnnotationProcessor<ApiOperat
 
         @Override
         public String toComment(Field annotationOwner) {
+            return this.value();
+        }
+        @Override
+        public String toComment(Method annotationOwner) {
             return this.value();
         }
     }

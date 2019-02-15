@@ -25,8 +25,9 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
  class UserService{
 
     /**
-        * 1:接口的请求方法为：DELETE
-        * 2:返回值在java中的类型为：String
+        * 1:删除用户
+        * 2:接口的请求方法为：DELETE
+        * 3:返回值在java中的类型为：String
     **/
         @DeleteMapping({
             value:'/{id}',
@@ -34,8 +35,9 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         })
     deleteUser:(req: DeleteUserReq, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：User
+        * 1:获取用户详细信息
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：User
     **/
         @GetMapping({
             value:'/{id}',
@@ -43,24 +45,27 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         })
     getUser:(req: GetUserReq, option?: FetchOptions) => Promise<User>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：List
-        * 3:返回值在java中的类型为：User
+        * 1:获取用户列表
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：List
+        * 4:返回值在java中的类型为：User
     **/
         @GetMapping({
             produces:[MediaType.FORM_DATA],
         })
     getUserList:(req: GetUserListReq, option?: FetchOptions) => Promise<Array<User>>;
     /**
-        * 1:接口的请求方法为：POST
-        * 2:返回值在java中的类型为：String
+        * 1:创建用户
+        * 2:接口的请求方法为：POST
+        * 3:返回值在java中的类型为：String
     **/
         @PostMapping({
         })
     postUser:(req: User, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:接口的请求方法为：PUT
-        * 2:返回值在java中的类型为：String
+        * 1:更新用户详细信息
+        * 2:接口的请求方法为：PUT
+        * 3:返回值在java中的类型为：String
     **/
         @PutMapping({
             value:'/{id}',
@@ -68,8 +73,9 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
         })
     putUser:(req: PutUserReq, option?: FetchOptions) => Promise<string>;
     /**
-        * 1:接口的请求方法为：GET
-        * 2:返回值在java中的类型为：String
+        * 1:sample
+        * 2:接口的请求方法为：GET
+        * 3:返回值在java中的类型为：String
     **/
         @GetMapping({
             produces:[MediaType.FORM_DATA],
