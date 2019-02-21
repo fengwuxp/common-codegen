@@ -26,11 +26,11 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
             return null;
         }
         if (annotationOwner instanceof Class) {
-            return this.toAnnotation((Class<?>) annotationOwner);
+            return toAnnotation((Class<?>) annotationOwner);
         } else if (annotationOwner instanceof Field) {
-            return this.toAnnotation((Field) annotationOwner);
+            return toAnnotation((Field) annotationOwner);
         } else {
-            return this.toAnnotation((Method) annotationOwner);
+            return toAnnotation((Method) annotationOwner);
         }
     }
 

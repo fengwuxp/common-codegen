@@ -21,11 +21,11 @@ public interface AnnotationToString {
             return null;
         }
         if (annotationOwner instanceof Class) {
-            return this.toComment((Class<?>) annotationOwner);
+            return toComment((Class<?>) annotationOwner);
         } else if (annotationOwner instanceof Field) {
-            return this.toComment((Field) annotationOwner);
+            return toComment((Field) annotationOwner);
         } else {
-            return this.toComment((Method) annotationOwner);
+            return toComment((Method) annotationOwner);
         }
     }
 
