@@ -40,9 +40,7 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * @param annotationOwner 注解所有者
      * @return
      */
-    default CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner) {
-        return null;
-    }
+     CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner);
 
     /**
      * 注解转换
@@ -50,9 +48,7 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * @param annotationOwner 注解所有者
      * @return
      */
-    default CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
-        return null;
-    }
+     CommonCodeGenAnnotation toAnnotation(Field annotationOwner);
 
     /**
      * 注解转换
@@ -60,7 +56,5 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * @param annotationOwner 注解所有者
      * @return
      */
-    default CommonCodeGenAnnotation toAnnotation(Method annotationOwner) {
-        return null;
-    }
+     CommonCodeGenAnnotation toAnnotation(Method annotationOwner);
 }

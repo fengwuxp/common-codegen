@@ -35,9 +35,7 @@ public interface AnnotationToString {
      * @param annotationOwner 注解所有者
      * @return
      */
-    default String toComment(Class<?> annotationOwner) {
-        return null;
-    }
+     String toComment(Class<?> annotationOwner);
 
 
     /**
@@ -46,9 +44,7 @@ public interface AnnotationToString {
      * @param annotationOwner 注解所有者
      * @return
      */
-    default String toComment(Field annotationOwner) {
-        return null;
-    }
+     String toComment(Field annotationOwner);
 
     /**
      * 转换为注释
@@ -56,9 +52,7 @@ public interface AnnotationToString {
      * @param annotationOwner 注解所有者
      * @return
      */
-    default String toComment(Method annotationOwner) {
-        return null;
-    }
+     String toComment(Method annotationOwner);
 
 
 }
