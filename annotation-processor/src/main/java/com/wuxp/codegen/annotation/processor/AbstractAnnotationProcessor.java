@@ -1,12 +1,14 @@
 package com.wuxp.codegen.annotation.processor;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -19,6 +21,7 @@ import java.util.Optional;
  * @param <A>
  * @param <T>
  */
+@Slf4j
 public abstract class AbstractAnnotationProcessor<A extends Annotation, T extends AnnotationMate<A>>
         implements AnnotationProcessor<T, A> {
 
@@ -88,7 +91,15 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
                 return null;
             }
 
-            return methodProxy.invokeSuper(annotationMate, args);
+
+            Object result = methodProxy.invokeSuper(annotationMate, args);
+            if (modifiers == 1) {
+                log.info("注解：{}，默认方法：{}的执行结果：{}",
+                        annotation.annotationType().getSimpleName(),
+                        method.getName(),
+                        result);
+            }
+            return result;
         }
     }
 }
