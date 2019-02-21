@@ -97,8 +97,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         meta.setPackagePath(this.packageMapStrategy.convert(source));
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
-        meta.setTypeVariables(Arrays.stream(javaClassMeta
-                .getTypeVariables())
+        meta.setTypeVariables(Arrays.stream(javaClassMeta.getTypeVariables())
                 .map(type -> {
                     if (type instanceof Class) {
                         return this.parse((Class) type);

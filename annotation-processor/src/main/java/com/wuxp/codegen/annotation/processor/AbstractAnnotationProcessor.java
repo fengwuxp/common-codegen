@@ -1,7 +1,6 @@
 package com.wuxp.codegen.annotation.processor;
 
 
-
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
@@ -41,7 +40,7 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
         enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
         enhancer.setUseFactory(true);
         enhancer.setUseCache(true);
-        enhancer.setCallback(new ProxyAnnotationMethodInterceptor(annotation, clazz));
+        enhancer.setCallback(new ProxyAnnotationMethodInterceptor(annotation));
 
         return (T) enhancer.create();
 
@@ -61,22 +60,25 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
         private final Method[] annotationMethods;
 
 
-        private final Method[] mateMethods;
-
-
-        private ProxyAnnotationMethodInterceptor(Annotation annotation, Class<? extends AnnotationMate> meta) {
+        private ProxyAnnotationMethodInterceptor(Annotation annotation) {
             this.annotation = annotation;
-            this.mateMethods = meta.getMethods();
             this.annotationMethods = annotation.getClass().getMethods();
         }
 
         @Override
         public Object intercept(Object annotationMate, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-            //查找方法是否在注解中，通过方法名称匹配
+            //查找方法是否在注解
+
             Optional<Method> optionalMethod = Arrays.stream(annotationMethods)
-                    .filter(m -> method.getName().equals(m.getName()))
+                    .filter(m -> {
+                        boolean returnTypeIsEq = method.getReturnType().equals(m.getReturnType());
+                        boolean methodNameIsEq = method.getName().equals(m.getName());
+                        boolean parameterLenIsEq = m.getParameters().length == method.getParameters().length;
+                        return returnTypeIsEq && parameterLenIsEq && methodNameIsEq;
+                    })
                     .findFirst();
             if (optionalMethod.isPresent()) {
+                //注解中的方法
                 return optionalMethod.get().invoke(annotation, args);
             }
 
@@ -85,14 +87,6 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
                 //抽象方法
                 return null;
             }
-
-//            optionalMethod = Arrays.stream(mateMethods)
-//                    .filter(m -> method.getName().equals(m.getName()))
-//                    .findFirst();
-//            if (optionalMethod.isPresent()) {
-//                return optionalMethod.get().invoke(annotationMate, args);
-//            }
-
 
             return methodProxy.invokeSuper(annotationMate, args);
         }
