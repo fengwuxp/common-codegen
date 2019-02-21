@@ -21,11 +21,11 @@ public interface AnnotationToString {
             return null;
         }
         if (annotationOwner instanceof Class) {
-            return toComment((Class<?>) annotationOwner);
+            return this.toComment((Class<?>) annotationOwner);
         } else if (annotationOwner instanceof Field) {
-            return toComment((Field) annotationOwner);
+            return this.toComment((Field) annotationOwner);
         } else {
-            return toComment((Method) annotationOwner);
+            return this.toComment((Method) annotationOwner);
         }
     }
 
@@ -36,7 +36,7 @@ public interface AnnotationToString {
      * @return
      */
     default String toComment(Class<?> annotationOwner) {
-        return "";
+        return null;
     }
 
 
@@ -47,7 +47,7 @@ public interface AnnotationToString {
      * @return
      */
     default String toComment(Field annotationOwner) {
-        return "";
+        return null;
     }
 
     /**
@@ -57,7 +57,7 @@ public interface AnnotationToString {
      * @return
      */
     default String toComment(Method annotationOwner) {
-        return "";
+        return null;
     }
 
 

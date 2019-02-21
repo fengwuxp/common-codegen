@@ -21,7 +21,8 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
     import {ServiceQueryResponse} from "../resp/ServiceQueryResponse";
 
 /**
-    * 1:接口的请求方法为：POST
+    * 1:订单服务
+    * 2:接口的请求方法为：POST
 **/
 
     @Feign({

@@ -1,4 +1,4 @@
-package com.wuxp.codegen.dragon.utils;
+package com.wuxp.codegen.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

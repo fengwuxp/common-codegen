@@ -20,7 +20,7 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
-import com.wuxp.codegen.dragon.utils.JavaMethodNameUtil;
+import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -217,7 +216,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return null;
             }
             return processor.process(annotation).toComment(owner);
-        }).filter(StringUtils::hasText)
+        }).filter(Objects::nonNull)
+                .filter(StringUtils::hasText)
                 .collect(Collectors.toList());
     }
 

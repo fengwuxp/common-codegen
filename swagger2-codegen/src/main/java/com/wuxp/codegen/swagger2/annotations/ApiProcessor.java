@@ -24,14 +24,21 @@ public class ApiProcessor extends AbstractAnnotationProcessor<Api, ApiProcessor.
 
 
         @Override
+        public String toComment(Class<?> annotationOwner) {
+            return getComment();
+        }
+
+        @Override
         public String toComment(Field annotationOwner) {
+            return getComment();
+        }
+
+        private String getComment() {
             String[] tags = this.tags();
             String tag = tags[0];
             if (!StringUtils.hasText(tag)) {
                 return this.value();
             }
-
-
             return tag;
         }
     }

@@ -1,4 +1,4 @@
-package com.wuxp.codegen.dragon.utils;
+package com.wuxp.codegen.utils;
 
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 

@@ -3,7 +3,7 @@ package com.wuxp.codegen.dragon;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.freemarker.CombineTypeMethod;
 import com.wuxp.codegen.templates.TemplateLoader;
-import com.wuxp.codegen.dragon.utils.FileUtil;
+import com.wuxp.codegen.utils.FileUtil;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;

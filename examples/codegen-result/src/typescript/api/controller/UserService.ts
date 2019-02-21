@@ -16,7 +16,8 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
     import {SampleReq} from "../req/SampleReq";
 
 /**
-    * 1:接口的请求方法为：POST
+    * 1:用户服务
+    * 2:接口的请求方法为：POST
 **/
 
     @Feign({

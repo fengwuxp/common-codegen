@@ -1,6 +1,7 @@
 package com.wuxp.codegen.annotation.processor;
 
 
+
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
@@ -38,41 +39,62 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
-        enhancer.setCallback(new ProxyAnnotationMethodInterceptor(annotation));
+        enhancer.setUseFactory(true);
+        enhancer.setUseCache(true);
+        enhancer.setCallback(new ProxyAnnotationMethodInterceptor(annotation, clazz));
 
         return (T) enhancer.create();
 
     }
 
+
     private class ProxyAnnotationMethodInterceptor implements MethodInterceptor {
 
+        /**
+         * 注解实例
+         */
         private final Annotation annotation;
 
-        private final Method[] methods;
+        /**
+         * 注解的方法列表
+         */
+        private final Method[] annotationMethods;
 
 
-        private ProxyAnnotationMethodInterceptor(Annotation annotation) {
+        private final Method[] mateMethods;
+
+
+        private ProxyAnnotationMethodInterceptor(Annotation annotation, Class<? extends AnnotationMate> meta) {
             this.annotation = annotation;
-            this.methods = annotation.getClass().getMethods();
+            this.mateMethods = meta.getMethods();
+            this.annotationMethods = annotation.getClass().getMethods();
         }
 
         @Override
-        public Object intercept(Object o, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        public Object intercept(Object annotationMate, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             //查找方法是否在注解中，通过方法名称匹配
-            Optional<Method> optionalMethod = Arrays.stream(methods)
+            Optional<Method> optionalMethod = Arrays.stream(annotationMethods)
                     .filter(m -> method.getName().equals(m.getName()))
                     .findFirst();
             if (optionalMethod.isPresent()) {
                 return optionalMethod.get().invoke(annotation, args);
             }
 
-            if (Modifier.isAbstract(method.getModifiers())) {
+            int modifiers = method.getModifiers();
+            if (Modifier.isAbstract(modifiers)) {
                 //抽象方法
                 return null;
             }
 
+//            optionalMethod = Arrays.stream(mateMethods)
+//                    .filter(m -> method.getName().equals(m.getName()))
+//                    .findFirst();
+//            if (optionalMethod.isPresent()) {
+//                return optionalMethod.get().invoke(annotationMate, args);
+//            }
 
-            return methodProxy.invokeSuper(o, args);
+
+            return methodProxy.invokeSuper(annotationMate, args);
         }
     }
 }
