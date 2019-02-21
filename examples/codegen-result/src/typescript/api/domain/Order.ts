@@ -12,7 +12,7 @@ export interface  Order {
         **/
         id?: number;
         /**
-            *属性说明：sn，示例输入：
+            *属性说明：sn，示例输入：order_sn_199223
             *在java中的类型为：String
         **/
         sn?: string;

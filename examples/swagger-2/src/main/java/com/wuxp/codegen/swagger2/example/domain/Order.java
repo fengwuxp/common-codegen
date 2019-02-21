@@ -14,7 +14,7 @@ public class Order {
     @ApiModelProperty("id")
     private Long id;
 
-    @ApiModelProperty("sn")
+    @ApiModelProperty(value = "sn",example = "order_sn_199223")
     private String sn;
 
     @ApiModelProperty(value = "下单用户")
