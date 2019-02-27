@@ -163,11 +163,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         }
         if (parameterNames == null) {
-            log.error("获取参数名称列表失败");
-            return null;
+
+            parameterNames = new String[0];
         }
         //参数列表
         Parameter[] parameters = method.getParameters();
+        if (parameters.length != parameterNames.length) {
+            //参数个数不匹配
+            log.error("获取参数名称列表失败");
+            return null;
+        }
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
@@ -338,6 +343,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         return methodMetas.stream()
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(CommonBaseMeta::getName))
                 .toArray(JavaMethodMeta[]::new);
 
