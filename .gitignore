@@ -3,3 +3,4 @@
 **/target
 *.iml
 .scannerwork
+/examples/codegen-result
