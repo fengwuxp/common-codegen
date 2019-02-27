@@ -152,20 +152,28 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
 
 
-        //参数上的注解
-//        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-//        String[] parameterNames = new String[0];
-//
-//        try {
-//            //参数名称列表
-//            parameterNames = parameterNameDiscoverer.getParameterNames(method);
-//        } catch (Exception e) {
-//            log.error("获取参数名称异常", e);
-//        }
+        String[] parameterNames = null;
+
+        try {
+            //参数名称列表
+            parameterNames = parameterNameDiscoverer.getParameterNames(method);
+        } catch (Exception e) {
+            log.error("获取参数名称列表异常", e);
+
+        }
+        if (parameterNames == null) {
+            log.error("获取参数名称列表失败");
+            return null;
+        }
         //参数列表
         Parameter[] parameters = method.getParameters();
+        int i = 0;
         for (Parameter parameter : parameters) {
             String parameterName = parameter.getName();
+            if (parameterName.startsWith("arg")) {
+                //重新获取
+                parameterName = parameterNames[i];
+            }
             Type type = parameter.getParameterizedType();
             if (type instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -187,6 +195,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 throw new RuntimeException("未处理的类型参数类型:" + type.getTypeName());
             }
             paramAnnotations.put(parameterName, parameter.getAnnotations());
+            i++;
         }
 
 
