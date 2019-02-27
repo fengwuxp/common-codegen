@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
+import org.springframework.util.StringUtils;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
@@ -167,12 +168,17 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
         //参数列表
         Parameter[] parameters = method.getParameters();
-        int i = 0;
-        for (Parameter parameter : parameters) {
+
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
             String parameterName = parameter.getName();
             if (parameterName.startsWith("arg")) {
                 //重新获取
                 parameterName = parameterNames[i];
+            }
+            if (!StringUtils.hasText(parameterName)) {
+                log.error("获取方法{}的第{}个参数名称失败", method.getName(), i);
+                continue;
             }
             Type type = parameter.getParameterizedType();
             if (type instanceof ParameterizedType) {
@@ -195,7 +201,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 throw new RuntimeException("未处理的类型参数类型:" + type.getTypeName());
             }
             paramAnnotations.put(parameterName, parameter.getAnnotations());
-            i++;
+
         }
 
 
