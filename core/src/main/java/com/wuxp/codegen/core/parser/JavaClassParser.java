@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
+import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -53,7 +54,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         JavaClassMeta classMeta = new JavaClassMeta();
-
         if (source.isInterface()) {
             //接口
             classMeta.setClassType(ClassType.INTERFACE);
@@ -151,27 +151,42 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
         Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
 
-        //参数类型列表
-        Class<?>[] parameterTypes = method.getParameterTypes();
 
         //参数上的注解
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        String[] parameterNames = new String[0];
+//        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+//        String[] parameterNames = new String[0];
+//
+//        try {
+//            //参数名称列表
+//            parameterNames = parameterNameDiscoverer.getParameterNames(method);
+//        } catch (Exception e) {
+//            log.error("获取参数名称异常", e);
+//        }
+        //参数列表
+        Parameter[] parameters = method.getParameters();
+        for (Parameter parameter : parameters) {
+            String parameterName = parameter.getName();
+            Type type = parameter.getParameterizedType();
+            if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                List<Type> classes = new ArrayList<>();
+                classes.add(parameterizedType.getRawType());
+                Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 
-        try {
-            //参数名称列表
-            parameterNames = parameterNameDiscoverer.getParameterNames(method);
-        } catch (Exception e) {
-            log.error("获取参数名称异常", e);
-        }
+                classes.addAll(Arrays.stream(actualTypeArguments)
+                        .filter((t) -> t instanceof Class<?>)
+                        .collect(Collectors.toList()));
+                params.put(parameterName, classes.toArray(new Class<?>[]{}));
 
-        if (parameterTypes.length > 0 && (parameterNames != null && parameterNames.length > 0)) {
-            for (int k = 0; k < parameterTypes.length; k++) {
-                String parameterName = parameterNames[k];
-                params.put(parameterName, genericsToClassType(ResolvableType.forClass(parameterTypes[k])));
-                paramAnnotations.put(parameterName, parameterAnnotations[k]);
+            } else if (type instanceof Class<?>) {
+                params.put(parameterName, new Class[]{(Class<?>) type});
+            } else if (type instanceof TypeVariableImpl) {
+                TypeVariableImpl typeVariable = (TypeVariableImpl) type;
+                params.put(parameterName, Arrays.stream(typeVariable.getBounds()).filter(b -> b instanceof Class<?>).toArray(Class<?>[]::new));
+            } else {
+                throw new RuntimeException("未处理的类型参数类型:" + type.getTypeName());
             }
-
+            paramAnnotations.put(parameterName, parameter.getAnnotations());
         }
 
 
@@ -184,7 +199,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setParamAnnotations(paramAnnotations)
                 .setOwner(owner)
                 .setIsNative(Modifier.isNative(modifiers))
-                .setTypeVariables(method.getTypeParameters())
+                .setTypeVariables(typeParameters)
                 .setTypeVariableNum(typeParameters.length)
                 .setAnnotations(method.getAnnotations())
                 .setName(method.getName());

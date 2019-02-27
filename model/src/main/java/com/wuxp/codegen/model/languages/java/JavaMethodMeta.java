@@ -25,7 +25,7 @@ public class JavaMethodMeta extends JavaBaseMeta {
     private Class<?>[] returnType;
 
     //参数列表 返回的是LinkHashMap
-    private Map<String/*参数名称*/, Class<?>[]> params;
+    private Map<String/*参数名称*/, Class<?>[]/*参数类类型，多个表示有泛型*/> params;
 
     //参数上的注解
     private Map<String/*参数名称*/, Annotation[]> paramAnnotations;

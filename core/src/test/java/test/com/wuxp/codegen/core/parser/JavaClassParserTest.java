@@ -8,6 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * JavaClassParser Tester.
  *
@@ -35,8 +37,7 @@ public class JavaClassParserTest {
     public void testParse() throws Exception {
 
 
-        JavaClassMeta classMeta = genericParser.parse(JavaClassMeta.class);
-        JavaClassMeta javaClassMeta = genericParser.parse(AccessPermission.class);
+        JavaClassMeta classMeta = genericParser.parse(TestJavaClassParserSimple.class);
         System.out.println(classMeta);
     }
 
@@ -89,4 +90,11 @@ public class JavaClassParserTest {
     }
 
 
-} 
+}
+
+class TestJavaClassParserSimple {
+
+    public void func1(List<Integer> list){
+
+    };
+}

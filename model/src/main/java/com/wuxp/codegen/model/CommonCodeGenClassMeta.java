@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 依赖
      */
-    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies;
+    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new LinkedHashMap<>();
 
     /**
      * 在有泛型时候的描述
@@ -89,6 +90,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
     /**
      * 获取最终的泛型描述
+     *
      * @return
      */
     public String getFinallyGenericDescription() {

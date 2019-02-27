@@ -29,7 +29,7 @@ public class OrderController extends BaseController {
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @GetMapping(value = {"getOrder"})
-    public List<Order> getOrder() {
+    public List<Order> getOrder(String[] names,List<Integer> ids,Set<Order> moneys) {
         return Collections.EMPTY_LIST;
     }
 

@@ -168,7 +168,7 @@ public final class JavaTypeUtil {
     }
 
     /**
-     * 是否为一个简单数据类型的数组
+     * 是否为一个复杂的数据类型的数组
      *
      * @param clazz
      * @return
