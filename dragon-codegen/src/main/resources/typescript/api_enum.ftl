@@ -1,5 +1,5 @@
 
-import {Enum} from "oak_weex_common/src/enums/Enum";
+import {Enum} from "oak_common/src/enums/Enum";
 
 /**
 <#list comments as cmment>
