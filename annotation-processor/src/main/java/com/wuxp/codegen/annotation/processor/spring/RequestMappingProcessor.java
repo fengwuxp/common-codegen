@@ -49,6 +49,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.FORM_DATA");
         MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.JSON");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_UTF8_VALUE, "MediaType.JSON_UTF8");
     }
 
 
