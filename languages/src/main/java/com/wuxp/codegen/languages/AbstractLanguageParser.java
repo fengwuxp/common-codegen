@@ -164,7 +164,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toList())
                 .size();
         if (result == size) {
-            log.debug("符号生成条件的类：{}", clazz.getName());
+            log.debug("符合生成条件的类：{}", clazz.getName());
         }
         return result == size;
     }

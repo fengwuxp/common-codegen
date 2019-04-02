@@ -4,7 +4,7 @@ package com.wuxp.codegen.core.strategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
 /**
- * 泛型类型描述策略
+ * 合并泛型类型描述策略
  */
 public interface CombineTypeDescStrategy {
 

@@ -26,15 +26,17 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         Package aPackage = clazz.getPackage();
         String clazzName = clazz.getName();
         if (aPackage == null) {
-            log.error("不需要生成的类{}", clazzName);
-            return null;
+            log.warn("包名为空的类{}", clazzName);
+//            return null;
         }
         Optional<String> packageNamePrefix = this.packageNameMap.keySet()
                 .stream()
                 .filter(clazzName::startsWith)
                 .findFirst();
+        //没有找到可以替换的前缀
         if (!packageNamePrefix.isPresent()) {
-            return "";
+            //直接返回类名
+            return clazz.getSimpleName();
         }
 
         String key = packageNamePrefix.get();
@@ -43,7 +45,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         if (val == null) {
             throw new RuntimeException("包名：" + clazzName + " 未找到装换映射关系");
         }
-        if (!StringUtils.hasText(val)){
+        if (!StringUtils.hasText(val)) {
 
         }
 
@@ -52,6 +54,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 
     @Override
     public String convertClassName(String className) {
+        //将Controller 转换为Service
         return className.replaceAll("Controller", "Service");
     }
 }

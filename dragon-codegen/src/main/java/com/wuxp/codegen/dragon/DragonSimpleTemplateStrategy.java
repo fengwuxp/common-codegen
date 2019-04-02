@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 
 
 /**
@@ -46,7 +47,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
 
     public DragonSimpleTemplateStrategy(TemplateLoader<Template> templateLoader, String outputPath, String extName) {
         this.templateLoader = templateLoader;
-        this.outputPath = outputPath.endsWith("\\") ? outputPath : outputPath + "\\";
+        this.outputPath = outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator;
         this.extName = extName;
 
         //删除原本的目录
@@ -82,7 +83,14 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
             return;
         }
 
-        String output = Paths.get(this.outputPath + data.getPackagePath() + "." + this.extName).toString();
+        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, data.getPackagePath(), this.extName)).toString();
+
+        //如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
+        if (output.contains(MessageFormat.format("{0}.{1}", File.separator, this.extName))) {
+            log.warn("类{}，的生成输入路径有误,{}", data.getName(), output);
+
+        }
+
         File file = new File(output);
         if (file.exists()) {
             if (System.currentTimeMillis() - file.lastModified() <= LAST_MODIFIED_MINUTE * 60 * 1000) {
@@ -90,7 +98,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
                 return;
             }
         }
-        FileUtil.createDirectory(output.substring(0, output.lastIndexOf("\\")));
+        FileUtil.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
         log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
         Writer writer = null;
         try {

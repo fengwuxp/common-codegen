@@ -1,6 +1,7 @@
 package com.wuxp.codegen.dragon.strategy;
 
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
+import com.wuxp.codegen.dragon.path.PathResolve;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -23,18 +24,17 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
         String path = super.convert(clazz);
 
         if (!StringUtils.hasText(path)) {
-            log.warn("{}装换后的导入路径为空", clazz.getName());
-            return "";
+            log.warn("{}转换后的导入的路径为空", clazz.getName());
+            return clazz.getSimpleName();
         }
 
-        String convertClassName = this.convertClassName(path.replaceAll("\\.", "/"));
-        if (convertClassName.startsWith("/")) {
+        String convertClassName = this.convertClassName(path.replaceAll("\\.", PathResolve.RIGHT_SLASH));
+        if (convertClassName.startsWith(PathResolve.RIGHT_SLASH)) {
             return convertClassName;
         }
-        return "/" + convertClassName;
+        return PathResolve.RIGHT_SLASH + convertClassName;
 
     }
-
 
 
 }

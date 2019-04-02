@@ -21,9 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 测试swagger 生成 typescript的 api sdk
@@ -63,9 +66,12 @@ public class SwaggerCodegenTypescriptTest {
         //实例化模板加载器
         FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(language);
 
+
+        String[] outPaths = {"codegen-result", "src", language.toLowerCase(), "api"};
+
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
-                Paths.get(System.getProperty("user.dir")).resolveSibling("codegen-result\\src\\" + language.toLowerCase()+"\\api").toString(),
+                Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString(),
                 LanguageDescription.TYPESCRIPT.getSuffixName());
 
         //要进行生成的源代码包名列表

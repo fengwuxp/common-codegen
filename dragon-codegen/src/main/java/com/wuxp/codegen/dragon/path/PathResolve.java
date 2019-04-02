@@ -4,6 +4,7 @@ package com.wuxp.codegen.dragon.path;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -17,6 +18,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class PathResolve {
+
+
+    /**
+     * Right slash
+     */
+    public static final String RIGHT_SLASH = "/";
 
 
     /**
@@ -57,10 +64,12 @@ public class PathResolve {
             }
 
         }
-        result = result.replaceAll("\\\\", "/");
+        //转换导入的路径 将 \A\b-> /A/b
+        result = result.replaceAll(String.format("\\%s", File.separator), RIGHT_SLASH);
 
         if (!result.startsWith(".")) {
-            result = "./" + result;
+            //转换为相对路径
+            result = String.join("", ".", RIGHT_SLASH, result);
         }
         return result;
     }
@@ -81,16 +90,6 @@ public class PathResolve {
 
     }
 
-
-//    private String toDirPath(String path) {
-//        if (!this.isFile(path)) {
-//            return path;
-//        }
-//
-//        String[] paths = Paths.get(path).normalize().toString().split("\\\\");
-//        return String.join("/", Arrays.asList(paths)
-//                .subList(0, paths.length - 1));
-//    }
 
     public static void main(String[] args) {
 

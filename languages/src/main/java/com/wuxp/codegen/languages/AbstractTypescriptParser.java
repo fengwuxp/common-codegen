@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -412,9 +413,9 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         argsClassMeta.setFiledMetas(typescriptFieldMates.toArray(new TypescriptFieldMate[]{}));
         if (!StringUtils.hasText(argsClassMeta.getName())) {
             //没有复杂对象的参数
-            String name = ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()) + "Req";
+            String name = MessageFormat.format("{0}Req", ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
             argsClassMeta.setName(name);
-            argsClassMeta.setPackagePath("/req/" + name);
+            argsClassMeta.setPackagePath(MessageFormat.format("/req/{0}", name));
             //这个时候没有依赖
             argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
             argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
@@ -429,8 +430,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 }
             }
             if (hasComplex && hasSimple) {
-                //参数列表中有复杂对象，并且有额外的简单对象，将类的名称替换，重新生成过一个新的对象
-                String name = ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()) + "Req";
+                //参数列表中有复杂对象，并且有额外的简单对象，将类的名称替换，使用方法的名称,重新生成过一个新的对象
+                String name = MessageFormat.format("{0}Req", ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
                 argsClassMeta.setPackagePath(argsClassMeta.getPackagePath().replace(argsClassMeta.getName(), name));
                 argsClassMeta.setName(name);
             }

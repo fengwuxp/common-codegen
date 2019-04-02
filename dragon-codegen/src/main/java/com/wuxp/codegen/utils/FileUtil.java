@@ -18,19 +18,19 @@ public final class FileUtil {
     /**
      * 递归创建目录
      *
-     * @param directoryName
+     * @param directoryName  目录名称
      * @return 文件夹目录
      */
     public static void createDirectory(String directoryName) {
-        String[] filePaths = directoryName.split("\\\\");
+        String[] filePaths = directoryName.split(String.format("\\%s", File.separator));
         StringBuilder filePath = new StringBuilder("");
 
-        for (int i = 0; i < filePaths.length; i++) {
-            filePath.append("\\").append(filePaths[i]);
+        for (String path : filePaths) {
+            filePath.append(File.separator).append(path);
             File directory = new File(filePath.toString());
             if (!directory.exists()) {
-                directory.mkdir();
-                log.debug("创建目录{}", directory.getPath());
+                boolean r = directory.mkdir();
+                log.debug("创建目录{}，结果", directory.getPath(), r ? "成功" : "失败");
             }
         }
     }

@@ -2,6 +2,7 @@ package test.com.wuxp.codegen;
 
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,5 +23,9 @@ public class SimpleCombineTypeDescStrategyTest {
 //        names.add("String");
 //        names.add("User");
 //        System.out.println(strategy.combineTypes(names));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(File.separator);
     }
 }

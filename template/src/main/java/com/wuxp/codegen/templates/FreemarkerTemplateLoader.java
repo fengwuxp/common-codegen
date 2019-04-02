@@ -6,6 +6,7 @@ import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 /**
  * freemarker的模板加载器
@@ -37,7 +38,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public Template load(String templateName) {
 
         try {
-            return configuration.getTemplate(this.language +"/"+ templateName);
+            return configuration.getTemplate(MessageFormat.format("{0}/{1}", this.language, templateName));
         } catch (IOException e) {
             log.error("获取模板失败，模板名称：" + templateName, e);
         }
