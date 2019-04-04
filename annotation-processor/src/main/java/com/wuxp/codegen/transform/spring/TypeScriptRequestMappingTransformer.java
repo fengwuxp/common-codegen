@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.Annotation;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -90,7 +91,7 @@ public class TypeScriptRequestMappingTransformer implements
         if (!StringUtils.hasText(value)) {
             value = requestHeader.name();
         }
-        map.put(value, "{" + value + "}");
+        map.put(value, MessageFormat.format("'{'{0}'}'", value));
         params.put("headers", JSON.toJSONString(map));
     }
 

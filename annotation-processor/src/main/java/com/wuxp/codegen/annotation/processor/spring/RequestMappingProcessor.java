@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.*;
 
 
@@ -71,13 +72,13 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         @Override
         public String toComment(Class<?> annotationOwner) {
 
-            return "接口的请求方法为：" + this.getRequestMethod().name();
+            return MessageFormat.format("接口：{0}", this.getRequestMethod().name());
         }
 
 
         @Override
         public String toComment(Method annotationOwner) {
-            return "接口的请求方法为：" + this.getRequestMethod().name();
+            return MessageFormat.format("接口方法：{0}", this.getRequestMethod().name());
         }
 
 

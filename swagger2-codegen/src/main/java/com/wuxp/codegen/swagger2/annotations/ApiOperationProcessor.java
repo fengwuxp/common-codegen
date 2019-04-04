@@ -27,6 +27,7 @@ public class ApiOperationProcessor extends AbstractAnnotationProcessor<ApiOperat
         public String toComment(Field annotationOwner) {
             return this.value();
         }
+
         @Override
         public String toComment(Method annotationOwner) {
             return this.value();

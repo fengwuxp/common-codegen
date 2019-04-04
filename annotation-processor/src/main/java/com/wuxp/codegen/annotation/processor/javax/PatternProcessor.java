@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.Pattern;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 
 /**
  * javax 验证注解处理
@@ -26,7 +27,7 @@ public class PatternProcessor extends AbstractAnnotationProcessor<Pattern, Patte
         @Override
         public String toComment(Field annotationOwner) {
 
-            return "属性：" + annotationOwner.getName() + "匹配的规则为：" + this.regexp();
+            return MessageFormat.format("属性：{0}匹配的规则为：{1}", annotationOwner.getName(), this.regexp());
         }
     }
 }

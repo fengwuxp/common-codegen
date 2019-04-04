@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.Size;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 
 /**
  * javax 验证注解处理
@@ -25,10 +26,7 @@ public class SizeProcessor extends AbstractAnnotationProcessor<Size, SizeProcess
         @Override
         public String toComment(Field annotationOwner) {
 
-            return "属性：" + annotationOwner.getName() + "输入字符串的最小长度为：" +
-                    this.min() +
-                    "，输入字符串的最大长度为：" +
-                    this.max();
+            return MessageFormat.format("属性：{0}输入字符串的最小长度为：{1}，输入字符串的最大长度为：{2}", annotationOwner.getName(), this.min(), this.max());
         }
     }
 }

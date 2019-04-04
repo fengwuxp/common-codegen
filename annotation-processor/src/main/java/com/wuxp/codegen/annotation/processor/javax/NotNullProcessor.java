@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 
 /**
  * javax 验证注解处理
@@ -29,7 +30,7 @@ public class NotNullProcessor extends AbstractAnnotationProcessor<NotNull, NotNu
         @Override
         public String toComment(Field annotationOwner) {
 
-            return "属性：" + annotationOwner.getName() + "为必填项，不能为空";
+            return MessageFormat.format("属性：{0}为必填项，不能为空", annotationOwner.getName());
         }
     }
 }
