@@ -338,7 +338,10 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             Class<?> clazz = classes[0];
             if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
                 TypescriptClassMeta typescriptClassMeta = this.parse(clazz);
-                BeanUtils.copyProperties(typescriptClassMeta, argsClassMeta);
+                if (typescriptClassMeta != null) {
+                    BeanUtils.copyProperties(typescriptClassMeta, argsClassMeta);
+                }
+
             } else if (clazz.isEnum()) {
                 //枚举
                 TypescriptFieldMate fieldMate = new TypescriptFieldMate();

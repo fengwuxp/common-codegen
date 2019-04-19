@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -55,7 +52,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     @Override
     public void generate() {
-        this.scanPackages().stream()
+        List<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
                 .map(this.languageParser::parse)
                 .filter(Objects::nonNull)
                 .filter(commonCodeGenClassMeta -> {
@@ -63,22 +60,22 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
                     boolean notFiled = commonCodeGenClassMeta.getFiledMetas() == null || commonCodeGenClassMeta.getFiledMetas().length == 0;
                     return !(notFiled && notMethod);
-                })
-                .map(commonCodeGenClassMeta -> {
-                    //模板处理，生成服务
-                    this.templateStrategy.build(commonCodeGenClassMeta);
-                    return commonCodeGenClassMeta.getDependencies().values();
-                }).flatMap(Collection::stream)
-                .map(commonCodeGenClassMeta -> {
-                    //模板处理，生成目控制器或服务的依赖（DTO）
-                    this.templateStrategy.build(commonCodeGenClassMeta);
-                    return commonCodeGenClassMeta.getDependencies().values();
-                })
-                .flatMap(Collection::stream)
-                .forEach(commonCodeGenClassMeta -> {
-                    //模板处理，生成DTO的依赖（其他DTO或枚举）
-                    this.templateStrategy.build(commonCodeGenClassMeta);
-                });
+                }).collect(Collectors.toList());
+
+
+        int i = 0;
+        for (; ; ) {
+            log.warn("循环生成，第{}次", i);
+            commonCodeGenClassMetas = commonCodeGenClassMetas.stream().map(commonCodeGenClassMeta -> {
+                //模板处理，生成服务
+                this.templateStrategy.build(commonCodeGenClassMeta);
+                return commonCodeGenClassMeta.getDependencies().values();
+            }).flatMap(Collection::stream).collect(Collectors.toList());
+            if (commonCodeGenClassMetas.size() == 0 || i > 100) {
+                break;
+            }
+            i++;
+        }
     }
 
 
