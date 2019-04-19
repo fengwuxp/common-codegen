@@ -7,6 +7,7 @@ import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
@@ -76,7 +77,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
         //创建代码生成器
-        this.codeGenerator = new DragonCodeGenerator(packagePaths, languageParser, templateStrategy);
+        this.codeGenerator = new Swagger2CodeGenerator(packagePaths, languageParser, templateStrategy);
     }
 
 

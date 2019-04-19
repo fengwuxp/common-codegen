@@ -5,12 +5,9 @@ import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,11 +27,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      */
     protected static final ClassPathScanningCandidateComponentProvider CANDIDATE_COMPONENT_PROVIDER = new ClassPathScanningCandidateComponentProvider(true);
 
-    static {
-        //设置扫描过滤器
-        CANDIDATE_COMPONENT_PROVIDER.addIncludeFilter(new AnnotationTypeFilter(Api.class));
-        CANDIDATE_COMPONENT_PROVIDER.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
-    }
 
     /**
      * 要进行生成的源代码包名列表
@@ -53,7 +45,9 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected TemplateStrategy<CommonCodeGenClassMeta> templateStrategy;
 
 
-    AbstractCodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
+    public AbstractCodeGenerator(String[] packagePaths,
+                          LanguageParser<CommonCodeGenClassMeta> languageParser,
+                          TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         this.packagePaths = packagePaths;
         this.languageParser = languageParser;
         this.templateStrategy = templateStrategy;
