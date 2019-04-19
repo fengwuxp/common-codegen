@@ -440,7 +440,9 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         });
 
 
-        return classSet;
+        return classSet.stream().filter(Objects::nonNull)
+                .filter(c -> !c.equals(clazz))
+                .collect(Collectors.toSet());
     }
 
 }
