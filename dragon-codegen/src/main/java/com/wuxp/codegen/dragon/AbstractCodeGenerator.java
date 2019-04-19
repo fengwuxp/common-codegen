@@ -25,7 +25,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     /**
      * spring 的包扫描组件
      */
-    protected static final ClassPathScanningCandidateComponentProvider CANDIDATE_COMPONENT_PROVIDER = new ClassPathScanningCandidateComponentProvider(true);
+    protected static final ClassPathScanningCandidateComponentProvider CANDIDATE_COMPONENT_PROVIDER = new ClassPathScanningCandidateComponentProvider(false);
 
 
     /**
@@ -46,8 +46,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
 
     public AbstractCodeGenerator(String[] packagePaths,
-                          LanguageParser<CommonCodeGenClassMeta> languageParser,
-                          TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         this.packagePaths = packagePaths;
         this.languageParser = languageParser;
         this.templateStrategy = templateStrategy;

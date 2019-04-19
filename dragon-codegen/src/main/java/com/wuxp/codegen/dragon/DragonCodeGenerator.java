@@ -4,6 +4,8 @@ import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -12,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DragonCodeGenerator extends AbstractCodeGenerator {
 
+    static {
+        CANDIDATE_COMPONENT_PROVIDER.addExcludeFilter(new AnnotationTypeFilter(Component.class));
+    }
 
     public DragonCodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         super(packagePaths, languageParser, templateStrategy);
