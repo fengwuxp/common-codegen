@@ -66,7 +66,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(language);
 
 
-        String[] outPaths = {"codegen-result", "src", language.toLowerCase(), "api"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,

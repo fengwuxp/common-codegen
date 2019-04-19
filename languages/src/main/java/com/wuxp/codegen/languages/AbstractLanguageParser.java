@@ -19,6 +19,8 @@ import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.mapping.CustomizeJavaTypeMapping;
+import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING;
 
 
 /**
@@ -72,6 +76,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 默认解析所有的属性 方法
      */
     protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+
+    /**
+     * 自定义的类型映射
+     */
+    protected TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping = new CustomizeJavaTypeMapping(CUSTOMIZE_TYPE_MAPPING);
 
     /**
      * 包名映射策略
@@ -448,11 +457,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return new HashMap<>();
         }
 
+
         return dependencies.stream()
+                .map(this.customizeJavaTypeMapping::mapping)
+                .flatMap(Collection::stream)
                 .filter(this::isMatchGenCodeRule)
                 .filter(Objects::nonNull)
                 .map(this::parse)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
     }
 
