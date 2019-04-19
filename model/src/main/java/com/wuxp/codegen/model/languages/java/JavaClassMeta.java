@@ -70,6 +70,10 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
         return this.existAnnotation(JavaClassMeta.API_SERVICE_ANNOTATIONS.toArray(new Class[]{}));
     }
 
+    public static void addApiServiceAnnotations(Class<? extends Annotation> clazz) {
+        JavaClassMeta.API_SERVICE_ANNOTATIONS.add(clazz);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
