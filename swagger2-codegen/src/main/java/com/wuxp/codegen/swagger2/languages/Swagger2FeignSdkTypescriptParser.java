@@ -18,10 +18,10 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
- * swagger2 typeScript的 parser
+ * 基于swagger2 生成 feign sdk的 typeScript的 parser
  */
 @Slf4j
-public class TypescriptParser extends AbstractTypescriptParser {
+public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
 
     static {
@@ -34,7 +34,7 @@ public class TypescriptParser extends AbstractTypescriptParser {
     }
 
 
-    public TypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
+    public Swagger2FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, genMatchingStrategy, codeDetects);
     }
 

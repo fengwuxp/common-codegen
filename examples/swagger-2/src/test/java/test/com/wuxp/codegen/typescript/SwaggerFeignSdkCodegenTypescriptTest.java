@@ -14,8 +14,8 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
-import com.wuxp.codegen.swagger2.Swagger2CodeGenMatchingStrategy;
-import com.wuxp.codegen.swagger2.languages.TypescriptParser;
+import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
+import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -23,16 +23,14 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
- * 测试swagger 生成 typescript的 api sdk
+ * 测试swagger 生成  typescript的 feign api sdk
  */
 @Slf4j
-public class SwaggerCodegenTypescriptTest {
+public class SwaggerFeignSdkCodegenTypescriptTest {
 
 
     private CodeGenerator codeGenerator;
@@ -59,7 +57,7 @@ public class SwaggerCodegenTypescriptTest {
         PackageMapStrategy packageMapStrategy = new TypescriptPackageMapStrategy(packageMap);
 
         //实例化语言解析器
-        LanguageParser languageParser = new TypescriptParser(packageMapStrategy, new Swagger2CodeGenMatchingStrategy(), null);
+        LanguageParser languageParser = new Swagger2FeignSdkTypescriptParser(packageMapStrategy, new Swagger2FeignSdkGenMatchingStrategy(), null);
 
         String language = LanguageDescription.TYPESCRIPT.getName();
 

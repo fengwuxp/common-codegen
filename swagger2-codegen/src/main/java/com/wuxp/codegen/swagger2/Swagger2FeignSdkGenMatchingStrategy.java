@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * 基于swagger2的生成匹配策略
+ * 基于swagger2的生成 feign api sdk的匹配策略
  */
 @Slf4j
-public class Swagger2CodeGenMatchingStrategy implements CodeGenMatchingStrategy {
+public class Swagger2FeignSdkGenMatchingStrategy implements CodeGenMatchingStrategy {
 
 
     @Override
