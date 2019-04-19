@@ -18,11 +18,10 @@ import springfox.documentation.annotations.ApiIgnore;
 public class Swagger2CodeGenerator extends AbstractCodeGenerator {
 
 
-    static {
+    {
         //设置扫描过滤器
-        CANDIDATE_COMPONENT_PROVIDER.addExcludeFilter(new AnnotationTypeFilter(Component.class));
-        CANDIDATE_COMPONENT_PROVIDER.addIncludeFilter(new AnnotationTypeFilter(Api.class));
-        CANDIDATE_COMPONENT_PROVIDER.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
+        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Api.class));
+        classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
     }
 
     public Swagger2CodeGenerator(String[] packagePaths,

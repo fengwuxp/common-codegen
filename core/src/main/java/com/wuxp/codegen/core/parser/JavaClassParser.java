@@ -140,7 +140,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      * @param owner  可以为空
      * @return
      */
-    public JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner) {
+    protected JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner) {
 
         JavaMethodMeta methodMeta = new JavaMethodMeta();
         methodMeta.setMethod(method);

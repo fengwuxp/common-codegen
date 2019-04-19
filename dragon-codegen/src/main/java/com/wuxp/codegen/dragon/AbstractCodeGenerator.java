@@ -25,7 +25,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     /**
      * spring 的包扫描组件
      */
-    protected static final ClassPathScanningCandidateComponentProvider CANDIDATE_COMPONENT_PROVIDER = new ClassPathScanningCandidateComponentProvider(false);
+    protected ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(true);
 
 
     /**
@@ -81,16 +81,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 });
     }
 
+
     /**
      * 包扫描 获的需要生成的类
      *
      * @return 需要生成的类
      */
-    private Set<Class<?>> scanPackages() {
+    protected Set<Class<?>> scanPackages() {
 
 
         Set<Class<?>> classes = Arrays.stream(packagePaths)
-                .map(CANDIDATE_COMPONENT_PROVIDER::findCandidateComponents)
+                .map(classPathScanningCandidateComponentProvider::findCandidateComponents)
                 .flatMap(Collection::stream).map(BeanDefinition::getBeanClassName).map(className -> {
                     try {
                         return Thread.currentThread().getContextClassLoader().loadClass(className);
