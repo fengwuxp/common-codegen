@@ -40,7 +40,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         configuration.setDefaultEncoding("UTF-8");
 
         //支持从jar中加载模板
-        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class.getClassLoader().getClass(), "/");
+        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class, "/");
         this.language = language;
 
 

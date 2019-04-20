@@ -61,21 +61,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
     public void build(CommonCodeGenClassMeta data) {
 
         //根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
-        String templateName = null;
-        CommonCodeGenMethodMeta[] methodMetas = data.getMethodMetas();
-        if (methodMetas == null || methodMetas.length == 0) {
-            //DTO or enum
-            if (ClassType.ENUM.equals(data.getClassType())) {
-                templateName = FeignApiSdkTemplateName.API_ENUM_TEMPLATE_NAME;
-            } else {
-                //区分请求对象还是响应对象
-                templateName = FeignApiSdkTemplateName.API_REQUEST_TEMPLATE_NAME;
-            }
-        } else {
-            //api 接口
-            templateName = FeignApiSdkTemplateName.API_SERVICE_TEMPLATE_NAME;
-
-        }
+        String templateName = this.getTemplate(data);
 
 
         Template template = this.templateLoader.load(templateName);
@@ -120,5 +106,24 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
                 }
             }
         }
+    }
+
+    protected String getTemplate(CommonCodeGenClassMeta data) {
+        String templateName = null;
+        CommonCodeGenMethodMeta[] methodMetas = data.getMethodMetas();
+        if (methodMetas == null || methodMetas.length == 0) {
+            //DTO or enum
+            if (ClassType.ENUM.equals(data.getClassType())) {
+                templateName = FeignApiSdkTemplateName.API_ENUM_TEMPLATE_NAME;
+            } else {
+                //区分请求对象还是响应对象
+                templateName = FeignApiSdkTemplateName.API_REQUEST_TEMPLATE_NAME;
+            }
+        } else {
+            //api 接口
+            templateName = FeignApiSdkTemplateName.API_SERVICE_TEMPLATE_NAME;
+
+        }
+        return templateName;
     }
 }
