@@ -87,6 +87,16 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     protected CommonCodeGenFiledMeta[] filedMetas;
 
+    /**
+     * 是否需要自动生成
+     */
+    protected Boolean needGenerate = true;
+
+    /**
+     * 是否需要导入的依赖
+     */
+    protected Boolean needImport = true;
+
 
     /**
      * 获取最终的泛型描述

@@ -10,18 +10,21 @@ import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
 <#--<#import "../common/customize_method.ftl" as customize_method/>-->
-
+<#if dependencies??>
 <#--依赖导入处理-->
-<#list dependencies as key,val >
+    <#list dependencies as key,val >
     <#--import {${key}} from "@api${val.packagePath}";-->
-    import {${key}} from "${customize_method.pathoResolve(packagePath,val.packagePath)}";
-</#list>
+        import {${key}} from "${customize_method.pathoResolve(packagePath,val.packagePath)}";
+    </#list>
+</#if>
 
-/**
-<#list comments as cmment>
-    * ${cmment_index+1}:${cmment}
-</#list>
-**/
+<#if comments??>
+    /**
+    <#list comments as cmment>
+        * ${cmment}
+    </#list>
+    **/
+</#if>
 
 <#list annotations as annotation>
     @${annotation.name}({
@@ -30,7 +33,7 @@ import {MediaType} from "common_fetch/src/constant/http/MediaType";
     </#list>
     })
 </#list>
- class ${name}{
+class ${name}{
 
 <#list methodMetas as method>
     /**

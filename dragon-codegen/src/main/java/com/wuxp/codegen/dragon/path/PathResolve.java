@@ -34,8 +34,12 @@ public class PathResolve {
      * @return
      */
     public String relativizeResolve(String baseDir, String... args) {
-        if (args == null || args.length == 0) {
+        if (args == null || args.length <= 1) {
             return null;
+        }
+        String args1 = args[1];
+        if (!args1.startsWith(".") && !args1.startsWith(File.separator)) {
+            return args1;
         }
         Path basePath = Paths.get(baseDir);
 
@@ -43,15 +47,14 @@ public class PathResolve {
                 .filter(StringUtils::hasText)
                 .map(path -> basePath.resolveSibling(Paths.get(path)))
                 .collect(Collectors.toList());
-
         if (paths.size() == 0) {
-            log.error("根路径{}，需要导入依赖的文件，导入的依赖路径", baseDir, args[0], args[1]);
+            log.error("根路径{}，需要导入依赖的文件，导入的依赖路径", baseDir, args[0], args1);
             return null;
         }
 
         Path p = paths.get(0);
         for (int i = 1; i < paths.size(); i++) {
-            p = p.relativize(paths.get(i));
+            p = p.relativize( paths.get(i));
         }
         String result = p.normalize().toString();
 

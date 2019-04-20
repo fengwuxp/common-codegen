@@ -37,16 +37,6 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
 
     }
 
-    /**
-     * 基础类型映射器
-     */
-    protected TypeMapping<Class<?>, TypescriptClassMeta> baseTypeMapping = new BaseTypeMapping<TypescriptClassMeta>(BASE_TYPE_MAPPING);
-
-    /**
-     * 自定义的类型映射
-     */
-    protected TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping = new CustomizeJavaTypeMapping(CUSTOMIZE_TYPE_MAPPING);
-
 
     protected LanguageParser<TypescriptClassMeta> typescriptParser;
 
@@ -74,7 +64,7 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         //4. 处理复杂的数据类型（自定义的java类）
         Arrays.stream(classes)
                 .filter(Objects::nonNull)
-                .map(this.customizeJavaTypeMapping::mapping)
+                .map(customizeJavaTypeMapping::mapping)
                 .flatMap(Collection::stream)
                 .map(clazz -> {
                     List<Class<?>> list = new ArrayList<>();
@@ -139,10 +129,15 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
             return baseTypeMapping.mapping(upConversionType);
         } else {
             //尝试用本类型去获取一次映射关系
-            TypescriptClassMeta mapping = this.baseTypeMapping.mapping(clazz);
+            TypescriptClassMeta mapping = baseTypeMapping.mapping(clazz);
             if (mapping != null) {
                 return mapping;
             }
+        }
+
+        TypescriptClassMeta mapping = customizeTypeMapping.mapping(clazz);
+        if (mapping != null) {
+            return mapping;
         }
 
 

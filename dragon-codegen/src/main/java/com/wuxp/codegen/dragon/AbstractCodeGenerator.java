@@ -66,11 +66,14 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         int i = 0;
         for (; ; ) {
             log.warn("循环生成，第{}次", i);
-            commonCodeGenClassMetas = commonCodeGenClassMetas.stream().map(commonCodeGenClassMeta -> {
+            commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
+                    .map(commonCodeGenClassMeta -> {
                 //模板处理，生成服务
                 this.templateStrategy.build(commonCodeGenClassMeta);
                 return commonCodeGenClassMeta.getDependencies().values();
-            }).flatMap(Collection::stream).collect(Collectors.toList());
+            }).flatMap(Collection::stream)
+                    .filter(CommonCodeGenClassMeta::getNeedGenerate)
+                    .collect(Collectors.toList());
             if (commonCodeGenClassMetas.size() == 0 || i > 100) {
                 break;
             }

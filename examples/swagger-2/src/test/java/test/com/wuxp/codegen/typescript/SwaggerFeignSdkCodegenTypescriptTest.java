@@ -45,7 +45,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
 
         //自定义的类型映射
-        AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
+        AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -118,7 +118,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
 
         Swagger2FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
-                .customTypeMapping(customTypeMapping)
+                .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)

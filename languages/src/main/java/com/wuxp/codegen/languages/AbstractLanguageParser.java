@@ -38,7 +38,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING;
+import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING;
 
 
 /**
@@ -80,7 +80,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 自定义的类型映射
      */
-    protected TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping = new CustomizeJavaTypeMapping(CUSTOMIZE_TYPE_MAPPING);
+    protected TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping = new CustomizeJavaTypeMapping(CUSTOMIZE_JAVA_TYPE_MAPPING);
 
     /**
      * 包名映射策略

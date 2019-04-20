@@ -1,12 +1,13 @@
 
 import {Enum} from "oak_common/src/enums/Enum";
 
-/**
-<#list comments as cmment>
- * ${cmment}
-</#list>
-**/
-
+<#if comments??>
+    /**
+    <#list comments as cmment>
+     * ${cmment}
+    </#list>
+     **/
+</#if>
 export class ${name}{
 
    constructor() {}

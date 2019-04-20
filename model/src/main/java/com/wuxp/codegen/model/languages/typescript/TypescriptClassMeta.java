@@ -59,11 +59,28 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     public TypescriptClassMeta() {
     }
 
-    private TypescriptClassMeta(String name, String genericDescription, ClassType classType, Boolean isAbstract, TypescriptClassMeta superClass) {
+    public TypescriptClassMeta(String name,
+                               String genericDescription,
+                               ClassType classType,
+                               Boolean isAbstract,
+                               TypescriptClassMeta superClass,
+                               String packagePath) {
+        this(name, genericDescription, classType, isAbstract, superClass);
+        this.packagePath = packagePath;
+        this.needImport = true;
+    }
+
+    private TypescriptClassMeta(String name,
+                                String genericDescription,
+                                ClassType classType,
+                                Boolean isAbstract,
+                                TypescriptClassMeta superClass) {
         this.name = name;
         this.genericDescription = genericDescription;
         this.classType = classType;
         this.isAbstract = isAbstract;
         this.superClass = superClass;
+        this.needGenerate = false;
+        this.needImport = false;
     }
 }

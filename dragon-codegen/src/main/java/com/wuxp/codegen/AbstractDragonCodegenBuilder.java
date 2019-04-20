@@ -3,12 +3,12 @@ package com.wuxp.codegen;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 代码生成配置
@@ -29,12 +29,24 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     /**
      * 基础数据类型的映射关系
      */
-    protected Map<Class<?>, ? extends CommonCodeGenClassMeta> baseTypeMapping;
+    protected Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new LinkedHashMap<>();
+
 
     /**
      * 自定义的类型映射
      */
-    protected Map<Class<?>, Class<?>[]> customTypeMapping;
+    protected Map<Class<?>, CommonCodeGenClassMeta> commTypeMapping = new LinkedHashMap<>();
+
+    /**
+     * 自定义的java类型映射
+     */
+    protected Map<Class<?>, Class<?>[]> customJavaTypeMapping = new LinkedHashMap<>();
+    ;
+
+    /**
+     * 忽略的包
+     */
+    protected Set<String> ignorePackages = new LinkedHashSet<>();
 
     /**
      * 包名映射策略
@@ -60,13 +72,23 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder baseTypeMapping(Map<Class<?>, ? extends CommonCodeGenClassMeta> baseTypeMapping) {
+    public AbstractDragonCodegenBuilder baseTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping) {
         this.baseTypeMapping = baseTypeMapping;
         return this;
     }
 
-    public AbstractDragonCodegenBuilder customTypeMapping(Map<Class<?>, Class<?>[]> customTypeMapping) {
-        this.customTypeMapping = customTypeMapping;
+    public AbstractDragonCodegenBuilder customTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> customTypeMapping) {
+        this.commTypeMapping = customTypeMapping;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder customJavaTypeMapping(Map<Class<?>, Class<?>[]> customJavaTypeMapping) {
+        this.customJavaTypeMapping = customJavaTypeMapping;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder ignorePackages(Set<String> ignorePackages) {
+        this.ignorePackages = ignorePackages;
         return this;
     }
 
@@ -82,15 +104,15 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     protected void initTypeMapping() {
         //设置基础数据类型的映射关系
-        baseTypeMapping.forEach((key, val) -> {
-            AbstractTypeMapping.BASE_TYPE_MAPPING.put(key, val);
-        });
+        baseTypeMapping.forEach(AbstractTypeMapping.BASE_TYPE_MAPPING::put);
 
         //自定义的类型映射
-        customTypeMapping.forEach((key, val) -> {
-            AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING.put(key, val);
-        });
+        commTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING::put);
+
+        //自定义的java类型映射
+        customJavaTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING::put);
 
 
+        PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
     }
 }

@@ -5,10 +5,7 @@ import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
-import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -32,6 +29,9 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeTypeMapping;
 
 
 /**
@@ -71,6 +71,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             HANDLE_COUNT.put(source, 1);
         }
         Integer count = HANDLE_COUNT.get(source);
+
+        TypescriptClassMeta mapping = customizeTypeMapping.mapping(source);
+        if (mapping != null) {
+            return mapping;
+        }
 
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
@@ -457,4 +462,43 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
         return genMethodMeta;
     }
+
+
+    /**
+     * 抓取依赖列表
+     *
+     * @param dependencies
+     * @return
+     */
+    protected Map<String, TypescriptClassMeta> fetchDependencies(Set<Class<?>> dependencies) {
+        if (dependencies == null || dependencies.size() == 0) {
+            return new HashMap<>();
+        }
+
+
+        List<Class<?>> classList = dependencies.stream()
+                .map(this.customizeJavaTypeMapping::mapping)
+                .flatMap(Collection::stream)
+                .filter(this::isMatchGenCodeRule)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Set<TypescriptClassMeta> classMetas = classList.stream()
+                .map(this::parse)
+                .filter(Objects::nonNull)
+                .filter(CommonCodeGenClassMeta::getNeedImport)
+                .collect(Collectors.toSet());
+        classList.stream()
+                .map(this.typescriptTypeMapping::mapping)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .filter(CommonCodeGenClassMeta::getNeedImport)
+                .forEach(classMetas::add);
+
+        return classMetas.stream()
+                .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
+
+    }
+
 }
