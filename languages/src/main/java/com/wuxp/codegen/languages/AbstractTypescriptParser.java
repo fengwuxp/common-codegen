@@ -224,6 +224,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             comments.addAll(super.generateComments(javaFieldMeta.getTypes(), false));
         } else {
             if (comments.size() == 0) {
+                comments.add(javaFieldMeta.getName());
                 log.error("枚举没有加上描述相关的注解");
             }
         }

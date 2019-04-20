@@ -1,5 +1,6 @@
 package com.wuxp.codegen.model;
 
+import com.wuxp.codegen.model.enums.CodeGenType;
 import lombok.Data;
 
 /**
@@ -21,6 +22,13 @@ public final class LanguageDescription {
      * 文件后缀名称
      */
     private String suffixName;
+
+
+    /**
+     * 代码生成类型
+     */
+    private CodeGenType codeGenType = CodeGenType.FEIGN;
+
 
     public LanguageDescription(String name, String suffixName) {
         this.name = name;

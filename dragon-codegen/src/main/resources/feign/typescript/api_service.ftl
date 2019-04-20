@@ -7,6 +7,7 @@ import {PatchMapping} from "common_fetch/src/annotations/mapping/PatchMapping";
 import {FetchOptions} from "common_fetch/src/FetchOptions";
 import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
+import {Signature} from "common_fetch/src/annotations/security/Signature";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
 <#--<#import "../common/customize_method.ftl" as customize_method/>-->

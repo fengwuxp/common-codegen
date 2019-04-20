@@ -1,5 +1,6 @@
 package com.wuxp.codegen.templates;
 
+import com.wuxp.codegen.model.LanguageDescription;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
@@ -29,9 +30,8 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
     protected Configuration configuration;
 
-    protected String language;
 
-    public FreemarkerTemplateLoader(String language) {
+    public FreemarkerTemplateLoader(LanguageDescription language) {
         super(language);
         //创建一个合适的Configuration对象
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
@@ -41,8 +41,6 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
         //支持从jar中加载模板
         configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class, "/");
-        this.language = language;
-
 
         this.configuration = configuration;
     }
@@ -51,7 +49,10 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public Template load(String templateName) {
 
         try {
-            Template template = configuration.getTemplate(MessageFormat.format("{0}/{1}", this.language, templateName));
+            Template template = configuration.getTemplate(MessageFormat.format("{0}/{1}/{2}",
+                    this.language.getCodeGenType().name().toLowerCase(),
+                    this.language.getName(),
+                    templateName));
             template.setAutoImports(AUTO_IMPORT_TEMPLATES);
             return template;
         } catch (IOException e) {

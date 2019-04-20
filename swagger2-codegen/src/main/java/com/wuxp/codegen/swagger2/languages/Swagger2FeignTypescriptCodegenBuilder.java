@@ -35,10 +35,9 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 packageMapStrategy,
                 new Swagger2FeignSdkGenMatchingStrategy(),
                 this.codeDetects);
-        String language = LanguageDescription.TYPESCRIPT.getName();
 
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(language);
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT);
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,

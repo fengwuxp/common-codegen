@@ -469,15 +469,5 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
     }
 
-//    /**
-//     * 解析超类
-//     *
-//     * @param clazz
-//     * @return
-//     */
-//    protected C parseSupper(Class<?> clazz) {
-//
-//        return this.parse(clazz);
-//    }
 
 }

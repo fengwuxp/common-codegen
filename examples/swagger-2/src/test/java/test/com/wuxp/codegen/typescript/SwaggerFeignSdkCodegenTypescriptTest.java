@@ -64,7 +64,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         String language = LanguageDescription.TYPESCRIPT.getName();
 
         //实例化模板加载器
-        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(language);
+        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT);
 
 
         String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
