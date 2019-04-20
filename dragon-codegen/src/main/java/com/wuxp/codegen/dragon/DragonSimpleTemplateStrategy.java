@@ -1,5 +1,6 @@
 package com.wuxp.codegen.dragon;
 
+import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.freemarker.CombineTypeMethod;
 import com.wuxp.codegen.templates.TemplateLoader;
@@ -65,14 +66,14 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
         if (methodMetas == null || methodMetas.length == 0) {
             //DTO or enum
             if (ClassType.ENUM.equals(data.getClassType())) {
-                templateName = TemplateStrategy.API_ENUM_TEMPLATE_NAME;
+                templateName = FeignApiSdkTemplateName.API_ENUM_TEMPLATE_NAME;
             } else {
                 //区分请求对象还是响应对象
-                templateName = TemplateStrategy.API_REQUEST_TEMPLATE_NAME;
+                templateName = FeignApiSdkTemplateName.API_REQUEST_TEMPLATE_NAME;
             }
         } else {
             //api 接口
-            templateName = TemplateStrategy.API_SERVICE_TEMPLATE_NAME;
+            templateName = FeignApiSdkTemplateName.API_SERVICE_TEMPLATE_NAME;
 
         }
 

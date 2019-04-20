@@ -9,7 +9,7 @@ import {Feign} from "common_fetch/src/annotations/Feign";
 import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
 import {MediaType} from "common_fetch/src/constant/http/MediaType";
 
-<#import "../common/customize_method.ftl" as customize_method/>
+<#--<#import "../common/customize_method.ftl" as customize_method/>-->
 
 <#--依赖导入处理-->
 <#list dependencies as key,val >

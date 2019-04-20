@@ -53,7 +53,7 @@ public class TypeScriptRequestMappingTransformer implements
 
         RequestMethod[] requestMethods = mappingMate.method();
 
-        codeGenAnnotation.setName("@" + METHOD_NAME_MAP.get(requestMethods.length == 0 ? RequestMethod.POST : requestMethods[0].name()));
+        codeGenAnnotation.setName(MessageFormat.format("@{0}", METHOD_NAME_MAP.get(requestMethods.length == 0 ? RequestMethod.POST : requestMethods[0].name())));
 
         Map<String, String> params = new LinkedHashMap<>();
 

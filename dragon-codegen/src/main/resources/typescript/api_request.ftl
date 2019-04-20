@@ -1,4 +1,4 @@
-<#import "../common/customize_method.ftl" as customize_method/>
+<#--<#import "../common/customize_method.ftl" as customize_method/>-->
 
 <#--依赖导入处理-->
 <#list dependencies as key,val >

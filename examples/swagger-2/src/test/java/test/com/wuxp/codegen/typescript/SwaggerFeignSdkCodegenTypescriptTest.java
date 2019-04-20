@@ -1,6 +1,5 @@
 package test.com.wuxp.codegen.typescript;
 
-import com.wuxp.codegen.dragon.DragonCodeGenerator;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.core.CodeGenerator;
@@ -17,6 +16,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
 import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
+import com.wuxp.codegen.swagger2.languages.Swagger2FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -86,6 +87,43 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
 
         //生成
         codeGenerator.generate();
+
+    }
+
+    @Test
+    public void testCodeGenApiByStater() {
+
+        //设置基础数据类型的映射关系
+        Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
+        baseTypeMapping.put(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
+        baseTypeMapping.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
+
+        //自定义的类型映射
+        Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
+        customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
+
+        //包名映射关系
+        Map<String, String> packageMap = new LinkedHashMap<>();
+
+        //控制器的包所在
+        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
+        //其他类（DTO、VO等）所在的包
+        packageMap.put("com.wuxp.codegen.swagger2.example", "");
+
+        String language = LanguageDescription.TYPESCRIPT.getName();
+        String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
+
+        //要进行生成的源代码包名列表
+        String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
+
+        Swagger2FeignTypescriptCodegenBuilder.builder()
+                .baseTypeMapping(baseTypeMapping)
+                .customTypeMapping(customTypeMapping)
+                .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
+                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .scanPackages(packagePaths)
+                .buildCodeGenerator()
+                .generate();
 
     }
 }

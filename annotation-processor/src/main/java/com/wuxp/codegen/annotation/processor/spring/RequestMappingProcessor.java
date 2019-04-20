@@ -135,7 +135,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
             //如果val不存在或者ownerName和value中的一致，则不生成value
             if (StringUtils.hasText(val) && !ownerName.equals(val)) {
-                arguments.put("value", "'" + val + "'");
+                arguments.put("value", MessageFormat.format("''{0}''", val));
             }
             if (this.annotationType().equals(RequestMapping.class)) {
 //                arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
