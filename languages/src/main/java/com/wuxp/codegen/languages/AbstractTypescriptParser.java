@@ -299,14 +299,14 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //TODO support spring webflux
 
         //处理返回值
-        List<TypescriptClassMeta> typescriptClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
-        if (!typescriptClassMetas.contains(TypescriptClassMeta.PROMISE)) {
-            typescriptClassMetas.add(0, TypescriptClassMeta.PROMISE);
+        List<TypescriptClassMeta> typescriptReturnTypesClassMetas = this.typescriptTypeMapping.mapping(javaMethodMeta.getReturnType());
+        if (!typescriptReturnTypesClassMetas.contains(TypescriptClassMeta.PROMISE)) {
+            typescriptReturnTypesClassMetas.add(0, TypescriptClassMeta.PROMISE);
         }
 
-        if (typescriptClassMetas.size() > 0) {
+        if (typescriptReturnTypesClassMetas.size() > 0) {
             //域对象类型描述
-            genMethodMeta.setReturnTypes(typescriptClassMetas.toArray(new TypescriptClassMeta[]{}));
+            genMethodMeta.setReturnTypes(typescriptReturnTypesClassMetas.toArray(new TypescriptClassMeta[]{}));
         } else {
             //解析失败
             throw new RuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",

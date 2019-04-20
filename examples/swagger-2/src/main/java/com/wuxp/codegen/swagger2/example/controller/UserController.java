@@ -69,4 +69,11 @@ public class UserController {
         return "success";
     }
 
+    @ApiOperation(value = "sample", notes = "sample")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
+    @RequestMapping(value = "sample", method = RequestMethod.GET)
+    public Map<String,User> sampleMap(Long[] ids, String name) {
+        return null;
+    }
+
 }

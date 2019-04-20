@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
 
-
-
     @Override
     public String combine(CommonCodeGenClassMeta[] codeGenClassMetas) {
 
@@ -59,7 +57,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
      * @param names
      * @return
      */
-    private String combineTypes(List<String> names) {
+    public String combineTypes(List<String> names) {
         int size = names.size();
         if (size == 0) {
             return null;
@@ -144,8 +142,6 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         //精确匹配<T>
         return genericDescription.replaceAll("<" + String.join(",", descriptors) + ">", "<" + replaceName + ">");
     }
-
-
 
 
 }
