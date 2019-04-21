@@ -253,7 +253,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         return fieldMetas.stream()
-                .sorted(Comparator.comparing(CommonBaseMeta::getName))
+//                .sorted(Comparator.comparing(CommonBaseMeta::getName))
                 .toArray(JavaFieldMeta[]::new);
     }
 
@@ -344,7 +344,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         return methodMetas.stream()
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(CommonBaseMeta::getName))
+//                .sorted(Comparator.comparing(CommonBaseMeta::getName))
                 .toArray(JavaMethodMeta[]::new);
 
     }
