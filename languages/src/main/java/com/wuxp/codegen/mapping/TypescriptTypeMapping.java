@@ -29,7 +29,8 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
         BASE_TYPE_MAPPING.put(Boolean.class, TypescriptClassMeta.BOOLEAN);
         BASE_TYPE_MAPPING.put(String.class, TypescriptClassMeta.STRING);
         BASE_TYPE_MAPPING.put(Number.class, TypescriptClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.MAP);
+//        BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.MAP);
+        BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.RECORD);
         BASE_TYPE_MAPPING.put(Set.class, TypescriptClassMeta.SET);
         BASE_TYPE_MAPPING.put(List.class, TypescriptClassMeta.ARRAY);
         BASE_TYPE_MAPPING.put(Collection.class, TypescriptClassMeta.ARRAY);
