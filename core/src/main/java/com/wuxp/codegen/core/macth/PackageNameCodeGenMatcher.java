@@ -22,10 +22,20 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
     static {
         IGNORE_PACKAGE_LIST.add("org.springframework");
         IGNORE_PACKAGE_LIST.add("org.slf4j.");
+        IGNORE_PACKAGE_LIST.add("org.apache.");
+        IGNORE_PACKAGE_LIST.add("org.freemarker.");
+        IGNORE_PACKAGE_LIST.add("org.hibernate.");
+        IGNORE_PACKAGE_LIST.add("org.jetbrains.");
+        IGNORE_PACKAGE_LIST.add("org.jodd.");
         IGNORE_PACKAGE_LIST.add("lombok.");
         IGNORE_PACKAGE_LIST.add("javax.persistence.");
         IGNORE_PACKAGE_LIST.add("javax.servlet.");
         IGNORE_PACKAGE_LIST.add("sun.");
+        IGNORE_PACKAGE_LIST.add("com.google.");
+        IGNORE_PACKAGE_LIST.add("com.alibaba.");
+        IGNORE_PACKAGE_LIST.add("com.alipay.");
+        IGNORE_PACKAGE_LIST.add("com.baidu.");
+        IGNORE_PACKAGE_LIST.add("com.github.");
     }
 
     @Override

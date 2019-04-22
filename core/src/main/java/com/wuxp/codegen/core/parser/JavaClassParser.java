@@ -345,7 +345,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         return methodMetas.stream()
                 .filter(Objects::nonNull)
 //                .sorted(Comparator.comparing(CommonBaseMeta::getName))
-                .toArray(JavaMethodMeta[]::new);
+                 .toArray(JavaMethodMeta[]::new);
 
     }
 

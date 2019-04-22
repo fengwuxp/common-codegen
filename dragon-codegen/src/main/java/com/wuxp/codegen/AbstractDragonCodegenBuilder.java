@@ -35,7 +35,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     /**
      * 自定义的类型映射
      */
-    protected Map<Class<?>, CommonCodeGenClassMeta> commTypeMapping = new LinkedHashMap<>();
+    protected Map<Class<?>, CommonCodeGenClassMeta> customTypeMapping = new LinkedHashMap<>();
 
     /**
      * 自定义的java类型映射
@@ -78,7 +78,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     }
 
     public AbstractDragonCodegenBuilder customTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> customTypeMapping) {
-        this.commTypeMapping = customTypeMapping;
+        this.customTypeMapping = customTypeMapping;
         return this;
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         baseTypeMapping.forEach(AbstractTypeMapping.BASE_TYPE_MAPPING::put);
 
         //自定义的类型映射
-        commTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING::put);
+        customTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING::put);
 
         //自定义的java类型映射
         customJavaTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING::put);

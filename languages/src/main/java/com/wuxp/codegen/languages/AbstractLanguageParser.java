@@ -167,11 +167,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         int size = this.codeGenMatchers.size();
 
         //必须满足所有的匹配器才能进行生成
-        int result = codeGenMatchers.stream()
+        int result = (int) codeGenMatchers.stream()
                 .map(codeGenMatcher -> codeGenMatcher.match(clazz))
                 .filter(r -> r)
-                .collect(Collectors.toList())
-                .size();
+                .count();
         if (result == size) {
             log.debug("符合生成条件的类：{}", clazz.getName());
         }

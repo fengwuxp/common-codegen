@@ -25,10 +25,16 @@ public class TypescriptTypeMapping extends AbstractTypeMapping<TypescriptClassMe
     static {
 
         //设置基础的数据类型映射
+        BASE_TYPE_MAPPING.put(Object.class, TypescriptClassMeta.ANY);
         BASE_TYPE_MAPPING.put(Date.class, TypescriptClassMeta.DATE);
         BASE_TYPE_MAPPING.put(Boolean.class, TypescriptClassMeta.BOOLEAN);
         BASE_TYPE_MAPPING.put(String.class, TypescriptClassMeta.STRING);
         BASE_TYPE_MAPPING.put(Number.class, TypescriptClassMeta.NUMBER);
+        BASE_TYPE_MAPPING.put(double.class, TypescriptClassMeta.NUMBER);
+        BASE_TYPE_MAPPING.put(float.class, TypescriptClassMeta.NUMBER);
+        BASE_TYPE_MAPPING.put(long.class, TypescriptClassMeta.NUMBER);
+        BASE_TYPE_MAPPING.put(short.class, TypescriptClassMeta.NUMBER);
+        BASE_TYPE_MAPPING.put(byte.class, TypescriptClassMeta.NUMBER);
 //        BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.MAP);
         BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.RECORD);
         BASE_TYPE_MAPPING.put(Set.class, TypescriptClassMeta.SET);
