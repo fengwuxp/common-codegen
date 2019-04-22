@@ -1,9 +1,8 @@
 package com.wuxp.codegen.templates;
 
 import com.wuxp.codegen.model.LanguageDescription;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapperBuilder;
-import freemarker.template.Template;
+import freemarker.ext.beans.MapModel;
+import freemarker.template.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -32,15 +31,26 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
 
     public FreemarkerTemplateLoader(LanguageDescription language) {
+        this(language, null);
+    }
+
+    public FreemarkerTemplateLoader(LanguageDescription language, Map<String, Object> sharedVariables) {
         super(language);
         //创建一个合适的Configuration对象
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
-        configuration.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_28).build());
+        DefaultObjectWrapper objectWrapper = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_28).build();
+        configuration.setObjectWrapper(objectWrapper);
         //这个一定要设置，不然在生成的页面中 会乱码
         configuration.setDefaultEncoding("UTF-8");
 
         //支持从jar中加载模板
-        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class, "/");
+        configuration.setClassForTemplateLoading(this.getClass(), "/");
+
+        try {
+            configuration.setAllSharedVariables(new MapModel(sharedVariables == null ? new HashMap() : sharedVariables, objectWrapper));
+        } catch (TemplateModelException e) {
+            e.printStackTrace();
+        }
 
         this.configuration = configuration;
     }
