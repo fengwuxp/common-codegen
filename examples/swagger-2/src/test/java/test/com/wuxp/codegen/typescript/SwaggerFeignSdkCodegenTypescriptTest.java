@@ -72,7 +72,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
                 Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString(),
-                LanguageDescription.TYPESCRIPT.getSuffixName());
+                LanguageDescription.TYPESCRIPT.getSuffixName(),true);
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};

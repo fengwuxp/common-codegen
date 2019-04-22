@@ -46,14 +46,19 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
      */
     protected String extName;
 
-    public DragonSimpleTemplateStrategy(TemplateLoader<Template> templateLoader, String outputPath, String extName) {
+    public DragonSimpleTemplateStrategy(TemplateLoader<Template> templateLoader,
+                                        String outputPath,
+                                        String extName,
+                                        boolean isDeletedOutputDirectory) {
         this.templateLoader = templateLoader;
         this.outputPath = outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator;
         this.extName = extName;
 
-        //删除原本的目录
-        boolean r = FileUtil.deleteDirectory(this.outputPath);
-        log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
+        if (isDeletedOutputDirectory) {
+            //删除原本的目录
+            boolean r = FileUtil.deleteDirectory(this.outputPath);
+            log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
+        }
 
     }
 
@@ -93,7 +98,6 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
             writer = new OutputStreamWriter(new FileOutputStream(output),
                     StandardCharsets.UTF_8);
             //添加自定义方法
-            template.setCustomAttribute("combineType", new CombineTypeMethod());
             template.process(data, writer);
         } catch (TemplateException | IOException e) {
             e.printStackTrace();

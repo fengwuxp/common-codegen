@@ -58,6 +58,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      */
     protected Collection<CodeDetect> codeDetects;
 
+    /**
+     * 是否删除输出目录
+     */
+    protected Boolean isDeletedOutputDirectory = true;
+
 
     protected AbstractDragonCodegenBuilder() {
     }
@@ -99,6 +104,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder codeDetects(Collection<CodeDetect> codeDetects) {
         this.codeDetects = codeDetects;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder isDeletedOutputDirectory(Boolean isDeletedOutputDirectory) {
+        this.isDeletedOutputDirectory = isDeletedOutputDirectory;
         return this;
     }
 

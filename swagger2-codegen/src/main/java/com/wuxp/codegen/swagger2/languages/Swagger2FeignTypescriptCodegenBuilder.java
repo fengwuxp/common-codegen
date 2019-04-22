@@ -42,7 +42,8 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
                 this.outPath,
-                LanguageDescription.TYPESCRIPT.getSuffixName());
+                LanguageDescription.TYPESCRIPT.getSuffixName(),
+                this.isDeletedOutputDirectory);
 
         return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy);
     }
