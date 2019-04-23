@@ -1,7 +1,6 @@
 package com.wuxp.codegen.core.parser;
 
 
-import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
@@ -345,7 +344,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         return methodMetas.stream()
                 .filter(Objects::nonNull)
 //                .sorted(Comparator.comparing(CommonBaseMeta::getName))
-                 .toArray(JavaMethodMeta[]::new);
+                .toArray(JavaMethodMeta[]::new);
 
     }
 
@@ -405,7 +404,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      * @param methodMetas
      * @return
      */
-    protected Set<Class<?>> fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
+    protected Set fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
 
         Set<Class<?>> classSet = new HashSet<>();
 
@@ -435,13 +434,19 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         //接口依赖
-        Arrays.stream(clazz.getInterfaces()).forEach(c -> {
-            classSet.add(c);
-        });
+        classSet.addAll(Arrays.asList(clazz.getInterfaces()));
 
 
         return classSet.stream().filter(Objects::nonNull)
                 .filter(c -> !c.equals(clazz))
+                .map(c -> {
+                    if (c.isArray()) {
+                        return new Class[]{c, c.getComponentType()};
+                    }
+                    return new Class[]{c};
+                }).map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 

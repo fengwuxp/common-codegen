@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING;
+import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeJavaTypeMapping;
 
 
 /**
@@ -78,11 +79,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
 
     /**
-     * 自定义的类型映射
-     */
-    protected TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping = new CustomizeJavaTypeMapping(CUSTOMIZE_JAVA_TYPE_MAPPING);
-
-    /**
      * 包名映射策略
      */
     protected PackageMapStrategy packageMapStrategy;
@@ -112,7 +108,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         codeGenMatchers.add(this.packageNameCodeGenMatcher);
 
         //根据java 类进行匹配
-        codeGenMatchers.add(clazz -> JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation());
+        codeGenMatchers.add(clazz -> clazz.isEnum() || JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation());
 
         //根据是否为spring的组件进行匹配
         codeGenMatchers.add(clazz -> {
@@ -458,7 +454,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         return dependencies.stream()
-                .map(this.customizeJavaTypeMapping::mapping)
+                .map(customizeJavaTypeMapping::mapping)
                 .flatMap(Collection::stream)
                 .filter(this::isMatchGenCodeRule)
                 .filter(Objects::nonNull)

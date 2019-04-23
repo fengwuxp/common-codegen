@@ -31,6 +31,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeJavaTypeMapping;
 import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeTypeMapping;
 
 
@@ -478,7 +479,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
 
         List<Class<?>> classList = dependencies.stream()
-                .map(this.customizeJavaTypeMapping::mapping)
+                .map(customizeJavaTypeMapping::mapping)
                 .flatMap(Collection::stream)
                 .filter(this::isMatchGenCodeRule)
                 .filter(Objects::nonNull)
