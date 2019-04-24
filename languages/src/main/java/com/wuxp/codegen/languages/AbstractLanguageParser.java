@@ -38,7 +38,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING;
 import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeJavaTypeMapping;
 
 

@@ -75,6 +75,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
         TypescriptClassMeta mapping = customizeTypeMapping.mapping(source);
         if (mapping != null) {
+            HANDLE_RESULT_CACHE.put(source, mapping);
             return mapping;
         }
 
@@ -116,7 +117,14 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 })
                 .filter(Objects::nonNull)
                 .toArray(CommonCodeGenClassMeta[]::new));
-        meta.setSuperClass(this.parse(javaClassMeta.getSuperClass()));
+        Class<?> javaClassSuperClass = javaClassMeta.getSuperClass();
+        TypescriptClassMeta typescriptSupperClassMeta = this.parse(javaClassSuperClass);
+        if (javaClassSuperClass != null && typescriptSupperClassMeta == null) {
+           if (log.isDebugEnabled()){
+               log.debug("超类 {} 解析处理失败或被忽略", javaClassMeta.getClassName());
+           }
+        }
+        meta.setSuperClass(typescriptSupperClassMeta);
 
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
@@ -147,7 +155,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         //忽略所有接口的依赖
                         .filter(clazz -> !clazz.isInterface())
                         //忽略超类的依赖
-                        .filter(clazz -> !clazz.equals(javaClassMeta.getSuperClass()))
+                        .filter(clazz -> !clazz.equals(javaClassSuperClass))
                         .collect(Collectors.toSet());
             }
             Map<String, TypescriptClassMeta> dependencies = this.fetchDependencies(dependencyList);
