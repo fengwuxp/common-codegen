@@ -24,14 +24,7 @@ import java.util.*;
 public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
 
-    static {
-        //添加swagger相关的注解处理器
-        ANNOTATION_PROCESSOR_MAP.put(Api.class, new ApiProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiModel.class, new ApiModelProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiModelProperty.class, new ApiModelPropertyProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiOperation.class, new ApiOperationProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiParam.class, new ApiParamProcessor());
-    }
+
 
 
     public Swagger2FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {

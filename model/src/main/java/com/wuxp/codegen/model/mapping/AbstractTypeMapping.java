@@ -26,12 +26,12 @@ public abstract class AbstractTypeMapping<T> implements TypeMapping<Class<?>, Li
     /**
      * 基础类型映射器
      */
-    public static final TypeMapping<Class<?>, TypescriptClassMeta> baseTypeMapping = new BaseTypeMapping<TypescriptClassMeta>(BASE_TYPE_MAPPING);
+    public static final TypeMapping<Class<?>, ? extends CommonCodeGenClassMeta> baseTypeMapping = new BaseTypeMapping<>(BASE_TYPE_MAPPING);
 
     /**
      * 自定义的类型映射器
      */
-    public static final TypeMapping<Class<?>, TypescriptClassMeta> customizeTypeMapping = new BaseTypeMapping<TypescriptClassMeta>(CUSTOMIZE_TYPE_MAPPING);
+    public static final TypeMapping<Class<?>, ? extends CommonCodeGenClassMeta> customizeTypeMapping = new BaseTypeMapping<>(CUSTOMIZE_TYPE_MAPPING);
 
     /**
      * 自定义的java类型映射

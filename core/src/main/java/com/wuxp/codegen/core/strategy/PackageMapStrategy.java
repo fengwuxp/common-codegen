@@ -15,8 +15,17 @@ public interface PackageMapStrategy {
 
     /**
      * 转换 class Name
+     *
      * @param className
      * @return
      */
     String convertClassName(String className);
+
+    /**
+     * 生成包名路径
+     *
+     * @param uris
+     * @return
+     */
+    String genPackagePath(String[] uris);
 }

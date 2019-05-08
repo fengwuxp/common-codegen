@@ -19,11 +19,11 @@ import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.mapping.CustomizeJavaTypeMapping;
-import com.wuxp.codegen.model.mapping.TypeMapping;
+import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -34,11 +34,13 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeJavaTypeMapping;
+import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeTypeMapping;
 
 
 /**
@@ -65,10 +67,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     protected static final Map<Class<?>, Object> HANDLE_RESULT_CACHE = new ConcurrentHashMap<>();
 
 
+
+
     /**
      * annotationProcessorMap
      */
-    protected static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
+    public static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
 
 
     /**
@@ -145,6 +149,170 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                   Collection<CodeDetect> codeDetects) {
         this(packageMapStrategy, genMatchingStrategy, codeDetects);
         this.javaParser = javaParser;
+    }
+
+    @Override
+    public C parse(Class<?> source) {
+        //符合匹配规则，或非集合类型和Map的的子类进行
+        if (!this.isMatchGenCodeRule(source) ||
+                JavaTypeUtil.isMap(source) ||
+                JavaTypeUtil.isCollection(source)) {
+            return null;
+        }
+
+        if (HANDLE_COUNT.containsKey(source)) {
+            //标记某个类被处理的次数如果超过2次，从缓存中返回
+            if (HANDLE_COUNT.get(source) > 2) {
+                return this.getResultToLocalCache(source);
+            } else {
+                HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
+            }
+        } else {
+            HANDLE_COUNT.put(source, 1);
+        }
+        Integer count = HANDLE_COUNT.get(source);
+
+        CommonCodeGenClassMeta mapping = customizeTypeMapping.mapping(source);
+
+        if (mapping != null) {
+            HANDLE_RESULT_CACHE.put(source, mapping);
+            return (C) mapping;
+        }
+
+
+        JavaClassMeta javaClassMeta = this.javaParser.parse(source);
+        if (javaClassMeta.isApiServiceClass()) {
+            //要生成的服务，判断是否需要生成
+            if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
+                //跳过
+                log.warn("跳过类{}", source.getName());
+                return null;
+            }
+        }
+
+        C meta = this.getResultToLocalCache(source);
+
+        if (meta != null) {
+            return meta;
+        }
+
+        //检查代码
+        this.detectJavaCode(javaClassMeta);
+
+        meta = this.newClassMeteInstance();
+        meta.setSource(source);
+        meta.setName(this.packageMapStrategy.convertClassName(source.getSimpleName()));
+        meta.setPackagePath(this.packageMapStrategy.convert(source));
+        meta.setClassType(javaClassMeta.getClassType());
+        meta.setAccessPermission(javaClassMeta.getAccessPermission());
+        meta.setTypeVariables(Arrays.stream(javaClassMeta.getTypeVariables())
+                .map(type -> {
+                    if (type instanceof Class) {
+                        return this.parse((Class) type);
+                    } else if (type instanceof TypeVariable) {
+                        return TypescriptClassMeta.TYPE_VARIABLE;
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(CommonCodeGenClassMeta[]::new));
+        Class<?> javaClassSuperClass = javaClassMeta.getSuperClass();
+        C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
+        if (javaClassSuperClass != null && commonCodeGenClassMeta == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("超类 {} 解析处理失败或被忽略", javaClassMeta.getClassName());
+            }
+        }
+        meta.setSuperClass(commonCodeGenClassMeta);
+
+        //类上的注释
+        meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
+        //类上的注解
+        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), javaClassMeta.getClass()));
+
+        if (count == 1) {
+            if (javaClassMeta.isApiServiceClass()) {
+                //spring的控制器  生成方法列表
+                meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
+                        .toArray(new CommonCodeGenMethodMeta[]{}));
+            } else {
+                // 普通的java bean DTO  生成属性列表
+                meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
+                        .toArray(new CommonCodeGenFiledMeta[]{}));
+            }
+        }
+
+        //依赖处理
+        final Map<String, C> metaDependencies = meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
+
+        if (count == 1) {
+            //依赖列表
+            Set<Class<?>> dependencyList = javaClassMeta.getDependencyList();
+            if (javaClassMeta.isApiServiceClass()) {
+                dependencyList = dependencyList.stream().
+                        filter(Objects::nonNull)
+                        //忽略所有接口的依赖
+                        .filter(clazz -> !clazz.isInterface())
+                        //忽略超类的依赖
+                        .filter(clazz -> !clazz.equals(javaClassSuperClass))
+                        .collect(Collectors.toSet());
+            }
+            Map<String, C> dependencies = this.fetchDependencies(dependencyList);
+            dependencies.forEach(metaDependencies::put);
+        }
+
+        Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
+
+        //处理超类上面的类型变量
+        javaClassMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
+
+            if (val == null || val.length == 0) {
+                return;
+            }
+            //处理超类
+            C typescriptClassMeta = this.parse(superClazz);
+            if (typescriptClassMeta == null) {
+                return;
+            }
+
+            //处理超类上的类型变量 例如 A<T,E> extends B<C<T>,E> 这种情况
+            CommonCodeGenClassMeta[] typeVariables = Arrays.stream(val)
+                    .map(clazz -> {
+                        C typeVariable = this.parse(clazz);
+                        if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
+                            metaDependencies.put(typeVariable.getName(), typeVariable);
+                        }
+                        return typeVariable;
+                    })
+                    .filter(Objects::nonNull)
+                    .toArray(CommonCodeGenClassMeta[]::new);
+            superTypeVariables.put(typescriptClassMeta.getName(), typeVariables);
+        });
+
+        meta.setDependencies(metaDependencies);
+        meta.setSuperTypeVariables(superTypeVariables);
+
+        //当超类不为空，且超类的类型变量不为空的时候，重新设置一下超类的类型变量
+        if (meta.getSuperClass() != null && superTypeVariables.size() > 0) {
+            CommonCodeGenClassMeta[] supperClassTypeVariables = superTypeVariables.get(meta.getSuperClass().getName());
+            CommonCodeGenClassMeta superClass = meta.getSuperClass();
+
+            //做一次值复制，防止改变缓存中的值
+            CommonCodeGenClassMeta newSupperClass = new CommonCodeGenClassMeta();
+            BeanUtils.copyProperties(superClass, newSupperClass);
+            newSupperClass.setTypeVariables(supperClassTypeVariables);
+            meta.setSuperClass(newSupperClass);
+        }
+
+        HANDLE_RESULT_CACHE.put(source, meta);
+        return meta;
+    }
+
+
+    protected C newClassMeteInstance() {
+
+        return (C) new CommonCodeGenClassMeta();
     }
 
 

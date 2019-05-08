@@ -32,7 +32,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 属性类型 如果有泛型则有多个
      */
-    private Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables;
+    private Map<String/*类型，父类，接口，本身*/, ? extends CommonCodeGenClassMeta[]> superTypeVariables;
 
     /**
      * 类类型
@@ -96,6 +96,26 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * 是否需要导入的依赖
      */
     protected Boolean needImport = true;
+
+    public CommonCodeGenClassMeta() {
+    }
+
+
+    public CommonCodeGenClassMeta(String name,
+                                  String genericDescription,
+                                  ClassType classType,
+                                  Boolean isAbstract,
+                                  CommonCodeGenClassMeta superClass,
+                                  String packagePath) {
+        this.name = name;
+        this.genericDescription = genericDescription;
+        this.classType = classType;
+        this.isAbstract = isAbstract;
+        this.superClass = superClass;
+        this.packagePath = packagePath;
+        this.needImport = true;
+    }
+
 
 
     /**

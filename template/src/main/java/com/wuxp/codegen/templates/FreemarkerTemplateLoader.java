@@ -61,7 +61,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         try {
             Template template = configuration.getTemplate(MessageFormat.format("{0}/{1}/{2}",
                     this.language.getCodeGenType().name().toLowerCase(),
-                    this.language.getName(),
+                    this.language.getTemplateDir(),
                     templateName));
             template.setAutoImports(AUTO_IMPORT_TEMPLATES);
             return template;

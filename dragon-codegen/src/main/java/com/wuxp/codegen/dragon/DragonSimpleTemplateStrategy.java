@@ -3,6 +3,7 @@ package com.wuxp.codegen.dragon;
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.freemarker.CombineTypeMethod;
+import com.wuxp.codegen.dragon.path.PathResolve;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.utils.FileUtil;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -75,7 +76,10 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
             return;
         }
 
-        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, data.getPackagePath(), this.extName)).toString();
+        String packagePath = data.getPackagePath();
+
+
+        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, this.normalizationFilePath(packagePath), this.extName)).toString();
 
         //如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
         if (output.contains(MessageFormat.format("{0}.{1}", File.separator, this.extName))) {
@@ -129,5 +133,11 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
 
         }
         return templateName;
+    }
+
+    protected String normalizationFilePath(String packagePath) {
+
+        return packagePath.replaceAll("\\.", PathResolve.RIGHT_SLASH);
+
     }
 }

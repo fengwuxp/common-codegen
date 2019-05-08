@@ -5,7 +5,9 @@ import com.wuxp.codegen.dragon.path.PathResolve;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.StringJoiner;
 
 
 /**
@@ -36,5 +38,8 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
 
     }
 
-
+    @Override
+    public String genPackagePath(String[] uris) {
+        return MessageFormat.format("/{0}", String.join("/", uris));
+    }
 }

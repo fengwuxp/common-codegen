@@ -36,3 +36,8 @@
      1：增加通过解析swagger open api的json格式文档，构建统一的描述元数据
      2：默认提供统一解析，通过提供不同语言的解析器进行自定义的处理
      3：在模板层面进行抽象，可以实现根据不同的数据分发不同的模板（灵活的模板加载策略）
+     
+     //MemberService
+    FeignFactory.newIntance()
+    
+    //FeignIninter
