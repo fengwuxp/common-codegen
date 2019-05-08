@@ -67,8 +67,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     protected static final Map<Class<?>, Object> HANDLE_RESULT_CACHE = new ConcurrentHashMap<>();
 
 
-
-
     /**
      * annotationProcessorMap
      */
@@ -80,6 +78,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 默认解析所有的属性 方法
      */
     protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+
+    /**
+     * 语言元数据对象的工厂
+     */
+    protected LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory;
 
     /**
      * 包名映射策略
@@ -135,20 +138,28 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(PatchMapping.class, mappingProcessor);
     }
 
-    public AbstractLanguageParser(PackageMapStrategy packageMapStrategy,
+
+    public AbstractLanguageParser(LanguageMetaInstanceFactory languageMetaInstanceFactory,
+                                  PackageMapStrategy packageMapStrategy,
                                   CodeGenMatchingStrategy genMatchingStrategy,
                                   Collection<CodeDetect> codeDetects) {
+        this.languageMetaInstanceFactory = languageMetaInstanceFactory;
         this.packageMapStrategy = packageMapStrategy;
         this.genMatchingStrategy = genMatchingStrategy;
         this.codeDetects = codeDetects;
     }
 
+
     public AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+                                  LanguageMetaInstanceFactory languageMetaInstanceFactory,
                                   PackageMapStrategy packageMapStrategy,
                                   CodeGenMatchingStrategy genMatchingStrategy,
                                   Collection<CodeDetect> codeDetects) {
-        this(packageMapStrategy, genMatchingStrategy, codeDetects);
-        this.javaParser = javaParser;
+        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);
+        if (javaParser != null) {
+            this.javaParser = javaParser;
+        }
+
     }
 
     @Override
@@ -199,7 +210,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //检查代码
         this.detectJavaCode(javaClassMeta);
 
-        meta = this.newClassMeteInstance();
+        meta = this.languageMetaInstanceFactory.newClassInstance();
         meta.setSource(source);
         meta.setName(this.packageMapStrategy.convertClassName(source.getSimpleName()));
         meta.setPackagePath(this.packageMapStrategy.convert(source));
@@ -307,12 +318,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         HANDLE_RESULT_CACHE.put(source, meta);
         return meta;
-    }
-
-
-    protected C newClassMeteInstance() {
-
-        return (C) new CommonCodeGenClassMeta();
     }
 
 
@@ -630,6 +635,5 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .distinct()
                 .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
     }
-
 
 }

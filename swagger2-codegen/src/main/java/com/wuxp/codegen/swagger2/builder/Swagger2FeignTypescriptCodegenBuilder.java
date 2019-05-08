@@ -1,4 +1,4 @@
-package com.wuxp.codegen.swagger2.languages;
+package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.CodeGenerator;
@@ -9,6 +9,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
 import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
+import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;

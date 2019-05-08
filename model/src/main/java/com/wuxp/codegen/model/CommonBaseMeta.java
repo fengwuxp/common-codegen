@@ -41,14 +41,17 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
     protected Map<String, Object> tags = new HashMap<>();
 
 
-
-
     public CommonBaseMeta() {
 
     }
 
     public CommonBaseMeta(String name) {
         this.name = name;
+    }
+
+    public String getAccessPermissionName() {
+
+        return this.accessPermission.name().toLowerCase();
     }
 
     @Override

@@ -4,14 +4,18 @@ import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
 @Slf4j
 public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
 
 
-    public JavaPackageMapStrategy(Map<String, String> packageNameMap) {
+    private String basePackages;
+
+    public JavaPackageMapStrategy(Map<String, String> packageNameMap, String basePackages) {
         super(packageNameMap);
+        this.basePackages = basePackages;
     }
 
     @Override
@@ -27,6 +31,11 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
 
     @Override
     public String genPackagePath(String[] uris) {
-        return String.join(".", uris);
+        String packageName = String.join(".", uris);
+        if (!packageName.startsWith(this.basePackages)){
+            packageName= MessageFormat.format("{0}.{1}", basePackages,packageName);
+        }
+
+        return packageName;
     }
 }

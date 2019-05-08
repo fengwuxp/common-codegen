@@ -6,7 +6,8 @@ import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
-import com.wuxp.codegen.mapping.CommonTypeMapping;
+import com.wuxp.codegen.languages.factory.JavaLanguageMetaInstanceFactory;
+import com.wuxp.codegen.mapping.JavaTypeMapping;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
@@ -16,44 +17,48 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.languages.java.codegen.JavaCodegenTypeConstant;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
-import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
+import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeJavaTypeMapping;
 
 /**
  * 抽象的java parser
  */
 @Slf4j
-public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
-
+public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
 
     /**
      * 映射java类和typeScript类之间的关系
      */
-    protected TypeMapping<Class<?>, List<CommonCodeGenClassMeta>> commonTypeMapping = new CommonTypeMapping<CommonCodeGenClassMeta>(this);
+    protected TypeMapping<Class<?>, List<JavaCodeGenClassMeta>> javaTypeMapping = new JavaTypeMapping(this);
 
-    public AbstractJavaParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
-        super(packageMapStrategy, genMatchingStrategy, codeDetects);
+    public AbstractJavaParser(PackageMapStrategy packageMapStrategy,
+                              CodeGenMatchingStrategy genMatchingStrategy,
+                              Collection<CodeDetect> codeDetects) {
+        this(null,
+                new JavaLanguageMetaInstanceFactory(),
+                packageMapStrategy,
+                genMatchingStrategy,
+                codeDetects);
     }
 
-    public AbstractJavaParser(GenericParser<JavaClassMeta, Class<?>> javaParser, PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
-        super(javaParser, packageMapStrategy, genMatchingStrategy, codeDetects);
+    public AbstractJavaParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+                              LanguageMetaInstanceFactory languageMetaInstanceFactory,
+                              PackageMapStrategy packageMapStrategy,
+                              CodeGenMatchingStrategy genMatchingStrategy,
+                              Collection<CodeDetect> codeDetects) {
+        super(javaParser, languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);
+
     }
 
 
@@ -94,7 +99,7 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
 
 
         //field 类型类别
-        Collection<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.commonTypeMapping.mapping(javaFieldMeta.getTypes());
+        Collection<JavaCodeGenClassMeta> commonCodeGenClassMetas = this.javaTypeMapping.mapping(javaFieldMeta.getTypes());
 
         //从泛型中解析
         Type[] typeVariables = javaFieldMeta.getTypeVariables();
@@ -103,10 +108,10 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
             commonCodeGenClassMetas.addAll(Arrays.stream(typeVariables)
                     .filter(Objects::nonNull)
                     .map(Type::getTypeName).map(name -> {
-                        TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
-                        BeanUtils.copyProperties(TypescriptClassMeta.TYPE_VARIABLE, typescriptClassMeta);
-                        typescriptClassMeta.setName(name);
-                        return typescriptClassMeta;
+                        JavaCodeGenClassMeta javaCodeGenClassMeta = new JavaCodeGenClassMeta();
+                        BeanUtils.copyProperties(JavaCodeGenClassMeta.TYPE_VARIABLE, javaCodeGenClassMeta);
+                        javaCodeGenClassMeta.setName(name);
+                        return javaCodeGenClassMeta;
                     }).collect(Collectors.toList()));
         }
 
@@ -137,7 +142,7 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
     }
 
     @Override
-    protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, CommonCodeGenClassMeta codeGenClassMeta) {
+    protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, JavaCodeGenClassMeta codeGenClassMeta) {
         if (javaMethodMeta == null) {
             return null;
         }
@@ -158,9 +163,10 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
         //TODO support spring webflux
 
         //处理返回值
-        List<CommonCodeGenClassMeta> mapping = this.commonTypeMapping.mapping(javaMethodMeta.getReturnType());
-        if (!mapping.contains(JavaCodegenTypeConstant.RX_JAVA2_OBSERVABLE)) {
-            mapping.add(0, JavaCodegenTypeConstant.RX_JAVA2_OBSERVABLE);
+        List<JavaCodeGenClassMeta> mapping = this.javaTypeMapping.mapping(javaMethodMeta.getReturnType());
+
+        if (!mapping.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
+            mapping.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
         }
 
         if (mapping.size() > 0) {
@@ -195,22 +201,20 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
 
         final Set<CommonCodeGenFiledMeta> commonCodeGenFiledMetas = new LinkedHashSet<>();
         //参数的元数据类型信息
-        final CommonCodeGenClassMeta argsClassMeta = new CommonCodeGenClassMeta();
+        final JavaCodeGenClassMeta argsClassMeta = new JavaCodeGenClassMeta();
 
 
         effectiveParams.forEach((key, classes) -> {
 
             Class<?> clazz = classes[0];
             if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
-                CommonCodeGenClassMeta commonCodeGenClassMeta = this.parse(clazz);
+                JavaCodeGenClassMeta commonCodeGenClassMeta = this.parse(clazz);
                 if (commonCodeGenClassMeta != null) {
                     BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
                 }
-
             } else if (clazz.isEnum()) {
                 //枚举
                 CommonCodeGenFiledMeta fieldMate = new CommonCodeGenFiledMeta();
-
                 commonCodeGenFiledMetas.add(fieldMate);
 
             } else {
@@ -233,8 +237,8 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
                 }
 
                 otherDependencies.stream().filter(JavaTypeUtil::isNoneJdkComplex).forEach(c -> {
-                    CommonCodeGenClassMeta commonCodeGenClassMeta = this.parse(c);
-                    ((Map<String, CommonCodeGenClassMeta>) argsClassMeta.getDependencies()).put(commonCodeGenClassMeta.getName(), commonCodeGenClassMeta);
+                    JavaCodeGenClassMeta commonCodeGenClassMeta = this.parse(c);
+                    ((Map<String, JavaCodeGenClassMeta>) argsClassMeta.getDependencies()).put(commonCodeGenClassMeta.getName(), commonCodeGenClassMeta);
                 });
 
                 //注释
@@ -265,15 +269,15 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
         argsClassMeta.setClassType(ClassType.INTERFACE);
         if (argsClassMeta.getFiledMetas() != null) {
             Arrays.asList(argsClassMeta.getFiledMetas()).forEach(genFiledMeta -> {
-                CommonCodeGenFiledMeta target = new CommonCodeGenFiledMeta();
-                BeanUtils.copyProperties(genFiledMeta, target);
+                CommonCodeGenFiledMeta commonCodeGenFiledMeta = new CommonCodeGenFiledMeta();
+                BeanUtils.copyProperties(genFiledMeta, commonCodeGenFiledMeta);
                 boolean isExist = commonCodeGenFiledMetas.stream()
-                        .filter(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getName().equals(genFiledMeta.getName()))
+                        .filter(c -> c.getName().equals(genFiledMeta.getName()))
                         .toArray().length > 0;
                 if (isExist) {
                     log.error("{}方法中的参数{}在类{}中已经存在", javaMethodMeta.getName(), genFiledMeta.getName(), argsClassMeta.getPackagePath() + argsClassMeta.getName());
                 } else {
-                    commonCodeGenFiledMetas.add(target);
+                    commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
                 }
 
             });
@@ -309,7 +313,7 @@ public class AbstractJavaParser extends AbstractLanguageParser<CommonCodeGenClas
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = codeGenClassMeta.getDependencies();
 
 
-        ((Map<String, CommonCodeGenClassMeta>) dependencies).put(argsClassMeta.getName(), argsClassMeta);
+        ((Map<String, JavaCodeGenClassMeta>) dependencies).put(argsClassMeta.getName(), argsClassMeta);
 
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
         codeGenClassMeta.setDependencies(dependencies);

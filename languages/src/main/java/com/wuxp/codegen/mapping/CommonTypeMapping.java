@@ -20,13 +20,6 @@ import java.util.stream.Collectors;
 public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends AbstractTypeMapping<C> {
 
 
-    static {
-        //设置类型映射
-
-
-    }
-
-
     protected LanguageParser<C> languageParser;
 
 
@@ -120,6 +113,11 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
      * @return
      */
     protected C mapping(Class<?> clazz) {
+
+        C commonCodeGenClassMeta = (C) baseTypeMapping.mapping(clazz);
+        if (commonCodeGenClassMeta != null) {
+            return commonCodeGenClassMeta;
+        }
 
         Class<?> upConversionType = this.tryUpConversionType(clazz);
         if (upConversionType != null) {

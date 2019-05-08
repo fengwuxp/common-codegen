@@ -26,7 +26,6 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
 
 
-
     public Swagger2FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, genMatchingStrategy, codeDetects);
     }

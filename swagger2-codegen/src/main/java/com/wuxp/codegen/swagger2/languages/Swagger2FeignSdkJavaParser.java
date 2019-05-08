@@ -23,14 +23,4 @@ public class Swagger2FeignSdkJavaParser extends AbstractJavaParser {
                                       Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, genMatchingStrategy, codeDetects);
     }
-
-
-    public Swagger2FeignSdkJavaParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
-                                      PackageMapStrategy packageMapStrategy,
-                                      CodeGenMatchingStrategy genMatchingStrategy,
-                                      Collection<CodeDetect> codeDetects) {
-        super(javaParser, packageMapStrategy, genMatchingStrategy, codeDetects);
-    }
-
-
 }

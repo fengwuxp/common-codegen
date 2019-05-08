@@ -16,7 +16,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
 import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
-import com.wuxp.codegen.swagger2.languages.Swagger2FeignTypescriptCodegenBuilder;
+import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;

@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
+import com.wuxp.codegen.languages.factory.TypescriptLanguageMetaInstanceFactory;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
@@ -43,8 +44,13 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
      */
     protected TypeMapping<Class<?>, List<TypescriptClassMeta>> typescriptTypeMapping = new TypescriptTypeMapping(this);
 
-    public AbstractTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
-        super(packageMapStrategy, genMatchingStrategy, codeDetects);
+    public AbstractTypescriptParser(PackageMapStrategy packageMapStrategy,
+                                    CodeGenMatchingStrategy genMatchingStrategy,
+                                    Collection<CodeDetect> codeDetects) {
+        super(new TypescriptLanguageMetaInstanceFactory(),
+                packageMapStrategy,
+                genMatchingStrategy,
+                codeDetects);
     }
 
 //    @Override
@@ -207,10 +213,6 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 //    }
 
 
-    @Override
-    protected TypescriptClassMeta newClassMeteInstance() {
-        return new TypescriptClassMeta();
-    }
 
     @Override
     protected TypescriptFieldMate converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
@@ -435,7 +437,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             //没有复杂对象的参数
             String name = MessageFormat.format("{0}Req", ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
             argsClassMeta.setName(name);
-            argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req",name}));
+            argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req", name}));
             //这个时候没有依赖
             argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
             argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
