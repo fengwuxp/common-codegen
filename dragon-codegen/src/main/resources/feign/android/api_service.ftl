@@ -34,11 +34,11 @@ public interface ${name}{
     </#list>
     **/
     <#list method.annotations as annotation>
-        @${annotation.name}({
+        @${annotation.name}(
         <#list annotation.namedArguments as name,val>
             ${name}:${val},
         </#list>
-        })
+        )
     </#list>
     ${customize_method.combineType(method.returnTypes)}  ${method.name} (@Body ${method.params["req"].name} req);
 </#list>

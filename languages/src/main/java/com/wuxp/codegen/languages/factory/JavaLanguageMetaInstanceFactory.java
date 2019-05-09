@@ -16,4 +16,8 @@ public class JavaLanguageMetaInstanceFactory implements
     }
 
 
+    @Override
+    public JavaCodeGenClassMeta getTypeVariableInstance() {
+        return JavaCodeGenClassMeta.TYPE_VARIABLE;
+    }
 }

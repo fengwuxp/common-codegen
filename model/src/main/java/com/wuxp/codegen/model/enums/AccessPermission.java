@@ -3,13 +3,25 @@ package com.wuxp.codegen.model.enums;
 /**
  * 访问权限控制
  */
-public enum  AccessPermission {
+public enum AccessPermission {
 
-    PRIVATE,
 
-    PUBLIC,
+    PRIVATE("private"),
 
-    PROTECTED,
+    PUBLIC("public"),
 
-    DEFAULT;
+    PROTECTED("protected"),
+
+    DEFAULT("");
+
+
+    private String value;
+
+    AccessPermission(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

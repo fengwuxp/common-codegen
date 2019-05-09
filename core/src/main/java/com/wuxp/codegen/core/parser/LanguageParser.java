@@ -35,6 +35,10 @@ public interface LanguageParser<C extends CommonCodeGenClassMeta> extends Generi
             return (F) new CommonCodeGenFiledMeta();
         }
 
+        default C getTypeVariableInstance() {
+            return null;
+        }
+
     }
 }
 

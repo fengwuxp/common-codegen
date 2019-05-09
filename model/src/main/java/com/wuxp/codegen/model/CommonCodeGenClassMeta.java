@@ -107,7 +107,8 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
                                   Boolean isAbstract,
                                   CommonCodeGenClassMeta superClass,
                                   String packagePath,
-                                  Boolean needImport) {
+                                  Boolean needImport,
+                                  Boolean needGenerate) {
         this.name = name;
         this.genericDescription = genericDescription;
         this.classType = classType;
@@ -115,6 +116,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
         this.superClass = superClass;
         this.packagePath = packagePath;
         this.needImport = needImport;
+        this.needGenerate = needGenerate;
     }
 
 

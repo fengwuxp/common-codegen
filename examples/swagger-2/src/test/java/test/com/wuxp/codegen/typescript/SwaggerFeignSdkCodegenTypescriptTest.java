@@ -91,7 +91,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
     }
 
     @Test
-    public void testCodeGenApiByStater() {
+    public void testCodeGenTypescriptApiByStater() {
 
         //设置基础数据类型的映射关系
         Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();

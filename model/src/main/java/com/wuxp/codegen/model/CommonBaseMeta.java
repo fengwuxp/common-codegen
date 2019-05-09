@@ -51,7 +51,7 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
 
     public String getAccessPermissionName() {
 
-        return this.accessPermission.name().toLowerCase();
+        return this.accessPermission.getValue();
     }
 
     @Override

@@ -19,4 +19,9 @@ public class TypescriptLanguageMetaInstanceFactory implements
     public TypescriptFieldMate newFieldInstance() {
         return new TypescriptFieldMate();
     }
+
+    @Override
+    public TypescriptClassMeta getTypeVariableInstance() {
+        return TypescriptClassMeta.TYPE_VARIABLE;
+    }
 }

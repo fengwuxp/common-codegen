@@ -119,13 +119,13 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
 
 
     //Observable
-    public static final JavaCodeGenClassMeta RX_JAVA2_OBSERVABLE = new JavaCodeGenClassMeta("Observable", "T", ClassType.CLASS, false, null, "", false);
+    public static final JavaCodeGenClassMeta RX_JAVA2_OBSERVABLE = new JavaCodeGenClassMeta("Observable", "Observable<T>", ClassType.CLASS, false, null, "", false);
 
 
     public JavaCodeGenClassMeta() {
     }
 
     public JavaCodeGenClassMeta(String name, String genericDescription, ClassType classType, Boolean isAbstract, CommonCodeGenClassMeta superClass, String packagePath, Boolean needImport) {
-        super(name, genericDescription, classType, isAbstract, superClass, packagePath, needImport);
+        super(name, genericDescription, classType, isAbstract, superClass, packagePath, needImport,false);
     }
 }
