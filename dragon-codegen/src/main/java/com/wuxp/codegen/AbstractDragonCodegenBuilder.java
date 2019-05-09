@@ -46,7 +46,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      * 自定义的java类型映射
      */
     protected Map<Class<?>, Class<?>[]> customJavaTypeMapping = new LinkedHashMap<>();
-    ;
 
     /**
      * 忽略的包

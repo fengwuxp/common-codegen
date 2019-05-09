@@ -665,7 +665,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //method转换
         genMethodMeta.setAccessPermission(classMeta.getAccessPermission());
         //注解转注释
-        List<String> comments = this.generateComments(classMeta.getAnnotations(), javaMethodMeta.getMethod());
+        List<String> comments = this.generateComments(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod());
         comments.addAll(this.generateComments(javaMethodMeta.getReturnType(), true));
         genMethodMeta.setComments(comments.toArray(new String[]{}));
         genMethodMeta.setName(javaMethodMeta.getName());

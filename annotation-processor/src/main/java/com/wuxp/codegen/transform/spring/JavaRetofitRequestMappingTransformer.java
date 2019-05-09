@@ -29,11 +29,11 @@ public class JavaRetofitRequestMappingTransformer implements
 
     static {
 
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.GET, "Get");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.POST, "Post");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.DELETE, "Deleted");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, "Put");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, "Patch");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.GET, "GET");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.POST, "POST");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.DELETE, "DELETED");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, "PUT");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, "PATCH");
 
     }
 

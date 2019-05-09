@@ -30,6 +30,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("lombok.");
         IGNORE_PACKAGE_LIST.add("javax.persistence.");
         IGNORE_PACKAGE_LIST.add("javax.servlet.");
+        IGNORE_PACKAGE_LIST.add("java.io.");
         IGNORE_PACKAGE_LIST.add("sun.");
         IGNORE_PACKAGE_LIST.add("com.google.");
         IGNORE_PACKAGE_LIST.add("com.alibaba.");
