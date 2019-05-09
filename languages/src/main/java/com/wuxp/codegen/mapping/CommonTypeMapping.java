@@ -62,9 +62,7 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
                 .filter(Objects::nonNull)
                 .map(this::mapping)
                 .filter(Objects::nonNull)
-                .map(commonCodeGenClassMeta -> {
-                    return (C) commonCodeGenClassMeta;
-                })
+                .map(commonCodeGenClassMeta -> (C) commonCodeGenClassMeta)
                 .collect(Collectors.toList());
 
         //匹配泛型的个数是否充足，不足的用any补足

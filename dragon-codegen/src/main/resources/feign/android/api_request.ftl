@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
     <#list annotations as annotation>
         @${annotation.name}({
         <#list annotation.namedArguments as name,val>
-            ${name}:${val},
+            ${name}=${val}
         </#list>
         })
     </#list>

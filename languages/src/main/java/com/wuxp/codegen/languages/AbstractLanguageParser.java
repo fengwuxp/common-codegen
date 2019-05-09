@@ -187,7 +187,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         if (HANDLE_COUNT.containsKey(source)) {
             //标记某个类被处理的次数如果超过2次，从缓存中返回
-            if (HANDLE_COUNT.get(source) > 3) {
+            if (HANDLE_COUNT.get(source) > 5) {
                 return this.getResultToLocalCache(source);
             } else {
                 HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
@@ -248,6 +248,16 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 })
                 .filter(Objects::nonNull)
                 .toArray(CommonCodeGenClassMeta[]::new));
+
+
+        String genericDescription = Arrays.stream(meta.getTypeVariables())
+                .map(CommonBaseMeta::getName)
+                .collect(Collectors.joining(","));
+        if (StringUtils.hasText(genericDescription)) {
+            meta.setGenericDescription(MessageFormat.format("<{0}>", genericDescription));
+        }
+
+
         Class<?> javaClassSuperClass = javaClassMeta.getSuperClass();
         C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
         if (javaClassSuperClass != null && commonCodeGenClassMeta == null) {
@@ -720,9 +730,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     log.warn("未处理的类型{}", clazz.getName());
                 }
 
-                this.fetchDependencies(otherDependencies).forEach((k,v)->{
-                    Map<String, C> dependencies =(Map<String, C>) argsClassMeta.getDependencies();
-                    dependencies.put(k,v) ;
+                this.fetchDependencies(otherDependencies).forEach((k, v) -> {
+                    Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
+                    dependencies.put(k, v);
                 });
 
                 //注释
@@ -794,7 +804,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         }
         //加入依赖列表
-        Map<String, C> dependencies = ( Map<String, C>)codeGenClassMeta.getDependencies();
+        Map<String, C> dependencies = (Map<String, C>) codeGenClassMeta.getDependencies();
 
 
         dependencies.put(argsClassMeta.getName(), argsClassMeta);
@@ -822,42 +832,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     /**
-     * 增强处理 annotation
+     * 增强处理注解
      *
      * @param codeGenAnnotation
      * @param annotation
      * @param annotationOwner
      */
-    protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
-        if (annotationOwner instanceof Class) {
+    protected abstract void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner);
 
-        }
-        if (annotationOwner instanceof Method) {
-            //spring的mapping注解
-            if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
-
-                Method method = (Method) annotationOwner;
-                //判断方法参数是否有RequestBody注解
-                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
-                        .filter(Objects::nonNull)
-                        .filter(annotations -> annotations.length > 0)
-                        .map(Arrays::asList)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
-                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
-
-                if (!hasRequestBodyAnnotation) {
-                    //如果没有则认为是已表单的方式提交的参数
-                    //是spring的Mapping注解
-                    String produces = codeGenAnnotation.getNamedArguments().get("produces");
-                    if (produces == null) {
-                        produces = "[MediaType.FORM_DATA]";
-                    }
-                    codeGenAnnotation.getNamedArguments().put("produces", produces);
-                }
-            }
-        }
-    }
 
     /**
      * 抓取依赖列表

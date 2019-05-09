@@ -19,11 +19,14 @@ import retrofit2.http.*;
 </#if>
 
 <#list annotations as annotation>
-    @${annotation.name}({
+    <#assign len=annotation.namedArguments?size />
+    <#assign currentIndex=0 />
+    @${annotation.name}(
     <#list annotation.namedArguments as name,val>
-        ${name}:${val},
+        ${name} = ${val} <#if currentIndex<len-1>,</#if>
+        <#assign currentIndex=currentIndex+1 />
     </#list>
-    })
+    )
 </#list>
 public interface ${name}{
 
@@ -34,9 +37,12 @@ public interface ${name}{
     </#list>
     **/
     <#list method.annotations as annotation>
+        <#assign len=annotation.namedArguments?size />
+        <#assign currentIndex=0 />
         @${annotation.name}(
         <#list annotation.namedArguments as name,val>
-            ${name}:${val},
+            ${name} = ${val} <#if currentIndex<len-1>,</#if>
+            <#assign currentIndex=currentIndex+1 />
         </#list>
         )
     </#list>

@@ -105,7 +105,7 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     /**
      * Object
      */
-    public static final JavaCodeGenClassMeta OBJECT = new JavaCodeGenClassMeta("Object", null, ClassType.CLASS, false, null, "", false);
+    public static final JavaCodeGenClassMeta OBJECT = new JavaCodeGenClassMeta("Object", "Object", ClassType.CLASS, false, null, "", false);
 
 
     /**

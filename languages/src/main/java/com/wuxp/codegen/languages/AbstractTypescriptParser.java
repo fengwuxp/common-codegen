@@ -1,11 +1,13 @@
 package com.wuxp.codegen.languages;
 
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.TypescriptLanguageMetaInstanceFactory;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -15,10 +17,13 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -96,6 +101,44 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         this.enhancedProcessingMethod(commonCodeGenMethodMeta, javaMethodMeta, classMeta);
 
         return commonCodeGenMethodMeta;
+    }
+
+    /**
+     * 增强处理 annotation
+     *
+     * @param codeGenAnnotation
+     * @param annotation
+     * @param annotationOwner
+     */
+    protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
+        if (annotationOwner instanceof Class) {
+
+        }
+        if (annotationOwner instanceof Method) {
+            //spring的mapping注解
+            if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
+
+                Method method = (Method) annotationOwner;
+                //判断方法参数是否有RequestBody注解
+                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
+                        .filter(Objects::nonNull)
+                        .filter(annotations -> annotations.length > 0)
+                        .map(Arrays::asList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
+
+                if (!hasRequestBodyAnnotation) {
+                    //如果没有则认为是已表单的方式提交的参数
+                    //是spring的Mapping注解
+                    String produces = codeGenAnnotation.getNamedArguments().get("produces");
+                    if (produces == null) {
+                        produces = "[MediaType.FORM_DATA]";
+                    }
+                    codeGenAnnotation.getNamedArguments().put("produces", produces);
+                }
+            }
+        }
     }
 
 

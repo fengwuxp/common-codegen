@@ -1,12 +1,14 @@
 package com.wuxp.codegen.languages;
 
 
+import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.JavaLanguageMetaInstanceFactory;
 import com.wuxp.codegen.mapping.JavaTypeMapping;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
@@ -16,9 +18,11 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 抽象的java parser
@@ -83,6 +87,12 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
 
     }
 
+
+    @Override
+    protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
+
+    }
+
     @Override
     protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, JavaCodeGenClassMeta codeGenClassMeta) {
 
@@ -92,15 +102,32 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
         }
 
         //处理返回值
-        List<JavaCodeGenClassMeta> mapping = this.typeMapping.mapping(javaMethodMeta.getReturnType());
+        List<JavaCodeGenClassMeta> returnTypes = this.typeMapping.mapping(javaMethodMeta.getReturnType());
 
-        if (!mapping.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
-            mapping.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
+
+//        returnTypes.forEach(javaCodeGenClassMeta -> {
+//            if (javaCodeGenClassMeta.getTypeVariables() == null) {
+//                return;
+//            }
+//            CommonCodeGenClassMeta[] commonCodeGenClassMetas = Arrays.stream(javaCodeGenClassMeta.getTypeVariables())
+//                    .map(commonCodeGenClassMeta -> {
+//                        if (commonCodeGenClassMeta.getName().equals(JavaCodeGenClassMeta.TYPE_VARIABLE.getName())){
+//                            return JavaCodeGenClassMeta.OBJECT;
+//                        }
+//                        return commonCodeGenClassMeta;
+//                    })
+//                    .toArray(CommonCodeGenClassMeta[]::new);
+//            javaCodeGenClassMeta.setTypeVariables(commonCodeGenClassMetas);
+//        });
+
+
+        if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
+            returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
         }
 
-        if (mapping.size() > 0) {
+        if (returnTypes.size() > 0) {
             //域对象类型描述
-            commonCodeGenMethodMeta.setReturnTypes(mapping.toArray(new CommonCodeGenClassMeta[]{}));
+            commonCodeGenMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[]{}));
         } else {
             //解析失败
             throw new RuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",

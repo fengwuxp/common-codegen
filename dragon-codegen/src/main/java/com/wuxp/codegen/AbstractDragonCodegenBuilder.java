@@ -3,9 +3,11 @@ package com.wuxp.codegen;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
 import java.util.*;
@@ -14,6 +16,9 @@ import java.util.*;
  * 代码生成配置
  */
 public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
+
+
+    protected LanguageDescription languageDescription = LanguageDescription.JAVA;
 
     /**
      * 扫码生成的包名
@@ -112,6 +117,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractDragonCodegenBuilder languageDescription(LanguageDescription languageDescription) {
+        this.languageDescription = languageDescription;
+        return this;
+    }
+
     protected void initTypeMapping() {
         //设置基础数据类型的映射关系
         baseTypeMapping.forEach(AbstractTypeMapping.BASE_TYPE_MAPPING::put);
@@ -124,5 +134,8 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
         PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
+
+
+        CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);
     }
 }

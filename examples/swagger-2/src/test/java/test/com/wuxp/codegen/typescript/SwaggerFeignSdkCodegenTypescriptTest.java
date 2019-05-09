@@ -118,6 +118,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
 
         Swagger2FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
+                .languageDescription(LanguageDescription.TYPESCRIPT)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())

@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
@@ -21,13 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilder {
 
 
-    protected LanguageDescription languageDescription = LanguageDescription.JAVA;
 
 
     @Override
     public CodeGenerator buildCodeGenerator() {
 
-
+        this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger2FeignSdkJavaParser(
                 packageMapStrategy,
@@ -43,6 +43,7 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
                 this.outPath,
                 this.languageDescription.getSuffixName(),
                 this.isDeletedOutputDirectory);
+
 
         return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy);
     }

@@ -48,9 +48,9 @@ public class SwaggerFeignSdkCodegenAndroidTest {
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
         Swagger2FeignJavaCodegenBuilder.builder()
-                .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .build()
                 .baseTypeMapping(baseTypeMapping)
+                .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap,basePackageName))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
