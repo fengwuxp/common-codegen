@@ -18,10 +18,7 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +51,7 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
             if (aPackage == null) {
                 return false;
             }
-            return !aPackage.getName().equals("java.lang");
+            return !aPackage.getName().startsWith("java.lang");
 
         });
 
@@ -105,22 +102,6 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
         List<JavaCodeGenClassMeta> returnTypes = this.typeMapping.mapping(javaMethodMeta.getReturnType());
 
 
-//        returnTypes.forEach(javaCodeGenClassMeta -> {
-//            if (javaCodeGenClassMeta.getTypeVariables() == null) {
-//                return;
-//            }
-//            CommonCodeGenClassMeta[] commonCodeGenClassMetas = Arrays.stream(javaCodeGenClassMeta.getTypeVariables())
-//                    .map(commonCodeGenClassMeta -> {
-//                        if (commonCodeGenClassMeta.getName().equals(JavaCodeGenClassMeta.TYPE_VARIABLE.getName())){
-//                            return JavaCodeGenClassMeta.OBJECT;
-//                        }
-//                        return commonCodeGenClassMeta;
-//                    })
-//                    .toArray(CommonCodeGenClassMeta[]::new);
-//            javaCodeGenClassMeta.setTypeVariables(commonCodeGenClassMetas);
-//        });
-
-
         if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
             returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
         }
@@ -135,6 +116,13 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
                     javaMethodMeta.getName(),
                     this.classToNamedString(javaMethodMeta.getReturnType())));
         }
+
+        returnTypes.stream()
+                .filter(CommonCodeGenClassMeta::getNeedImport)
+                .forEach(returnType->{
+            ((Map<String,JavaCodeGenClassMeta>)codeGenClassMeta.getDependencies()).put(returnType.getName(),returnType);
+        });
+
 
 
         //增强处理
