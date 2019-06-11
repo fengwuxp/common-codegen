@@ -243,26 +243,32 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
         List<JavaFieldMeta> fieldMetas = new ArrayList<>();
 
-        for (int i = 0; i < fields.length; i++) {
-
-            Field field = fields[i];
-            JavaFieldMeta fieldMeta = getJavaFieldMeta(field, clazz);
-            if (fieldMeta == null) continue;
-            fieldMetas.add(fieldMeta);
-        }
-
-        return fieldMetas.stream()
-//                .sorted(Comparator.comparing(CommonBaseMeta::getName))
+//        for (int i = 0; i < fields.length; i++) {
+//
+//            Field field = fields[i];
+//            JavaFieldMeta fieldMeta = getJavaFieldMeta(field, clazz);
+//            if (fieldMeta == null) continue;
+//            fieldMetas.add(fieldMeta);
+//        }
+        //                fieldMetas.stream().sorted(Comparator.comparing(CommonBaseMeta::getName))
+//                .toArray(JavaFieldMeta[]::new);
+        return Arrays.asList(fields)
+                .stream()
+                .map(field -> this.getJavaFieldMeta(field, clazz))
+                .filter(Objects::nonNull)
                 .toArray(JavaFieldMeta[]::new);
+
+
     }
 
     protected JavaFieldMeta getJavaFieldMeta(Field field, Class<?> owner) {
         String fieldName = field.getName();
-        if (owner.isEnum()) {
-            //枚举，忽略$VALUES
-            if (fieldName.equals("$VALUES")) {
-                return null;
-            }
+        if (owner.isEnum() && !field.isEnumConstant()) {
+            //是枚举，且非枚举常量，忽略
+            return null;
+//            if (fieldName.equals("$VALUES")) {
+//                return null;
+//            }
         }
 
         JavaFieldMeta fieldMeta = new JavaFieldMeta();
