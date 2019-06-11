@@ -55,6 +55,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap,basePackageName))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
+                .isDeletedOutputDirectory(false)
                 .buildCodeGenerator()
                 .generate();
 
