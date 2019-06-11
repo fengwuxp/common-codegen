@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.customizeJavaTypeMapping;
@@ -79,7 +80,28 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         }
 
         //处理返回值
-        List<TypescriptClassMeta> mapping = this.typeMapping.mapping(javaMethodMeta.getReturnType());
+        Class<?>[] returnTypes = javaMethodMeta.getReturnType();
+        Class<?> mapClazz = Arrays.stream(returnTypes)
+                .filter(JavaTypeUtil::isMap)
+                .findAny()
+                .orElse(null);
+
+        Class<?> [] newTypes=Arrays.stream(returnTypes)
+                .toArray( Class[]::new);
+
+        if (mapClazz != null) {
+            for (int i = 0; i < newTypes.length; i++) {
+                if (newTypes[i].equals(mapClazz)) {
+                    int i1 = i + 1;
+                    Class<?> keyClazz = newTypes[i1];
+                    if (!JavaTypeUtil.isJavaBaseType(keyClazz)) {
+                        newTypes[i1] = Object.class;
+                    }
+                    break;
+                }
+            }
+        }
+        List<TypescriptClassMeta> mapping = this.typeMapping.mapping(newTypes);
 
         if (!mapping.contains(TypescriptClassMeta.PROMISE)) {
             mapping.add(0, TypescriptClassMeta.PROMISE);
@@ -93,7 +115,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             throw new RuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",
                     classMeta.getClassName(),
                     javaMethodMeta.getName(),
-                    this.classToNamedString(javaMethodMeta.getReturnType())));
+                    this.classToNamedString(returnTypes)));
         }
 
 

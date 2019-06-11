@@ -104,6 +104,9 @@ public final class JavaTypeUtil {
      */
     public static boolean isList(Class<?> clazz) {
 
+        if (isAssignableFrom(clazz,List.class)){
+            return true;
+        }
 
         return isExtendsClass(clazz, List.class);
 
@@ -117,7 +120,9 @@ public final class JavaTypeUtil {
      */
     public static boolean isCollection(Class<?> clazz) {
 
-
+        if (isAssignableFrom(clazz,Collection.class)){
+            return true;
+        }
         return isExtendsClass(clazz, Collection.class);
     }
 
@@ -128,6 +133,9 @@ public final class JavaTypeUtil {
      * @return
      */
     public static boolean isMap(Class<?> clazz) {
+        if (isAssignableFrom(clazz,Map.class)){
+            return true;
+        }
         return isExtendsClass(clazz, Map.class);
     }
 
@@ -138,6 +146,9 @@ public final class JavaTypeUtil {
      * @return
      */
     public static boolean isSet(Class<?> clazz) {
+        if (isAssignableFrom(clazz,Set.class)){
+            return true;
+        }
         return isExtendsClass(clazz, Set.class);
     }
 
@@ -249,9 +260,6 @@ public final class JavaTypeUtil {
 
         return superClazz.isAssignableFrom(clazz);
     }
-
-
-
 
 
 }
