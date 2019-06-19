@@ -13,10 +13,9 @@ public final class LanguageDescription {
 
     public static final LanguageDescription DART = new LanguageDescription("dart", "dart");
 
-
     public static final LanguageDescription JAVA = new LanguageDescription("java", "java");
 
-    public static final LanguageDescription JAVA_ANDROID = new LanguageDescription("java", "java","android");
+    public static final LanguageDescription JAVA_ANDROID = new LanguageDescription("java", "java", "android");
 
     /**
      * 名称
