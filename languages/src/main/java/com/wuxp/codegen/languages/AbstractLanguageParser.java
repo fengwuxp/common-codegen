@@ -270,7 +270,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
-        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), javaClassMeta.getClass()));
+        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(),source));
 
         if (count == 1) {
             if (javaClassMeta.isApiServiceClass()) {
