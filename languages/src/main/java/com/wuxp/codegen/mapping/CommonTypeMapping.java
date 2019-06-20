@@ -50,9 +50,7 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
                 .map(clazz -> {
                     List<Class<?>> list = new ArrayList<>();
                     if (clazz.isArray()) {
-                        //数组
-                        list.add(List.class);
-                        list.add(clazz.getComponentType());
+                        list = this.handleArray(clazz);
                     } else {
                         list.add(clazz);
                     }
@@ -112,6 +110,15 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
      */
     protected C mapping(Class<?> clazz) {
 
+        if (clazz.isArray()) {
+            //数组
+            C array = this.languageParser.getLanguageMetaInstanceFactory().newClassInstance();
+            BeanUtils.copyProperties( CommonCodeGenClassMeta.ARRAY,array);
+            array.setTypeVariables(new CommonCodeGenClassMeta[]{this.mapping(clazz.getComponentType())});
+            return array;
+
+        }
+
         C commonCodeGenClassMeta = (C) baseTypeMapping.mapping(clazz);
         if (commonCodeGenClassMeta != null) {
             return commonCodeGenClassMeta;
@@ -148,6 +155,14 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
             log.warn("Not Found clazz " + clazz.getName() + " mapping type");
             return null;
         }
+    }
+
+    protected List<Class<?>> handleArray(Class<?> clazz) {
+        List<Class<?>> list = new ArrayList<>();
+        //数组
+        list.add(List.class);
+        list.add(clazz.getComponentType());
+        return list;
     }
 
 

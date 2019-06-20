@@ -83,23 +83,23 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     /**
      * Map
      */
-    public static final JavaCodeGenClassMeta MAP = new JavaCodeGenClassMeta("Map", "Map<K,V>", ClassType.CLASS, false, null, "java.util.Map", true);
+    public static final JavaCodeGenClassMeta MAP = new JavaCodeGenClassMeta("Map", "Map<K,V>", ClassType.INTERFACE, false, null, "java.util.Map", true);
 
     /**
      * Set
      */
-    public static final JavaCodeGenClassMeta SET = new JavaCodeGenClassMeta("Set", "Set<V>", ClassType.CLASS, false, null, "java.util.Set", true);
+    public static final JavaCodeGenClassMeta SET = new JavaCodeGenClassMeta("Set", "Set<V>", ClassType.INTERFACE, false, null, "java.util.Set", true);
 
     /**
      * List
      */
-    public static final JavaCodeGenClassMeta LIST = new JavaCodeGenClassMeta("List", "List<T>", ClassType.CLASS, false, null, "java.util.List", true);
+    public static final JavaCodeGenClassMeta LIST = new JavaCodeGenClassMeta("List", "List<T>", ClassType.INTERFACE, false, null, "java.util.List", true);
 
 
     /**
      * Collection
      */
-    public static final JavaCodeGenClassMeta COLLECTION = new JavaCodeGenClassMeta("Collection", "Collection<T>", ClassType.CLASS, false, null, "java.util.Collection", true);
+    public static final JavaCodeGenClassMeta COLLECTION = new JavaCodeGenClassMeta("Collection", "Collection<T>", ClassType.INTERFACE, false, null, "java.util.Collection", true);
 
 
     /**
@@ -126,6 +126,6 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     }
 
     public JavaCodeGenClassMeta(String name, String genericDescription, ClassType classType, Boolean isAbstract, CommonCodeGenClassMeta superClass, String packagePath, Boolean needImport) {
-        super(name, genericDescription, classType, isAbstract, superClass, packagePath, needImport,false);
+        super(name, genericDescription, classType, isAbstract, superClass, packagePath, needImport, false);
     }
 }

@@ -350,6 +350,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return meta;
     }
 
+    @Override
+    public LanguageMetaInstanceFactory getLanguageMetaInstanceFactory() {
+        return this.languageMetaInstanceFactory;
+    }
 
     /**
      * 是否匹配生成的规则

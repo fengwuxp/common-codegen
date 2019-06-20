@@ -1,6 +1,7 @@
 package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -17,6 +18,14 @@ import java.util.stream.Collectors;
 @Data
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
+
+
+    public static final String ARRAY_TYPE_NAME = "T[]";
+
+    /**
+     * 数组
+     */
+    public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME, null, ClassType.INTERFACE, false, null, null, false, false);
 
 
     /**

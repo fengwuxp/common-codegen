@@ -13,6 +13,8 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 public interface LanguageParser<C extends CommonCodeGenClassMeta> extends GenericParser<C, Class<?>> {
 
 
+    <M extends CommonCodeGenMethodMeta,F extends CommonCodeGenFiledMeta> LanguageMetaInstanceFactory<C,M,F> getLanguageMetaInstanceFactory();
+
     /**
      * 语言类型的实例工厂
      *

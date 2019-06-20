@@ -24,6 +24,15 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         }
         int length = codeGenClassMetas.length;
         CommonCodeGenClassMeta genClassMeta = codeGenClassMetas[0];
+
+        String metaName = genClassMeta.getName();
+        if (metaName.equals(CommonCodeGenClassMeta.ARRAY_TYPE_NAME)) {
+            //数组
+            CommonCodeGenClassMeta[] typeVariables = genClassMeta.getTypeVariables();
+            return metaName.replace("T", typeVariables[0].getName());
+        }
+
+
         String finallyGenericDescription = genClassMeta.getFinallyGenericDescription();
         if (length == 1) {
             if (!StringUtils.hasText(finallyGenericDescription)) {
