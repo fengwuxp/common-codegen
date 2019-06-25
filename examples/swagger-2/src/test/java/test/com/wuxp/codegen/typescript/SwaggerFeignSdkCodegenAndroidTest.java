@@ -1,12 +1,9 @@
 package test.com.wuxp.codegen.typescript;
 
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
-import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;

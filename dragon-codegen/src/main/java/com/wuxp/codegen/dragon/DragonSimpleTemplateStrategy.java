@@ -2,13 +2,12 @@ package com.wuxp.codegen.dragon;
 
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.dragon.freemarker.CombineTypeMethod;
 import com.wuxp.codegen.dragon.path.PathResolve;
-import com.wuxp.codegen.templates.TemplateLoader;
-import com.wuxp.codegen.utils.FileUtil;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.templates.TemplateLoader;
+import com.wuxp.codegen.utils.FileUtil;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;

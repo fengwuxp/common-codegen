@@ -3,7 +3,6 @@ package com.wuxp.codegen.mapping;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;

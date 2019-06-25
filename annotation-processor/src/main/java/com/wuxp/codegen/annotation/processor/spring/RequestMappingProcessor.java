@@ -9,14 +9,14 @@ import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.transform.spring.JavaRetofitRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**

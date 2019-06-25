@@ -2,12 +2,10 @@ package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
 import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
 import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkJavaParser;

@@ -1,7 +1,6 @@
 package com.wuxp.codegen.model.mapping;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 
 import java.util.LinkedHashMap;
 import java.util.List;

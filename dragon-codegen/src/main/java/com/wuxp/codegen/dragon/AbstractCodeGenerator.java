@@ -2,8 +2,8 @@ package com.wuxp.codegen.dragon;
 
 
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -92,7 +92,9 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
         Set<Class<?>> classes = Arrays.stream(packagePaths)
                 .map(classPathScanningCandidateComponentProvider::findCandidateComponents)
-                .flatMap(Collection::stream).map(BeanDefinition::getBeanClassName).map(className -> {
+                .flatMap(Collection::stream)
+                .map(BeanDefinition::getBeanClassName)
+                .map(className -> {
                     try {
                         return Thread.currentThread().getContextClassLoader().loadClass(className);
                     } catch (ClassNotFoundException e) {

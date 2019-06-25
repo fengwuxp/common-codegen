@@ -3,7 +3,9 @@ package com.wuxp.codegen.dragon.freemarker;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.dragon.strategy.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import freemarker.template.*;
+import freemarker.template.DefaultArrayAdapter;
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

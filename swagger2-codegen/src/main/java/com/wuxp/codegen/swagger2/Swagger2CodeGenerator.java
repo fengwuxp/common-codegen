@@ -8,7 +8,6 @@ import com.wuxp.codegen.swagger2.annotations.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Component;
 import springfox.documentation.annotations.ApiIgnore;
 
 import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;

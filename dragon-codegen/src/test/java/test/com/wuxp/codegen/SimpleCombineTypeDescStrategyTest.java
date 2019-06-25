@@ -8,14 +8,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class SimpleCombineTypeDescStrategyTest {
 
     @Test
     public void combine() {
 
         SimpleCombineTypeDescStrategy strategy = new SimpleCombineTypeDescStrategy();
+
         List<String> list1 = GrabGenericVariablesHelper.matchGenericDescriptors("List<Map<K,PageInfo<T>>>");
         System.out.println(list1);
         List<String> list2 = GrabGenericVariablesHelper.matchGenericDescriptors("Promise<Map<K,V>>");
@@ -26,6 +25,13 @@ public class SimpleCombineTypeDescStrategyTest {
         names.add("Map<K,V>");
         names.add("String");
         names.add("User");
+        System.out.println(strategy.combineTypes(names));
+        names.clear();
+        names.add("Record<K,V>");
+        names.add("string");
+        names.add("Array<T>");
+        names.add("Array<T>");
+        names.add("string");
         System.out.println(strategy.combineTypes(names));
     }
 

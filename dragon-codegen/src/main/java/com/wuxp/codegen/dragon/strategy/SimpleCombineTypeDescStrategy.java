@@ -1,12 +1,14 @@
 package com.wuxp.codegen.dragon.strategy;
 
-import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
+import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -97,8 +99,8 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             typeNme = replaceGenericDescCode(typeNme, descriptors, genericDescriptor);
         }
 
-        if (names.size() > 1) {
-            names = names.subList(1, names.size());
+        if (names.size() > descriptors.size()) {
+            names = names.subList(descriptors.size(), names.size());
         }
 
         names.set(0, typeNme);

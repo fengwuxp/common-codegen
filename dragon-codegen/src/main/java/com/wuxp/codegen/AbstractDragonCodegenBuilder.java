@@ -3,7 +3,6 @@ package com.wuxp.codegen;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
-import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;

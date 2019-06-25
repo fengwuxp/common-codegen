@@ -2,7 +2,6 @@ package test.com.wuxp.codegen.core.parser;
 
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import org.junit.After;
 import org.junit.Before;
