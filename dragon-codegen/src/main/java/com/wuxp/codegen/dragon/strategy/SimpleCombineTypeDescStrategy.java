@@ -86,7 +86,8 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(typeNme);
 
         //存在泛型描述
-        if (descriptors.size() > 0) {
+        int desciptorsSize = descriptors.size();
+        if (desciptorsSize > 0) {
             if (size < 2) {
                 throw new RuntimeException("合并泛型描述异常，names = " + String.join(",", names));
             }
@@ -98,9 +99,9 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             }
             typeNme = replaceGenericDescCode(typeNme, descriptors, genericDescriptor);
         }
-
-        if (names.size() > descriptors.size()) {
-            names = names.subList(descriptors.size(), names.size());
+//        log.debug("names {} {} descriptors {} {}", names, names.size(), descriptors, desciptorsSize);
+        if (names.size() > 1) {
+            names = names.subList(desciptorsSize == 0 ? 1 : desciptorsSize, names.size());
         }
 
         names.set(0, typeNme);

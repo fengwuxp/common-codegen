@@ -268,7 +268,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
-        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(),source));
+        meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
 
         if (count == 1) {
             if (javaClassMeta.isApiServiceClass()) {
@@ -518,7 +518,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         //匹配getXX 或isXxx方法
                         return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
                     })
-                    .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
+                    .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) || Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
                     .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
                     .filter(javaMethodMeta -> {
                         //属性是否已经存在
@@ -544,6 +544,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         return fieldMetas.stream()
+                .filter(javaFieldMeta -> {
+                    //过滤掉非枚举的静态变量
+                    if (isEnum) {
+                        return true;
+                    }
+                    return Boolean.FALSE.equals(javaFieldMeta.getIsStatic());
+                })
                 .map(javaFieldMeta -> this.converterField(javaFieldMeta, classMeta))
                 .filter(Objects::nonNull)
                 .distinct()

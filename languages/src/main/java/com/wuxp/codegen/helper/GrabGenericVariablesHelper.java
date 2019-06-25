@@ -46,7 +46,7 @@ public final class GrabGenericVariablesHelper {
             return list;
         }
         if (log.isDebugEnabled()) {
-            log.debug("genericDescription-->{0}", genericDescription);
+            log.debug("genericDescription--> {}", genericDescription);
         }
 
         Matcher matcher = GENERIC_PATTERN.matcher(genericDescription);
@@ -56,21 +56,32 @@ public final class GrabGenericVariablesHelper {
             //去除最外层的2个尖括号
             String nextGenericDescriptor = group.substring(1, group.length() - 1);
 
-            //判断逗号是否存在
-            int i1 = nextGenericDescriptor.indexOf(",");
-            int i2 = nextGenericDescriptor.indexOf("<");
-            if (i1 == -1 || i2 < i1) {
-                //若 第一个','号在第一个'<'范围中，则继续匹配
-                list.addAll(GrabGenericVariablesHelper.grabGenericVariables(nextGenericDescriptor));
-            }
-            if (i1 > -1 && ((i2 == -1 && i1 > 0) || i1 < i2)) {
-                //若 第一个','号在第一个'<'范围外，则尝试分割匹配
-                String[] strings = {nextGenericDescriptor.substring(0, i1), nextGenericDescriptor.substring(i1 + 1, nextGenericDescriptor.length())};
-                list.addAll(Arrays.stream(strings)
+            if (nextGenericDescriptor.endsWith(">")) {
+                //判断逗号是否存在
+                int i1 = nextGenericDescriptor.indexOf(",");
+                int i2 = nextGenericDescriptor.indexOf("<");
+                if (i1 == -1 || i2 < i1) {
+                    //若 第一个','号在第一个'<'范围中，则继续匹配
+                    list.addAll(GrabGenericVariablesHelper.grabGenericVariables(nextGenericDescriptor));
+                }
+                if (i1 > -1 && ((i2 == -1 && i1 > 0) || i1 < i2)) {
+                    //若 第一个','号在第一个'<'范围外，则尝试分割匹配
+                    String[] strings = {nextGenericDescriptor.substring(0, i1), nextGenericDescriptor.substring(i1 + 1)};
+                    list.addAll(Arrays.stream(strings)
+                            .map(GrabGenericVariablesHelper::grabGenericVariables)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                }
+            } else {
+                List<String> collect = Arrays.stream(nextGenericDescriptor
+                        .split(","))
+                        .filter(StringUtils::hasText)
                         .map(GrabGenericVariablesHelper::grabGenericVariables)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList());
+                list.addAll(collect);
             }
+
         }
 
         return list;
