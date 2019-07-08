@@ -4,6 +4,7 @@ import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -140,7 +141,11 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
                     .collect(Collectors.joining(","));
             return this.name + "<" + typeDesc + ">";
         }
-        return genericDescription;
+        if (StringUtils.hasText(genericDescription)){
+            return genericDescription;
+        }
+
+        return name;
     }
 
     /**

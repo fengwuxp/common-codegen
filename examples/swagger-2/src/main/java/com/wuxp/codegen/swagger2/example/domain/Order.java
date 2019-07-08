@@ -8,11 +8,10 @@ import java.util.Date;
 
 @ApiModel("订单")
 @Data
-public class Order {
+public class Order  extends BaseInfo<Long>{
 
 
-    @ApiModelProperty("id")
-    private Long id;
+
 
     @ApiModelProperty(value = "sn",example = "order_sn_199223")
     private String sn;

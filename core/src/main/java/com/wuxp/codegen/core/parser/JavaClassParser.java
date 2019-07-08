@@ -12,6 +12,7 @@ import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
@@ -68,46 +69,68 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         int modifiers = source.getModifiers();
 
+        //超类上的类型变量
         Map<Class<?>, Class<?>[]> superTypeVariables = new LinkedHashMap<>();
 
+        List<ResolvableType> superTypes=new ArrayList<>();
+        superTypes.add( ResolvableType.forClass(source).getSuperType());
+        superTypes.addAll(Arrays.asList(ResolvableType.forClass(source).getInterfaces()));
+
         //超类
-        ResolvableType superType = ResolvableType.forClass(source).getSuperType();
-
-        //循环获取超类
-        while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
-            Type subType = superType.getSuperType().getType();
-
-            if (log.isDebugEnabled()) {
-                log.debug("查找类 {} 的超类", subType.getTypeName());
-            }
+//        ResolvableType[] superTypes = new ResolvableType[]{
+//                ResolvableType.forClass(source).getSuperType()
+//        };
 
 
-            ResolvableType[] superTypeGenerics = superType.getGenerics();
-            List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
-                Class<?> rawClass = type.getRawClass();
-                if (rawClass == null) {
-                    Type typeType = type.getType();
-                    if (typeType instanceof Class) {
-                        return (Class<?>) typeType;
-                    } else {
-                        return null;
-                    }
+        //获取超类上的泛型
+//        ParameterizedTypeImpl genericSuperclass = (ParameterizedTypeImpl) source.getGenericSuperclass();
+//        Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
+//        if (actualTypeArguments != null && actualTypeArguments.length > 0) {
+//            superTypeVariables.put(
+//                    source.getSuperclass(),
+//                    Arrays.stream(actualTypeArguments).map(type -> (Class<?>) type).toArray(Class<?>[]::new));
+//
+//        }
+
+        superTypes.forEach(superType -> {
+            //循环获取超类(包括接口)
+            while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
+                Type subType = superType.getSuperType().getType();
+
+                if (log.isDebugEnabled()) {
+                    log.debug("查找类 {} 的超类", subType.getTypeName());
                 }
 
 
-                return rawClass;
-            }).filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                ResolvableType[] superTypeGenerics = superType.getGenerics();
+                List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
+                    Class<?> rawClass = type.getRawClass();
+                    if (rawClass == null) {
+                        Type typeType = type.getType();
+                        if (typeType instanceof Class) {
+                            return (Class<?>) typeType;
+                        } else {
+                            return null;
+                        }
+                    }
 
-            superTypeVariables.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
-            superType = superType.getSuperType();
 
-            if (Object.class.equals(subType)) {
-                break;
+                    return rawClass;
+                }).filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+
+                superTypeVariables.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
+                superType = superType.getSuperType();
+
+                if (Object.class.equals(subType)) {
+                    //直到获取到object为止
+                    break;
+                }
             }
-        }
 
+        });
 
+        //获取类上的泛型变量
         TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
 
         getAssessPermission(modifiers, classMeta);

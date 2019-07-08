@@ -177,6 +177,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     @Override
     public C parse(Class<?> source) {
         //符合匹配规则，或非集合类型和Map的的子类进行
+
+        if (!JavaTypeUtil.isNoneJdkComplex(source)) {
+            List<C> results = this.typeMapping.mapping(source);
+            if (!results.isEmpty()) {
+                return results.get(0);
+            }
+        }
+
         if (!this.isMatchGenCodeRule(source) ||
                 JavaTypeUtil.isMap(source) ||
                 JavaTypeUtil.isCollection(source)) {
@@ -257,13 +265,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         Class<?> javaClassSuperClass = javaClassMeta.getSuperClass();
-        C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
-        if (javaClassSuperClass != null && commonCodeGenClassMeta == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("超类 {} 解析处理失败或被忽略", javaClassMeta.getClassName());
+        if (!Object.class.equals(javaClassSuperClass)){
+            //不是object
+            C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
+            if (javaClassSuperClass != null && commonCodeGenClassMeta == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("超类 {} 解析处理失败或被忽略", javaClassMeta.getClassName());
+                }
             }
+            meta.setSuperClass(commonCodeGenClassMeta);
         }
-        meta.setSuperClass(commonCodeGenClassMeta);
+
+
 
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
@@ -885,8 +898,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(CommonCodeGenClassMeta::getNeedImport)
                 .forEach(classMetas::add);
 
-        return classMetas.stream()
-                .collect(Collectors.toMap(CommonBaseMeta::getName, v -> v));
+
+        Map<String, C> map = new HashMap<>();
+        classMetas.forEach(c -> {
+            map.put(c.getName(), c);
+        });
+
+        return map;
 
     }
 

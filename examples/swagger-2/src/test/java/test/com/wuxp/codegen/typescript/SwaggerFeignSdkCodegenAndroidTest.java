@@ -1,12 +1,16 @@
 package test.com.wuxp.codegen.typescript;
 
+import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
+import com.wuxp.codegen.swagger2.example.domain.Order;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 public class SwaggerFeignSdkCodegenAndroidTest {
 
 
@@ -56,5 +61,13 @@ public class SwaggerFeignSdkCodegenAndroidTest {
                 .buildCodeGenerator()
                 .generate();
 
+    }
+
+    @Test
+    public void testJavaParser(){
+
+        JavaClassMeta parse = new JavaClassParser(false).parse(Order.class);
+
+        log.debug("{}",parse);
     }
 }
