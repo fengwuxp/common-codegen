@@ -44,7 +44,6 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
                     if (pattern.endsWith("**")) {
                         return pattern;
                     }
-
                     return MessageFormat.format("{0}**", pattern);
                 }).filter(pattern -> this.pathMatcher.match(pattern, clazzName))
                 .findFirst();
@@ -55,7 +54,10 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         }
 
         String key = packageNamePrefix.get();
-        String val = this.packageNameMap.get(key.substring(0, key.length() - 2));
+        String val = this.packageNameMap.get(key);
+        if (val == null) {
+            val = this.packageNameMap.get(key.substring(0, key.length() - 2));
+        }
 
         if (val == null) {
             throw new RuntimeException(MessageFormat.format("包名：{0} 未找到装换映射关系", clazzName));

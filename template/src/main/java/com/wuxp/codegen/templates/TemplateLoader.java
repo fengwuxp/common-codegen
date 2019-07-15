@@ -10,6 +10,8 @@ package com.wuxp.codegen.templates;
  */
 public interface TemplateLoader<T> {
 
+    String CODE_RUNTIME_PLATFORM_KEY="codeRuntimePlatform";
+
     /**
      * 加载模板
      * @param templateName

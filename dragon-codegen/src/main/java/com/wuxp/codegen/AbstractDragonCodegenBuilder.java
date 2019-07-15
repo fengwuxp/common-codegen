@@ -12,10 +12,13 @@ import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
 import java.util.*;
 
+import static com.wuxp.codegen.templates.TemplateLoader.CODE_RUNTIME_PLATFORM_KEY;
+
 /**
  * 代码生成配置
  */
 public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
+
 
 
     protected LanguageDescription languageDescription = LanguageDescription.JAVA;
@@ -167,7 +170,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     protected Map<String, Object> getSharedVariables() {
         //全局共享变量
         Map<String, Object> sharedVariables = new HashMap<>();
-        sharedVariables.put("codeRuntimePlatform", codeRuntimePlatform.name());
+        sharedVariables.put(CODE_RUNTIME_PLATFORM_KEY, codeRuntimePlatform.name());
         return sharedVariables;
     }
 }

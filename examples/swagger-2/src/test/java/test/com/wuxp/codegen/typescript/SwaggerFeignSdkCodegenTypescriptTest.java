@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
+import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
@@ -29,6 +30,7 @@ import org.springframework.util.PathMatcher;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,7 +71,9 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         String language = LanguageDescription.TYPESCRIPT.getName();
 
         //实例化模板加载器
-        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT);
+        HashMap<String, Object> sharedVariables = new HashMap<>();
+        sharedVariables.put("codeRuntimePlatform", CodeRuntimePlatform.BROWSER);
+        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, sharedVariables);
 
 
         String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
@@ -137,6 +141,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
                 .generate();
 
     }
+
     protected PathMatcher pathMatcher=new AntPathMatcher();
 
     @Test
@@ -144,11 +149,12 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         String name = BaseController.class.getName();
         String name1 = BaseEvt.class.getName();
 
-        boolean pattern = pathMatcher.isPattern("com.wuxp.codegen.swagger2");
+        boolean pattern = pathMatcher.isPattern("com.wuxp.codegen.swagger2.**");
         boolean b = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name);
         boolean b3 = pathMatcher.match("com.wuxp.codegen.swagger2.example.controller**", name);
         String extractPathWithinPattern = pathMatcher.extractPathWithinPattern("com.wuxp.codegen.swagger2.**.controller**", name);
         Map<String, String> map = pathMatcher.extractUriTemplateVariables("com.wuxp.codegen.swagger2.**.controller**", name);
+        Comparator<String> patternComparator = pathMatcher.getPatternComparator("com.wuxp.codegen.swagger2.**.controller**");
         boolean b2 = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name1);
         Assert.assertTrue(b);
         Assert.assertFalse(b2);

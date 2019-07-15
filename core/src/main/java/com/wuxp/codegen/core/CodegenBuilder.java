@@ -9,7 +9,8 @@ import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 public interface CodegenBuilder<T> {
 
 
-    static CodegenGlobalConfig CODEGEN_GLOBAL_CONFIG = CodegenGlobalConfig.builder().build();
+    CodegenGlobalConfig CODEGEN_GLOBAL_CONFIG = CodegenGlobalConfig.builder().build();
+
 
 
     /**

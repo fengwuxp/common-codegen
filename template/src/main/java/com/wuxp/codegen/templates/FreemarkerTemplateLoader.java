@@ -45,8 +45,15 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         //支持从jar中加载模板
         configuration.setClassForTemplateLoading(this.getClass(), "/");
 
+        if (sharedVariables == null) {
+            throw new RuntimeException("sharedVariables is null");
+        }
+        if (!sharedVariables.containsKey(CODE_RUNTIME_PLATFORM_KEY)) {
+            throw new RuntimeException(String.format("sharedVariables need variable ：%s", CODE_RUNTIME_PLATFORM_KEY));
+        }
+
         try {
-            configuration.setAllSharedVariables(new MapModel(sharedVariables == null ? new HashMap() : sharedVariables, objectWrapper));
+            configuration.setAllSharedVariables(new MapModel(sharedVariables, objectWrapper));
         } catch (TemplateModelException e) {
             e.printStackTrace();
         }
