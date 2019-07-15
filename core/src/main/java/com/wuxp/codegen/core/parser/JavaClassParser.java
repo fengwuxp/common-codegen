@@ -72,8 +72,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         //超类上的类型变量
         Map<Class<?>, Class<?>[]> superTypeVariables = new LinkedHashMap<>();
 
-        List<ResolvableType> superTypes=new ArrayList<>();
-        superTypes.add( ResolvableType.forClass(source).getSuperType());
+        List<ResolvableType> superTypes = new ArrayList<>();
+        superTypes.add(ResolvableType.forClass(source).getSuperType());
         superTypes.addAll(Arrays.asList(ResolvableType.forClass(source).getInterfaces()));
 
         //超类
@@ -95,7 +95,15 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         superTypes.forEach(superType -> {
             //循环获取超类(包括接口)
             while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
+                if (Object.class.equals(superType.getType())) {
+                    //直到获取到object为止
+                    break;
+                }
+
                 Type subType = superType.getSuperType().getType();
+                if (subType == null) {
+                    break;
+                }
 
                 if (log.isDebugEnabled()) {
                     log.debug("查找类 {} 的超类", subType.getTypeName());
@@ -122,10 +130,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 superTypeVariables.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
                 superType = superType.getSuperType();
 
-                if (Object.class.equals(subType)) {
-                    //直到获取到object为止
-                    break;
-                }
+
             }
 
         });

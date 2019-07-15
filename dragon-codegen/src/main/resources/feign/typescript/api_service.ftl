@@ -1,16 +1,9 @@
-<#--import {RequestMapping} from "common_fetch/src/annotations/mapping/RequestMapping";-->
-import {PostMapping} from "common_fetch/src/annotations/mapping/PostMapping";
-import {GetMapping} from "common_fetch/src/annotations/mapping/GetMapping";
-import {DeleteMapping} from "common_fetch/src/annotations/mapping/DeleteMapping";
-import {PutMapping} from "common_fetch/src/annotations/mapping/PutMapping";
-import {PatchMapping} from "common_fetch/src/annotations/mapping/PatchMapping";
-import {FetchOptions} from "common_fetch/src/FetchOptions";
-import {Feign} from "common_fetch/src/annotations/Feign";
-import {RequestMethod} from "common_fetch/src/constant/RequestMethod";
-import {Signature} from "common_fetch/src/annotations/security/Signature";
-import {MediaType} from "common_fetch/src/constant/http/MediaType";
+<#if codeRuntimePlatform=='WE_CHAT_APPLETS'>
+    <#include "./inculdes/feign_applets_imports.ftl">
+<#else>
+    <#include "./inculdes/feign_imports.ftl">
+</#if>
 
-<#--<#import "../common/customize_method.ftl" as customize_method/>-->
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >

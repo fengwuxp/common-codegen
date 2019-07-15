@@ -5,6 +5,7 @@ import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
+import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
@@ -29,6 +30,9 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
 
     @Override
     public CodeGenerator buildCodeGenerator() {
+        if (this.codeRuntimePlatform == null) {
+            this.codeRuntimePlatform = CodeRuntimePlatform.BROWSER;
+        }
 
         this.initTypeMapping();
         //实例化语言解析器
@@ -38,7 +42,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 this.codeDetects);
 
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT);
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT,this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
@@ -46,6 +50,6 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 LanguageDescription.TYPESCRIPT.getSuffixName(),
                 this.isDeletedOutputDirectory);
 
-        return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy);
+        return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.looseMode);
     }
 }

@@ -5,6 +5,7 @@ import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
@@ -66,6 +67,17 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      */
     protected Boolean isDeletedOutputDirectory = true;
 
+    /**
+     * 是否使用宽松模式
+     */
+    protected boolean looseMode;
+
+
+    /**
+     * 运行平台
+     */
+    protected CodeRuntimePlatform codeRuntimePlatform;
+
 
     protected AbstractDragonCodegenBuilder() {
     }
@@ -120,6 +132,16 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractDragonCodegenBuilder looseMode(boolean looseMode) {
+        this.looseMode = looseMode;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder codeRuntimePlatform(CodeRuntimePlatform codeRuntimePlatform) {
+        this.codeRuntimePlatform = codeRuntimePlatform;
+        return this;
+    }
+
     protected void initTypeMapping() {
         //设置基础数据类型的映射关系
         baseTypeMapping.forEach(AbstractTypeMapping.BASE_TYPE_MAPPING::put);
@@ -135,5 +157,17 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
         CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);
+    }
+
+    /**
+     * 获取模板的共享变量
+     *
+     * @return
+     */
+    protected Map<String, Object> getSharedVariables() {
+        //全局共享变量
+        Map<String, Object> sharedVariables = new HashMap<>();
+        sharedVariables.put("codeRuntimePlatform", codeRuntimePlatform.name());
+        return sharedVariables;
     }
 }
