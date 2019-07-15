@@ -151,6 +151,6 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         Map<String, String> map = pathMatcher.extractUriTemplateVariables("com.wuxp.codegen.swagger2.**.controller**", name);
         boolean b2 = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name1);
         Assert.assertTrue(b);
-        Assert.assertTrue(b2);
+        Assert.assertFalse(b2);
     }
 }
