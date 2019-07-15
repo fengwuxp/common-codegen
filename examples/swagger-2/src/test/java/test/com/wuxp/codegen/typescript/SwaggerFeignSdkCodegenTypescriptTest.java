@@ -13,14 +13,19 @@ import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
 import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
+import com.wuxp.codegen.swagger2.example.controller.BaseController;
+import com.wuxp.codegen.swagger2.example.evt.BaseEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -106,15 +111,20 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
+//        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
+        packageMap.put("com.wuxp.codegen.swagger2.**.controller", "services");
+        packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
+        packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
+        packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
+        packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
         //其他类（DTO、VO等）所在的包
-        packageMap.put("com.wuxp.codegen.swagger2.example", "");
+//        packageMap.put("com.wuxp.codegen.swagger2.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
         String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
 
         //要进行生成的源代码包名列表
-        String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
+        String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
 
         Swagger2FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
@@ -126,5 +136,21 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
                 .buildCodeGenerator()
                 .generate();
 
+    }
+    protected PathMatcher pathMatcher=new AntPathMatcher();
+
+    @Test
+    public void testAntPathMatcher(){
+        String name = BaseController.class.getName();
+        String name1 = BaseEvt.class.getName();
+
+        boolean pattern = pathMatcher.isPattern("com.wuxp.codegen.swagger2");
+        boolean b = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name);
+        boolean b3 = pathMatcher.match("com.wuxp.codegen.swagger2.example.controller**", name);
+        String extractPathWithinPattern = pathMatcher.extractPathWithinPattern("com.wuxp.codegen.swagger2.**.controller**", name);
+        Map<String, String> map = pathMatcher.extractUriTemplateVariables("com.wuxp.codegen.swagger2.**.controller**", name);
+        boolean b2 = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name1);
+        Assert.assertTrue(b);
+        Assert.assertTrue(b2);
     }
 }
