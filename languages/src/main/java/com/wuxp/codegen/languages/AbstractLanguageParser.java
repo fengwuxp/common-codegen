@@ -671,6 +671,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
                 .filter(javaMethodMeta -> this.genMatchingStrategy.isMatchMethod(javaMethodMeta))
                 .map(methodMeta -> this.converterMethod(methodMeta, classMeta, codeGenClassMeta))
+                .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
 

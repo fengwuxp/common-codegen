@@ -6,15 +6,19 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractTypescriptParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -24,8 +28,6 @@ import java.util.*;
  */
 @Slf4j
 public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
-
-
 
 
     public Swagger2FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
@@ -54,6 +56,30 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
         }
     }
 
+
+    @Override
+    protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, TypescriptClassMeta codeGenClassMeta) {
+
+        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
+            return null;
+        }
+
+        if (!javaMethodMeta.existAnnotation(
+                RequestMapping.class,
+                PostMapping.class,
+                GetMapping.class,
+                PutMapping.class,
+                PatchMapping.class
+        )) {
+            return null;
+        }
+
+        if (javaMethodMeta.existAnnotation(ApiIgnore.class)) {
+            return null;
+        }
+
+        return super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
+    }
 
     @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
