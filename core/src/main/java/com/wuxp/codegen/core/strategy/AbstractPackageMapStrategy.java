@@ -41,11 +41,23 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
                 .stream()
 //                .filter(clazzName::startsWith)
                 .map(pattern -> {
+
+                    if (!this.pathMatcher.isPattern(pattern)) {
+                        return pattern;
+                    }
+
                     if (pattern.endsWith("**")) {
                         return pattern;
                     }
                     return MessageFormat.format("{0}**", pattern);
-                }).filter(pattern -> this.pathMatcher.match(pattern, clazzName))
+                }).filter(pattern -> {
+                    if (!this.pathMatcher.isPattern(pattern)) {
+                        return clazzName.startsWith(pattern);
+                    } else {
+                        return this.pathMatcher.match(pattern, clazzName);
+                    }
+
+                })
                 .findFirst();
         //没有找到可以替换的前缀
         if (!packageNamePrefix.isPresent()) {
@@ -62,12 +74,29 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         if (val == null) {
             throw new RuntimeException(MessageFormat.format("包名：{0} 未找到装换映射关系", clazzName));
         }
+
         if (!StringUtils.hasText(val)) {
 
         }
 
+        if (this.pathMatcher.isPattern(key)) {
 
-        return clazzName.replace(packageNames, val);
+            //TODO 支持 {0}a{2}模式
+
+            //转换为正则表达式
+            String[] strings = key.split("\\*\\*");
+            String s = clazzName.replaceAll(strings[0], "");
+            s = s.substring(0, s.indexOf(strings[1]));
+            if (val.contains("{0}")) {
+                val = MessageFormat.format(val, s + ".");
+            }
+            return clazzName.replace(packageNames, val);
+        } else {
+
+            return clazzName.replace(key, val);
+        }
+
+
     }
 
     @Override
