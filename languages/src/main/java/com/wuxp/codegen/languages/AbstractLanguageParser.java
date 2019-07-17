@@ -80,7 +80,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * java类的解析器
      * 默认解析所有的属性 方法
      */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false,true);
 
     /**
      * 语言元数据对象的工厂
@@ -265,7 +265,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         Class<?> javaClassSuperClass = javaClassMeta.getSuperClass();
-        if (!Object.class.equals(javaClassSuperClass)){
+        if (!Object.class.equals(javaClassSuperClass)) {
             //不是object
             C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
             if (javaClassSuperClass != null && commonCodeGenClassMeta == null) {
@@ -275,7 +275,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
             meta.setSuperClass(commonCodeGenClassMeta);
         }
-
 
 
         //类上的注释
@@ -667,13 +666,27 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (javaMethodMetas == null) {
             return Collections.EMPTY_LIST;
         }
-        return Arrays.stream(javaMethodMetas)
+        List<M> collect = Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
                 .filter(javaMethodMeta -> this.genMatchingStrategy.isMatchMethod(javaMethodMeta))
                 .map(methodMeta -> this.converterMethod(methodMeta, classMeta, codeGenClassMeta))
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
+
+        //判断是否存在方法名称是否相同
+        collect.forEach(m -> {
+            M m2 = collect.stream().filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m)).findFirst().orElse(null);
+            if (m2 != null) {
+                //重写方法名称
+                m2.setName(MessageFormat.format("override_{0}", m2.getName()));
+            }
+
+
+
+        });
+
+        return collect;
 
 
     }

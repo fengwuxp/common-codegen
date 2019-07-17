@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,6 +57,10 @@ public class JavaBaseMeta extends CommonBaseMeta {
     }
 
     private <T extends Annotation> Stream<T> findAnnotation(Class<T> clazz) {
+
+        if (this.annotations == null) {
+            return Collections.EMPTY_LIST.stream();
+        }
 
         return Arrays.stream(this.annotations)
                 .filter(a -> a.annotationType().equals(clazz))

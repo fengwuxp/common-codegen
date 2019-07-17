@@ -6,6 +6,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
+import com.wuxp.codegen.swagger2.example.controller.OrderController;
 import com.wuxp.codegen.swagger2.example.domain.Order;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
@@ -66,7 +67,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
     @Test
     public void testJavaParser(){
 
-        JavaClassMeta parse = new JavaClassParser(false).parse(Order.class);
+        JavaClassMeta parse = new JavaClassParser(false,false).parse(OrderController.class);
 
         log.debug("{}",parse);
     }

@@ -7,16 +7,20 @@ import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -40,8 +44,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     protected boolean onlyPublic;
 
+    //抓取超类的方法
+    protected boolean fetchSupperClazzMethod;
+
     public JavaClassParser(boolean onlyPublic) {
         this.onlyPublic = onlyPublic;
+    }
+
+    public JavaClassParser(boolean onlyPublic, boolean fetchSupperClazzMethod) {
+        this.onlyPublic = onlyPublic;
+        this.fetchSupperClazzMethod = fetchSupperClazzMethod;
     }
 
     @Override
@@ -70,7 +82,52 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         int modifiers = source.getModifiers();
 
         //超类上的类型变量
+        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariablesDesc = getSuperTypeVariables(source);
+
+        //获取类上的泛型变量
+        TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
+
+        getAssessPermission(modifiers, classMeta);
+
         Map<Class<?>, Class<?>[]> superTypeVariables = new LinkedHashMap<>();
+        superTypeVariablesDesc.forEach((key, val) -> {
+            superTypeVariables.put(key, Arrays.stream(val)
+                    .map(ClassGenericVariableDesc::getType)
+                    .toArray(Class[]::new));
+        });
+
+
+        classMeta.setClassName(source.getName())
+                .setClazz(source)
+                .setIsAbstract(Modifier.isAbstract(modifiers))
+                .setSuperTypeVariables(superTypeVariables)
+                .setMethodMetas(this.getMethods(source, null, onlyPublic, this.fetchSupperClazzMethod))
+                .setFieldMetas(this.getFields(source, onlyPublic))
+                .setInterfaces(source.getInterfaces())
+                .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
+                .setSuperClass(source.getSuperclass())
+                .setAnnotations(source.getAnnotations())
+                .setTypeVariables(typeParameters)
+                .setTypeVariableNum(typeParameters.length)
+                .setName(source.getSimpleName());
+
+        PARSER_CACHE.put(source, classMeta);
+
+        return classMeta;
+    }
+
+    /**
+     * 获取超类上的泛型变量
+     *
+     * @param source
+     * @return
+     */
+    private Map<Class<?>, ClassGenericVariableDesc[]> getSuperTypeVariables(Class<?> source) {
+        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariables = new LinkedHashMap<>();
+
+        if (source == null) {
+            return superTypeVariables;
+        }
 
         List<ResolvableType> superTypes = new ArrayList<>();
         superTypes.add(ResolvableType.forClass(source).getSuperType());
@@ -109,54 +166,46 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                     log.debug("查找类 {} 的超类", subType.getTypeName());
                 }
 
+                //超类上的泛型变量名称
+                Class<?> superTypeRawClass = superType.getRawClass();
+                List<String> typeNames = new ArrayList<>();
+                if (superTypeRawClass != null) {
+                    TypeVariable<? extends Class<?>>[] typeParameters = superTypeRawClass.getTypeParameters();
+                    typeNames.addAll(Arrays.stream(typeParameters).map(TypeVariable::getName).collect(Collectors.toList()));
+                }
 
+                //泛型描述
                 ResolvableType[] superTypeGenerics = superType.getGenerics();
-                List<Class<?>> list = Arrays.stream(superTypeGenerics).map((type) -> {
-                    Class<?> rawClass = type.getRawClass();
-                    if (rawClass == null) {
-                        Type typeType = type.getType();
-                        if (typeType instanceof Class) {
-                            return (Class<?>) typeType;
-                        } else {
-                            return null;
-                        }
-                    }
 
+                superTypeVariables.put(superType.getRawClass(),
+                        Arrays.stream(superTypeGenerics)
+                                .map((type) -> {
+                                    ClassGenericVariableDesc genericVariableDesc = new ClassGenericVariableDesc();
+                                    Class<?> rawClass = type.getRawClass();
 
-                    return rawClass;
-                }).filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                                    if (rawClass == null) {
+                                        Type typeType = type.getType();
+                                        if (typeType instanceof Class) {
+                                            genericVariableDesc.setType((Class<?>) typeType);
+                                            genericVariableDesc.setName(typeNames.remove(0));
+                                        } else {
+                                            return null;
+                                        }
+                                    } else {
+                                        genericVariableDesc.setType(rawClass);
+                                        genericVariableDesc.setName(typeNames.remove(0));
+                                    }
 
-                superTypeVariables.put(superType.getRawClass(), list.toArray(new Class<?>[]{}));
+                                    return genericVariableDesc;
+                                }).filter(Objects::nonNull)
+                                .toArray(ClassGenericVariableDesc[]::new));
                 superType = superType.getSuperType();
 
 
             }
 
         });
-
-        //获取类上的泛型变量
-        TypeVariable<? extends Class<?>>[] typeParameters = source.getTypeParameters();
-
-        getAssessPermission(modifiers, classMeta);
-
-        classMeta.setClassName(source.getName())
-                .setClazz(source)
-                .setIsAbstract(Modifier.isAbstract(modifiers))
-                .setSuperTypeVariables(superTypeVariables)
-                .setMethodMetas(this.getMethods(source, onlyPublic))
-                .setFieldMetas(this.getFields(source, onlyPublic))
-                .setInterfaces(source.getInterfaces())
-                .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
-                .setSuperClass(source.getSuperclass())
-                .setAnnotations(source.getAnnotations())
-                .setTypeVariables(typeParameters)
-                .setTypeVariableNum(typeParameters.length)
-                .setName(source.getSimpleName());
-
-        PARSER_CACHE.put(source, classMeta);
-
-        return classMeta;
+        return superTypeVariables;
     }
 
 
@@ -165,9 +214,10 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      *
      * @param method
      * @param owner  可以为空
+     * @param origin
      * @return
      */
-    protected JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner) {
+    protected JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner, Class<?> origin) {
 
         JavaMethodMeta methodMeta = new JavaMethodMeta();
         methodMeta.setMethod(method);
@@ -201,6 +251,20 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             return null;
         }
 
+
+        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariables = this.getSuperTypeVariables(origin);
+
+
+        TypeVariable<? extends Class<?>>[] ownerTypeParameters = owner.getTypeParameters();
+        List<String> ownerTypeParameterNames = new ArrayList<>();
+
+        if (ownerTypeParameters != null) {
+            ownerTypeParameterNames = Arrays.stream(ownerTypeParameters)
+                    .map(TypeVariable::getName)
+                    .collect(Collectors.toList());
+        }
+
+
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
             String parameterName = parameter.getName();
@@ -212,6 +276,30 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 log.error("获取方法{}的第{}个参数名称失败", method.getName(), i);
                 continue;
             }
+
+
+            String typeName = parameter.getParameterizedType().getTypeName();
+            if (ownerTypeParameterNames.contains(typeName)) {
+                //使用了泛型变量做参数类型
+                ClassGenericVariableDesc[] variableDescs = superTypeVariables.get(owner);
+                if (variableDescs == null) {
+                    continue;
+                }
+                Class<?> aClass = Arrays.stream(variableDescs)
+                        .filter(typeVariable -> typeName.endsWith(typeVariable.getName()))
+                        .map(ClassGenericVariableDesc::getType)
+                        .findFirst()
+                        .orElse(null);
+                if (aClass != null) {
+                    params.put(parameterName, new Class[]{aClass});
+                } else {
+                    throw new RuntimeException(MessageFormat.format("获取方法中泛型类型的参数失败，类：{0}，方法:{1}",
+                            owner.getName(), method.getName()));
+                }
+                continue;
+            }
+
+
             Type type = parameter.getParameterizedType();
             if (type instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -347,15 +435,28 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         return fieldMeta;
     }
 
+    private static final Class<? extends Annotation>[] SPRING_MAPPING_ANNOTATIONS = new Class[]{
+            RequestMapping.class,
+            PostMapping.class,
+            GetMapping.class,
+            DeleteMapping.class,
+            PutMapping.class,
+            PatchMapping.class,
+    };
 
     /**
      * 获取方法列表
      *
      * @param clazz
+     * @param origin
      * @param onlyPublic
+     * @param fetchSupperClazzMethod
      * @return
      */
-    protected JavaMethodMeta[] getMethods(Class<?> clazz, boolean onlyPublic) {
+    protected JavaMethodMeta[] getMethods(Class<?> clazz,
+                                          Class<?> origin,
+                                          boolean onlyPublic,
+                                          boolean fetchSupperClazzMethod) {
 
         Method[] methods = null;
         if (onlyPublic) {
@@ -369,17 +470,87 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
         for (Method method : methods) {
 
-            JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz);
+            JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz, origin);
 
             methodMetas.add(methodMeta);
 
         }
 
+        //抓取超类的方法
+        if (fetchSupperClazzMethod) {
+
+            Class<?> superclass = clazz.getSuperclass();
+            boolean isNoneSupper = superclass == null || Object.class.equals(superclass);
+            if (!isNoneSupper) {
+                methodMetas.addAll(Arrays.asList(this.getMethods(superclass, clazz, onlyPublic, fetchSupperClazzMethod)));
+            }
+        }
+
+        //加入对spring的特别处理
+        Map<String, JavaMethodMeta> javaMethodMetaMap = getStringJavaMethodMetaMap(methodMetas);
+
+        if (javaMethodMetaMap.size() > 0) {
+            return javaMethodMetaMap.values().toArray(new JavaMethodMeta[0]);
+        }
+
+
         return methodMetas.stream()
                 .filter(Objects::nonNull)
+                .distinct()
 //                .sorted(Comparator.comparing(CommonBaseMeta::getName))
                 .toArray(JavaMethodMeta[]::new);
 
+    }
+
+    private Map<String, JavaMethodMeta> getStringJavaMethodMetaMap(List<JavaMethodMeta> methodMetas) {
+        Map<String, JavaMethodMeta> javaMethodMetaMap = new LinkedHashMap<>();
+
+        //过滤路径相同的方法
+        methodMetas.stream()
+                .filter(Objects::nonNull)
+                .forEach(javaMethodMeta -> {
+            Annotation annotation = Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
+                    .map(aClass -> javaMethodMeta.getAnnotation(aClass))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+
+            if (annotation == null) {
+                return;
+            }
+            String[] value = null;
+            if (annotation.annotationType().equals(RequestMapping.class)) {
+
+                value = ((RequestMapping) annotation).value();
+            }
+            if (annotation.annotationType().equals(PostMapping.class)) {
+
+                value = ((PostMapping) annotation).value();
+            }
+            if (annotation.annotationType().equals(GetMapping.class)) {
+
+                value = ((GetMapping) annotation).value();
+            }
+            if (annotation.annotationType().equals(DeleteMapping.class)) {
+
+                value = ((DeleteMapping) annotation).value();
+            }
+
+            if (annotation.annotationType().equals(PutMapping.class)) {
+
+                value = ((PutMapping) annotation).value();
+            }
+
+            if (annotation.annotationType().equals(PatchMapping.class)) {
+
+                value = ((PatchMapping) annotation).value();
+            }
+
+            String name = value == null || value.length == 0 ? javaMethodMeta.getName() : value[0];
+            name = StringUtils.hasText(name) ? name : javaMethodMeta.getName();
+            javaMethodMetaMap.put(name, javaMethodMeta);
+        });
+        return javaMethodMetaMap;
     }
 
     /**
@@ -484,4 +655,22 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .collect(Collectors.toSet());
     }
 
+
+    /**
+     * 泛型描述
+     */
+    @Data
+    static class ClassGenericVariableDesc {
+
+        /**
+         * 泛型变量名称
+         */
+        private String name;
+
+        /**
+         * 泛型变量类型
+         */
+        private Class<?> type;
+
+    }
 }
