@@ -7,7 +7,6 @@ import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -15,7 +14,6 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
@@ -44,17 +42,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     protected boolean onlyPublic;
 
-    //抓取超类的方法
-    protected boolean fetchSupperClazzMethod;
 
     public JavaClassParser(boolean onlyPublic) {
         this.onlyPublic = onlyPublic;
     }
 
-    public JavaClassParser(boolean onlyPublic, boolean fetchSupperClazzMethod) {
-        this.onlyPublic = onlyPublic;
-        this.fetchSupperClazzMethod = fetchSupperClazzMethod;
-    }
 
     @Override
     public JavaClassMeta parse(Class<?> source) {
@@ -101,7 +93,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setClazz(source)
                 .setIsAbstract(Modifier.isAbstract(modifiers))
                 .setSuperTypeVariables(superTypeVariables)
-                .setMethodMetas(this.getMethods(source, null, onlyPublic, this.fetchSupperClazzMethod))
+                .setMethodMetas(this.getMethods(source, null, onlyPublic, false))
                 .setFieldMetas(this.getFields(source, onlyPublic))
                 .setInterfaces(source.getInterfaces())
                 .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
@@ -447,8 +439,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     /**
      * 获取方法列表
      *
-     * @param clazz
-     * @param origin
+     * @param clazz                  当前类
+     * @param origin                 源类（当前类的子类）
      * @param onlyPublic
      * @param fetchSupperClazzMethod
      * @return
@@ -457,6 +449,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                                           Class<?> origin,
                                           boolean onlyPublic,
                                           boolean fetchSupperClazzMethod) {
+
+        //判断是否为spring的控制器
+        Boolean isSpringController = Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
+                .map(aClass -> clazz.getAnnotation(aClass) != null)
+                .filter(b -> b).findFirst()
+                .orElse(false);
 
         Method[] methods = null;
         if (onlyPublic) {
@@ -477,7 +475,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         //抓取超类的方法
-        if (fetchSupperClazzMethod) {
+        if (isSpringController) {
 
             Class<?> superclass = clazz.getSuperclass();
             boolean isNoneSupper = superclass == null || Object.class.equals(superclass);
@@ -509,47 +507,47 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         methodMetas.stream()
                 .filter(Objects::nonNull)
                 .forEach(javaMethodMeta -> {
-            Annotation annotation = Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
-                    .map(aClass -> javaMethodMeta.getAnnotation(aClass))
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(null);
+                    Annotation annotation = Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
+                            .map(aClass -> javaMethodMeta.getAnnotation(aClass))
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse(null);
 
-            if (annotation == null) {
-                return;
-            }
-            String[] value = null;
-            if (annotation.annotationType().equals(RequestMapping.class)) {
+                    if (annotation == null) {
+                        return;
+                    }
+                    String[] value = null;
+                    if (annotation.annotationType().equals(RequestMapping.class)) {
 
-                value = ((RequestMapping) annotation).value();
-            }
-            if (annotation.annotationType().equals(PostMapping.class)) {
+                        value = ((RequestMapping) annotation).value();
+                    }
+                    if (annotation.annotationType().equals(PostMapping.class)) {
 
-                value = ((PostMapping) annotation).value();
-            }
-            if (annotation.annotationType().equals(GetMapping.class)) {
+                        value = ((PostMapping) annotation).value();
+                    }
+                    if (annotation.annotationType().equals(GetMapping.class)) {
 
-                value = ((GetMapping) annotation).value();
-            }
-            if (annotation.annotationType().equals(DeleteMapping.class)) {
+                        value = ((GetMapping) annotation).value();
+                    }
+                    if (annotation.annotationType().equals(DeleteMapping.class)) {
 
-                value = ((DeleteMapping) annotation).value();
-            }
+                        value = ((DeleteMapping) annotation).value();
+                    }
 
-            if (annotation.annotationType().equals(PutMapping.class)) {
+                    if (annotation.annotationType().equals(PutMapping.class)) {
 
-                value = ((PutMapping) annotation).value();
-            }
+                        value = ((PutMapping) annotation).value();
+                    }
 
-            if (annotation.annotationType().equals(PatchMapping.class)) {
+                    if (annotation.annotationType().equals(PatchMapping.class)) {
 
-                value = ((PatchMapping) annotation).value();
-            }
+                        value = ((PatchMapping) annotation).value();
+                    }
 
-            String name = value == null || value.length == 0 ? javaMethodMeta.getName() : value[0];
-            name = StringUtils.hasText(name) ? name : javaMethodMeta.getName();
-            javaMethodMetaMap.put(name, javaMethodMeta);
-        });
+                    String name = value == null || value.length == 0 ? javaMethodMeta.getName() : value[0];
+                    name = StringUtils.hasText(name) ? name : javaMethodMeta.getName();
+                    javaMethodMetaMap.put(name, javaMethodMeta);
+                });
         return javaMethodMetaMap;
     }
 

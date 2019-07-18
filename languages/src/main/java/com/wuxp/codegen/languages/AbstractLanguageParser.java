@@ -80,7 +80,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * java类的解析器
      * 默认解析所有的属性 方法
      */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false,true);
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
 
     /**
      * 语言元数据对象的工厂
