@@ -5,10 +5,19 @@ import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +40,27 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected String[] packagePaths;
 
     /**
+     * 忽略的包
+     */
+    protected Set<String> ignorePackages;
+
+    /**
+     * 额外导入的类
+     */
+    protected Class<?>[] includeClasses;
+
+    /**
+     * 需要忽略的类
+     */
+    protected Class<?>[] ignoreClasses;
+
+
+    /**
+     * 忽略的方法
+     */
+    protected Map<Class<?>/*类*/, String[]/*方法名称*/> ignoreMethods;
+
+    /**
      * 语言解析器
      */
     protected LanguageParser<CommonCodeGenClassMeta> languageParser;
@@ -42,12 +72,61 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected TemplateStrategy<CommonCodeGenClassMeta> templateStrategy;
 
 
+    protected PathMatcher pathMatcher = new AntPathMatcher();
+
+
     public AbstractCodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
+        this(packagePaths, null, null, null, null, languageParser, templateStrategy);
+    }
+
+    public AbstractCodeGenerator(String[] packagePaths,
+                                 Set<String> ignorePackages,
+                                 Class<?>[] includeClasses,
+                                 Class<?>[] ignoreClasses,
+                                 Map<Class<?>, String[]> ignoreMethods,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         this.packagePaths = packagePaths;
+        this.includeClasses = includeClasses;
+        this.ignoreMethods = ignoreMethods;
         this.languageParser = languageParser;
         this.templateStrategy = templateStrategy;
+
+        if (ignorePackages != null) {
+            //排除的包
+            this.ignorePackages = ignorePackages.stream()
+                    .filter(Objects::nonNull)
+                    .map(s -> {
+                        if (this.pathMatcher.isPattern(s)) {
+                            return s;
+                        } else {
+                            return MessageFormat.format("{0}**", s);
+                        }
+                    }).collect(Collectors.toSet());
+
+            classPathScanningCandidateComponentProvider.addExcludeFilter((metadataReader, metadataReaderFactory) -> this.ignorePackages.stream()
+                    .map(s -> this.pathMatcher.match(s, metadataReader.getClassMetadata().getClassName()))
+                    .filter(b -> b)
+                    .findFirst()
+                    .orElse(false));
+        }
+
+        if (ignoreClasses != null) {
+            //排除的的类
+            this.ignoreClasses = ignoreClasses;
+
+            classPathScanningCandidateComponentProvider.addExcludeFilter((metadataReader, metadataReaderFactory) -> Arrays.stream(this.ignoreClasses)
+                    .filter(Objects::nonNull)
+                    .map(clazz -> metadataReader.getClassMetadata().getClassName().equals(clazz.getName()))
+                    .filter(b -> b)
+                    .findFirst()
+                    .orElse(false));
+
+        }
+
+
     }
 
     @Override
@@ -67,11 +146,29 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         for (; ; ) {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
+                    .filter(Objects::nonNull)
+                    .peek(commonCodeGenClassMeta -> {
+                        //过滤忽略的掉方法
+                        if (this.ignoreMethods != null) {
+                            this.ignoreMethods.forEach((key, values) -> {
+                                if (commonCodeGenClassMeta.getSource().equals(key)) {
+                                    //过滤掉方法
+                                    CommonCodeGenMethodMeta[] commonCodeGenMethodMetas = Arrays.stream(commonCodeGenClassMeta.getMethodMetas())
+                                            .filter(commonCodeGenMethodMeta -> !Arrays.stream(values)
+                                                    .collect(Collectors.toSet())
+                                                    .contains(commonCodeGenClassMeta.getName()))
+                                            .toArray(CommonCodeGenMethodMeta[]::new);
+                                    commonCodeGenClassMeta.setMethodMetas(commonCodeGenMethodMetas);
+                                }
+                            });
+                        }
+
+                    })
                     .map(commonCodeGenClassMeta -> {
-                //模板处理，生成服务
-                this.templateStrategy.build(commonCodeGenClassMeta);
-                return commonCodeGenClassMeta.getDependencies().values();
-            }).flatMap(Collection::stream)
+                        //模板处理，生成服务
+                        this.templateStrategy.build(commonCodeGenClassMeta);
+                        return commonCodeGenClassMeta.getDependencies().values();
+                    }).flatMap(Collection::stream)
                     .filter(CommonCodeGenClassMeta::getNeedGenerate)
                     .collect(Collectors.toList());
             if (commonCodeGenClassMetas.size() == 0 || i > 100) {
@@ -103,6 +200,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     return null;
                 }).filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+
+
+        if (this.includeClasses != null) {
+            classes.addAll(Arrays.asList(this.includeClasses));
+        }
 
 
         log.debug("共扫描到{}个类文件", classes.size());

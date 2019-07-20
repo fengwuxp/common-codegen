@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.Map;
+import java.util.Set;
+
 import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
 
 
@@ -47,8 +50,27 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
 
     public Swagger2CodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
-                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy, boolean looseMode) {
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean looseMode) {
         this(packagePaths, languageParser, templateStrategy);
+        init(looseMode);
+    }
+
+
+
+    public Swagger2CodeGenerator(String[] packagePaths,
+                                 Set<String> ignorePackages,
+                                 Class<?>[] includeClasses,
+                                 Class<?>[] ignoreClasses,
+                                 Map<Class<?>, String[]> ignoreMethods,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean looseMode) {
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, ignoreMethods, languageParser, templateStrategy);
+        init(looseMode);
+    }
+
+    private void init(boolean looseMode) {
         if (looseMode) {
             classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
             classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));

@@ -42,7 +42,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 this.codeDetects);
 
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT,this.getSharedVariables());
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
@@ -50,6 +50,14 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 LanguageDescription.TYPESCRIPT.getSuffixName(),
                 this.isDeletedOutputDirectory);
 
-        return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.looseMode);
+        return new Swagger2CodeGenerator(
+                this.scanPackages,
+                this.ignorePackages,
+                this.includeClasses,
+                this.ignoreClasses,
+                this.ignoreMethods,
+                languageParser,
+                templateStrategy,
+                this.looseMode);
     }
 }

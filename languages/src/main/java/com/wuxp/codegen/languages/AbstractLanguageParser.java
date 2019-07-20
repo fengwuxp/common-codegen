@@ -683,7 +683,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
 
 
-
         });
 
         return collect;
@@ -729,8 +728,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //2.1：遍历展开参数列表
 
         final Set<F> commonCodeGenFiledMetas = new LinkedHashSet<>();
+
         //参数的元数据类型信息
         final C argsClassMeta = this.languageMetaInstanceFactory.newClassInstance();
+//        List<C> argsClassMetas = new ArrayList<>();
 
 
         effectiveParams.forEach((key, classes) -> {
@@ -739,9 +740,21 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
                 //非jdk中的复杂对象
                 C commonCodeGenClassMeta = this.parse(clazz);
-                if (commonCodeGenClassMeta != null) {
-                    BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
+                if (commonCodeGenClassMeta == null) {
+                    return;
                 }
+                if (argsClassMeta.getFiledMetas() == null) {
+                    BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
+                } else {
+                    //有多个复杂类型的参数，合并对象
+                    CommonCodeGenFiledMeta[] filedMetas = argsClassMeta.getFiledMetas();
+                    List<CommonCodeGenFiledMeta> collect = Arrays.stream(filedMetas)
+                            .collect(Collectors.toList());
+                    collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFiledMetas()));
+                    argsClassMeta.setFiledMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
+                    //TODO 合并依赖
+                }
+
             } else if (clazz.isEnum()) {
                 //枚举
                 F fieldMate = this.languageMetaInstanceFactory.newFieldInstance();

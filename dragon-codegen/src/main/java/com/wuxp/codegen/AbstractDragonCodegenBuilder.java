@@ -20,13 +20,13 @@ import static com.wuxp.codegen.templates.TemplateLoader.CODE_RUNTIME_PLATFORM_KE
 public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
-
     protected LanguageDescription languageDescription = LanguageDescription.JAVA;
 
     /**
      * 扫码生成的包名
      */
     protected String[] scanPackages;
+
 
     /**
      * 输出路径
@@ -80,6 +80,21 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      * 运行平台
      */
     protected CodeRuntimePlatform codeRuntimePlatform;
+
+    /**
+     * 额外导入的类
+     */
+    protected Class<?>[] includeClasses;
+
+    /**
+     * 需要忽略的类
+     */
+    protected Class<?>[] ignoreClasses;
+
+    /**
+     * 忽略的方法
+     */
+    protected Map<Class<?>/*类名*/, String[]/*方法名称*/> ignoreMethods;
 
 
     protected AbstractDragonCodegenBuilder() {
@@ -142,6 +157,22 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder codeRuntimePlatform(CodeRuntimePlatform codeRuntimePlatform) {
         this.codeRuntimePlatform = codeRuntimePlatform;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder includeClasses(Class<?>[] includeClasses) {
+        this.includeClasses = includeClasses;
+        return this;
+    }
+
+
+    public AbstractDragonCodegenBuilder ignoreClasses(Class<?>[] ignoreClasses) {
+        this.ignoreClasses = ignoreClasses;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder ignoreMethods(Map<Class<?>/*类名*/, String[]/*方法名称*/> ignoreMethods) {
+        this.ignoreMethods = ignoreMethods;
         return this;
     }
 
