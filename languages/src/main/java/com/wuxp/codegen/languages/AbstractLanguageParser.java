@@ -302,7 +302,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             } else {
                 // 普通的java bean DTO  生成属性列表
                 meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
-                        .toArray(new CommonCodeGenFiledMeta[]{}));
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .toArray(CommonCodeGenFiledMeta[]::new));
             }
         }
 

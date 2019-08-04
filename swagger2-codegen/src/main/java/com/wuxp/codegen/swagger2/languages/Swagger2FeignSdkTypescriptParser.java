@@ -37,9 +37,6 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
     }
 
 
-
-
-
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
         if (javaFieldMeta == null) {
@@ -58,7 +55,6 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
             } else {
                 fieldMeta.setRequired(apiParam.required());
             }
-
         }
     }
 
@@ -131,6 +127,7 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
                                 //是否必填
                                 typescriptFieldMate.setRequired(typescriptFieldMate.getRequired() || apiImplicitParam.required());
+
                             });
                 });
     }
