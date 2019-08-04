@@ -16,6 +16,6 @@ public final class TypescriptFieldMate extends CommonCodeGenFiledMeta {
     /**
      * 是否必须
      */
-    private Boolean required;
+    private Boolean required = false;
 
 }
