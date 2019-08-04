@@ -62,11 +62,10 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  Set<String> ignorePackages,
                                  Class<?>[] includeClasses,
                                  Class<?>[] ignoreClasses,
-                                 Map<Class<?>, String[]> ignoreMethods,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean looseMode) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, ignoreMethods, languageParser, templateStrategy);
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy);
         init(looseMode);
     }
 

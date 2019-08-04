@@ -18,6 +18,11 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
      */
     public static final List<String> IGNORE_PACKAGE_LIST = new ArrayList<>();
 
+    /**
+     * 需要导入的包
+     */
+    public static final List<String> INCLUDE_PACKAGE_LIST = new ArrayList<>();
+
 
     static {
         IGNORE_PACKAGE_LIST.add("org.springframework");
@@ -37,12 +42,20 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("com.alipay.");
         IGNORE_PACKAGE_LIST.add("com.baidu.");
         IGNORE_PACKAGE_LIST.add("com.github.");
+
+        //文件上传
+        INCLUDE_PACKAGE_LIST.add("org.springframework.web.multipart.commons.CommonsMultipartFile");
     }
 
     @Override
     public boolean match(Class<?> clazz) {
         if (clazz == null) {
             return false;
+        }
+
+        boolean anyMatch = INCLUDE_PACKAGE_LIST.stream().anyMatch(name -> (clazz.getName().startsWith(name) || clazz.getName().equals(name)));
+        if (anyMatch) {
+            return true;
         }
 
         //不在忽略列表里面则返回true

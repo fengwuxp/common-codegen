@@ -22,6 +22,7 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
+import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
@@ -147,18 +148,28 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(PatchMapping.class, mappingProcessor);
     }
 
-
     public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
                                   PackageMapStrategy packageMapStrategy,
                                   CodeGenMatchingStrategy genMatchingStrategy,
                                   Collection<CodeDetect> codeDetects) {
+        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, null);
+    }
+
+
+    public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
+                                  PackageMapStrategy packageMapStrategy,
+                                  CodeGenMatchingStrategy genMatchingStrategy,
+                                  Collection<CodeDetect> codeDetects,
+                                  Collection<CodeGenMatcher> includeCodeGenMatchers) {
         this.languageMetaInstanceFactory = languageMetaInstanceFactory;
         this.packageMapStrategy = packageMapStrategy;
         this.genMatchingStrategy = genMatchingStrategy;
         if (codeDetects != null) {
             this.codeDetects = codeDetects;
         }
-
+        if (includeCodeGenMatchers != null) {
+            this.codeGenMatchers.addAll(includeCodeGenMatchers);
+        }
     }
 
 
@@ -167,7 +178,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                   PackageMapStrategy packageMapStrategy,
                                   CodeGenMatchingStrategy genMatchingStrategy,
                                   Collection<CodeDetect> codeDetects) {
-        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);
+        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, null);
         if (javaParser != null) {
             this.javaParser = javaParser;
         }
@@ -184,6 +195,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return results.get(0);
             }
         }
+
 
         if (!this.isMatchGenCodeRule(source) ||
                 JavaTypeUtil.isMap(source) ||
@@ -363,6 +375,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     @Override
     public LanguageMetaInstanceFactory getLanguageMetaInstanceFactory() {
         return this.languageMetaInstanceFactory;
+    }
+
+    @Override
+    public void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers) {
+        this.codeGenMatchers.addAll(Arrays.asList(codeGenMatchers));
     }
 
     /**
@@ -737,6 +754,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         effectiveParams.forEach((key, classes) -> {
 
             Class<?> clazz = classes[0];
+
             if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
                 //非jdk中的复杂对象
                 C commonCodeGenClassMeta = this.parse(clazz);
@@ -754,6 +772,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     argsClassMeta.setFiledMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
                     //TODO 合并依赖
                 }
+
 
             } else if (clazz.isEnum()) {
                 //枚举
@@ -775,6 +794,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     otherDependencies.addAll(Arrays.asList(classes));
                 } else if (JavaTypeUtil.isJavaBaseType(clazz)) {
                     //简单数据类型
+                } else if (JavaTypeUtil.isFileUploadObject(clazz)) {
+                    //文件上传对象
+
                 } else {
                     log.warn("未处理的类型{}", clazz.getName());
                 }
@@ -787,11 +809,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 //注释
                 Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
 
-                //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
-//                    Arrays.stream(annotations).macth(annotation -> {
-//                        annotation.annotationType().equals(Reque)
-//                        return true;
-//                    })
+
                 JavaFieldMeta javaFieldMeta = new JavaFieldMeta();
                 javaFieldMeta.setTypes(classes)
                         .setIsTransient(false)
@@ -799,11 +817,35 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 javaFieldMeta.setAccessPermission(AccessPermission.PUBLIC);
                 javaFieldMeta.setAnnotations(annotations);
                 javaFieldMeta.setName(key);
+
+
                 F commonCodeGenFiledMeta = this.converterField(javaFieldMeta, classMeta);
 
-                if (commonCodeGenFiledMeta != null) {
-                    this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
-                    commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
+                if (commonCodeGenFiledMeta == null) {
+                    return;
+                }
+
+                this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
+                commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
+                if (annotations == null) {
+                    return;
+                }
+
+                //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
+                RequestParam requestParam = Arrays.stream(annotations)
+                        .filter(annotation -> annotation.annotationType().equals(RequestParam.class))
+                        .map(annotation -> (RequestParam) annotation)
+                        .findFirst()
+                        .orElse(null);
+                if (requestParam == null) {
+                    return;
+                }
+                commonCodeGenFiledMeta.setName(requestParam.name());
+                if (commonCodeGenFiledMeta instanceof TypescriptFieldMate) {
+                    TypescriptFieldMate codeGenFiledMeta = (TypescriptFieldMate) commonCodeGenFiledMeta;
+                    if (!Boolean.TRUE.equals(codeGenFiledMeta.getRequired())) {
+                        codeGenFiledMeta.setRequired(requestParam.required());
+                    }
                 }
             }
 

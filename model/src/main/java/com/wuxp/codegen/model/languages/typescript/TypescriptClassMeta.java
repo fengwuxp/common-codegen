@@ -58,6 +58,10 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     //type variable 类型变量
     public final static TypescriptClassMeta TYPE_VARIABLE = new TypescriptClassMeta("T", "T", ClassType.CLASS, false, OBJECT);
 
+
+    //web file
+    public final static TypescriptClassMeta BROWSER_FILE = new TypescriptClassMeta("File", null, ClassType.CLASS, false, OBJECT);
+
     public TypescriptClassMeta() {
     }
 

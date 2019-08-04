@@ -3,6 +3,7 @@ package com.wuxp.codegen.model.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.*;
 
@@ -201,6 +202,10 @@ public final class JavaTypeUtil {
             return false;
         }
 
+        if (isFileUploadObject(clazz)){
+            return false;
+        }
+
 
         boolean isSimple = JavaTypeUtil.isJavaBaseType(clazz) ||
                 JavaTypeUtil.isString(clazz) ||
@@ -259,6 +264,16 @@ public final class JavaTypeUtil {
     public static boolean isAssignableFrom(Class<?> clazz, Class<?> superClazz) {
 
         return superClazz.isAssignableFrom(clazz);
+    }
+
+    /**
+     * 是否为文件上传对象
+     * @param clazz
+     * @return
+     */
+    public static boolean isFileUploadObject(Class<?> clazz){
+
+        return CommonsMultipartFile.class.equals(clazz);
     }
 
 

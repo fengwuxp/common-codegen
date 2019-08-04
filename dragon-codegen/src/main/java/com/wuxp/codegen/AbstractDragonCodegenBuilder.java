@@ -3,6 +3,7 @@ package com.wuxp.codegen;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
@@ -188,6 +189,8 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
         PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
+
+
 
 
         CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);

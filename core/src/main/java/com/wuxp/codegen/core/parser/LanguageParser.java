@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.parser;
 
 
+import com.wuxp.codegen.core.CodeGenMatcher;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
@@ -13,7 +14,14 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 public interface LanguageParser<C extends CommonCodeGenClassMeta> extends GenericParser<C, Class<?>> {
 
 
-    <M extends CommonCodeGenMethodMeta,F extends CommonCodeGenFiledMeta> LanguageMetaInstanceFactory<C,M,F> getLanguageMetaInstanceFactory();
+    <M extends CommonCodeGenMethodMeta, F extends CommonCodeGenFiledMeta> LanguageMetaInstanceFactory<C, M, F> getLanguageMetaInstanceFactory();
+
+
+    /**
+     * 添加匹配器
+     * @param codeGenMatchers
+     */
+    void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers);
 
     /**
      * 语言类型的实例工厂
@@ -42,6 +50,8 @@ public interface LanguageParser<C extends CommonCodeGenClassMeta> extends Generi
         }
 
     }
+
+
 }
 
 

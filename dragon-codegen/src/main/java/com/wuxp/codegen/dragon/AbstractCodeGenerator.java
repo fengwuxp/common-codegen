@@ -55,10 +55,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected Class<?>[] ignoreClasses;
 
 
-    /**
-     * 忽略的方法
-     */
-    protected Map<Class<?>/*类*/, String[]/*方法名称*/> ignoreMethods;
 
     /**
      * 语言解析器
@@ -78,19 +74,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     public AbstractCodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
-        this(packagePaths, null, null, null, null, languageParser, templateStrategy);
+        this(packagePaths, null, null, null, languageParser, templateStrategy);
     }
 
     public AbstractCodeGenerator(String[] packagePaths,
                                  Set<String> ignorePackages,
                                  Class<?>[] includeClasses,
                                  Class<?>[] ignoreClasses,
-                                 Map<Class<?>, String[]> ignoreMethods,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
         this.packagePaths = packagePaths;
         this.includeClasses = includeClasses;
-        this.ignoreMethods = ignoreMethods;
         this.languageParser = languageParser;
         this.templateStrategy = templateStrategy;
 
@@ -147,23 +141,23 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
-                    .peek(commonCodeGenClassMeta -> {
-                        //过滤忽略的掉方法
-                        if (this.ignoreMethods != null) {
-                            this.ignoreMethods.forEach((key, values) -> {
-                                if (commonCodeGenClassMeta.getSource().equals(key)) {
-                                    //过滤掉方法
-                                    CommonCodeGenMethodMeta[] commonCodeGenMethodMetas = Arrays.stream(commonCodeGenClassMeta.getMethodMetas())
-                                            .filter(commonCodeGenMethodMeta -> !Arrays.stream(values)
-                                                    .collect(Collectors.toSet())
-                                                    .contains(commonCodeGenClassMeta.getName()))
-                                            .toArray(CommonCodeGenMethodMeta[]::new);
-                                    commonCodeGenClassMeta.setMethodMetas(commonCodeGenMethodMetas);
-                                }
-                            });
-                        }
-
-                    })
+//                    .peek(commonCodeGenClassMeta -> {
+//                        //过滤忽略的掉方法
+//                        if (this.ignoreMethods != null) {
+//                            this.ignoreMethods.forEach((key, values) -> {
+//                                if (commonCodeGenClassMeta.getSource().equals(key)) {
+//                                    //过滤掉方法
+//                                    CommonCodeGenMethodMeta[] commonCodeGenMethodMetas = Arrays.stream(commonCodeGenClassMeta.getMethodMetas())
+//                                            .filter(commonCodeGenMethodMeta -> !Arrays.stream(values)
+//                                                    .collect(Collectors.toSet())
+//                                                    .contains(commonCodeGenClassMeta.getName()))
+//                                            .toArray(CommonCodeGenMethodMeta[]::new);
+//                                    commonCodeGenClassMeta.setMethodMetas(commonCodeGenMethodMetas);
+//                                }
+//                            });
+//                        }
+//
+//                    })
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         this.templateStrategy.build(commonCodeGenClassMeta);

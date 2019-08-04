@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.*;
 
@@ -72,8 +73,15 @@ public class UserController {
     @ApiOperation(value = "sample", notes = "sample")
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
     @RequestMapping(value = "sample", method = RequestMethod.GET)
-    public Map<String,User> sampleMap(Long[] ids, String name) {
+    public Map<String, User> sampleMap(Long[] ids, String name) {
         return null;
+    }
+
+    @ApiOperation(value = "文件上传", notes = "uploadFile")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "CommonsMultipartFile")
+    @RequestMapping(value = "uploadFile", method = RequestMethod.POST)
+    public void uploadFile(@RequestParam(name = "file") CommonsMultipartFile commonsMultipartFile) {
+
     }
 
 }

@@ -30,7 +30,7 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         //实例化语言解析器
         LanguageParser languageParser = new Swagger2FeignSdkJavaParser(
                 packageMapStrategy,
-                new Swagger2FeignSdkGenMatchingStrategy(),
+                new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects);
 
 

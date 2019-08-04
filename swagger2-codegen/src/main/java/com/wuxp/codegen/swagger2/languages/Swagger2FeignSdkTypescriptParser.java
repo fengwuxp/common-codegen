@@ -30,9 +30,15 @@ import java.util.*;
 public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
 
-    public Swagger2FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy, CodeGenMatchingStrategy genMatchingStrategy, Collection<CodeDetect> codeDetects) {
+    public Swagger2FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy,
+                                            CodeGenMatchingStrategy genMatchingStrategy,
+                                            Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, genMatchingStrategy, codeDetects);
     }
+
+
+
+
 
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {

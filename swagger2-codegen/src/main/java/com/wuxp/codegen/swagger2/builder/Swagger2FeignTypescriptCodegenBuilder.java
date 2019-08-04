@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
@@ -14,6 +15,8 @@ import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
 
 @Slf4j
 public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegenBuilder {
@@ -38,8 +41,10 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         //实例化语言解析器
         LanguageParser languageParser = new Swagger2FeignSdkTypescriptParser(
                 packageMapStrategy,
-                new Swagger2FeignSdkGenMatchingStrategy(),
+                new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects);
+
+        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, this.getSharedVariables());
@@ -55,7 +60,6 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 this.ignorePackages,
                 this.includeClasses,
                 this.ignoreClasses,
-                this.ignoreMethods,
                 languageParser,
                 templateStrategy,
                 this.looseMode);
