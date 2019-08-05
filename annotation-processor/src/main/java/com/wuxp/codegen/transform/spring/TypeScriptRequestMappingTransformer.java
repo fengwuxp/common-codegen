@@ -41,7 +41,8 @@ public class TypeScriptRequestMappingTransformer implements
         METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, "PutMapping");
         METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, "PatchMapping");
 
-        MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.FORM_DATA");
+        MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.MULTIPART_FORM_DATA");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, "MediaType.FORM_DATA");
         MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.JSON");
         MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_UTF8_VALUE, "MediaType.JSON_UTF8");
 
