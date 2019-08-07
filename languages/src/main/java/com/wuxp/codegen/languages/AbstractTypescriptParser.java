@@ -20,6 +20,7 @@ import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -143,6 +144,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
 
                 Method method = (Method) annotationOwner;
+
+                //方法归属的类
+//                Class<?> declaringClass = method.getDeclaringClass();
+//                boolean hasRequestBodyAnnotation = declaringClass.isAnnotationPresent(RestController.class);
+
                 //判断方法参数是否有RequestBody注解
                 List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
                         .filter(Objects::nonNull)
