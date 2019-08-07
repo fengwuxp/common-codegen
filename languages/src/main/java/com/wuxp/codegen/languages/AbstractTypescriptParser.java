@@ -9,6 +9,8 @@ import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
+import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -136,38 +138,40 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         if (annotationOwner instanceof Class) {
 
         }
-//        if (annotationOwner instanceof Method) {
-//            //spring的mapping注解
-//            if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
-//
-//                Method method = (Method) annotationOwner;
-//                //判断方法参数是否有RequestBody注解
-//                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
-//                        .filter(Objects::nonNull)
-//                        .filter(annotations -> annotations.length > 0)
-//                        .map(Arrays::asList)
-//                        .flatMap(Collection::stream)
-//                        .collect(Collectors.toList());
-//                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
-//
-//                if (!hasRequestBodyAnnotation) {
-//                    //如果没有则认为是已表单的方式提交的参数
-//                    //是spring的Mapping注解
-//                    String produces = codeGenAnnotation.getNamedArguments().get("produces");
-//                    if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(produces)) {
-//                        produces = "[MediaType.FORM_DATA]";
-//                    } else if (MediaType.MULTIPART_FORM_DATA_VALUE.equals(produces)) {
-//                        produces = "[MediaType.MULTIPART_FORM_DATA]";
-//                    } else {
-//                        //TODO
-//                    }
+        if (annotationOwner instanceof Method) {
+            //spring的mapping注解
+            if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
+
+                Method method = (Method) annotationOwner;
+                //判断方法参数是否有RequestBody注解
+                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
+                        .filter(Objects::nonNull)
+                        .filter(annotations -> annotations.length > 0)
+                        .map(Arrays::asList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
+
+                if (!hasRequestBodyAnnotation) {
+                    //如果没有则认为是已表单的方式提交的参数
+                    //是spring的Mapping注解
+                    String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
+                    if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(produces)) {
+                        produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+                    } else if (MediaType.MULTIPART_FORM_DATA_VALUE.equals(produces)) {
+                        produces = TypescriptFeignMediaTypeConstant.MULTIPART_FORM_DATA;
+                    } else {
+                        //默认使用表单提交
+                        produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+                    }
 //                    if (produces != null) {
 //                        codeGenAnnotation.getNamedArguments().put("produces", produces);
 //                    }
-//
-//                }
-//            }
-//        }
+                    codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
+
+                }
+            }
+        }
     }
 
 
