@@ -116,7 +116,7 @@ public class TypeScriptRequestMappingTransformer implements
             }
 
             //是否已经包装了 "[]"
-            boolean isWrapperJsonArray = _mediaType.startsWith("[") && mediaType.endsWith("]");
+            boolean isWrapperJsonArray = _mediaType.startsWith("[") && _mediaType.endsWith("]");
             if (!isWrapperJsonArray) {
                 _mediaType = "[" + _mediaType + "]";
             }
