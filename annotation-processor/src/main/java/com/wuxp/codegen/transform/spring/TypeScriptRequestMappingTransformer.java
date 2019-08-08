@@ -114,7 +114,13 @@ public class TypeScriptRequestMappingTransformer implements
             if (_mediaType == null) {
                 throw new RuntimeException("unsupported media type：" + mediaType);
             }
-            _mediaType = "[" + _mediaType + "]";
+
+            //是否已经包装了 "[]"
+            boolean isWrapperJsonArray = _mediaType.startsWith("[") && mediaType.endsWith("]");
+            if (!isWrapperJsonArray) {
+                _mediaType = "[" + _mediaType + "]";
+            }
+
             arguments.put(entry.getKey(), _mediaType);
         }
 
