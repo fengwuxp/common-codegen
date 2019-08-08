@@ -19,6 +19,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -158,24 +159,33 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         .collect(Collectors.toList());
                 boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
 
-                if (!hasRequestBodyAnnotation) {
-                    //如果没有则认为是已表单的方式提交的参数
-                    //是spring的Mapping注解
-                    String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
-                    if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(produces)) {
-                        produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
-                    } else if (MediaType.MULTIPART_FORM_DATA_VALUE.equals(produces)) {
-                        produces = TypescriptFeignMediaTypeConstant.MULTIPART_FORM_DATA;
-                    } else {
-                        //默认使用表单提交
-                        produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
-                    }
-//                    if (produces != null) {
-//                        codeGenAnnotation.getNamedArguments().put("produces", produces);
-//                    }
-                    codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
+                String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
 
+                if (StringUtils.hasText(produces)) {
+                    return;
+                }else {
+                    codeGenAnnotation.getNamedArguments().remove(MappingAnnotationPropNameConstant.PRODUCES);
                 }
+                boolean enableDefaultProduces = true;
+
+                if (!enableDefaultProduces) {
+                    return;
+                }
+
+
+                if (hasRequestBodyAnnotation) {
+//                    produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
+                } else {
+                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
+                    //是spring的Mapping注解
+                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+                }
+
+                if (!StringUtils.hasText(produces)) {
+                    return;
+                }
+
+                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
             }
         }
     }
