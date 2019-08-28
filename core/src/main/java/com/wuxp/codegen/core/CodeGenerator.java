@@ -4,7 +4,7 @@ package com.wuxp.codegen.core;
 /**
  * code generator
  */
-@FunctionalInterface
+//@FunctionalInterface
 public interface CodeGenerator {
 
     /**

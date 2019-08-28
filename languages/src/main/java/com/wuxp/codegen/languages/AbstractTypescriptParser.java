@@ -28,10 +28,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.text.MessageFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -90,22 +88,39 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 .findAny()
                 .orElse(null);
 
-        Class<?>[] newTypes = Arrays.stream(returnTypes)
-                .toArray(Class[]::new);
+        List<Class<?>> newTypes = new ArrayList<>(Arrays.stream(returnTypes).collect(Collectors.toList()));
+//        Class<?>[] newTypes = (Class<?>[]) collect;
 
+        //处理map 类型的对象
         if (mapClazz != null) {
-            for (int i = 0; i < newTypes.length; i++) {
-                if (newTypes[i].equals(mapClazz)) {
+            int length = newTypes.size();
+            for (int i = 0; i < length; i++) {
+                if (newTypes.get(i).equals(mapClazz)) {
                     int i1 = i + 1;
-                    Class<?> keyClazz = newTypes[i1];
+                    if (i1 >= length) {
+                        //没有设置 Map 的key value的泛型
+                        log.warn(MessageFormat.format("处理类：{0}上的方法：{1},发现非预期的情况", classMeta.getClassName(), javaMethodMeta.getName()));
+                        newTypes.add(Object.class);
+                        newTypes.add(Object.class);
+                    }
+                    Class<?> keyClazz = newTypes.get(i1);
                     if (!JavaTypeUtil.isJavaBaseType(keyClazz)) {
-                        newTypes[i1] = Object.class;
+                        newTypes.set(i1, Object.class);
                     }
                     break;
                 }
             }
         }
-        List<TypescriptClassMeta> mapping = this.typeMapping.mapping(newTypes);
+        Class[] newReturnTypes = newTypes.toArray(new Class[0]);
+        List<TypescriptClassMeta> mapping = this.typeMapping.mapping(newReturnTypes);
+        if (newTypes.size() > returnTypes.length) {
+            //返回值类型列表发生变化，重新计算返回值类型
+            returnTypes = newReturnTypes;
+            javaMethodMeta.setReturnType(newReturnTypes);
+            mapping = this.typeMapping.mapping(newReturnTypes);
+            commonCodeGenMethodMeta.setReturnTypes(mapping.toArray(new CommonCodeGenClassMeta[0]));
+        }
+
 
         if (!mapping.contains(TypescriptClassMeta.PROMISE)) {
             mapping.add(0, TypescriptClassMeta.PROMISE);
@@ -163,7 +178,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
                 if (StringUtils.hasText(produces)) {
                     return;
-                }else {
+                } else {
                     codeGenAnnotation.getNamedArguments().remove(MappingAnnotationPropNameConstant.PRODUCES);
                 }
                 boolean enableDefaultProduces = true;
