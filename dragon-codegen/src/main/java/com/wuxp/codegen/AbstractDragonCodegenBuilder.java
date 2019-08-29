@@ -74,7 +74,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     /**
      * 是否使用宽松模式
      */
-    protected boolean looseMode;
+    protected boolean looseMode = false;
+
+    /**
+     * 启用下划线风格，将字段的驼峰名转换为下线命名风格
+     */
+    protected boolean enableFieldUnderlineStyle = false;
 
 
     /**
@@ -156,6 +161,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractDragonCodegenBuilder enableFieldUnderlineStyle(boolean enableFieldUnderlineStyle) {
+        this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
+        return this;
+    }
+
     public AbstractDragonCodegenBuilder codeRuntimePlatform(CodeRuntimePlatform codeRuntimePlatform) {
         this.codeRuntimePlatform = codeRuntimePlatform;
         return this;
@@ -189,8 +199,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
         PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
-
-
 
 
         CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);

@@ -1,6 +1,8 @@
 package com.wuxp.codegen.utils;
 
+import com.google.common.base.CaseFormat;
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
+import org.springframework.util.StringUtils;
 
 import java.util.regex.Pattern;
 
@@ -28,6 +30,7 @@ public final class JavaMethodNameUtil {
 
     /**
      * 去除方法名称的 get 或者 is 前缀
+     *
      * @param methodName
      * @return
      */
@@ -47,4 +50,19 @@ public final class JavaMethodNameUtil {
 
         return ToggleCaseUtil.toggleFirstChart(methodMetaName);
     }
+
+    /**
+     * 驼峰格式的字符串转下划线
+     *
+     * @param str
+     * @return
+     */
+    public static String humpToLine(String str) {
+        if (!StringUtils.hasText(str)) {
+            return str;
+        }
+        //@link http://ifeve.com/google-guava/
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, str);
+    }
+
 }

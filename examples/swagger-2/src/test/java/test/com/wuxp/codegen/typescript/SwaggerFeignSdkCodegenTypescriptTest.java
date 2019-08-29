@@ -89,7 +89,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
         //创建代码生成器
-        this.codeGenerator = new Swagger2CodeGenerator(packagePaths, languageParser, templateStrategy);
+        this.codeGenerator = new Swagger2CodeGenerator(packagePaths, languageParser, templateStrategy,false);
     }
 
 

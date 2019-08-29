@@ -657,7 +657,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         //TODO 注解转化
-
         //增强处理
         this.enhancedProcessingField(fieldInstance, javaFieldMeta, classMeta);
 

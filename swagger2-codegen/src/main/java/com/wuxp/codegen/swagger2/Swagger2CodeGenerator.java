@@ -44,18 +44,19 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
 
     public Swagger2CodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
-                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
-        super(packagePaths, languageParser, templateStrategy);
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle) {
+        super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
     }
 
     public Swagger2CodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode) {
-        this(packagePaths, languageParser, templateStrategy);
+                                 boolean looseMode,
+                                 boolean enableFieldUnderlineStyle) {
+        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
         init(looseMode);
     }
-
 
 
     public Swagger2CodeGenerator(String[] packagePaths,
@@ -64,8 +65,9 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  Class<?>[] ignoreClasses,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy);
+                                 boolean looseMode,
+                                 boolean enableFieldUnderlineStyle) {
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle);
         init(looseMode);
     }
 

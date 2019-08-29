@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 public class DragonCodeGenerator extends AbstractCodeGenerator {
 
 
-
-    public DragonCodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
-        super(packagePaths, languageParser, templateStrategy);
+    public DragonCodeGenerator(String[] packagePaths,
+                               LanguageParser<CommonCodeGenClassMeta> languageParser,
+                               TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                               boolean enableFieldUnderlineStyle) {
+        super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
     }
 }

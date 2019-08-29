@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -55,7 +56,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected Class<?>[] ignoreClasses;
 
 
-
     /**
      * 语言解析器
      */
@@ -70,11 +70,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     protected PathMatcher pathMatcher = new AntPathMatcher();
 
+    /**
+     * 启用下划线风格
+     */
+    protected Boolean enableFieldUnderlineStyle;
+
 
     public AbstractCodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
-                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
-        this(packagePaths, null, null, null, languageParser, templateStrategy);
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle) {
+        this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle);
     }
 
     public AbstractCodeGenerator(String[] packagePaths,
@@ -82,7 +88,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                                  Class<?>[] includeClasses,
                                  Class<?>[] ignoreClasses,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
-                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle) {
         this.packagePaths = packagePaths;
         this.includeClasses = includeClasses;
         this.languageParser = languageParser;
@@ -119,6 +126,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     .orElse(false));
 
         }
+
+        this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
 
 
     }
@@ -160,6 +169,13 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 //                    })
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
+                        if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFiledMetas() != null) {
+                            //将字段名称设置为下划线
+                            Arrays.stream(commonCodeGenClassMeta.getFiledMetas()).forEach(commonCodeGenFiledMeta -> {
+                                commonCodeGenFiledMeta.setName(JavaMethodNameUtil.humpToLine(commonCodeGenFiledMeta.getName()));
+                            });
+                        }
+
                         this.templateStrategy.build(commonCodeGenClassMeta);
                         return commonCodeGenClassMeta.getDependencies().values();
                     }).flatMap(Collection::stream)
