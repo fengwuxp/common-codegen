@@ -63,13 +63,13 @@ public class OrderController extends BaseController<String> {
 
 
     @ApiOperation(value = "创建订单", notes = "")
-    @PostMapping(value = {"createOrder"})
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true, dataType = "CreateOrderEvt"),
-            }
-    )
-    public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
+    @GetMapping(value = {"createOrder"})
+//    @ApiImplicitParams(
+//            {
+//                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
+//            }
+//    )
+    public ServiceResponse<Long> createOrder(/*@RequestBody*/ CreateOrderEvt evt) {
 
         return new ServiceResponse<>();
     }

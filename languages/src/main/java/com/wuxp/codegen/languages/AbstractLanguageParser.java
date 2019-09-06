@@ -845,7 +845,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 if (!StringUtils.hasText(name)) {
                     name = requestParam.name();
                 }
-                commonCodeGenFiledMeta.setName(name);
+                if (StringUtils.hasText(name)) {
+                    commonCodeGenFiledMeta.setName(name);
+                }
                 if (commonCodeGenFiledMeta instanceof TypescriptFieldMate) {
                     TypescriptFieldMate codeGenFiledMeta = (TypescriptFieldMate) commonCodeGenFiledMeta;
                     if (!Boolean.TRUE.equals(codeGenFiledMeta.getRequired())) {

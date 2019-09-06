@@ -44,7 +44,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven-source-plugin.attach>false</maven-source-plugin.attach>
         <spring.version>5.1.2.RELEASE</spring.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger2.version>2.9.2</swagger2.version>
     </properties>
 
     <dependencies>

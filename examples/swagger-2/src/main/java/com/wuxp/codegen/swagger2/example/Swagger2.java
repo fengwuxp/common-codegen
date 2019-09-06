@@ -40,7 +40,7 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
-public class Swagger2 {
+public class Swagger2 implements WebMvcConfigurer {
 
     @Bean
     public Docket createRestApi() {
@@ -54,13 +54,35 @@ public class Swagger2 {
     }
 
 
+//    @Bean
+////    @Primary()
+//    public static ObjectMapperConfigurer objectMapperConfigurer() {
+//        return new MyObjectMapperConfigurer();
+//    }
 
-
-    @Bean
-//    @Primary()
-    public static ObjectMapperConfigurer objectMapperConfigurer() {
-        return new MyObjectMapperConfigurer();
+    /**
+     * 统一输出风格
+     * See {@link com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy} for details.
+     *
+     * @param converters
+     */
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (int i = 0; i < converters.size(); i++) {
+            HttpMessageConverter<?> httpMessageConverter = converters.get(i);
+            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter) {
+                // 统一返回数据的输出风格
+                MappingJackson2HttpMessageConverter converter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
+                ObjectMapper objectMapper = converter.getObjectMapper();
+                //排除null
+                objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                //设置下划线转换
+                objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.SnakeCaseStrategy());
+            }
+        }
     }
+
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()

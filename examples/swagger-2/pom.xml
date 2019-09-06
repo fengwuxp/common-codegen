@@ -15,14 +15,22 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
+            <version>${swagger2.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
+            <version>${swagger2.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.5.21</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
