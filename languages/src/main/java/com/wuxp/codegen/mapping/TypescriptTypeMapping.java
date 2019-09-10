@@ -2,6 +2,7 @@ package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
+import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -18,25 +19,25 @@ public class TypescriptTypeMapping extends CommonTypeMapping<TypescriptClassMeta
     static {
 
         //设置基础的数据类型映射
-        BASE_TYPE_MAPPING.put(Object.class, TypescriptClassMeta.ANY);
-        BASE_TYPE_MAPPING.put(Date.class, TypescriptClassMeta.DATE);
-        BASE_TYPE_MAPPING.put(Boolean.class, TypescriptClassMeta.BOOLEAN);
-        BASE_TYPE_MAPPING.put(String.class, TypescriptClassMeta.STRING);
-        BASE_TYPE_MAPPING.put(Number.class, TypescriptClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(double.class, TypescriptClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(float.class, TypescriptClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(long.class, TypescriptClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(short.class, TypescriptClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(byte.class, TypescriptClassMeta.NUMBER);
-//        BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.MAP);
-        BASE_TYPE_MAPPING.put(Map.class, TypescriptClassMeta.RECORD);
-        BASE_TYPE_MAPPING.put(Set.class, TypescriptClassMeta.SET);
-        BASE_TYPE_MAPPING.put(List.class, TypescriptClassMeta.ARRAY);
-        BASE_TYPE_MAPPING.put(Collection.class, TypescriptClassMeta.ARRAY);
-        BASE_TYPE_MAPPING.put(void.class, TypescriptClassMeta.VOID);
+        AbstractTypeMapping.setBaseTypeMapping(Object.class, TypescriptClassMeta.ANY);
+        AbstractTypeMapping.setBaseTypeMapping(Date.class, TypescriptClassMeta.DATE);
+        AbstractTypeMapping.setBaseTypeMapping(Boolean.class, TypescriptClassMeta.BOOLEAN);
+        AbstractTypeMapping.setBaseTypeMapping(String.class, TypescriptClassMeta.STRING);
+        AbstractTypeMapping.setBaseTypeMapping(Number.class, TypescriptClassMeta.NUMBER);
+        AbstractTypeMapping.setBaseTypeMapping(double.class, TypescriptClassMeta.NUMBER);
+        AbstractTypeMapping.setBaseTypeMapping(float.class, TypescriptClassMeta.NUMBER);
+        AbstractTypeMapping.setBaseTypeMapping(long.class, TypescriptClassMeta.NUMBER);
+        AbstractTypeMapping.setBaseTypeMapping(short.class, TypescriptClassMeta.NUMBER);
+        AbstractTypeMapping.setBaseTypeMapping(byte.class, TypescriptClassMeta.NUMBER);
+//        AbstractTypeMapping.setBaseTypeMapping(Map.class, TypescriptClassMeta.MAP);
+        AbstractTypeMapping.setBaseTypeMapping(Map.class, TypescriptClassMeta.RECORD);
+        AbstractTypeMapping.setBaseTypeMapping(Set.class, TypescriptClassMeta.SET);
+        AbstractTypeMapping.setBaseTypeMapping(List.class, TypescriptClassMeta.ARRAY);
+        AbstractTypeMapping.setBaseTypeMapping(Collection.class, TypescriptClassMeta.ARRAY);
+        AbstractTypeMapping.setBaseTypeMapping(void.class, TypescriptClassMeta.VOID);
 
         //文件上传
-        BASE_TYPE_MAPPING.put(CommonsMultipartFile.class, TypescriptClassMeta.BROWSER_FILE);
+        AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, TypescriptClassMeta.BROWSER_FILE);
 
     }
 

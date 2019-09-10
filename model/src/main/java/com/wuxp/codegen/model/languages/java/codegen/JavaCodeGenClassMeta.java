@@ -101,6 +101,11 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
      */
     public static final JavaCodeGenClassMeta COLLECTION = new JavaCodeGenClassMeta("Collection", "Collection<T>", ClassType.INTERFACE, false, null, "java.util.Collection", true);
 
+    /**
+     * File
+     */
+    public static final JavaCodeGenClassMeta FILE = new JavaCodeGenClassMeta("File", "Collection<T>", ClassType.CLASS, false, null, "java.io.File", true);
+
 
     /**
      * Object

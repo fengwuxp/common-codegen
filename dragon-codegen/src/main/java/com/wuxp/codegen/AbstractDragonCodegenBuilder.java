@@ -189,13 +189,13 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     protected void initTypeMapping() {
         //设置基础数据类型的映射关系
-        baseTypeMapping.forEach(AbstractTypeMapping.BASE_TYPE_MAPPING::put);
+        baseTypeMapping.forEach(AbstractTypeMapping::setBaseTypeMapping);
 
         //自定义的类型映射
-        customTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_TYPE_MAPPING::put);
+        customTypeMapping.forEach(AbstractTypeMapping::setCustomizeTypeMapping);
 
         //自定义的java类型映射
-        customJavaTypeMapping.forEach(AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING::put);
+        customJavaTypeMapping.forEach(AbstractTypeMapping::setCustomizeJavaTypeMapping);
 
 
         PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);

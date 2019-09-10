@@ -188,12 +188,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     @Override
     public C parse(Class<?> source) {
         //符合匹配规则，或非集合类型和Map的的子类进行
-
-        if (!JavaTypeUtil.isNoneJdkComplex(source)) {
-            List<C> results = this.typeMapping.mapping(source);
-            if (!results.isEmpty()) {
-                return results.get(0);
-            }
+        if (source == null) {
+            return null;
         }
 
 
@@ -202,6 +198,21 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 JavaTypeUtil.isCollection(source)) {
             return null;
         }
+
+        if (!JavaTypeUtil.isNoneJdkComplex(source)) {
+            List<C> results = this.typeMapping.mapping(source);
+            if (!results.isEmpty()) {
+                return results.get(0);
+            }
+        }
+        if (source.isEnum()) {
+            //枚举出来
+            List<C> results = this.typeMapping.mapping(Enum.class);
+            if (!results.isEmpty()) {
+                return results.get(0);
+            }
+        }
+
 
         if (HANDLE_COUNT.containsKey(source)) {
             //标记某个类被处理的次数如果超过2次，从缓存中返回
@@ -345,6 +356,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             CommonCodeGenClassMeta[] typeVariables = Arrays.stream(val)
                     .map(clazz -> {
                         C typeVariable = this.parse(clazz);
+                        if (typeVariable == null) {
+                            return null;
+                        }
                         if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
                             metaDependencies.put(typeVariable.getName(), typeVariable);
                         }

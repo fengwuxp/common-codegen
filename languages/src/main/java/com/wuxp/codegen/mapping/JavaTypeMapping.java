@@ -2,6 +2,7 @@ package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
+import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -18,35 +19,35 @@ public class JavaTypeMapping extends CommonTypeMapping<JavaCodeGenClassMeta> {
     static {
 
         //设置基础的数据类型映射
-        BASE_TYPE_MAPPING.put(Object.class, JavaCodeGenClassMeta.OBJECT);
-        BASE_TYPE_MAPPING.put(Date.class, JavaCodeGenClassMeta.DATE);
-        BASE_TYPE_MAPPING.put(void.class, JavaCodeGenClassMeta.VOID);
+        AbstractTypeMapping.setBaseTypeMapping(Object.class, JavaCodeGenClassMeta.OBJECT);
+        AbstractTypeMapping.setBaseTypeMapping(Date.class, JavaCodeGenClassMeta.DATE);
+        AbstractTypeMapping.setBaseTypeMapping(void.class, JavaCodeGenClassMeta.VOID);
 
-        BASE_TYPE_MAPPING.put(Boolean.class, JavaCodeGenClassMeta.BOOLEAN);
-        BASE_TYPE_MAPPING.put(boolean.class, JavaCodeGenClassMeta.BOOLEAN);
-        BASE_TYPE_MAPPING.put(String.class, JavaCodeGenClassMeta.STRING);
-        BASE_TYPE_MAPPING.put(CharSequence.class, JavaCodeGenClassMeta.CHAR_SEQUENCE);
-        BASE_TYPE_MAPPING.put(char.class, JavaCodeGenClassMeta.CHAR);
+        AbstractTypeMapping.setBaseTypeMapping(Boolean.class, JavaCodeGenClassMeta.BOOLEAN);
+        AbstractTypeMapping.setBaseTypeMapping(boolean.class, JavaCodeGenClassMeta.BOOLEAN);
+        AbstractTypeMapping.setBaseTypeMapping(String.class, JavaCodeGenClassMeta.STRING);
+        AbstractTypeMapping.setBaseTypeMapping(CharSequence.class, JavaCodeGenClassMeta.CHAR_SEQUENCE);
+        AbstractTypeMapping.setBaseTypeMapping(char.class, JavaCodeGenClassMeta.CHAR);
 
-        BASE_TYPE_MAPPING.put(Number.class, JavaCodeGenClassMeta.NUMBER);
-        BASE_TYPE_MAPPING.put(BigDecimal.class, JavaCodeGenClassMeta.BIG_DECIMAL);
-        BASE_TYPE_MAPPING.put(double.class, JavaCodeGenClassMeta.DOUBLE);
-        BASE_TYPE_MAPPING.put(Double.class, JavaCodeGenClassMeta.DOUBLE);
-        BASE_TYPE_MAPPING.put(Float.class, JavaCodeGenClassMeta.FLOAT);
-        BASE_TYPE_MAPPING.put(float.class, JavaCodeGenClassMeta.FLOAT);
-        BASE_TYPE_MAPPING.put(long.class, JavaCodeGenClassMeta.LONG);
-        BASE_TYPE_MAPPING.put(Long.class, JavaCodeGenClassMeta.LONG);
-        BASE_TYPE_MAPPING.put(Integer.class, JavaCodeGenClassMeta.INTEGER);
-        BASE_TYPE_MAPPING.put(int.class, JavaCodeGenClassMeta.INTEGER);
-        BASE_TYPE_MAPPING.put(Short.class, JavaCodeGenClassMeta.SHORT);
-        BASE_TYPE_MAPPING.put(short.class, JavaCodeGenClassMeta.SHORT);
-        BASE_TYPE_MAPPING.put(Byte.class, JavaCodeGenClassMeta.BYTE);
-        BASE_TYPE_MAPPING.put(byte.class, JavaCodeGenClassMeta.BYTE);
+        AbstractTypeMapping.setBaseTypeMapping(Number.class, JavaCodeGenClassMeta.NUMBER);
+        AbstractTypeMapping.setBaseTypeMapping(BigDecimal.class, JavaCodeGenClassMeta.BIG_DECIMAL);
+        AbstractTypeMapping.setBaseTypeMapping(double.class, JavaCodeGenClassMeta.DOUBLE);
+        AbstractTypeMapping.setBaseTypeMapping(Double.class, JavaCodeGenClassMeta.DOUBLE);
+        AbstractTypeMapping.setBaseTypeMapping(Float.class, JavaCodeGenClassMeta.FLOAT);
+        AbstractTypeMapping.setBaseTypeMapping(float.class, JavaCodeGenClassMeta.FLOAT);
+        AbstractTypeMapping.setBaseTypeMapping(long.class, JavaCodeGenClassMeta.LONG);
+        AbstractTypeMapping.setBaseTypeMapping(Long.class, JavaCodeGenClassMeta.LONG);
+        AbstractTypeMapping.setBaseTypeMapping(Integer.class, JavaCodeGenClassMeta.INTEGER);
+        AbstractTypeMapping.setBaseTypeMapping(int.class, JavaCodeGenClassMeta.INTEGER);
+        AbstractTypeMapping.setBaseTypeMapping(Short.class, JavaCodeGenClassMeta.SHORT);
+        AbstractTypeMapping.setBaseTypeMapping(short.class, JavaCodeGenClassMeta.SHORT);
+        AbstractTypeMapping.setBaseTypeMapping(Byte.class, JavaCodeGenClassMeta.BYTE);
+        AbstractTypeMapping.setBaseTypeMapping(byte.class, JavaCodeGenClassMeta.BYTE);
 
-        BASE_TYPE_MAPPING.put(Map.class, JavaCodeGenClassMeta.MAP);
-        BASE_TYPE_MAPPING.put(Set.class, JavaCodeGenClassMeta.SET);
-        BASE_TYPE_MAPPING.put(List.class, JavaCodeGenClassMeta.LIST);
-        BASE_TYPE_MAPPING.put(Collection.class, JavaCodeGenClassMeta.COLLECTION);
+        AbstractTypeMapping.setBaseTypeMapping(Map.class, JavaCodeGenClassMeta.MAP);
+        AbstractTypeMapping.setBaseTypeMapping(Set.class, JavaCodeGenClassMeta.SET);
+        AbstractTypeMapping.setBaseTypeMapping(List.class, JavaCodeGenClassMeta.LIST);
+        AbstractTypeMapping.setBaseTypeMapping(Collection.class, JavaCodeGenClassMeta.COLLECTION);
 
     }
 

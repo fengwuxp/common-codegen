@@ -25,7 +25,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
 
 
     static {
-        IGNORE_PACKAGE_LIST.add("org.springframework");
+        IGNORE_PACKAGE_LIST.add("org.springframework.");
         IGNORE_PACKAGE_LIST.add("org.slf4j.");
         IGNORE_PACKAGE_LIST.add("org.apache.");
         IGNORE_PACKAGE_LIST.add("org.freemarker.");
@@ -53,6 +53,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
             return false;
         }
 
+        //在包含列表里面
         boolean anyMatch = INCLUDE_PACKAGE_LIST.stream().anyMatch(name -> (clazz.getName().startsWith(name) || clazz.getName().equals(name)));
         if (anyMatch) {
             return true;

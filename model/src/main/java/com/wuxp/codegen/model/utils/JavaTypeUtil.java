@@ -202,9 +202,9 @@ public final class JavaTypeUtil {
             return false;
         }
 
-        if (isFileUploadObject(clazz)){
-            return false;
-        }
+//        if (isFileUploadObject(clazz)){
+//            return false;
+//        }
 
 
         boolean isSimple = JavaTypeUtil.isJavaBaseType(clazz) ||

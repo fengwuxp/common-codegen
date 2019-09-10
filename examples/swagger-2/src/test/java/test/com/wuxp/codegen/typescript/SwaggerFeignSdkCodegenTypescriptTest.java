@@ -50,11 +50,11 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
     public void before() {
 
         //设置基础数据类型的映射关系
-        AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
-        AbstractTypeMapping.BASE_TYPE_MAPPING.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
+        AbstractTypeMapping.setBaseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
+        AbstractTypeMapping.setBaseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE);
 
         //自定义的类型映射
-        AbstractTypeMapping.CUSTOMIZE_JAVA_TYPE_MAPPING.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
+        AbstractTypeMapping.setCustomizeJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
