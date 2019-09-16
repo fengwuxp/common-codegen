@@ -524,6 +524,9 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
                         value = ((RequestMapping) annotation).value();
                         methods = ((RequestMapping) annotation).method();
+                        if (methods.length == 0) {
+                            methods = new RequestMethod[]{RequestMethod.GET, RequestMethod.POST};
+                        }
                     }
                     if (annotation.annotationType().equals(PostMapping.class)) {
 
@@ -552,13 +555,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                         value = ((PatchMapping) annotation).value();
                         methods = new RequestMethod[]{RequestMethod.PATCH};
                     }
-
-                    String name = value == null || value.length == 0 ? javaMethodMeta.getName() : value[0];
+                    assert value != null;
+                    String name = value.length == 0 ? javaMethodMeta.getName() : value[0];
                     name = StringUtils.hasText(name) ? name : javaMethodMeta.getName();
-                    RequestMethod method = methods == null || methods.length == 0 ? RequestMethod.GET : methods[0];
-                    javaMethodMetaMap.put(MessageFormat.format("{0}@{1}", method.name(), name), javaMethodMeta);
+                    javaMethodMetaMap.put(MessageFormat.format("{0}@{1}",
+                            Arrays.stream(methods)
+                                    .map(Enum::name)
+                                    .collect(Collectors.joining("@")), name),
+                            javaMethodMeta);
                 });
-        if (javaMethodMetaMap.size()>0){
+        if (javaMethodMetaMap.size() > 0) {
             return new ArrayList<>(javaMethodMetaMap.values());
         }
         return methodMetas;
