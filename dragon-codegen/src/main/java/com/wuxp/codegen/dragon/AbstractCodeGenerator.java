@@ -150,27 +150,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
-//                    .peek(commonCodeGenClassMeta -> {
-//                        //过滤忽略的掉方法
-//                        if (this.ignoreMethods != null) {
-//                            this.ignoreMethods.forEach((key, values) -> {
-//                                if (commonCodeGenClassMeta.getSource().equals(key)) {
-//                                    //过滤掉方法
-//                                    CommonCodeGenMethodMeta[] commonCodeGenMethodMetas = Arrays.stream(commonCodeGenClassMeta.getMethodMetas())
-//                                            .filter(commonCodeGenMethodMeta -> !Arrays.stream(values)
-//                                                    .collect(Collectors.toSet())
-//                                                    .contains(commonCodeGenClassMeta.getName()))
-//                                            .toArray(CommonCodeGenMethodMeta[]::new);
-//                                    commonCodeGenClassMeta.setMethodMetas(commonCodeGenMethodMetas);
-//                                }
-//                            });
-//                        }
-//
-//                    })
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFiledMetas() != null) {
-                            //将字段名称设置为下划线
+                            //将方法参数字段名称设置为下划线
                             Arrays.stream(commonCodeGenClassMeta.getFiledMetas()).forEach(commonCodeGenFiledMeta -> {
                                 commonCodeGenFiledMeta.setName(JavaMethodNameUtil.humpToLine(commonCodeGenFiledMeta.getName()));
                             });

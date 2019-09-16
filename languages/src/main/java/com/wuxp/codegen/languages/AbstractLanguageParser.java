@@ -305,7 +305,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //类上的注解
         meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
 
-        if (count == 1) {
+        boolean isFirst = count == 1;
+        if (isFirst) {
             if (javaClassMeta.isApiServiceClass()) {
                 //spring的控制器  生成方法列表
                 meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
@@ -322,7 +323,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //依赖处理
         final Map<String, C> metaDependencies = meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
 
-        if (count == 1) {
+        if (isFirst) {
             //依赖列表
             Set<Class<?>> dependencyList = javaClassMeta.getDependencyList();
             if (javaClassMeta.isApiServiceClass()) {
@@ -707,15 +708,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toList());
 
         //判断是否存在方法名称是否相同
-        collect.forEach(m -> {
-            M m2 = collect.stream().filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m)).findFirst().orElse(null);
-            if (m2 != null) {
-                //重写方法名称
-                m2.setName(MessageFormat.format("override_{0}", m2.getName()));
-            }
-
-
-        });
+        collect.forEach(m -> collect.stream()
+                .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
+                .findFirst()
+                .ifPresent(m2 -> m2.setName(MessageFormat.format("override_{0}", m2.getName()))));
 
         return collect;
 

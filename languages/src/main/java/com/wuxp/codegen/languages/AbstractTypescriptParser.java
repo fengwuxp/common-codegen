@@ -88,7 +88,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 .findAny()
                 .orElse(null);
 
-        List<Class<?>> newTypes = new ArrayList<>(Arrays.stream(returnTypes).collect(Collectors.toList()));
+        List<Class<?>> newTypes = Arrays.stream(returnTypes).collect(Collectors.toList());
 //        Class<?>[] newTypes = (Class<?>[]) collect;
 
         //处理map 类型的对象
@@ -159,20 +159,19 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             //spring的mapping注解
             if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
 
-                Method method = (Method) annotationOwner;
-
+//                Method method = (Method) annotationOwner;
                 //方法归属的类
 //                Class<?> declaringClass = method.getDeclaringClass();
 //                boolean hasRequestBodyAnnotation = declaringClass.isAnnotationPresent(RestController.class);
-
                 //判断方法参数是否有RequestBody注解
-                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
-                        .filter(Objects::nonNull)
-                        .filter(annotations -> annotations.length > 0)
-                        .map(Arrays::asList)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
-                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream().allMatch(a -> RequestBody.class.equals(a.annotationType()));
+//                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
+//                        .filter(Objects::nonNull)
+//                        .filter(annotations -> annotations.length > 0)
+//                        .map(Arrays::asList)
+//                        .flatMap(Collection::stream)
+//                        .collect(Collectors.toList());
+//                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream()
+//                        .allMatch(a -> RequestBody.class.equals(a.annotationType()));
 
                 String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
 
@@ -181,26 +180,25 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 } else {
                     codeGenAnnotation.getNamedArguments().remove(MappingAnnotationPropNameConstant.PRODUCES);
                 }
-                boolean enableDefaultProduces = true;
 
-                if (!enableDefaultProduces) {
-                    return;
-                }
-
-
-                if (hasRequestBodyAnnotation) {
-//                    produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
-                } else {
-                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
-                    //是spring的Mapping注解
-                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
-                }
-
-                if (!StringUtils.hasText(produces)) {
-                    return;
-                }
-
-                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
+                //是否启用默认的 produces
+//                boolean enableDefaultProduces = true;
+//                if (!enableDefaultProduces) {
+//                    return;
+//                }
+//                if (hasRequestBodyAnnotation) {
+////                    produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
+//                } else {
+//                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
+//                    //是spring的Mapping注解
+////                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+//                }
+//
+//                if (!StringUtils.hasText(produces)) {
+//                    return;
+//                }
+//
+//                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
             }
         }
     }

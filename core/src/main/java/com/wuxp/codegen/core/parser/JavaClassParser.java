@@ -485,11 +485,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         }
 
         //加入对spring的特别处理
-        Map<String, JavaMethodMeta> javaMethodMetaMap = getStringJavaMethodMetaMap(methodMetas);
-
-        if (javaMethodMetaMap.size() > 0) {
-            return javaMethodMetaMap.values().toArray(new JavaMethodMeta[0]);
-        }
+        methodMetas = getStringJavaMethodMetaMap(methodMetas);
 
 
         return methodMetas.stream()
@@ -500,8 +496,14 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     }
 
-    private Map<String, JavaMethodMeta> getStringJavaMethodMetaMap(List<JavaMethodMeta> methodMetas) {
-        Map<String, JavaMethodMeta> javaMethodMetaMap = new LinkedHashMap<>();
+    /**
+     * 过滤掉控制器中请求uri和请求方法相同的方法
+     *
+     * @param methodMetas
+     * @return
+     */
+    private List<JavaMethodMeta> getStringJavaMethodMetaMap(List<JavaMethodMeta> methodMetas) {
+        Map<String/*请求方法加上方法名称或RequestMapping的value*/, JavaMethodMeta> javaMethodMetaMap = new LinkedHashMap<>();
 
         //过滤路径相同的方法
         methodMetas.stream()
@@ -517,38 +519,49 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                         return;
                     }
                     String[] value = null;
+                    RequestMethod[] methods = null;
                     if (annotation.annotationType().equals(RequestMapping.class)) {
 
                         value = ((RequestMapping) annotation).value();
+                        methods = ((RequestMapping) annotation).method();
                     }
                     if (annotation.annotationType().equals(PostMapping.class)) {
 
                         value = ((PostMapping) annotation).value();
+                        methods = new RequestMethod[]{RequestMethod.POST};
                     }
                     if (annotation.annotationType().equals(GetMapping.class)) {
 
                         value = ((GetMapping) annotation).value();
+                        methods = new RequestMethod[]{RequestMethod.GET};
                     }
                     if (annotation.annotationType().equals(DeleteMapping.class)) {
 
                         value = ((DeleteMapping) annotation).value();
+                        methods = new RequestMethod[]{RequestMethod.DELETE};
                     }
 
                     if (annotation.annotationType().equals(PutMapping.class)) {
 
                         value = ((PutMapping) annotation).value();
+                        methods = new RequestMethod[]{RequestMethod.PUT};
                     }
 
                     if (annotation.annotationType().equals(PatchMapping.class)) {
 
                         value = ((PatchMapping) annotation).value();
+                        methods = new RequestMethod[]{RequestMethod.PATCH};
                     }
 
                     String name = value == null || value.length == 0 ? javaMethodMeta.getName() : value[0];
                     name = StringUtils.hasText(name) ? name : javaMethodMeta.getName();
-                    javaMethodMetaMap.put(name, javaMethodMeta);
+                    RequestMethod method = methods == null || methods.length == 0 ? RequestMethod.GET : methods[0];
+                    javaMethodMetaMap.put(MessageFormat.format("{0}@{1}", method.name(), name), javaMethodMeta);
                 });
-        return javaMethodMetaMap;
+        if (javaMethodMetaMap.size()>0){
+            return new ArrayList<>(javaMethodMetaMap.values());
+        }
+        return methodMetas;
     }
 
     /**

@@ -103,7 +103,8 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
                                 if (annotationType.equals(ApiImplicitParams.class)) {
                                     ApiImplicitParams apiImplicitParams = (ApiImplicitParams) annotation;
                                     Optional<ApiImplicitParam> optionalApiImplicitParam = Arrays.stream(apiImplicitParams.value())
-                                            .filter(apiImplicitParam -> name.equals(apiImplicitParam.name())).findFirst();
+                                            .filter(apiImplicitParam -> name.equals(apiImplicitParam.name()))
+                                            .findFirst();
                                     if (optionalApiImplicitParam.isPresent()) {
                                         return optionalApiImplicitParam.get();
                                     }
