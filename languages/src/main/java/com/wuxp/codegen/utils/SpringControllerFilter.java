@@ -65,7 +65,7 @@ public final class SpringControllerFilter {
                 .stream()
                 .filter(javaMethodMeta -> {
                     //过滤掉非mapping的方法
-                    return findSpringControllerMappingAnnotation(javaMethodMeta) == null;
+                    return findSpringControllerMappingAnnotation(javaMethodMeta) != null;
                 }).toArray(JavaMethodMeta[]::new));
     }
 
