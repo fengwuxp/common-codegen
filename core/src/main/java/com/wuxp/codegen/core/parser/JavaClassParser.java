@@ -40,6 +40,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     //spring的方法参数发现者
     protected ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
+
+    //是否只过滤spring的方法
     protected boolean onlyPublic;
 
 
@@ -93,7 +95,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setClazz(source)
                 .setIsAbstract(Modifier.isAbstract(modifiers))
                 .setSuperTypeVariables(superTypeVariables)
-                .setMethodMetas(this.getMethods(source, null, onlyPublic, false))
+                .setMethodMetas(this.getMethods(source, null, onlyPublic))
                 .setFieldMetas(this.getFields(source, onlyPublic))
                 .setInterfaces(source.getInterfaces())
                 .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
@@ -143,16 +145,13 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         superTypes.forEach(superType -> {
             //循环获取超类(包括接口)
-            while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
+            while (!superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
                 if (Object.class.equals(superType.getType())) {
                     //直到获取到object为止
                     break;
                 }
 
                 Type subType = superType.getSuperType().getType();
-                if (subType == null) {
-                    break;
-                }
 
                 if (log.isDebugEnabled()) {
                     log.debug("查找类 {} 的超类", subType.getTypeName());
@@ -427,14 +426,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         return fieldMeta;
     }
 
-    private static final Class<? extends Annotation>[] SPRING_MAPPING_ANNOTATIONS = new Class[]{
-            RequestMapping.class,
-            PostMapping.class,
-            GetMapping.class,
-            DeleteMapping.class,
-            PutMapping.class,
-            PatchMapping.class,
-    };
+
 
     /**
      * 获取方法列表
@@ -442,21 +434,13 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      * @param clazz                  当前类
      * @param origin                 源类（当前类的子类）
      * @param onlyPublic
-     * @param fetchSupperClazzMethod
      * @return
      */
     protected JavaMethodMeta[] getMethods(Class<?> clazz,
                                           Class<?> origin,
-                                          boolean onlyPublic,
-                                          boolean fetchSupperClazzMethod) {
+                                          boolean onlyPublic) {
 
-        //判断是否为spring的控制器
-        Boolean isSpringController = Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
-                .map(aClass -> clazz.getAnnotation(aClass) != null)
-                .filter(b -> b).findFirst()
-                .orElse(false);
-
-        Method[] methods = null;
+        Method[] methods;
         if (onlyPublic) {
             //只获取public的方法
             methods = clazz.getMethods();
@@ -474,19 +458,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         }
 
-        //抓取超类的方法
-        if (isSpringController) {
-
-            Class<?> superclass = clazz.getSuperclass();
-            boolean isNoneSupper = superclass == null || Object.class.equals(superclass);
-            if (!isNoneSupper) {
-                methodMetas.addAll(Arrays.asList(this.getMethods(superclass, clazz, onlyPublic, fetchSupperClazzMethod)));
-            }
-        }
-
-        //加入对spring的特别处理
-        methodMetas = getStringJavaMethodMetaMap(methodMetas);
-
 
         return methodMetas.stream()
                 .filter(Objects::nonNull)
@@ -496,79 +467,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     }
 
-    /**
-     * 过滤掉控制器中请求uri和请求方法相同的方法
-     *
-     * @param methodMetas
-     * @return
-     */
-    private List<JavaMethodMeta> getStringJavaMethodMetaMap(List<JavaMethodMeta> methodMetas) {
-        Map<String/*请求方法加上方法名称或RequestMapping的value*/, JavaMethodMeta> javaMethodMetaMap = new LinkedHashMap<>();
 
-        //过滤路径相同的方法
-        methodMetas.stream()
-                .filter(Objects::nonNull)
-                .forEach(javaMethodMeta -> {
-                    Annotation annotation = Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
-                            .map(aClass -> javaMethodMeta.getAnnotation(aClass))
-                            .filter(Objects::nonNull)
-                            .findFirst()
-                            .orElse(null);
-
-                    if (annotation == null) {
-                        return;
-                    }
-                    String[] value = null;
-                    RequestMethod[] methods = null;
-                    if (annotation.annotationType().equals(RequestMapping.class)) {
-
-                        value = ((RequestMapping) annotation).value();
-                        methods = ((RequestMapping) annotation).method();
-                        if (methods.length == 0) {
-                            methods = new RequestMethod[]{RequestMethod.GET, RequestMethod.POST};
-                        }
-                    }
-                    if (annotation.annotationType().equals(PostMapping.class)) {
-
-                        value = ((PostMapping) annotation).value();
-                        methods = new RequestMethod[]{RequestMethod.POST};
-                    }
-                    if (annotation.annotationType().equals(GetMapping.class)) {
-
-                        value = ((GetMapping) annotation).value();
-                        methods = new RequestMethod[]{RequestMethod.GET};
-                    }
-                    if (annotation.annotationType().equals(DeleteMapping.class)) {
-
-                        value = ((DeleteMapping) annotation).value();
-                        methods = new RequestMethod[]{RequestMethod.DELETE};
-                    }
-
-                    if (annotation.annotationType().equals(PutMapping.class)) {
-
-                        value = ((PutMapping) annotation).value();
-                        methods = new RequestMethod[]{RequestMethod.PUT};
-                    }
-
-                    if (annotation.annotationType().equals(PatchMapping.class)) {
-
-                        value = ((PatchMapping) annotation).value();
-                        methods = new RequestMethod[]{RequestMethod.PATCH};
-                    }
-                    assert value != null;
-                    String name = value.length == 0 ? javaMethodMeta.getName() : value[0];
-                    name = StringUtils.hasText(name) ? name : javaMethodMeta.getName();
-                    javaMethodMetaMap.put(MessageFormat.format("{0}@{1}",
-                            Arrays.stream(methods)
-                                    .map(Enum::name)
-                                    .collect(Collectors.joining("@")), name),
-                            javaMethodMeta);
-                });
-        if (javaMethodMetaMap.size() > 0) {
-            return new ArrayList<>(javaMethodMetaMap.values());
-        }
-        return methodMetas;
-    }
 
     /**
      * 获取访问权限 static final等描述

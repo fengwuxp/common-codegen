@@ -26,6 +26,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
+import com.wuxp.codegen.utils.SpringControllerFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -241,6 +242,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
+        //加入对spring的特别处理
+        SpringControllerFilter.filterMethods(javaClassMeta);
+
         if (javaClassMeta.isApiServiceClass()) {
             //要生成的服务，判断是否需要生成
             if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
@@ -560,6 +564,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             //如果是java bean 需要合并get方法
             // 找出java bean中不存在属性定义的get或 is方法
             fieldMetas.addAll(Arrays.stream(classMeta.getMethodMetas())
+                    //过滤掉本地方法
+                    .filter(javaMethodMeta -> !Boolean.TRUE.equals(javaMethodMeta.getIsNative()))
                     .filter(javaMethodMeta -> {
                         //匹配getXX 或isXxx方法
                         return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
@@ -583,8 +589,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                 .setName(JavaMethodNameUtil.replaceGetOrIsPrefix(methodMeta.getName()))
                                 .setIsStatic(false)
                                 .setIsFinal(false);
-
-
                         return fieldMeta;
                     }).collect(Collectors.toList()));
         }
@@ -597,6 +601,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     }
                     return Boolean.FALSE.equals(javaFieldMeta.getIsStatic());
                 })
+                .filter(javaFieldMeta -> javaFieldMeta.getTypes() != null && javaFieldMeta.getTypes().length > 0)
+                .filter(javaFieldMeta -> !Class.class.equals(javaFieldMeta.getTypes()[0]))
                 .map(javaFieldMeta -> this.converterField(javaFieldMeta, classMeta))
                 .filter(Objects::nonNull)
                 .distinct()
