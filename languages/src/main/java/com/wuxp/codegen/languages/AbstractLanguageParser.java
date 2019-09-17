@@ -917,12 +917,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
 
         }
+
         //加入依赖列表
-        Map<String, C> dependencies = (Map<String, C>) codeGenClassMeta.getDependencies();
-
-
+        final Map<String, C> dependencies = (Map<String, C>) codeGenClassMeta.getDependencies();
         dependencies.put(argsClassMeta.getName(), argsClassMeta);
-
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
         codeGenClassMeta.setDependencies(dependencies);
         //请求参数名称，固定为req

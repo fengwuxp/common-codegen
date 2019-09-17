@@ -14,6 +14,7 @@ import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
@@ -137,6 +138,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     this.classToNamedString(returnTypes)));
         }
 
+        //将需要导入的加入依赖列表
+//        Arrays.stream(commonCodeGenMethodMeta.getReturnTypes())
+//                .filter(CommonCodeGenClassMeta::getNeedImport)
+//                .forEach(returnType -> {
+//                    ((Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies()).put(returnType.getName(), returnType);
+//                });
 
         //增强处理
         this.enhancedProcessingMethod(commonCodeGenMethodMeta, javaMethodMeta, classMeta);
