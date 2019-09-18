@@ -145,13 +145,17 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         superTypes.forEach(superType -> {
             //循环获取超类(包括接口)
-            while (!superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
+            while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
                 if (Object.class.equals(superType.getType())) {
                     //直到获取到object为止
                     break;
                 }
 
                 Type subType = superType.getSuperType().getType();
+                //subType == null 和spring的版本有关系
+                if (subType == null) {
+                    break;
+                }
 
                 if (log.isDebugEnabled()) {
                     log.debug("查找类 {} 的超类", subType.getTypeName());
@@ -427,12 +431,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     }
 
 
-
     /**
      * 获取方法列表
      *
-     * @param clazz                  当前类
-     * @param origin                 源类（当前类的子类）
+     * @param clazz      当前类
+     * @param origin     源类（当前类的子类）
      * @param onlyPublic
      * @return
      */
@@ -466,7 +469,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .toArray(JavaMethodMeta[]::new);
 
     }
-
 
 
     /**
