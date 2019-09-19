@@ -167,21 +167,15 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
 
                 Method method = (Method) annotationOwner;
-//                方法归属的类
-                Class<?> declaringClass = method.getDeclaringClass();
-                boolean hasRequestBodyAnnotation = declaringClass.isAnnotationPresent(RestController.class);
-                if (!hasRequestBodyAnnotation) {
-                    //                判断方法参数是否有RequestBody注解
-                    List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
-                            .filter(Objects::nonNull)
-                            .filter(annotations -> annotations.length > 0)
-                            .map(Arrays::asList)
-                            .flatMap(Collection::stream)
-                            .collect(Collectors.toList());
-                    hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream()
-                            .allMatch(a -> RequestBody.class.equals(a.annotationType()));
-                }
-
+                //判断方法参数是否有RequestBody注解
+                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
+                        .filter(Objects::nonNull)
+                        .filter(annotations -> annotations.length > 0)
+                        .map(Arrays::asList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream()
+                        .allMatch(a -> RequestBody.class.equals(a.annotationType()));
 
                 String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
 
