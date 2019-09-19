@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractTypescriptParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.constant.SpringAnnotationClassConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
@@ -67,11 +68,7 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
         }
 
         if (!javaMethodMeta.existAnnotation(
-                RequestMapping.class,
-                PostMapping.class,
-                GetMapping.class,
-                PutMapping.class,
-                PatchMapping.class
+                SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS
         )) {
             return null;
         }

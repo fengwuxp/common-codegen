@@ -13,6 +13,9 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_CONTROLLER_ANNOTATIONS;
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
+
 /**
  * 过滤spring controller 的方法或属性
  */
@@ -22,19 +25,7 @@ public final class SpringControllerFilter {
 
     private static JavaClassParser JAVA_PARSER = new JavaClassParser(true);
 
-    private static final Class<? extends Annotation>[] SPRING_MAPPING_ANNOTATIONS = new Class[]{
-            RequestMapping.class,
-            PostMapping.class,
-            GetMapping.class,
-            DeleteMapping.class,
-            PutMapping.class,
-            PatchMapping.class,
-    };
 
-    private static final Class<? extends Annotation>[] SPRING_CONTROLLER_ANNOTATIONS = new Class[]{
-            Controller.class,
-            RestController.class
-    };
 
     /**
      * 过滤方法

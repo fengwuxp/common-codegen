@@ -166,19 +166,22 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             //spring的mapping注解
             if (annotation.annotationType().getSimpleName().endsWith("Mapping")) {
 
-//                Method method = (Method) annotationOwner;
-                //方法归属的类
-//                Class<?> declaringClass = method.getDeclaringClass();
-//                boolean hasRequestBodyAnnotation = declaringClass.isAnnotationPresent(RestController.class);
-                //判断方法参数是否有RequestBody注解
-//                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
-//                        .filter(Objects::nonNull)
-//                        .filter(annotations -> annotations.length > 0)
-//                        .map(Arrays::asList)
-//                        .flatMap(Collection::stream)
-//                        .collect(Collectors.toList());
-//                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream()
-//                        .allMatch(a -> RequestBody.class.equals(a.annotationType()));
+                Method method = (Method) annotationOwner;
+//                方法归属的类
+                Class<?> declaringClass = method.getDeclaringClass();
+                boolean hasRequestBodyAnnotation = declaringClass.isAnnotationPresent(RestController.class);
+                if (!hasRequestBodyAnnotation) {
+                    //                判断方法参数是否有RequestBody注解
+                    List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
+                            .filter(Objects::nonNull)
+                            .filter(annotations -> annotations.length > 0)
+                            .map(Arrays::asList)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList());
+                    hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream()
+                            .allMatch(a -> RequestBody.class.equals(a.annotationType()));
+                }
+
 
                 String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
 
@@ -193,19 +196,20 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 //                if (!enableDefaultProduces) {
 //                    return;
 //                }
-//                if (hasRequestBodyAnnotation) {
-////                    produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
-//                } else {
-//                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
-//                    //是spring的Mapping注解
-////                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
-//                }
-//
-//                if (!StringUtils.hasText(produces)) {
-//                    return;
-//                }
-//
-//                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
+
+                if (hasRequestBodyAnnotation) {
+                    produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
+                } else {
+                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
+                    //是spring的Mapping注解
+//                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+                }
+
+                if (!StringUtils.hasText(produces)) {
+                    return;
+                }
+
+                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
             }
         }
     }
