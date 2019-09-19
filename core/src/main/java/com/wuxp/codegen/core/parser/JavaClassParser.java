@@ -1,6 +1,8 @@
 package com.wuxp.codegen.core.parser;
 
 
+import com.wuxp.codegen.core.utils.ReflectUtils;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
@@ -443,12 +445,13 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                                           Class<?> origin,
                                           boolean onlyPublic) {
 
-        Method[] methods;
+        Method[]   methods = ReflectUtils.getDeclaredMethodsInOrder(clazz);;
         if (onlyPublic) {
             //只获取public的方法
-            methods = clazz.getMethods();
+//            methods = clazz.getMethods();
+            methods = Arrays.stream(methods).filter(method -> Modifier.isPublic( method.getModifiers())).toArray(Method[]::new);
         } else {
-            methods = clazz.getDeclaredMethods();
+//            methods = clazz.getDeclaredMethods();
             Method.setAccessible(methods, true);
         }
 

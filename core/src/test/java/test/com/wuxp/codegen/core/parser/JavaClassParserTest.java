@@ -96,4 +96,16 @@ class TestJavaClassParserSimple {
     public void func1(List<Integer> list){
 
     };
+
+    public void func2(){
+
+    };
+
+    public void func3(){
+
+    };
+
+    private void func4(){
+
+    };
 }
