@@ -174,8 +174,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         .map(Arrays::asList)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList());
-                boolean hasRequestBodyAnnotation = annotationList.toArray().length > 0 && annotationList.stream()
-                        .allMatch(a -> RequestBody.class.equals(a.annotationType()));
+
 
                 String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
 
@@ -190,13 +189,14 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 //                if (!enableDefaultProduces) {
 //                    return;
 //                }
-
+                boolean hasRequestBodyAnnotation = annotationList.size() > 0 && annotationList.stream()
+                        .anyMatch(paramAnnotation -> RequestBody.class.equals(paramAnnotation.annotationType()));
                 if (hasRequestBodyAnnotation) {
                     produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
                 } else {
                     //如果没有 RequestBody 则认为是已表单的方式提交的参数
                     //是spring的Mapping注解
-//                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
                 }
 
                 if (!StringUtils.hasText(produces)) {
