@@ -1,6 +1,7 @@
 package com.wuxp.codegen.templates;
 
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
 import freemarker.template.*;
 import lombok.extern.slf4j.Slf4j;
@@ -33,31 +34,22 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         this(language, null);
     }
 
+
     public FreemarkerTemplateLoader(LanguageDescription language, Map<String, Object> sharedVariables) {
-        super(language);
-        //创建一个合适的Configuration对象
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
-        DefaultObjectWrapper objectWrapper = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_28).build();
-        configuration.setObjectWrapper(objectWrapper);
-        //这个一定要设置，不然在生成的页面中 会乱码
-        configuration.setDefaultEncoding("UTF-8");
+        this(language, TemplateFileVersion.DEFAULT.getVersion(), sharedVariables);
+    }
 
-        //支持从jar中加载模板
-        configuration.setClassForTemplateLoading(this.getClass(), "/");
+    public FreemarkerTemplateLoader(LanguageDescription language, String templateFileVersion, Map<String, Object> sharedVariables) {
+        this(language, templateFileVersion, initConfiguration(sharedVariables));
+    }
 
-        if (sharedVariables == null) {
-            throw new RuntimeException("sharedVariables is null");
-        }
-        if (!sharedVariables.containsKey(CODE_RUNTIME_PLATFORM_KEY)) {
-            throw new RuntimeException(String.format("sharedVariables need variable ：%s", CODE_RUNTIME_PLATFORM_KEY));
-        }
+    public FreemarkerTemplateLoader(LanguageDescription language, TemplateFileVersion templateFileVersion, Map<String, Object> sharedVariables) {
+        this(language, templateFileVersion.getVersion(), initConfiguration(sharedVariables));
+    }
 
-        try {
-            configuration.setAllSharedVariables(new MapModel(sharedVariables, objectWrapper));
-        } catch (TemplateModelException e) {
-            e.printStackTrace();
-        }
 
+    public FreemarkerTemplateLoader(LanguageDescription language, String templateFileVersion, Configuration configuration) {
+        super(language, templateFileVersion);
         this.configuration = configuration;
     }
 
@@ -76,4 +68,32 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         }
         return null;
     }
+
+    private static Configuration initConfiguration(Map<String, Object> sharedVariables) {
+        //创建一个合适的Configuration对象
+        Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
+        DefaultObjectWrapper objectWrapper = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_28).build();
+        configuration.setObjectWrapper(objectWrapper);
+        //这个一定要设置，不然在生成的页面中 会乱码
+        configuration.setDefaultEncoding("UTF-8");
+
+        //支持从jar中加载模板
+        configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class, "/");
+
+        if (sharedVariables == null) {
+            throw new RuntimeException("sharedVariables is null");
+        }
+        if (!sharedVariables.containsKey(CODE_RUNTIME_PLATFORM_KEY)) {
+            throw new RuntimeException(String.format("sharedVariables need variable ：%s", CODE_RUNTIME_PLATFORM_KEY));
+        }
+
+        try {
+            configuration.setAllSharedVariables(new MapModel(sharedVariables, objectWrapper));
+        } catch (TemplateModelException e) {
+            e.printStackTrace();
+        }
+
+        return configuration;
+    }
+
 }

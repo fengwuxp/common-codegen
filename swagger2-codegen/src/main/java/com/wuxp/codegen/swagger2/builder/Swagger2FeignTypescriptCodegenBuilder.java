@@ -9,6 +9,7 @@ import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
 import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
 import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
@@ -47,7 +48,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
 
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, this.getSharedVariables());
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, this.templateFileVersion, this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,

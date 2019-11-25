@@ -35,7 +35,7 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
 
 
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.getSharedVariables());
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.templateFileVersion, this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,

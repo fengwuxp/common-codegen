@@ -9,6 +9,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
 import java.util.*;
@@ -86,6 +87,13 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      * 运行平台
      */
     protected CodeRuntimePlatform codeRuntimePlatform;
+
+    /**
+     * 模板文件版本
+     *
+     * @see TemplateFileVersion
+     */
+    protected String templateFileVersion = TemplateFileVersion.DEFAULT.getVersion();
 
     /**
      * 额外导入的类
@@ -168,6 +176,16 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder codeRuntimePlatform(CodeRuntimePlatform codeRuntimePlatform) {
         this.codeRuntimePlatform = codeRuntimePlatform;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder templateFileVersion(String templateFileVersion) {
+        this.templateFileVersion = templateFileVersion;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder templateFileVersion(TemplateFileVersion templateFileVersion) {
+        this.templateFileVersion = templateFileVersion.getVersion();
         return this;
     }
 

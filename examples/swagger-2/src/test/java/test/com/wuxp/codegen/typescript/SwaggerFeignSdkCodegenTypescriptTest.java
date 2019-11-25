@@ -9,6 +9,7 @@ import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
@@ -89,7 +90,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
         //创建代码生成器
-        this.codeGenerator = new Swagger2CodeGenerator(packagePaths, languageParser, templateStrategy,false);
+        this.codeGenerator = new Swagger2CodeGenerator(packagePaths, languageParser, templateStrategy, false);
     }
 
 
@@ -97,7 +98,16 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
     public void testCodeGenApi() {
 
         //生成
-        codeGenerator.generate();
+//        codeGenerator.generate();
+
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+//        boolean match1 = antPathMatcher.match("/path/**/?z", "/path/x/y/z/xyz");
+//        boolean match2 = antPathMatcher.match("/foo/{id}/bar", "/foo/1/bar");
+        boolean match2 = antPathMatcher.match("/**/*.jsp", "/app/dir/file.jsp");
+//        boolean match3 = antPathMatcher.match("/**/example", "/app/foo/example1");
+//        boolean match4 = antPathMatcher.match("/app/**", "/app/foo/example1");
+        System.out.println(match2);
+//        System.out.println(match1+"   "+match2);
 
     }
 

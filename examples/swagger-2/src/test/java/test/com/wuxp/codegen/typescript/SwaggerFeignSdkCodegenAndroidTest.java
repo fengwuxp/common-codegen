@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
@@ -68,6 +69,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
+                .templateFileVersion(TemplateFileVersion.V_2_0_0)
                 .buildCodeGenerator()
                 .generate();
 
