@@ -57,10 +57,10 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public Template load(String templateName) {
 
         try {
-            String templatePath = MessageFormat.format("{0}/{1}/{2}/{3}",
+            String templatePath = MessageFormat.format("{0}/{1}{2}/{3}",
                     this.language.getCodeGenType().name().toLowerCase(),
                     this.language.getTemplateDir(),
-                    this.templateFileVersion,
+                    this.templateFileVersion == null ? "" : "/" + this.templateFileVersion,
                     templateName);
             Template template = configuration.getTemplate(templatePath);
 //            String name = template.getName();
