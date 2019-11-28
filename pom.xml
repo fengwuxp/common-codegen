@@ -256,7 +256,7 @@
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
-                <!--<version>1.5</version>-->
+                <version>1.5</version>
 
                 <configuration>
                     <providerSelection>${maven.compiler.target}</providerSelection>

@@ -35,7 +35,9 @@ public class PathResolve {
      */
     public String relativizeResolve(String baseDir, String... args) {
         if (args == null || args.length <= 1) {
-            return null;
+//            return null;
+            log.error("根路径{}，需要导入依赖的路径描述有误 {}", baseDir, args);
+            return "";
         }
 
         Path basePath = Paths.get(baseDir);
@@ -45,7 +47,7 @@ public class PathResolve {
                 .map(path -> basePath.resolveSibling(Paths.get(path)))
                 .collect(Collectors.toList());
         if (paths.size() == 0) {
-            log.error("根路径{}，需要导入依赖的文件，导入的依赖路径", baseDir, args[0], args[1]);
+            log.error("根路径{}，需要导入依赖的文件 {}，导入的依赖路径  {}", baseDir, args[0], args[1]);
             return null;
         }
         String pathArgs2 = paths.get(1).toString();

@@ -57,10 +57,17 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public Template load(String templateName) {
 
         try {
-            Template template = configuration.getTemplate(MessageFormat.format("{0}/{1}/{2}",
+            String templatePath = MessageFormat.format("{0}/{1}/{2}/{3}",
                     this.language.getCodeGenType().name().toLowerCase(),
                     this.language.getTemplateDir(),
-                    templateName));
+                    this.templateFileVersion,
+                    templateName);
+            Template template = configuration.getTemplate(templatePath);
+//            String name = template.getName();
+//            Map<String, String> autoImportTemplates = new LinkedHashMap<>();
+//            for (Map.Entry<String, String> entry : AUTO_IMPORT_TEMPLATES.entrySet()) {
+//                autoImportTemplates.put(entry.getKey(),  entry.getValue());
+//            }
             template.setAutoImports(AUTO_IMPORT_TEMPLATES);
             return template;
         } catch (IOException e) {

@@ -159,8 +159,19 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                             });
                         }
 
+                        Map<String, ? extends CommonCodeGenClassMeta> dependencies = commonCodeGenClassMeta.getDependencies();
+                        Map<String, CommonCodeGenClassMeta> needImportDependencies = new LinkedHashMap<>();
+                        Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
+                        //过滤掉不需要导入的依赖
+                        dependencies.forEach((key, val) -> {
+                            if (val.getNeedImport()) {
+                                needImportDependencies.put(key, val);
+                            }
+                        });
+                        commonCodeGenClassMeta.setDependencies(needImportDependencies);
                         this.templateStrategy.build(commonCodeGenClassMeta);
-                        return commonCodeGenClassMeta.getDependencies().values();
+
+                        return values;
                     }).flatMap(Collection::stream)
                     .filter(CommonCodeGenClassMeta::getNeedGenerate)
                     .collect(Collectors.toList());

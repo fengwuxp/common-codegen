@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -149,6 +150,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
+                .templateFileVersion(TemplateFileVersion.V_2_0_0)
                 .buildCodeGenerator()
                 .generate();
 

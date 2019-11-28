@@ -69,7 +69,6 @@ public class SwaggerFeignSdkCodegenAndroidTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
-                .templateFileVersion(TemplateFileVersion.V_2_0_0)
                 .buildCodeGenerator()
                 .generate();
 

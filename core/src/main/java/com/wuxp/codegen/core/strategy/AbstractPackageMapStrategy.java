@@ -6,6 +6,7 @@ import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -86,7 +87,11 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
             //转换为正则表达式
             String[] strings = key.split("\\*\\*");
             String s = clazzName.replaceAll(strings[0], "");
-            s = s.substring(0, s.indexOf(strings[1]));
+            if (strings.length > 1) {
+                s = s.substring(0, s.indexOf(strings[1]));
+            } else {
+                log.warn("包名替换--> {}, {}", s, Arrays.toString(strings));
+            }
             if (val.contains("{0}")) {
                 val = MessageFormat.format(val, s + ".");
             }
