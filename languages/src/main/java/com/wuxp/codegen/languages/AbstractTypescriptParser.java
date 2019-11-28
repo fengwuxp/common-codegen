@@ -158,6 +158,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
      * @param annotation
      * @param annotationOwner
      */
+    @Override
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
         if (annotationOwner instanceof Class) {
 
