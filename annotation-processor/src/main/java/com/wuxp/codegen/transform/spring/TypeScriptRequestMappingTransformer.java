@@ -43,8 +43,8 @@ public class TypeScriptRequestMappingTransformer implements
 
         MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, TypescriptFeignMediaTypeConstant.MULTIPART_FORM_DATA);
         MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, TypescriptFeignMediaTypeConstant.FORM_DATA);
-        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, TypescriptFeignMediaTypeConstant.JSON);
-        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_UTF8_VALUE, TypescriptFeignMediaTypeConstant.JSON_UTF8);
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON);
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_UTF8_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8);
 
     }
 

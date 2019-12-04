@@ -34,8 +34,8 @@ class ${name}{
     <#list method.annotations as annotation>
         @${annotation.name}({
         <#list annotation.namedArguments as name,val>
-<#--            ${name}:${val},-->
-            ${name}: ${val?replace('MediaType.','HttpMediaType.')},
+            ${name}:${val},
+<#--            ${name}: ${val?replace('MediaType.','HttpMediaType.')},-->
         </#list>
         })
     </#list>

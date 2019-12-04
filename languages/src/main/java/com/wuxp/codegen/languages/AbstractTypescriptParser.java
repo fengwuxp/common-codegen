@@ -14,15 +14,12 @@ import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -193,7 +190,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 boolean hasRequestBodyAnnotation = annotationList.size() > 0 && annotationList.stream()
                         .anyMatch(paramAnnotation -> RequestBody.class.equals(paramAnnotation.annotationType()));
                 if (hasRequestBodyAnnotation) {
-                    produces = TypescriptFeignMediaTypeConstant.JSON_UTF8;
+                    produces = TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8;
                 } else {
                     //如果没有 RequestBody 则认为是已表单的方式提交的参数
                     //是spring的Mapping注解
