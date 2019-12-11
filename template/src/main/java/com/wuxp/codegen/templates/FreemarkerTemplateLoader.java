@@ -5,6 +5,7 @@ import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
 import freemarker.template.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -60,7 +61,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
             String templatePath = MessageFormat.format("{0}/{1}{2}/{3}",
                     this.language.getCodeGenType().name().toLowerCase(),
                     this.language.getTemplateDir(),
-                    this.templateFileVersion == null ? "" : "/" + this.templateFileVersion,
+                    StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("/{0}", this.templateFileVersion) : "",
                     templateName);
             Template template = configuration.getTemplate(templatePath);
 //            String name = template.getName();
