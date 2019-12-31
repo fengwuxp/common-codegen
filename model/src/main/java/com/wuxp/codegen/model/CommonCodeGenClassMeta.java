@@ -141,7 +141,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
                     .collect(Collectors.joining(","));
             return this.name + "<" + typeDesc + ">";
         }
-        if (StringUtils.hasText(genericDescription)){
+        if (StringUtils.hasText(genericDescription)) {
             return genericDescription;
         }
 
@@ -151,6 +151,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 获取最终的类名称，合并了泛型描述
      * 形如：A<String,Long> or A<K,V>
+     *
      * @return
      */
     public String getFinallyClassName() {

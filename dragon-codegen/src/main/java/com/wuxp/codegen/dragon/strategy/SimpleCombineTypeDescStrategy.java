@@ -47,13 +47,11 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         //存在泛型
         String genericDescription = genClassMeta.getFinallyGenericDescription();
         if (!StringUtils.hasText(genericDescription)) {
-            log.warn("泛型描述不存在，基础类型{}，期望获取泛型的类型", genClassMeta.getName(), finallyGenericDescription);
+            log.warn("泛型描述不存在，基础类型{}，期望获取泛型的类型{}", genClassMeta.getName(), finallyGenericDescription);
 
             return finallyGenericDescription;
         }
-        if (genericDescription.equals("List<T>")) {
-            System.out.println("metaName");
-        }
+
         genericDescription = this.combineTypes(Arrays.stream(codeGenClassMetas)
                 .map(codeGenClassMeta -> this.combine(new CommonCodeGenClassMeta[]{codeGenClassMeta}))
                 .collect(Collectors.toList()));

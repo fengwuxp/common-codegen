@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 import com.wuxp.codegen.swagger3.example.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -12,9 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
+// 通过这里配置使下面的映射都在/users下，可去除
 @RestController
-@RequestMapping(value = "/users")     // 通过这里配置使下面的映射都在/users下，可去除
+@RequestMapping(value = "/users")
+@Tag(name = "user")
 public class UserController {
 
     static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
@@ -26,7 +28,9 @@ public class UserController {
     }
 
 
-    @Operation
+    @Operation(
+            summary = ""
+    )
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long id) {
         return users.get(id);
