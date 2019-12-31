@@ -3,17 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>wuxp-codegen-examples</artifactId>
+        <artifactId>wuxp-codegen</artifactId>
         <groupId>com.wuxp.codegen</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wuxp-code-examples-swagger-3</artifactId>
-
-<!--    <properties>-->
-<!--        <springdoc.version>1.1.49</springdoc.version>-->
-<!--    </properties>-->
+    <artifactId>wuxp-codegen-swagger3</artifactId>
 
     <dependencies>
 
@@ -22,15 +18,33 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-core</artifactId>
             <version>${springdoc.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!--swagger ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-annotation-processor</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-annotation-processor</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-dragon</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
-
-
 </project>

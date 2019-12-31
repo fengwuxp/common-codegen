@@ -33,6 +33,7 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
     }
 
     //属性类型 如果有泛型则有多个
+    //class B<String> extends A<String,Long>
     private Map<Class<?>/*类型，父类，接口，本身*/, Class<?>[]> superTypeVariables;
 
     //类类型 interface，class enum
@@ -43,7 +44,6 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
 
     //包名+类名
     private String className;
-
 
     //是否为抽象类
     private Boolean isAbstract;
@@ -69,6 +69,7 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
      *
      * @return
      */
+    @Override
     public boolean isApiServiceClass() {
         return this.existAnnotation(JavaClassMeta.API_SERVICE_ANNOTATIONS.toArray(new Class[]{}));
     }

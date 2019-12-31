@@ -7,7 +7,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.5.RELEASE</version>
+        <!--        <version>2.2.2.RELEASE</version>-->
+        <version>2.1.8.RELEASE</version>
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
@@ -29,6 +30,8 @@
         <module>swagger2-codegen</module>
         <module>annotation-processor</module>
         <module>examples</module>
+        <module>spring-codegen</module>
+        <module>swagger3-codegen</module>
     </modules>
 
     <properties>
@@ -45,6 +48,7 @@
         <maven-source-plugin.attach>false</maven-source-plugin.attach>
         <spring.version>5.1.2.RELEASE</spring.version>
         <swagger2.version>2.9.2</swagger2.version>
+        <springdoc.version>1.1.49</springdoc.version>
     </properties>
 
     <dependencies>

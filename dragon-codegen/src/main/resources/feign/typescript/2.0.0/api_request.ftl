@@ -10,7 +10,7 @@
 <#if comments??>
     /**
     <#list comments as cmment>
-        * ${cmment}
+    * ${cmment}
     </#list>
     **/
 </#if>

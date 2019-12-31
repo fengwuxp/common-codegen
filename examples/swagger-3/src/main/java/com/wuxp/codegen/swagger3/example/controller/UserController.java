@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 
 import com.wuxp.codegen.swagger3.example.domain.User;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -25,6 +26,7 @@ public class UserController {
     }
 
 
+    @Operation
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long id) {
         return users.get(id);
