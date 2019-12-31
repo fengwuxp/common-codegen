@@ -3,7 +3,9 @@ package com.wuxp.codegen.swagger3.annotations;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 
@@ -12,19 +14,18 @@ import java.lang.reflect.Method;
  *
  * @see Operation
  */
-public class OperationProcessor extends AbstractAnnotationProcessor<Operation, OperationProcessor.OperationMate> {
+public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBody, RequestBodyProcessor.OperationMate> {
 
 
     @Override
-    public OperationMate process(Operation annotation) {
+    public OperationMate process(RequestBody annotation) {
         return this.newProxyMate(annotation, OperationMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<Operation>, Operation {
-
+    public abstract static class OperationMate implements AnnotationMate<RequestBody>, RequestBody {
 
         @Override
-        public String toComment(Class<?> annotationOwner) {
+        public String toComment(Field annotationOwner) {
             return this.getDescription();
         }
 

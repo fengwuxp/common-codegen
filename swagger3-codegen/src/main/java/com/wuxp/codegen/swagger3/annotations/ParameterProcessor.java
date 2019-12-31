@@ -3,7 +3,10 @@ package com.wuxp.codegen.swagger3.annotations;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 
@@ -12,19 +15,24 @@ import java.lang.reflect.Method;
  *
  * @see Operation
  */
-public class OperationProcessor extends AbstractAnnotationProcessor<Operation, OperationProcessor.OperationMate> {
+public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, ParameterProcessor.OperationMate> {
 
 
     @Override
-    public OperationMate process(Operation annotation) {
+    public OperationMate process(Parameter annotation) {
         return this.newProxyMate(annotation, OperationMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<Operation>, Operation {
+    public abstract static class OperationMate implements AnnotationMate<Parameter>, Parameter {
 
 
         @Override
         public String toComment(Class<?> annotationOwner) {
+            return this.getDescription();
+        }
+
+        @Override
+        public String toComment(Field annotationOwner) {
             return this.getDescription();
         }
 
@@ -34,7 +42,11 @@ public class OperationProcessor extends AbstractAnnotationProcessor<Operation, O
         }
 
         private String getDescription() {
-            return this.description();
+            String description = this.description();
+            if (!StringUtils.hasText(description())) {
+                return this.name();
+            }
+            return description;
         }
     }
 }
