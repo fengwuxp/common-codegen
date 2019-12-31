@@ -51,7 +51,9 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
             return finallyGenericDescription;
         }
-
+        if (genericDescription.equals("List<T>")) {
+            System.out.println("metaName");
+        }
         genericDescription = this.combineTypes(Arrays.stream(codeGenClassMetas)
                 .map(codeGenClassMeta -> this.combine(new CommonCodeGenClassMeta[]{codeGenClassMeta}))
                 .collect(Collectors.toList()));

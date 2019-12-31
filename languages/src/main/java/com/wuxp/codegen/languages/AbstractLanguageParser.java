@@ -618,7 +618,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
 
-
         boolean isEnum = classMeta.getClazz().isEnum();
         if (javaFieldMeta.getIsStatic() && !isEnum) {
             //不处理静态类型的字段
@@ -646,29 +645,30 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //注解
         fieldInstance.setAnnotations(this.converterAnnotations(javaFieldMeta.getAnnotations(), javaFieldMeta.getField()));
 
-
         //field 类型类别
         Collection<C> classMetaMappings = this.typeMapping.mapping(javaFieldMeta.getTypes());
 
         //从泛型中解析
         Type[] typeVariables = javaFieldMeta.getTypeVariables();
         if (typeVariables != null && typeVariables.length > 0) {
-
-            classMetaMappings.addAll(Arrays.stream(typeVariables)
+            List<C> collect = Arrays.stream(typeVariables)
                     .filter(Objects::nonNull)
                     .map(Type::getTypeName).map(name -> {
                         C classInstance = this.languageMetaInstanceFactory.newClassInstance();
                         BeanUtils.copyProperties(this.languageMetaInstanceFactory.getTypeVariableInstance(), classInstance);
                         classInstance.setName(name);
                         return classInstance;
-                    }).collect(Collectors.toList()));
+                    }).collect(Collectors.toList());
+
+            if (!collect.isEmpty()) {
+                // 存在泛型描述对象，将默认的泛型描述移除
+                int size = classMetaMappings.size() - collect.size();
+                classMetaMappings = new ArrayList<>(classMetaMappings).subList(0, size);
+            }
+            classMetaMappings.addAll(collect);
         }
 
-        if (classMetaMappings.size() > 0) {
-            //域对象类型描述
-            fieldInstance.setFiledTypes(classMetaMappings.toArray(new CommonCodeGenClassMeta[]{}));
-        } else {
-
+        if (classMetaMappings.isEmpty()) {
             //解析失败
             throw new RuntimeException(String.format("解析类 %s 上的属性 %s 的类型 %s 失败",
                     classMeta.getClassName(),
@@ -676,6 +676,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     this.classToNamedString(javaFieldMeta.getTypes())));
         }
 
+
+        //域对象类型描述
+        fieldInstance.setFiledTypes(classMetaMappings.toArray(new CommonCodeGenClassMeta[]{}));
 
         //TODO 注解转化
         //增强处理

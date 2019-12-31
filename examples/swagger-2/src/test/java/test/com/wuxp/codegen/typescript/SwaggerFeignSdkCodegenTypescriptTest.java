@@ -99,16 +99,16 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
     public void testCodeGenApi() {
 
         //生成
-//        codeGenerator.generate();
+        codeGenerator.generate();
 
-        AntPathMatcher antPathMatcher = new AntPathMatcher();
-//        boolean match1 = antPathMatcher.match("/path/**/?z", "/path/x/y/z/xyz");
-//        boolean match2 = antPathMatcher.match("/foo/{id}/bar", "/foo/1/bar");
-        boolean match2 = antPathMatcher.match("/**/*.jsp", "/app/dir/file.jsp");
-//        boolean match3 = antPathMatcher.match("/**/example", "/app/foo/example1");
-//        boolean match4 = antPathMatcher.match("/app/**", "/app/foo/example1");
-        System.out.println(match2);
-//        System.out.println(match1+"   "+match2);
+//        AntPathMatcher antPathMatcher = new AntPathMatcher();
+////        boolean match1 = antPathMatcher.match("/path/**/?z", "/path/x/y/z/xyz");
+////        boolean match2 = antPathMatcher.match("/foo/{id}/bar", "/foo/1/bar");
+//        boolean match2 = antPathMatcher.match("/**/*.jsp", "/app/dir/file.jsp");
+////        boolean match3 = antPathMatcher.match("/**/example", "/app/foo/example1");
+////        boolean match4 = antPathMatcher.match("/app/**", "/app/foo/example1");
+//        System.out.println(match2);
+////        System.out.println(match1+"   "+match2);
 
     }
 
