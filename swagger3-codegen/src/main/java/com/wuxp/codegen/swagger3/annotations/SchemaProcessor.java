@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
- * @see Operation
+ * @see Schema
  */
 public class SchemaProcessor extends AbstractAnnotationProcessor<Schema, SchemaProcessor.OperationMate> {
 

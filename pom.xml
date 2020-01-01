@@ -7,8 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <!--        <version>2.2.2.RELEASE</version>-->
-        <version>2.1.8.RELEASE</version>
+        <version>2.2.1.RELEASE</version>
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
@@ -40,15 +39,15 @@
         <jdk.version>${maven.compiler.target}</jdk.version>
         <java.version>${maven.compiler.target}</java.version>
         <project.src.encoding>UTF-8</project.src.encoding>
-
         <!--1.8编译参数 保留方法名称-->
         <compilerArgument>-parameters</compilerArgument>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven-source-plugin.attach>false</maven-source-plugin.attach>
-        <spring.version>5.1.2.RELEASE</spring.version>
+
+        <spring.version>5.2.2.RELEASE</spring.version>
         <swagger2.version>2.9.2</swagger2.version>
-        <springdoc.version>1.1.49</springdoc.version>
+        <springdoc.version>1.2.21</springdoc.version>
     </properties>
 
     <dependencies>
@@ -191,7 +190,6 @@
             <!-- id 要查看setting.xml文件中的server配置，上传时需要用户和密码-->
             <id>${dist-repo}</id>
             <url>${dist-repo.releases.url}</url>
-
         </repository>
 
         <snapshotRepository>

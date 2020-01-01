@@ -13,17 +13,17 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
- * @see Operation
+ * @see Parameter
  */
-public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, ParameterProcessor.OperationMate> {
+public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, ParameterProcessor.ParameterMate> {
 
 
     @Override
-    public OperationMate process(Parameter annotation) {
-        return this.newProxyMate(annotation, OperationMate.class);
+    public ParameterMate process(Parameter annotation) {
+        return this.newProxyMate(annotation, ParameterMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<Parameter>, Parameter {
+    public abstract static class ParameterMate implements AnnotationMate<Parameter>, Parameter {
 
 
         @Override

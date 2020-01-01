@@ -11,17 +11,17 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
- * @see Operation
+ * @see ApiResponse
  */
-public class ApiResponseProcessor extends AbstractAnnotationProcessor<ApiResponse, ApiResponseProcessor.OperationMate> {
+public class ApiResponseProcessor extends AbstractAnnotationProcessor<ApiResponse, ApiResponseProcessor.ApiResponseMate> {
 
 
     @Override
-    public OperationMate process(ApiResponse annotation) {
-        return this.newProxyMate(annotation, OperationMate.class);
+    public ApiResponseMate process(ApiResponse annotation) {
+        return this.newProxyMate(annotation, ApiResponseMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<ApiResponse>, ApiResponse {
+    public abstract static class ApiResponseMate implements AnnotationMate<ApiResponse>, ApiResponse {
 
 
         @Override

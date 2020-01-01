@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
- * @see Operation
+ * @see RequestBody
  */
 public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBody, RequestBodyProcessor.OperationMate> {
 

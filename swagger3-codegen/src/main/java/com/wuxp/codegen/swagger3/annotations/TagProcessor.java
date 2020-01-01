@@ -13,17 +13,17 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
- * @see Operation
+ * @see Tag
  */
-public class TagProcessor extends AbstractAnnotationProcessor<Tag, TagProcessor.OperationMate> {
+public class TagProcessor extends AbstractAnnotationProcessor<Tag, TagProcessor.TagMate> {
 
 
     @Override
-    public OperationMate process(Tag annotation) {
-        return this.newProxyMate(annotation, OperationMate.class);
+    public TagMate process(Tag annotation) {
+        return this.newProxyMate(annotation, TagMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<Tag>, Tag {
+    public abstract static class TagMate implements AnnotationMate<Tag>, Tag {
 
         @Override
         public String toComment(Field annotationOwner) {

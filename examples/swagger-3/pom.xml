@@ -11,23 +11,27 @@
 
     <artifactId>wuxp-code-examples-swagger-3</artifactId>
 
-<!--    <properties>-->
-<!--        <springdoc.version>1.1.49</springdoc.version>-->
-<!--    </properties>-->
-
     <dependencies>
 
         <!--spring doc open api-->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-core</artifactId>
+            <artifactId>springdoc-openapi-webmvc-core</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
+
         <!--swagger ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.59</version>
         </dependency>
 
     </dependencies>

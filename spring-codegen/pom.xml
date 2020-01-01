@@ -22,7 +22,7 @@
         <!--spring doc open api-->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-core</artifactId>
+            <artifactId>springdoc-openapi-webmvc-core</artifactId>
             <version>${springdoc.version}</version>
             <scope>provided</scope>
         </dependency>

@@ -19,6 +19,7 @@ import java.io.InputStream;
  */
 public final class ReflectUtils {
 
+   private final static int NOne_FLAG = -1;
     /**
      * Get the underlying class for a type, or null if the type is a variable type.
      *
@@ -160,18 +161,25 @@ public final class ReflectUtils {
 
             String sdata = new String(data, StandardCharsets.UTF_8);
             int lnt = sdata.indexOf("LineNumberTable");
-            if (lnt != -1) sdata = sdata.substring(lnt + "LineNumberTable".length() + 3);
-            int cde = sdata.lastIndexOf("SourceFile");
-            if (cde != -1) sdata = sdata.substring(0, cde);
 
-            MethodOffset mo[] = new MethodOffset[methods.length];
+            if (lnt != NOne_FLAG) {
+                sdata = sdata.substring(lnt + "LineNumberTable".length() + 3);
+            }
+            int cde = sdata.lastIndexOf("SourceFile");
+            if (cde != NOne_FLAG) {
+                sdata = sdata.substring(0, cde);
+            }
+
+            MethodOffset[] mo = new MethodOffset[methods.length];
 
 
             for (int i = 0; i < methods.length; ++i) {
-                int pos = -1;
+                int pos = NOne_FLAG;
                 for (; ; ) {
                     pos = sdata.indexOf(methods[i].getName(), pos);
-                    if (pos == -1) break;
+                    if (pos == NOne_FLAG) {
+                        break;
+                    }
                     boolean subset = false;
                     for (int j = 0; j < i; ++j) {
                         if (mo[j].offset >= 0 &&
