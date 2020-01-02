@@ -2,10 +2,14 @@ package com.wuxp.codegen.annotation.processor.javax;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * javax 验证注解处理
@@ -23,6 +27,18 @@ public class PatternProcessor extends AbstractAnnotationProcessor<Pattern, Patte
 
 
     public abstract static class PatternMate implements AnnotationMate<Pattern>, Pattern {
+
+
+        @Override
+        public CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
+            CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
+            annotation.setName(Pattern.class.getName());
+            Map<String, String> namedArguments = new HashMap<>();
+            namedArguments.put("message",this.message());
+            namedArguments.put("regexp",this.regexp());
+            annotation.setNamedArguments(namedArguments);
+            return annotation;
+        }
 
         @Override
         public String toComment(Field annotationOwner) {

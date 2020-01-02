@@ -17,7 +17,7 @@ import java.io.InputStream;
 /**
  * @link https://github.com/wmacevoy/kiss/blob/master/src/main/java/kiss/util/Reflect.java
  */
-public final class ReflectUtils {
+public final class ReflectUtil {
 
    private final static int NOne_FLAG = -1;
     /**

@@ -2,10 +2,13 @@ package com.wuxp.codegen.annotation.processor.javax;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * javax 验证注解处理
@@ -25,6 +28,16 @@ public class NotNullProcessor extends AbstractAnnotationProcessor<NotNull, NotNu
     public abstract static class NotNullMate implements AnnotationMate<NotNull>, NotNull {
 
         public NotNullMate() {
+        }
+
+        @Override
+        public CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
+            CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
+            annotation.setName(NotNull.class.getName());
+            Map<String, String> namedArguments = new HashMap<>();
+            namedArguments.put("message",this.message());
+            annotation.setNamedArguments(namedArguments);
+            return annotation;
         }
 
         @Override

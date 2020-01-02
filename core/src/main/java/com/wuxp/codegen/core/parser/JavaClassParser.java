@@ -1,8 +1,7 @@
 package com.wuxp.codegen.core.parser;
 
 
-import com.wuxp.codegen.core.utils.ReflectUtils;
-import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.core.utils.ReflectUtil;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
@@ -15,7 +14,6 @@ import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
@@ -445,7 +443,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                                           Class<?> origin,
                                           boolean onlyPublic) {
 
-        Method[]   methods = ReflectUtils.getDeclaredMethodsInOrder(clazz);;
+        Method[]   methods = ReflectUtil.getDeclaredMethodsInOrder(clazz);;
         if (onlyPublic) {
             //只获取public的方法
 //            methods = clazz.getMethods();

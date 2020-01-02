@@ -1,15 +1,19 @@
 package com.wuxp.codegen.spring.model;
 
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * 用于生成 spring 控制器，服务层 dto的代码
+ */
 @Data
 public class JavaSpringCodeGenClassMeta {
 
@@ -18,6 +22,8 @@ public class JavaSpringCodeGenClassMeta {
     public static String SERVICE_NAME_SUFFIX = "Controller";
 
     public static String[] DTO_PREFIX_NAMES = new String[]{"Create", "Edit", "Query", "Find"};
+
+    private static Pattern IS_PACKAGE_NAME = Pattern.compile("[a-z][A-Z]");
 
 
     private JavaCodeGenClassMeta[] javaCodeGenClassMetas;
@@ -46,12 +52,24 @@ public class JavaSpringCodeGenClassMeta {
         this.servicePackages = servicePackages;
     }
 
+    public static JavaSpringCodeGenClassMeta newInstance(Class<?> entityClass,
+                                                         String basePackage,
+                                                         String moduleName) {
+        if (!StringUtils.hasText(moduleName)) {
+            Tag annotation = entityClass.getAnnotation(Tag.class);
+            String name = annotation.name();
+            if (IS_PACKAGE_NAME.matcher(name).find()) {
+                moduleName = name.toLowerCase();
+            }
+        }
+        return newInstance(new Class[]{entityClass}, basePackage, moduleName);
+    }
+
     public static JavaSpringCodeGenClassMeta newInstance(Class<?>[] entityClasses,
                                                          String basePackage,
                                                          String moduleName) {
 
         boolean hasModuleName = StringUtils.hasText(moduleName);
-
         List<Class<?>> classes = Arrays.asList(entityClasses);
         return newInstance(
                 classes.stream().map(clazz -> MessageFormat.format("{0}{1}", clazz.getSimpleName(), CONTROLLER_NAME_SUFFIX)).toArray(String[]::new),

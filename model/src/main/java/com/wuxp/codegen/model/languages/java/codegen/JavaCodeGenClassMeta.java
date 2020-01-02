@@ -1,13 +1,20 @@
 package com.wuxp.codegen.model.languages.java.codegen;
 
 
+import com.wuxp.codegen.core.utils.SnowFlakeIdGen;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 
 /**
  * Java 代码生成的类型常量
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Accessors(chain = true)
 public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
 
 
@@ -126,6 +133,8 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     //Observable
     public static final JavaCodeGenClassMeta RX_JAVA2_OBSERVABLE = new JavaCodeGenClassMeta("Observable", "Observable<T>", ClassType.CLASS, false, null, "", false);
 
+    // or use 1L?
+    private Long serialVersionUIDValue = SnowFlakeIdGen.SINGLETON.nextId();
 
     public JavaCodeGenClassMeta() {
     }
