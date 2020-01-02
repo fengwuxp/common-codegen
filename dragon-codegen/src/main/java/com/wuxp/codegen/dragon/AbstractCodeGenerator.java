@@ -7,6 +7,7 @@ import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * abstract code generator
  */
 @Slf4j
+@Setter
 public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     /**

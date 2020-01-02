@@ -11,11 +11,11 @@ import java.util.Map;
 public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
 
 
-    private String basePackages;
+    private String basePackage;
 
-    public JavaPackageMapStrategy(Map<String, String> packageNameMap, String basePackages) {
+    public JavaPackageMapStrategy(Map<String, String> packageNameMap, String basePackage) {
         super(packageNameMap);
-        this.basePackages = basePackages;
+        this.basePackage = basePackage;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
     @Override
     public String genPackagePath(String[] uris) {
         String packageName = String.join(".", uris);
-        if (!packageName.startsWith(this.basePackages)){
-            packageName= MessageFormat.format("{0}.{1}", basePackages,packageName);
+        if (!packageName.startsWith(this.basePackage)) {
+            packageName = MessageFormat.format("{0}.{1}", basePackage, packageName);
         }
 
         return packageName;

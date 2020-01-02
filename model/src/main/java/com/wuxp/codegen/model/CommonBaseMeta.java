@@ -54,6 +54,16 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
         return this.accessPermission.getValue();
     }
 
+
+    public <T> T getTag(String key) {
+        Map<String, Object> tags = this.tags;
+        Object o = tags.get(key);
+        if (o == null) {
+            return null;
+        }
+        return (T) o;
+    }
+
     @Override
     public int compareTo(CommonBaseMeta o) {
         return this.hashCode() - o.hashCode();
