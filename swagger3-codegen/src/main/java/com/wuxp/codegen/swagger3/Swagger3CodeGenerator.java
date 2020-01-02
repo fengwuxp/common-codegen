@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 
@@ -34,17 +37,39 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
     }
 
 
-    public Swagger3CodeGenerator(String[] packagePaths, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy, boolean enableFieldUnderlineStyle) {
+    public Swagger3CodeGenerator(String[] packagePaths,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle) {
         super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
     }
 
-    public Swagger3CodeGenerator(String[] packagePaths, Set<String> ignorePackages, Class<?>[] includeClasses, Class<?>[] ignoreClasses, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy, boolean enableFieldUnderlineStyle) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle);
+    public Swagger3CodeGenerator(String[] packagePaths,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean looseMode,
+                                 boolean enableFieldUnderlineStyle) {
+        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
+        init(looseMode);
     }
 
 
-    @Override
-    protected Set<Class<?>> scanPackages() {
-        return super.scanPackages();
+    public Swagger3CodeGenerator(String[] packagePaths,
+                                 Set<String> ignorePackages,
+                                 Class<?>[] includeClasses,
+                                 Class<?>[] ignoreClasses,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean looseMode,
+                                 boolean enableFieldUnderlineStyle) {
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle);
+        init(looseMode);
+    }
+
+    private void init(boolean looseMode) {
+        if (looseMode) {
+            classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
+            classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
+        }
     }
 }
