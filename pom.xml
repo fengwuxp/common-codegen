@@ -136,39 +136,30 @@
     <profiles>
         <profile>
             <id>编译时保留方法参数名称</id>
-
             <activation>
                 <jdk>1.8</jdk>
             </activation>
-
             <properties>
                 <!--1.8编译参数-保留方法名称-->
                 <compilerArgument>-parameters</compilerArgument>
             </properties>
-
         </profile>
 
         <profile>
             <id>跳过测试</id>
-
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-
             <properties>
                 <maven.test.skip>true</maven.test.skip>
             </properties>
-
         </profile>
-
 
         <profile>
             <id>上传源代码到 Maven</id>
-
             <properties>
                 <maven-source-plugin.attach>true</maven-source-plugin.attach>
             </properties>
-
         </profile>
 
     </profiles>

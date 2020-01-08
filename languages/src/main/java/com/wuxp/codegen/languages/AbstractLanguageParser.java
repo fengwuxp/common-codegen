@@ -388,6 +388,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             newSupperClass.setTypeVariables(supperClassTypeVariables);
             meta.setSuperClass(newSupperClass);
         }
+        // 增强处理类
+        this.enhancedProcessingClass(meta, javaClassMeta);
 
         HANDLE_RESULT_CACHE.put(source, meta);
         return meta;
@@ -935,6 +937,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         return genMethodMeta;
     }
+
+    /**
+     * 增强处理 class
+     *
+     * @param methodMeta
+     * @param classMeta
+     */
+    protected abstract void enhancedProcessingClass(C methodMeta, JavaClassMeta classMeta);
 
     /**
      * 增强处理 method

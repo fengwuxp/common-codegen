@@ -363,8 +363,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 //        }
         //                fieldMetas.stream().sorted(Comparator.comparing(CommonBaseMeta::getName))
 //                .toArray(JavaFieldMeta[]::new);
-        return Arrays.asList(fields)
-                .stream()
+        return Arrays.stream(fields)
                 .map(field -> this.getJavaFieldMeta(field, clazz))
                 .filter(Objects::nonNull)
                 .toArray(JavaFieldMeta[]::new);

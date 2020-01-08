@@ -81,6 +81,11 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
     }
 
     @Override
+    protected void enhancedProcessingClass(JavaCodeGenClassMeta methodMeta, JavaClassMeta classMeta) {
+
+    }
+
+    @Override
     protected void enhancedProcessingField(CommonCodeGenFiledMeta fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
 
     }
@@ -120,10 +125,9 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
 
         returnTypes.stream()
                 .filter(CommonCodeGenClassMeta::getNeedImport)
-                .forEach(returnType->{
-            ((Map<String,JavaCodeGenClassMeta>)codeGenClassMeta.getDependencies()).put(returnType.getName(),returnType);
-        });
-
+                .forEach(returnType -> {
+                    ((Map<String, JavaCodeGenClassMeta>) codeGenClassMeta.getDependencies()).put(returnType.getName(), returnType);
+                });
 
 
         //增强处理

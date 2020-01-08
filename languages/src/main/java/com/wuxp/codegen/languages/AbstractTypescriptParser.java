@@ -148,6 +148,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         return commonCodeGenMethodMeta;
     }
 
+    @Override
+    protected void enhancedProcessingClass(TypescriptClassMeta methodMeta, JavaClassMeta classMeta) {
+
+    }
+
     /**
      * 增强处理 annotation
      *
