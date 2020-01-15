@@ -64,6 +64,16 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     }
 
+    /**
+     * 设置 注解处理器
+     *
+     * @param languageDescription
+     * @param transformer
+     */
+    public static void setAnnotationCodeGenTransformer(LanguageDescription languageDescription, AnnotationCodeGenTransformer transformer) {
+        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(languageDescription, transformer);
+    }
+
 
     public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
