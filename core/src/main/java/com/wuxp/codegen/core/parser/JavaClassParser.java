@@ -352,7 +352,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             fields = clazz.getDeclaredFields();
             Field.setAccessible(fields, true);
         }
-        List<JavaFieldMeta> fieldMetas = new ArrayList<>();
+//        List<JavaFieldMeta> fieldMetas = new ArrayList<>();
 
 //        for (int i = 0; i < fields.length; i++) {
 //

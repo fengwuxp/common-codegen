@@ -1,9 +1,9 @@
 package com.wuxp.codegen.model.languages.java.codegen;
 
 
-import com.wuxp.codegen.core.utils.SnowFlakeIdGen;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.utils.SnowFlakeIdGen;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;

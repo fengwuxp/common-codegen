@@ -28,6 +28,8 @@ import java.util.Map;
 @Slf4j
 public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
 
+    // 使用异步的方式
+    protected boolean useAsync = false;
 
     public AbstractJavaParser(PackageMapStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
@@ -38,6 +40,19 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
                 genMatchingStrategy,
                 codeDetects);
         this.typeMapping = new JavaTypeMapping(this);
+    }
+
+    public AbstractJavaParser(PackageMapStrategy packageMapStrategy,
+                              CodeGenMatchingStrategy genMatchingStrategy,
+                              Collection<CodeDetect> codeDetects,
+                              boolean useAsync) {
+        this(null,
+                new JavaLanguageMetaInstanceFactory(),
+                packageMapStrategy,
+                genMatchingStrategy,
+                codeDetects);
+        this.typeMapping = new JavaTypeMapping(this);
+        this.useAsync = useAsync;
     }
 
 
@@ -108,8 +123,11 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
         List<JavaCodeGenClassMeta> returnTypes = this.typeMapping.mapping(javaMethodMeta.getReturnType());
 
 
-        if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
-            returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
+        if (this.useAsync) {
+            // 使用异步处理
+            if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
+                returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
+            }
         }
 
         if (returnTypes.size() > 0) {
