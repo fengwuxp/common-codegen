@@ -897,8 +897,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         argsClassMeta.setFiledMetas(commonCodeGenFiledMetas.toArray(new CommonCodeGenFiledMeta[]{}));
         if (!StringUtils.hasText(argsClassMeta.getName())) {
-            //没有复杂对象的参数
-            String name = MessageFormat.format("{0}Req", ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
+            //没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
+            String name = MessageFormat.format("{0}{1}Req", this.packageMapStrategy.convertClassName(classMeta.getName()), ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
             argsClassMeta.setName(name);
             argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req", name}));
             //这个时候没有依赖
