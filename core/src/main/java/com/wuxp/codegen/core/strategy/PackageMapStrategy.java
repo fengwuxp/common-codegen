@@ -21,6 +21,7 @@ public interface PackageMapStrategy {
      */
     String convertClassName(Class<?> clazz);
 
+
     /**
      * 生成包名路径
      *

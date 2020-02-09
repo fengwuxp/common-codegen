@@ -34,7 +34,7 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
             return clazz.getSimpleName();
         }
 
-        String convertClassName = this.convertClassName(clazz);
+        String convertClassName = this.controllerToService(path).replaceAll("\\.", PathResolve.RIGHT_SLASH);
         if (convertClassName.startsWith(PathResolve.RIGHT_SLASH)) {
             return convertClassName;
         }

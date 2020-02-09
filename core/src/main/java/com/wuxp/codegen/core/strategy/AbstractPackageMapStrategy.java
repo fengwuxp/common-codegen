@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -76,8 +77,8 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
                 .findFirst();
         //没有找到可以替换的前缀
         if (!packageNamePrefix.isPresent()) {
-            //直接返回类名
-            return clazz.getSimpleName();
+            // convertClassName
+            return this.convertClassName(clazz);
         }
 
         String key = packageNamePrefix.get();
@@ -86,18 +87,13 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
             val = this.packageNameMap.get(key.substring(0, key.length() - 2));
         }
 
-        if (val == null) {
+        if (!StringUtils.hasText(val)) {
             throw new RuntimeException(MessageFormat.format("包名：{0} 未找到装换映射关系", clazzName));
         }
 
-        if (!StringUtils.hasText(val)) {
-
-        }
-
+        String value;
         if (this.pathMatcher.isPattern(key)) {
-
             //TODO 支持 {0}a{2}模式
-
             //转换为正则表达式
             String[] strings = key.split("\\*\\*");
             String s = clazzName.replaceAll(strings[0], "");
@@ -109,28 +105,28 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
             if (val.contains("{0}")) {
                 val = MessageFormat.format(val, s + ".");
             }
-            return clazzName.replace(packageNames, val);
+            value = clazzName.replace(packageNames, val);
         } else {
 
-            return clazzName.replace(key, val);
+            value = clazzName.replace(key, val);
         }
-
-
+        String[] strings = value.split("\\.");
+        strings[strings.length - 1] = this.convertClassName(clazz);
+        return String.join(".", strings);
     }
 
     @Override
     public String convertClassName(Class<?> clazz) {
 
         Map<String, Object> classNameTransformers = this.classNameTransformers;
+        String simpleName = clazz.getSimpleName();
         if (classNameTransformers == null) {
             //默认将Controller 转换为Service
-            return controllerToService(clazz);
+            return controllerToService(simpleName);
         }
-
-        String simpleName = clazz.getSimpleName();
         Object object = classNameTransformers.get(simpleName);
         if (object == null) {
-            return controllerToService(clazz);
+            return controllerToService(simpleName);
         }
         if (object instanceof String) {
             return object.toString();
@@ -155,7 +151,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         return simpleName;
     }
 
-    private String controllerToService(Class<?> clazz) {
-        return clazz.getSimpleName().replaceAll("Controller", "Service");
+    protected String controllerToService(String simpleName) {
+        return simpleName.replaceAll("Controller", "Service");
     }
 }

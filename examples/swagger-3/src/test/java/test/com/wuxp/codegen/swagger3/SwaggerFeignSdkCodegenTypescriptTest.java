@@ -60,9 +60,9 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
+        packageMap.put("com.wuxp.codegen.swagger3.example.controller", "services");
         //其他类（DTO、VO等）所在的包
-        packageMap.put("com.wuxp.codegen.swagger2.example", "");
+        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         //实例化包名映射策略
         PackageMapStrategy packageMapStrategy = new TypescriptPackageMapStrategy(packageMap);
@@ -109,14 +109,14 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-//        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
-        packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");
-        packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
-        packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
-        packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
-        packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
+//        packageMap.put("com.wuxp.codegen.swagger3.controller", "services");
+        packageMap.put("com.wuxp.codegen.swagger3.**.controller", "{0}services");
+        packageMap.put("com.wuxp.codegen.swagger3.**.evt", "evt");
+        packageMap.put("com.wuxp.codegen.swagger3.**.domain", "domain");
+        packageMap.put("com.wuxp.codegen.swagger3.**.resp", "resp");
+        packageMap.put("com.wuxp.codegen.swagger3.**.enums", "enums");
         //其他类（DTO、VO等）所在的包
-//        packageMap.put("com.wuxp.codegen.swagger2.example", "");
+//        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
         String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};

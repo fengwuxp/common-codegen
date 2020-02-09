@@ -31,7 +31,7 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
             log.warn("{}转换后的导入的路径为空", clazz.getName());
             return clazz.getSimpleName();
         }
-        return this.convertClassName(clazz);
+        return this.controllerToService(path);
 
     }
 
