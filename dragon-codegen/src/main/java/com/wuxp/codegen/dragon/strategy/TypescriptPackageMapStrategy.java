@@ -20,6 +20,11 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
         super(packageNameMap);
     }
 
+
+    public TypescriptPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers) {
+        super(packageNameMap, classNameTransformers);
+    }
+
     @Override
     public String convert(Class<?> clazz) {
         String path = super.convert(clazz);
@@ -29,7 +34,7 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
             return clazz.getSimpleName();
         }
 
-        String convertClassName = this.convertClassName(path.replaceAll("\\.", PathResolve.RIGHT_SLASH));
+        String convertClassName = this.convertClassName(clazz);
         if (convertClassName.startsWith(PathResolve.RIGHT_SLASH)) {
             return convertClassName;
         }

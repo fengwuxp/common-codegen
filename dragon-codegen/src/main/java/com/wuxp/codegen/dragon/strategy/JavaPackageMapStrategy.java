@@ -18,6 +18,12 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
         this.basePackage = basePackage;
     }
 
+
+    public JavaPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers, String basePackage) {
+        super(packageNameMap, classNameTransformers);
+        this.basePackage = basePackage;
+    }
+
     @Override
     public String convert(Class<?> clazz) {
         String path = super.convert(clazz);
@@ -25,7 +31,7 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
             log.warn("{}转换后的导入的路径为空", clazz.getName());
             return clazz.getSimpleName();
         }
-        return this.convertClassName(path);
+        return this.convertClassName(clazz);
 
     }
 

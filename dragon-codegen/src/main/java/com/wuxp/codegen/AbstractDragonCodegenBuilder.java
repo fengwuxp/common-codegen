@@ -5,6 +5,8 @@ import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
+import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
+import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -56,6 +58,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      * 忽略的包
      */
     protected Set<String> ignorePackages = new LinkedHashSet<>();
+
+
+    /**
+     * 类名映射策略
+     */
+    private Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers;
 
     /**
      * 包名映射策略
@@ -141,6 +149,19 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder ignorePackages(Set<String> ignorePackages) {
         this.ignorePackages = ignorePackages;
+        return this;
+    }
+
+    /**
+     * @param classNameTransformers
+     * @return
+     * @see ClassNameTransformer
+     */
+    public AbstractDragonCodegenBuilder classNameTransformers(Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers) {
+        this.classNameTransformers = classNameTransformers;
+        if (this.packageMapStrategy != null && this.packageMapStrategy instanceof AbstractPackageMapStrategy) {
+            ((AbstractPackageMapStrategy) this.packageMapStrategy).setClassNameTransformers(classNameTransformers);
+        }
         return this;
     }
 

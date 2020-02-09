@@ -15,6 +15,7 @@ import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
 import com.wuxp.codegen.swagger3.Swagger3FeignSdkGenMatchingStrategy;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
+import com.wuxp.codegen.swagger3.example.controller.OrderController;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
@@ -123,19 +124,23 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
 
+
+        Map<String, Object> classNameTransformers = new HashMap<>();
+        classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
+
         Swagger3FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.TYPESCRIPT)
                 .customJavaTypeMapping(customTypeMapping)
-                .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
+                .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .templateFileVersion(TemplateFileVersion.V_2_0_0)
+                .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();
 
     }
-
 
 
 }

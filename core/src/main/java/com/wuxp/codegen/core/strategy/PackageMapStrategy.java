@@ -16,10 +16,10 @@ public interface PackageMapStrategy {
     /**
      * 转换 class Name
      *
-     * @param className
+     * @param clazz
      * @return
      */
-    String convertClassName(String className);
+    String convertClassName(Class<?> clazz);
 
     /**
      * 生成包名路径

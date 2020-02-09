@@ -1,5 +1,6 @@
 package com.wuxp.codegen.core.strategy;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -15,15 +16,28 @@ import java.util.Optional;
  * 抽象的包名映射策略
  */
 @Slf4j
+@Setter
 public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 
     protected Map<String/*类的包名前缀*/, String/*output path*/> packageNameMap;
 
     protected PathMatcher pathMatcher = new AntPathMatcher();
 
+    /**
+     * 类名转换器
+     *
+     * @see ClassNameTransformer
+     */
+    private Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers;
+
 
     public AbstractPackageMapStrategy(Map<String, String> packageNameMap) {
         this.packageNameMap = packageNameMap;
+    }
+
+    public AbstractPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers) {
+        this.packageNameMap = packageNameMap;
+        this.classNameTransformers = classNameTransformers;
     }
 
     @Override
@@ -105,8 +119,43 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     }
 
     @Override
-    public String convertClassName(String className) {
-        //默认将Controller 转换为Service
-        return className.replaceAll("Controller", "Service");
+    public String convertClassName(Class<?> clazz) {
+
+        Map<String, Object> classNameTransformers = this.classNameTransformers;
+        if (classNameTransformers == null) {
+            //默认将Controller 转换为Service
+            return controllerToService(clazz);
+        }
+
+        String simpleName = clazz.getSimpleName();
+        Object object = classNameTransformers.get(simpleName);
+        if (object == null) {
+            return controllerToService(clazz);
+        }
+        if (object instanceof String) {
+            return object.toString();
+        }
+        if (object instanceof ClassNameTransformer) {
+            return ((ClassNameTransformer) object).transform(clazz);
+        }
+
+        PathMatcher pathMatcher = this.pathMatcher;
+        String name = clazz.getName();
+        // ant 匹配
+        for (Map.Entry<String, Object> entry : classNameTransformers.entrySet()) {
+            String s = entry.getKey();
+            Object transformer = entry.getValue();
+            if (pathMatcher.match(s, name)) {
+                if (transformer instanceof ClassNameTransformer) {
+                    return ((ClassNameTransformer) transformer).transform(clazz);
+                }
+            }
+        }
+
+        return simpleName;
+    }
+
+    private String controllerToService(Class<?> clazz) {
+        return clazz.getSimpleName().replaceAll("Controller", "Service");
     }
 }

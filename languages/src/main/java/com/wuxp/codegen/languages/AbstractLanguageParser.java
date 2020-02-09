@@ -265,7 +265,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         meta = this.languageMetaInstanceFactory.newClassInstance();
         meta.setSource(source);
-        meta.setName(this.packageMapStrategy.convertClassName(source.getSimpleName()));
+        meta.setName(this.packageMapStrategy.convertClassName(source));
         meta.setPackagePath(this.packageMapStrategy.convert(source));
         meta.setClassType(javaClassMeta.getClassType());
         meta.setAccessPermission(javaClassMeta.getAccessPermission());
@@ -898,7 +898,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         argsClassMeta.setFiledMetas(commonCodeGenFiledMetas.toArray(new CommonCodeGenFiledMeta[]{}));
         if (!StringUtils.hasText(argsClassMeta.getName())) {
             //没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
-            String name = MessageFormat.format("{0}{1}Req", this.packageMapStrategy.convertClassName(classMeta.getName()), ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
+            String name = MessageFormat.format("{0}{1}Req", this.packageMapStrategy.convertClassName(classMeta.getClazz()), ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
             argsClassMeta.setName(name);
             argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req", name}));
             //这个时候没有依赖
