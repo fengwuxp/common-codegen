@@ -49,19 +49,15 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         String clazzName = clazz.getName();
         if (aPackage == null) {
             log.warn("包名为空的类{}", clazzName);
-//            return null;
         } else {
             packageNames = aPackage.getName();
         }
         Optional<String> packageNamePrefix = this.packageNameMap.keySet()
                 .stream()
-//                .filter(clazzName::startsWith)
                 .map(pattern -> {
-
                     if (!this.pathMatcher.isPattern(pattern)) {
                         return pattern;
                     }
-
                     if (pattern.endsWith("**")) {
                         return pattern;
                     }
@@ -87,9 +83,9 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
             val = this.packageNameMap.get(key.substring(0, key.length() - 2));
         }
 
-        if (!StringUtils.hasText(val)) {
-            throw new RuntimeException(MessageFormat.format("包名：{0} 未找到装换映射关系", clazzName));
-        }
+//        if (!StringUtils.hasText(val)) {
+//            throw new RuntimeException(MessageFormat.format("包名：{0} 未找到装换映射关系", clazzName));
+//        }
 
         String value;
         if (this.pathMatcher.isPattern(key)) {
