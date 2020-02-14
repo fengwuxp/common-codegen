@@ -136,11 +136,11 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         }
 
         //将需要导入的加入依赖列表
-//        Arrays.stream(commonCodeGenMethodMeta.getReturnTypes())
-//                .filter(CommonCodeGenClassMeta::getNeedImport)
-//                .forEach(returnType -> {
-//                    ((Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies()).put(returnType.getName(), returnType);
-//                });
+        Arrays.stream(commonCodeGenMethodMeta.getReturnTypes())
+                .filter(CommonCodeGenClassMeta::getNeedImport)
+                .forEach(returnType -> {
+                    ((Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies()).put(returnType.getName(), returnType);
+                });
 
         //增强处理
         this.enhancedProcessingMethod(commonCodeGenMethodMeta, javaMethodMeta, classMeta);

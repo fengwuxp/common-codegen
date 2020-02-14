@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegenBuilder {
 
 
-    private Swagger3FeignTypescriptCodegenBuilder() {
+    protected Swagger3FeignTypescriptCodegenBuilder() {
         super();
     }
 
