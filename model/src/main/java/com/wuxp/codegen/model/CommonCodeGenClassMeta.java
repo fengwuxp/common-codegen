@@ -94,7 +94,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 属性列表
      */
-    protected CommonCodeGenFiledMeta[] filedMetas;
+    protected CommonCodeGenFiledMeta[] fieldMetas;
 
     /**
      * 是否需要自动生成

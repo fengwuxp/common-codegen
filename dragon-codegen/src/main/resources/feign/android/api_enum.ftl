@@ -9,8 +9,8 @@ package ${packagePath?replace('.'+name,'')};
 public enum  ${name}{
 
 
-<#assign len=filedMetas?size/>
-<#list filedMetas as field>
+<#assign len=fieldMetas?size/>
+<#list fieldMetas as field>
     ${field.name}("${field.comments[0]}")<#if  field_has_next>,<#else>;</#if>
 </#list>
 

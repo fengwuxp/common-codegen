@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
     **/
 </#if>
 
-<#if filedMetas??>
+<#if fieldMetas??>
     <#list annotations as annotation>
         @${annotation.name}({
         <#list annotation.namedArguments as name,val>
@@ -35,8 +35,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
-<#if filedMetas??>
-    <#list filedMetas as field>
+<#if fieldMetas??>
+    <#list fieldMetas as field>
         /**
         <#list field.comments as cmment>
             *${cmment}

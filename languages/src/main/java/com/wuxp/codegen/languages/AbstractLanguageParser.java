@@ -317,7 +317,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         .toArray(new CommonCodeGenMethodMeta[]{}));
             } else {
                 // 普通的java bean DTO  生成属性列表
-                meta.setFiledMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
+                meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
                         .stream()
                         .filter(Objects::nonNull)
                         .toArray(CommonCodeGenFiledMeta[]::new));
@@ -783,15 +783,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 if (commonCodeGenClassMeta == null) {
                     return;
                 }
-                if (argsClassMeta.getFiledMetas() == null) {
+                if (argsClassMeta.getFieldMetas() == null) {
                     BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
                 } else {
                     //有多个复杂类型的参数，合并对象
-                    CommonCodeGenFiledMeta[] filedMetas = argsClassMeta.getFiledMetas();
+                    CommonCodeGenFiledMeta[] filedMetas = argsClassMeta.getFieldMetas();
                     List<CommonCodeGenFiledMeta> collect = Arrays.stream(filedMetas)
                             .collect(Collectors.toList());
-                    collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFiledMetas()));
-                    argsClassMeta.setFiledMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
+                    collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFieldMetas()));
+                    argsClassMeta.setFieldMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
                     //TODO 合并依赖
                 }
 
@@ -880,8 +880,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         });
         //3: 重组，使用第二步得到的列表构建一个信息的 TypescriptClassMeta对象，类型为typescript的interface
         argsClassMeta.setClassType(ClassType.INTERFACE);
-        if (argsClassMeta.getFiledMetas() != null) {
-            Arrays.asList(argsClassMeta.getFiledMetas()).forEach(genFiledMeta -> {
+        if (argsClassMeta.getFieldMetas() != null) {
+            Arrays.asList(argsClassMeta.getFieldMetas()).forEach(genFiledMeta -> {
                 F commonCodeGenFiledMeta = this.languageMetaInstanceFactory.newFieldInstance();
                 BeanUtils.copyProperties(genFiledMeta, commonCodeGenFiledMeta);
                 boolean isExist = commonCodeGenFiledMetas.stream()
@@ -895,7 +895,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
             });
         }
-        argsClassMeta.setFiledMetas(commonCodeGenFiledMetas.toArray(new CommonCodeGenFiledMeta[]{}));
+        argsClassMeta.setFieldMetas(commonCodeGenFiledMetas.toArray(new CommonCodeGenFiledMeta[]{}));
         if (!StringUtils.hasText(argsClassMeta.getName())) {
             //没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
             String name = MessageFormat.format("{0}{1}Req", this.packageMapStrategy.convertClassName(classMeta.getClazz()), ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));

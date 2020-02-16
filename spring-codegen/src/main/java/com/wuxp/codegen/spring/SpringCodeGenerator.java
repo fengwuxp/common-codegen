@@ -1,6 +1,5 @@
 package com.wuxp.codegen.spring;
 
-import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
@@ -54,7 +53,7 @@ public class SpringCodeGenerator extends AbstractCodeGenerator {
                 .filter(commonCodeGenClassMeta -> {
                     //过滤掉无效的数据
                     boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-                    boolean notFiled = commonCodeGenClassMeta.getFiledMetas() == null || commonCodeGenClassMeta.getFiledMetas().length == 0;
+                    boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
                     return !(notFiled && notMethod);
                 }).collect(Collectors.toList());
 

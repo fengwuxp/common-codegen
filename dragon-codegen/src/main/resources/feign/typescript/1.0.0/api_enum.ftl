@@ -11,7 +11,7 @@ export class ${name}{
 
 constructor() {}
 
-<#list filedMetas as field>
+<#list fieldMetas as field>
     public static readonly ${field.name}:Enum={
     name:"${field.name}",
     ordinal:${field_index},

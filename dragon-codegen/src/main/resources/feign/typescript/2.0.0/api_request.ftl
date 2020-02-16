@@ -15,7 +15,7 @@
     **/
 </#if>
 
-<#if filedMetas??>
+<#if fieldMetas??>
     <#list annotations as annotation>
         @${annotation.name}({
         <#list annotation.namedArguments as name,val>
@@ -26,8 +26,8 @@
 </#if>
 export interface  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
-<#if filedMetas??>
-    <#list filedMetas as field>
+<#if fieldMetas??>
+    <#list fieldMetas as field>
         /**
         <#list field.comments as cmment>
             *${cmment}

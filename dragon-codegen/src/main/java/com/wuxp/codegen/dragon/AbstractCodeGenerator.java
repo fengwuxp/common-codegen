@@ -5,20 +5,14 @@ import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -142,7 +136,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 .filter(commonCodeGenClassMeta -> {
                     //过滤掉无效的数据
                     boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-                    boolean notFiled = commonCodeGenClassMeta.getFiledMetas() == null || commonCodeGenClassMeta.getFiledMetas().length == 0;
+                    boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
                     return !(notFiled && notMethod);
                 }).collect(Collectors.toList());
 
@@ -154,9 +148,9 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     .filter(Objects::nonNull)
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
-                        if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFiledMetas() != null) {
+                        if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
                             //将方法参数字段名称设置为下划线
-                            Arrays.stream(commonCodeGenClassMeta.getFiledMetas()).forEach(commonCodeGenFiledMeta -> {
+                            Arrays.stream(commonCodeGenClassMeta.getFieldMetas()).forEach(commonCodeGenFiledMeta -> {
                                 commonCodeGenFiledMeta.setName(JavaMethodNameUtil.humpToLine(commonCodeGenFiledMeta.getName()));
                             });
                         }

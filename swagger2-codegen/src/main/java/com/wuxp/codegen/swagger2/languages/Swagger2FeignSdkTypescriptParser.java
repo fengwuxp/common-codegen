@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.lang.annotation.Annotation;
@@ -90,7 +89,7 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
         if (commonCodeGenClassMeta == null) {
             return;
         }
-        Arrays.stream(commonCodeGenClassMeta.getFiledMetas())
+        Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
                 .forEach(genFiledMeta -> {
                     final TypescriptFieldMate typescriptFieldMate = (TypescriptFieldMate) genFiledMeta;
                     final String name = typescriptFieldMate.getName();

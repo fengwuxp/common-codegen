@@ -5,7 +5,6 @@ import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractTypescriptParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.constant.SpringAnnotationClassConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
@@ -97,7 +96,7 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
         if (commonCodeGenClassMeta == null) {
             return;
         }
-        Arrays.stream(commonCodeGenClassMeta.getFiledMetas())
+        Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
                 .forEach(genFiledMeta -> {
                     final TypescriptFieldMate typescriptFieldMate = (TypescriptFieldMate) genFiledMeta;
                     final String name = typescriptFieldMate.getName();

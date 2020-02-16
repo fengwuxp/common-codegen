@@ -20,8 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.wuxp.codegen.spring.model.JavaSpringCodeGenClassMeta.*;
 
@@ -115,7 +113,7 @@ public class SpringTemplateStrategy implements TemplateStrategy<JavaSpringCodeGe
             String packagePath = entry.getValue();
             javaCodeGenClassMeta.setName(this.getClassName(packagePath));
             javaCodeGenClassMeta.setPackagePath(packagePath);
-            javaCodeGenClassMeta.setFiledMetas(meta.getFiledMetas());
+            javaCodeGenClassMeta.setFieldMetas(meta.getFieldMetas());
             // TODO 按照生成DTO的不同的类型过滤数据
 
             this.generateCodeFile(javaCodeGenClassMeta, dtoTemplate);
