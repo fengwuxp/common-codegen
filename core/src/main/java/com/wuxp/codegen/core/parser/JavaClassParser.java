@@ -494,7 +494,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     /**
      * 获取类类型及其泛型
-     *
      * @param resolvableType
      * @return
      */
@@ -505,12 +504,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         for (int i = 0; i < generics.length; i++) {
             ResolvableType generic = generics[i];
-            Class<?>[] resolveGenerics = generic.resolveGenerics();
-            classes.add(generic.resolve());
-            //
-            if (resolveGenerics != null && resolveGenerics.length > 0) {
-                classes.addAll(Arrays.asList(resolveGenerics));
-            }
+//            Class<?>[] resolveGenerics = generic.resolveGenerics();
+//            classes.add(generic.resolve());
+//            if (resolveGenerics.length > 0) {
+//                classes.addAll(Arrays.asList(resolveGenerics));
+//            }
+            classes.addAll(Arrays.asList(this.genericsToClassType(generic)));
         }
 
         return classes.stream()

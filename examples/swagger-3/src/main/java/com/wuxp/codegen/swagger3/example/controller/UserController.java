@@ -2,6 +2,8 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 
 import com.wuxp.codegen.swagger3.example.domain.User;
+import com.wuxp.codegen.swagger3.example.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
@@ -10,6 +12,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -73,5 +76,28 @@ public class UserController {
         stringStringHashMap.put("aH2", "112");
         return stringStringHashMap;
     }
+
+
+    @RequestMapping(value = "/test2", method = RequestMethod.GET)
+    public ServiceResponse<List<PageInfo<User>>> test4(Long id) {
+
+        return null;
+    }
+    @RequestMapping(value = "/test5", method = RequestMethod.GET)
+    public Map<PageInfo<User>, List<PageInfo<User>>> test5(Long id) {
+        HashMap<String, Object> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("userName", "id");
+        stringStringHashMap.put("aH2", "112");
+        return null;
+    }
+
+    @RequestMapping(value = "/test6", method = RequestMethod.GET)
+    public Map<PageInfo<User[]>, List<PageInfo<User[]>>> test6(Long id) {
+        HashMap<String, Object> stringStringHashMap = new HashMap<>();
+        stringStringHashMap.put("userName", "id");
+        stringStringHashMap.put("aH2", "112");
+        return null;
+    }
+
 
 }

@@ -19,6 +19,38 @@ public final class GrabGenericVariablesHelper {
 
     private static final Pattern GENERIC_PATTERN = Pattern.compile(GENERIC_DESCRIPTOR);
 
+    // 泛型占位符
+    public static final String GENERIC_PLACEHOLDER = "&&";
+
+    private static Pattern GENERIC_PLACEHOLDER_REGEX = Pattern.compile(GENERIC_PLACEHOLDER);
+
+
+    /**
+     * 抓取泛型描述符列表 例如：Map<K,V> ==>[K,V]
+     *
+     * @param genericDescription
+     * @return
+     */
+    public static List<String> matchGenericDescriptorPlaceholders(String genericDescription) {
+        if (!StringUtils.hasText(genericDescription) || !genericDescription.contains("<")) {
+            return new ArrayList<>();
+        }
+
+        Matcher matcher = GENERIC_PLACEHOLDER_REGEX.matcher(genericDescription);
+        List<String> list = new ArrayList<>();
+        if (matcher.find()) {
+            list.add(matcher.group());
+        }
+        if (!list.isEmpty()) {
+            return Collections.unmodifiableList(list);
+        }
+
+
+        return Collections.unmodifiableList(grabGenericVariables(genericDescription).stream()
+                .map(s -> GENERIC_PLACEHOLDER)
+                .collect(Collectors.toList()));
+    }
+
     /**
      * 抓取泛型描述符列表 例如：Map<K,V> ==>[K,V]
      *
@@ -30,6 +62,28 @@ public final class GrabGenericVariablesHelper {
             return new ArrayList<>();
         }
         return Collections.unmodifiableList(grabGenericVariables(genericDescription));
+    }
+
+    /**
+     * 是否存在泛型描述符或占位符
+     *
+     * @param genericDescription
+     * @return
+     */
+    public static boolean existGenericDescriptorPlaceholders(String genericDescription) {
+        return !matchGenericDescriptorPlaceholders(genericDescription).isEmpty();
+    }
+
+    /**
+     * 尝试将泛型变量转换为 占位符
+     *
+     * @param typeVariableName
+     * @return
+     */
+    public static String tryConverterTypeVariableToPlaceholder(String typeVariableName) {
+        List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(typeVariableName);
+        List<String> placeholders = GrabGenericVariablesHelper.matchGenericDescriptorPlaceholders(typeVariableName);
+        return typeVariableName.replaceAll("<" + String.join(",", descriptors) + ">", "<" + String.join(",", placeholders) + ">");
     }
 
 
@@ -88,7 +142,7 @@ public final class GrabGenericVariablesHelper {
     }
 
     /**
-     * 是否存在泛型变量
+     * 是否为泛型变量
      *
      * @param genericDescriptor
      * @return

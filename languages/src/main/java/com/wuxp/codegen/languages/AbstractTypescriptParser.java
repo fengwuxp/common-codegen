@@ -103,7 +103,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     }
                     Class<?> keyClazz = newTypes.get(i1);
                     if (!JavaTypeUtil.isJavaBaseType(keyClazz)) {
-                        newTypes.set(i1, Object.class);
+                        // TODO 如果map的key不是基础数据类
+//                        newTypes.set(i1, Object.class);
                     }
                     break;
                 }
