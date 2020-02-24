@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.wuxp.codegen.helper.GrabGenericVariablesHelper.GENERIC_PLACEHOLDER;
 
 /**
  * 简单的类型合并描述
@@ -56,17 +55,32 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
                 .map(codeGenClassMeta -> this.combine(new CommonCodeGenClassMeta[]{codeGenClassMeta}))
                 .collect(Collectors.toList()));
 
-        log.debug("生成的泛型描述为：{}", genericDescription);
+        if (log.isDebugEnabled()) {
+            log.debug("生成的泛型描述为：{}", genericDescription);
+        }
 
         return genericDescription;
     }
 
 
     /**
-     * 合并类型描述
+     * 合并泛型描述
      *
-     * @param names
-     * @return
+     * <p>
+     * example:
+     * names.add("Promise<K>");
+     * names.add("Map<K,V>");
+     * names.add("PageInfo<T>");
+     * names.add("User");
+     * names.add("List<T>");
+     * names.add("Page<T>");
+     * names.add("Member");
+     * strategy.combineTypes(names)
+     * 输出： Promise<Map<PageInfo<User>,List<Page<Member>>>>
+     * </p>
+     *
+     * @param names 泛型描述列表
+     * @return 完整的泛型描述
      */
     public String combineTypes(List<String> names) {
         int size = names.size();
@@ -77,31 +91,32 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             return names.get(0);
         }
 
-        //使用两两合并的方式处理
+
+        // 使用从后向前合并的方式
         //例如 ：List<T>,Map<K,PageInfo<T>>,String,User
         // ==> List<Map<K,PageInfo<T>>>,String,User
         // ==> List<Map<String,PageInfo<T>>>,User
         // ==> List<Map<String,PageInfo<User>>>
 
-        // 如果是Map多其他具有多个泛型变量的描述 使用从左向右的方式递归合并
-
-
         Stack<String> typeVariableTempStack = new Stack<>();
-        Stack<String> typeVariableStack = new Stack<>();
-        Collections.reverse(names);
         typeVariableTempStack.addAll(names);
+        // 用来保存合并好的或没有泛型的变量名称
+        Stack<String> finallyTypeVariableNameStack = new Stack<>();
+
         while (!typeVariableTempStack.isEmpty()) {
-            String name = typeVariableTempStack.pop();
-            typeVariableStack.push(name);
-            List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptorPlaceholders(name);
-            if (descriptors.isEmpty()) {
-                // 如果不存在，合并前面的泛型变量
-                String typeVariableName = this.replaceTypeVariableName(typeVariableStack);
-                if (typeVariableName.equals(name)) {
-                    // 合并结束
-                    return typeVariableName;
+            String typeVariableName = typeVariableTempStack.pop();
+            finallyTypeVariableNameStack.push(typeVariableName);
+            if (GrabGenericVariablesHelper.existGenericDescriptors(typeVariableName)) {
+                // 存在泛型变量
+                String variableName = this.replaceGenericDescriptor(finallyTypeVariableNameStack);
+                // 加入临时栈
+                typeVariableTempStack.push(variableName);
+                if (typeVariableTempStack.size() == 1) {
+                    return typeVariableTempStack.pop();
                 }
-                typeVariableTempStack.add(typeVariableName);
+            } else {
+                // 不存在
+
             }
         }
 
@@ -111,27 +126,6 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
 
     /**
-     * 替换泛型变量
-     *
-     * @param typeVariableNames
-     * @return
-     */
-    private String replaceTypeVariableName(Stack<String> typeVariableNames) {
-
-        Stack<String> temp = new Stack<>();
-
-        while (!typeVariableNames.isEmpty()) {
-            String typeNme = typeVariableNames.pop();
-            temp.push(typeNme);
-            if (GrabGenericVariablesHelper.existGenericDescriptorPlaceholders(typeNme)) {
-                String genericDescriptor = this.replaceGenericDescriptor(temp);
-                temp.push(genericDescriptor);
-            }
-        }
-        return temp.pop();
-    }
-
-    /**
      * 替换泛型描述符
      *
      * @param typeVariableNames
@@ -139,22 +133,16 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
      */
     private String replaceGenericDescriptor(Stack<String> typeVariableNames) {
         String typeVariableName = typeVariableNames.pop();
-        List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptorPlaceholders(typeVariableName);
+        List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(typeVariableName);
         if (descriptors.isEmpty()) {
             // 没有有泛型描述变量
             throw new RuntimeException("match generic descriptor failure");
         }
-        typeVariableName = GrabGenericVariablesHelper.tryConverterTypeVariableToPlaceholder(typeVariableName);
         List<String> names = new ArrayList<>();
-        while (!typeVariableNames.isEmpty()) {
+        descriptors.forEach(s -> {
             names.add(typeVariableNames.pop());
-        }
-        int size = names.size();
-        int i = descriptors.size() - size;
-        while (--i >= 0) {
-            // 补全
-            names.add(GENERIC_PLACEHOLDER);
-        }
+        });
+
         return this.replaceGenericDescCode(typeVariableName, descriptors, names);
     }
 
@@ -162,20 +150,15 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
     /**
      * 替换泛型描述代码
      *
-     * @param genericDescription
-     * @param descriptors
-     * @param typeVariables
-     * @return
+     * @param genericDescription 泛型描述，例如： Map<K,V>
+     * @param descriptors        泛型变量列表，例如：[K,V]
+     * @param typeVariables      泛型变量的值，例如：[String,String]
+     * @return 完整的泛型描述，例如：Map<String,String>
      */
     private String replaceGenericDescCode(String genericDescription, List<String> descriptors, List<String> typeVariables) {
         //精确匹配<T>
-//        return genericDescription.replaceAll("<" + String.join(",", descriptors) + ">", "<" + replaceName + ">");
+        return genericDescription.replaceAll("<" + String.join(",", descriptors) + ">", "<" + String.join(",", typeVariables) + ">");
 
-        for (String typeVariable : typeVariables) {
-
-            genericDescription = genericDescription.replaceFirst(GENERIC_PLACEHOLDER, typeVariable);
-        }
-        return genericDescription;
     }
 
 

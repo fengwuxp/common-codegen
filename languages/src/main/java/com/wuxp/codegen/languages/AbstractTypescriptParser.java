@@ -105,6 +105,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                     if (!JavaTypeUtil.isJavaBaseType(keyClazz)) {
                         // TODO 如果map的key不是基础数据类
 //                        newTypes.set(i1, Object.class);
+                        log.error("类 {} 的 {} 方法的返回值Map类型的key不是基础数据类型或字符串", classMeta.getName(), javaMethodMeta.getName());
                     }
                     break;
                 }
