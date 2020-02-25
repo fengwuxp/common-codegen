@@ -20,12 +20,15 @@ import java.util.stream.Collectors;
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
 
-    public static final String ARRAY_TYPE_NAME = "T[]";
+    /**
+     * 数组类型的名称前缀
+     */
+    public static final String ARRAY_TYPE_NAME_PREFIX = "T[]";
 
     /**
      * 数组
      */
-    public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME, null, ClassType.INTERFACE, false, null, null, false, false);
+    public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME_PREFIX, null, ClassType.INTERFACE, false, null, null, false, false);
 
 
     /**

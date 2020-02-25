@@ -56,13 +56,6 @@ public class JavaTypeMapping extends CommonTypeMapping<JavaCodeGenClassMeta> {
         super(languageParser);
     }
 
-    @Override
-    protected List<Class<?>> handleArray(Class<?> clazz) {
-        List<Class<?>> list = new ArrayList<>();
-        //数组
-        list.add(clazz);
-        return list;
-    }
 
     @Override
     protected JavaCodeGenClassMeta getAnyOrObjectType() {

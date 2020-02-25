@@ -8,8 +8,11 @@ import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.wuxp.codegen.model.CommonCodeGenClassMeta.ARRAY_TYPE_NAME_PREFIX;
 
 
 /**
@@ -112,8 +115,20 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
         if (clazz.isArray()) {
             //数组
             C array = this.languageParser.getLanguageMetaInstanceFactory().newClassInstance();
-            BeanUtils.copyProperties( CommonCodeGenClassMeta.ARRAY,array);
-            array.setTypeVariables(new CommonCodeGenClassMeta[]{this.mapping(clazz.getComponentType())});
+            BeanUtils.copyProperties(CommonCodeGenClassMeta.ARRAY, array);
+
+            // 计算数组类型的深度
+            Class<?> componentType = clazz.getComponentType();
+            List<String> componentTypes = new ArrayList<>();
+            while (componentType.isArray()) {
+                componentTypes.add("[]");
+                componentType = componentType.getComponentType();
+            }
+            array.setTypeVariables(new CommonCodeGenClassMeta[]{this.mapping(componentType)});
+            if (!componentTypes.isEmpty()) {
+                // 如果数组的维度大于一，重新生成数组类型的名称
+                array.setName(MessageFormat.format("{0}{1}", ARRAY_TYPE_NAME_PREFIX, String.join("", componentTypes)));
+            }
             return array;
 
         }
@@ -159,8 +174,7 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
     protected List<Class<?>> handleArray(Class<?> clazz) {
         List<Class<?>> list = new ArrayList<>();
         //数组
-        list.add(List.class);
-        list.add(clazz.getComponentType());
+        list.add(clazz);
         return list;
     }
 
@@ -198,4 +212,5 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
         }
         return null;
     }
+
 }

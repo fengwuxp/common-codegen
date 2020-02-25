@@ -11,6 +11,7 @@ import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger3.example.controller.HelloController;
 import com.wuxp.codegen.swagger3.example.controller.OrderController;
 import com.wuxp.codegen.swagger3.example.controller.UserController;
+import com.wuxp.codegen.swagger3.example.domain.User;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
@@ -77,7 +78,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
     @Test
     public void testJavaParser() {
 
-        JavaClassMeta parse = new JavaClassParser(false).parse(UserController.class);
+        JavaClassMeta parse = new JavaClassParser(false).parse(User.class);
 
         log.debug("{}", parse);
     }

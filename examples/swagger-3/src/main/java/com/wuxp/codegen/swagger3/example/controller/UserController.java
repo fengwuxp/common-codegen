@@ -83,21 +83,26 @@ public class UserController {
 
         return null;
     }
+
     @RequestMapping(value = "/test5", method = RequestMethod.GET)
     public Map<PageInfo<User>, List<PageInfo<User>>> test5(Long id) {
-        HashMap<String, Object> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("userName", "id");
-        stringStringHashMap.put("aH2", "112");
         return null;
     }
 
     @RequestMapping(value = "/test6", method = RequestMethod.GET)
     public Map<PageInfo<User[]>, List<PageInfo<User[]>>> test6(Long id) {
-        HashMap<String, Object> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put("userName", "id");
-        stringStringHashMap.put("aH2", "112");
         return null;
     }
 
+    @RequestMapping(value = "/test7", method = RequestMethod.GET)
+    public Map<PageInfo<User[][]>, List<PageInfo<User[][]>>> test7(Long id) {
 
+        return null;
+    }
+
+    @RequestMapping(value = "/test8", method = RequestMethod.GET)
+    public Map<String[], String[][][][]> test8(Long id) {
+
+        return null;
+    }
 }

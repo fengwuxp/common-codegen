@@ -35,6 +35,10 @@ public class User {
 
     private String myFriends;
 
+    private String[][] demos;
+
+    private String[][][] demos2;
+
 
     public Boolean isBoy() {
         return false;

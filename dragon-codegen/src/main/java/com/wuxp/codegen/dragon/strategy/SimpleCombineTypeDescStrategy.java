@@ -27,7 +27,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         CommonCodeGenClassMeta genClassMeta = codeGenClassMetas[0];
 
         String metaName = genClassMeta.getName();
-        if (metaName.equals(CommonCodeGenClassMeta.ARRAY_TYPE_NAME)) {
+        if (metaName.startsWith(CommonCodeGenClassMeta.ARRAY_TYPE_NAME_PREFIX)) {
             //数组
             CommonCodeGenClassMeta[] typeVariables = genClassMeta.getTypeVariables();
             return metaName.replace("T", typeVariables[0].getName());
