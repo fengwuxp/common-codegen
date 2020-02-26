@@ -790,9 +790,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                             return false;
                         }
                         if (argsClassMeta.getFieldMetas() == null) {
-//                            BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
                             argsClassMeta.setFieldMetas(commonCodeGenClassMeta.getFieldMetas());
-//                            argsClassMeta.setDependencies(commonCodeGenClassMeta.getDependencies());
                             return true;
                         } else {
                             //有多个复杂类型的参数，合并对象
@@ -801,18 +799,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                     .collect(Collectors.toList());
                             collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFieldMetas()));
                             argsClassMeta.setFieldMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
-//                            Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
-//                            commonCodeGenClassMeta.getDependencies().forEach((k, val) -> {
-//                                Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
-//                                dependencies.put(k, (C) val);
-//                            });
 
-                            //TODO 合并依赖
                         }
                         return true;
                     }).filter(flag -> flag)
                     .findFirst();
 
+            // 合并依赖
             Set<Class<?>> otherDependencies = new HashSet<>(Arrays.asList(classes));
             this.fetchDependencies(otherDependencies).forEach((k, v) -> {
                 Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
@@ -988,7 +981,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(Objects::nonNull)
                 .map(c -> {
                     Map<String, ? extends CommonCodeGenClassMeta> cDependencies = c.getDependencies();
-                    List<C> cs = new ArrayList<>( (Collection<C>) cDependencies.values());
+                    List<C> cs = new ArrayList<>((Collection<C>) cDependencies.values());
                     cs.add(c);
                     return cs;
                 })
