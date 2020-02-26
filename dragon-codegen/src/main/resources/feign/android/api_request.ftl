@@ -1,8 +1,5 @@
 package ${packagePath?replace('.'+name,'')};
 
-import com.levin.commons.service.domain.Sign;
-import com.oaknt.android.sign.NeedSignEvt;
-import com.oaknt.common.service.support.model.ServiceEvt;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

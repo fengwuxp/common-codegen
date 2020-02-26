@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,6 +89,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 //        }
 
         String value;
+
         if (this.pathMatcher.isPattern(key)) {
             //TODO 支持 {0}a{2}模式
             //转换为正则表达式
@@ -99,6 +101,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
                 log.warn("包名替换--> {}, {}", s, Arrays.toString(strings));
             }
             if (val.contains("{0}")) {
+                // 替换占位符
                 val = MessageFormat.format(val, s + ".");
             }
             value = clazzName.replace(packageNames, val);

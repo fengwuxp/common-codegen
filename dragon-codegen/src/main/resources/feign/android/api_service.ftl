@@ -1,5 +1,3 @@
-import com.oaknt.common.service.support.model.ServiceQueryResp;
-import com.oaknt.common.service.support.model.ServiceResp;
 import io.reactivex.Observable;
 import retrofit2.http.*;
 
