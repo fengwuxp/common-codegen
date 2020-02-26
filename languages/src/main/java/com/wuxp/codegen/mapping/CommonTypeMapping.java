@@ -1,5 +1,6 @@
 package com.wuxp.codegen.mapping;
 
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -7,6 +8,7 @@ import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.ResolvableType;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -40,30 +42,22 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
             return new ArrayList<>();
         }
 
-
+        //数组
+//        boolean isArray = JavaArrayClassType.class.equals(lastClazz);
         //1. 类型转换，如果是简单的java类型，则尝试做装换
         //2. 处理枚举类型
         //3. 循环获取泛型
         //4. 处理复杂的数据类型（自定义的java类）
-        List<C> classMetas = (List<C>) Arrays.stream(classes)
+        List<C> classMetas = classMetas = Arrays.stream(classes)
                 .filter(Objects::nonNull)
                 .map(customizeJavaTypeMapping::mapping)
-                .flatMap(Collection::stream)
-                .map(clazz -> {
-                    List<Class<?>> list = new ArrayList<>();
-                    if (clazz.isArray()) {
-                        list = this.handleArray(clazz);
-                    } else {
-                        list.add(clazz);
-                    }
-                    return list;
-                })
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .map(this::mapping)
                 .filter(Objects::nonNull)
                 .map(commonCodeGenClassMeta -> (C) commonCodeGenClassMeta)
                 .collect(Collectors.toList());
+
 
         //匹配泛型的个数是否充足，不足的用any补足
         int index = 0;
@@ -112,26 +106,33 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
      */
     protected C mapping(Class<?> clazz) {
 
-        if (clazz.isArray()) {
-            //数组
+        if (JavaArrayClassTypeMark.class.equals(clazz)) {
+            // 标记的数据数组类型
             C array = this.languageParser.getLanguageMetaInstanceFactory().newClassInstance();
             BeanUtils.copyProperties(CommonCodeGenClassMeta.ARRAY, array);
-
-            // 计算数组类型的深度
-            Class<?> componentType = clazz.getComponentType();
-            List<String> componentTypes = new ArrayList<>();
-            while (componentType.isArray()) {
-                componentTypes.add("[]");
-                componentType = componentType.getComponentType();
-            }
-            array.setTypeVariables(new CommonCodeGenClassMeta[]{this.mapping(componentType)});
-            if (!componentTypes.isEmpty()) {
-                // 如果数组的维度大于一，重新生成数组类型的名称
-                array.setName(MessageFormat.format("{0}{1}", ARRAY_TYPE_NAME_PREFIX, String.join("", componentTypes)));
-            }
             return array;
-
         }
+        if (clazz.isArray()) {
+            //数组
+//            C array = this.languageParser.getLanguageMetaInstanceFactory().newClassInstance();
+//            BeanUtils.copyProperties(CommonCodeGenClassMeta.ARRAY, array);
+//
+//            // 计算数组类型的深度
+//            Class<?> componentType = clazz.getComponentType();
+//            List<String> componentTypes = new ArrayList<>();
+//            while (componentType.isArray()) {
+//                componentTypes.add("[]");
+//                componentType = componentType.getComponentType();
+//            }
+//            array.setTypeVariables(new CommonCodeGenClassMeta[]{this.mapping(componentType)});
+//            if (!componentTypes.isEmpty()) {
+//                // 如果数组的维度大于一，重新生成数组类型的名称
+//                array.setName(MessageFormat.format("{0}{1}", ARRAY_TYPE_NAME_PREFIX, String.join("", componentTypes)));
+//            }
+//            return array;
+            throw new RuntimeException("not support array type");
+        }
+
 
         C commonCodeGenClassMeta = (C) baseTypeMapping.mapping(clazz);
         if (commonCodeGenClassMeta != null) {
@@ -213,4 +214,39 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
         return null;
     }
 
+    /**
+     * 获取类类型及其泛型
+     *
+     * @param clazz
+     * @return
+     */
+    protected Class<?>[] genericsToClassType(Class<?> clazz) {
+        ResolvableType resolvableType = ResolvableType.forClass(clazz);
+        while (resolvableType.isArray()) {
+            resolvableType = resolvableType.getComponentType();
+        }
+        Class<?>[] classes = this.genericsToClassType(resolvableType);
+        return classes;
+
+    }
+
+    /**
+     * 获取类类型及其泛型
+     *
+     * @param resolvableType
+     * @return
+     */
+    private Class<?>[] genericsToClassType(ResolvableType resolvableType) {
+        ResolvableType[] generics = resolvableType.getGenerics();
+        List<Class<?>> classes = new ArrayList<>();
+        classes.add(resolvableType.getRawClass());
+        for (int i = 0; i < generics.length; i++) {
+            ResolvableType generic = generics[i];
+            classes.addAll(Arrays.asList(genericsToClassType(generic)));
+        }
+
+        return classes.stream()
+                .filter(Objects::nonNull)
+                .toArray(Class<?>[]::new);
+    }
 }

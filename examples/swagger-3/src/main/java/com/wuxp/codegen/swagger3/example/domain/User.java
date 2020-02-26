@@ -39,6 +39,8 @@ public class User {
 
     private String[][][] demos2;
 
+    private Map<Sex[], String[][][]>[][][] demos3;
+
 
     public Boolean isBoy() {
         return false;

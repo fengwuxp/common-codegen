@@ -14,8 +14,10 @@ public class IgnoreClassCodeGenMatcher implements CodeGenMatcher {
     private final List<Class<?>> ignoreClass;
 
 
+
     public IgnoreClassCodeGenMatcher(Class<?>[] ignoreClass) {
         this.ignoreClass = ignoreClass == null ? Collections.EMPTY_LIST : Arrays.asList(ignoreClass);
+
     }
 
     @Override

@@ -27,20 +27,20 @@ public class UserController {
     }
 
 
-//    @ApiOperation(value = "获取用户列表", notes = "")
-//    @RequestMapping(value = {""}, method = RequestMethod.GET)
-//    public List<User> getUserList() {
-//        List<User> r = new ArrayList<User>(users.values());
-//        return r;
-//    }
+    @ApiOperation(value = "获取用户列表", notes = "")
+    @RequestMapping(value = {""}, method = RequestMethod.GET)
+    public List<User> getUserList() {
+        List<User> r = new ArrayList<User>(users.values());
+        return r;
+    }
 
-//    @ApiOperation(value = "创建用户", notes = "根据User对象创建用户")
-//    @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
-//    @RequestMapping(value = "", method = RequestMethod.POST)
-//    public String postUser(@RequestBody User user) {
-//        users.put(user.getId(), user);
-//        return "success";
-//    }
+    @ApiOperation(value = "创建用户", notes = "根据User对象创建用户")
+    @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public String postUser(@RequestBody User user) {
+        users.put(user.getId(), user);
+        return "success";
+    }
 
     @ApiOperation(value = "获取用户详细信息", notes = "根据url的id来获取用户详细信息")
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
@@ -78,12 +78,12 @@ public class UserController {
         return "success";
     }
 
-//    @ApiOperation(value = "sample", notes = "sample")
-//    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
-//    @RequestMapping(value = "sample", method = RequestMethod.GET)
-//    public Map<String, User> sampleMap(Long[] ids, String name) {
-//        return null;
-//    }
+    @ApiOperation(value = "sample", notes = "sample")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
+    @RequestMapping(value = "sample2", method = RequestMethod.GET)
+    public Map<String, User> sampleMap(Long[] ids, String name, Map<String, String[]>[] testParam) {
+        return null;
+    }
 
     @ApiOperation(value = "文件上传", notes = "uploadFile")
     @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "CommonsMultipartFile")

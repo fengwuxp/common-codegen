@@ -23,6 +23,7 @@ import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
@@ -492,7 +493,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (classes == null || classes.length == 0) {
             return new ArrayList<>();
         }
-        return Arrays.stream(classes).map(clazz -> (isMethod ? "返回值" : "") + "在java中的类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
+        return Arrays.stream(classes)
+                .filter(Objects::nonNull)
+                .map(clazz -> (isMethod ? "返回值" : "") + "在java中的类型为：" + clazz.getSimpleName()).collect(Collectors.toList());
     }
 
 
@@ -507,7 +510,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return "";
         }
 
-        return Arrays.stream(classes).map(Class::getName).collect(Collectors.joining(","));
+        return Arrays.stream(classes)
+                .filter(Objects::nonNull)
+                .map(Class::getName).collect(Collectors.joining(","));
     }
 
     /**
@@ -770,110 +775,90 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         //参数的元数据类型信息
         final C argsClassMeta = this.languageMetaInstanceFactory.newClassInstance();
-//        List<C> argsClassMetas = new ArrayList<>();
-
 
         effectiveParams.forEach((key, classes) -> {
+            Optional<Boolean> isNext = Arrays.stream(classes)
+                    .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
+                    .filter(clazz -> !clazz.isEnum())
+                    .map(clazz -> {
+                        if (!JavaTypeUtil.isNoneJdkComplex(clazz)) {
+                            return false;
+                        }
+                        //非jdk中的复杂对象
+                        C commonCodeGenClassMeta = this.parse(clazz);
+                        if (commonCodeGenClassMeta == null) {
+                            return false;
+                        }
+                        if (argsClassMeta.getFieldMetas() == null) {
+//                            BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
+                            argsClassMeta.setFieldMetas(commonCodeGenClassMeta.getFieldMetas());
+                            return true;
+                        } else {
+                            //有多个复杂类型的参数，合并对象
+                            CommonCodeGenFiledMeta[] filedMetas = argsClassMeta.getFieldMetas();
+                            List<CommonCodeGenFiledMeta> collect = Arrays.stream(filedMetas)
+                                    .collect(Collectors.toList());
+                            collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFieldMetas()));
+                            argsClassMeta.setFieldMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
+                            //TODO 合并依赖
+                        }
+                        return true;
+                    }).filter(flag -> flag)
+                    .findFirst();
+            if (isNext.isPresent() && Boolean.TRUE.equals(isNext.get())) {
+                return;
+            }
 
-            Class<?> clazz = classes[0];
-
-            if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
-                //非jdk中的复杂对象
-                C commonCodeGenClassMeta = this.parse(clazz);
-                if (commonCodeGenClassMeta == null) {
-                    return;
-                }
-                if (argsClassMeta.getFieldMetas() == null) {
-                    BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
-                } else {
-                    //有多个复杂类型的参数，合并对象
-                    CommonCodeGenFiledMeta[] filedMetas = argsClassMeta.getFieldMetas();
-                    List<CommonCodeGenFiledMeta> collect = Arrays.stream(filedMetas)
-                            .collect(Collectors.toList());
-                    collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFieldMetas()));
-                    argsClassMeta.setFieldMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
-                    //TODO 合并依赖
-                }
-
-
-            } else if (clazz.isEnum()) {
-                //枚举
-                F fieldMate = this.languageMetaInstanceFactory.newFieldInstance();
-                commonCodeGenFiledMetas.add(fieldMate);
-
-            } else {
-
-                Set<Class<?>> otherDependencies = new HashSet<>();
-
-                if (clazz.isArray()) {
-                    //数组
-                    otherDependencies.add(clazz.getComponentType());
-                } else if (JavaTypeUtil.isCollection(clazz)) {
-                    //集合
-                    otherDependencies.addAll(Arrays.asList(classes));
-                } else if (JavaTypeUtil.isMap(clazz)) {
-                    //map
-                    otherDependencies.addAll(Arrays.asList(classes));
-                } else if (JavaTypeUtil.isJavaBaseType(clazz)) {
-                    //简单数据类型
-                } else if (JavaTypeUtil.isFileUploadObject(clazz)) {
-                    //文件上传对象
-
-                } else {
-                    log.warn("未处理的类型{}", clazz.getName());
-                }
-
-                this.fetchDependencies(otherDependencies).forEach((k, v) -> {
-                    Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
-                    dependencies.put(k, v);
-                });
-
-                //注释
-                Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
+            Set<Class<?>> otherDependencies = new HashSet<>(Arrays.asList(classes));
+            this.fetchDependencies(otherDependencies).forEach((k, v) -> {
+                Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
+                dependencies.put(k, v);
+            });
+            //注释
+            Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
 
 
-                JavaFieldMeta javaFieldMeta = new JavaFieldMeta();
-                javaFieldMeta.setTypes(classes)
-                        .setIsTransient(false)
-                        .setIsVolatile(false);
-                javaFieldMeta.setAccessPermission(AccessPermission.PUBLIC);
-                javaFieldMeta.setAnnotations(annotations);
-                javaFieldMeta.setName(key);
+            JavaFieldMeta javaFieldMeta = new JavaFieldMeta();
+            javaFieldMeta.setTypes(classes)
+                    .setIsTransient(false)
+                    .setIsVolatile(false);
+            javaFieldMeta.setAccessPermission(AccessPermission.PUBLIC);
+            javaFieldMeta.setAnnotations(annotations);
+            javaFieldMeta.setName(key);
 
 
-                F commonCodeGenFiledMeta = this.converterField(javaFieldMeta, classMeta);
+            F commonCodeGenFiledMeta = this.converterField(javaFieldMeta, classMeta);
 
-                if (commonCodeGenFiledMeta == null) {
-                    return;
-                }
+            if (commonCodeGenFiledMeta == null) {
+                return;
+            }
 
-                this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
-                commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
-                if (annotations == null) {
-                    return;
-                }
+            this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
+            commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
+            if (annotations == null) {
+                return;
+            }
 
-                //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
-                RequestParam requestParam = Arrays.stream(annotations)
-                        .filter(annotation -> annotation.annotationType().equals(RequestParam.class))
-                        .map(annotation -> (RequestParam) annotation)
-                        .findFirst()
-                        .orElse(null);
-                if (requestParam == null) {
-                    return;
-                }
-                String name = requestParam.value();
-                if (!StringUtils.hasText(name)) {
-                    name = requestParam.name();
-                }
-                if (StringUtils.hasText(name)) {
-                    commonCodeGenFiledMeta.setName(name);
-                }
-                if (commonCodeGenFiledMeta instanceof TypescriptFieldMate) {
-                    TypescriptFieldMate codeGenFiledMeta = (TypescriptFieldMate) commonCodeGenFiledMeta;
-                    if (!Boolean.TRUE.equals(codeGenFiledMeta.getRequired())) {
-                        codeGenFiledMeta.setRequired(requestParam.required());
-                    }
+            //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
+            RequestParam requestParam = Arrays.stream(annotations)
+                    .filter(annotation -> annotation.annotationType().equals(RequestParam.class))
+                    .map(annotation -> (RequestParam) annotation)
+                    .findFirst()
+                    .orElse(null);
+            if (requestParam == null) {
+                return;
+            }
+            String name = requestParam.value();
+            if (!StringUtils.hasText(name)) {
+                name = requestParam.name();
+            }
+            if (StringUtils.hasText(name)) {
+                commonCodeGenFiledMeta.setName(name);
+            }
+            if (commonCodeGenFiledMeta instanceof TypescriptFieldMate) {
+                TypescriptFieldMate codeGenFiledMeta = (TypescriptFieldMate) commonCodeGenFiledMeta;
+                if (!Boolean.TRUE.equals(codeGenFiledMeta.getRequired())) {
+                    codeGenFiledMeta.setRequired(requestParam.required());
                 }
             }
 

@@ -120,9 +120,8 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
         }
 
         //处理返回值
-        List<JavaCodeGenClassMeta> returnTypes = this.typeMapping.mapping(javaMethodMeta.getReturnType());
-
-
+        Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
+        List<JavaCodeGenClassMeta> returnTypes = this.typeMapping.mapping(methodMetaReturnType);
         if (this.useAsync) {
             // 使用异步处理
             if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
@@ -138,7 +137,7 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
             throw new RuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",
                     classMeta.getClassName(),
                     javaMethodMeta.getName(),
-                    this.classToNamedString(javaMethodMeta.getReturnType())));
+                    this.classToNamedString(methodMetaReturnType)));
         }
 
         returnTypes.stream()

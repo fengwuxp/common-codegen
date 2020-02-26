@@ -1,7 +1,9 @@
 package com.wuxp.codegen.swagger3.example.controller;
 
 
+import com.wuxp.codegen.swagger3.example.domain.Order;
 import com.wuxp.codegen.swagger3.example.domain.User;
+import com.wuxp.codegen.swagger3.example.enums.Sex;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +43,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public String putUser(@PathVariable Long id, @RequestBody User user) {
+    public String putUser(@PathVariable Long id, @RequestBody User user, @RequestBody Order order) {
         User u = users.get(id);
         u.setName(user.getName());
         u.setAge(user.getAge());
@@ -61,6 +63,20 @@ public class UserController {
     public String sample(Long[] ids, String name) {
         return "success";
     }
+
+    @RequestMapping(value = "sample3", method = RequestMethod.GET)
+    public String[] sample2(Long[] ids, String name) {
+        return null;
+    }
+
+    @RequestMapping(value = "sample2", method = RequestMethod.GET)
+    public Map<String, User[]>[] sampleMap(Long[] ids,
+                                           String name,
+                                           Sex sex,
+                                           Map<String, String[]>[] testParam) {
+        return null;
+    }
+
 
 
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -102,6 +118,12 @@ public class UserController {
 
     @RequestMapping(value = "/test8", method = RequestMethod.GET)
     public Map<String[], String[][][][]> test8(Long id) {
+
+        return null;
+    }
+
+    @RequestMapping(value = "/test9", method = RequestMethod.GET)
+    public Map<String[][], String[]>[][][] test9(Long id) {
 
         return null;
     }

@@ -8,12 +8,14 @@ import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
+import sun.reflect.generics.reflectiveObjects.GenericArrayTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import java.lang.annotation.Annotation;
@@ -217,13 +219,13 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         JavaMethodMeta methodMeta = new JavaMethodMeta();
         methodMeta.setMethod(method);
         //返回值
-        ResolvableType returnType = ResolvableType.forMethodReturnType(method);
-        methodMeta.setReturnType(genericsToClassType(returnType));
+        ResolvableType resolvableType = ResolvableType.forMethodReturnType(method);
+        Class<?>[] returnType = genericsToClassType(resolvableType);
+        methodMeta.setReturnType(returnType);
 
         //方法参数列表
         Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
         Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
-
 
         String[] parameterNames = null;
 
@@ -272,7 +274,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 continue;
             }
 
-
             String typeName = parameter.getParameterizedType().getTypeName();
             if (ownerTypeParameterNames.contains(typeName)) {
                 //使用了泛型变量做参数类型
@@ -294,28 +295,9 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 continue;
             }
 
-
-            Type type = parameter.getParameterizedType();
-            if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                List<Type> classes = new ArrayList<>();
-                classes.add(parameterizedType.getRawType());
-                Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-
-                classes.addAll(Arrays.stream(actualTypeArguments)
-                        .filter((t) -> t instanceof Class<?>)
-                        .collect(Collectors.toList()));
-                params.put(parameterName, classes.toArray(new Class<?>[]{}));
-
-            } else if (type instanceof Class<?>) {
-                params.put(parameterName, new Class[]{(Class<?>) type});
-            } else if (type instanceof TypeVariableImpl) {
-                TypeVariableImpl typeVariable = (TypeVariableImpl) type;
-                params.put(parameterName, Arrays.stream(typeVariable.getBounds()).filter(b -> b instanceof Class<?>).toArray(Class<?>[]::new));
-            } else {
-                throw new RuntimeException("未处理的类型参数类型:" + type.getTypeName());
-            }
-            paramAnnotations.put(parameterName, parameter.getAnnotations());
+            ResolvableType parameterResolvableType = ResolvableType.forMethodParameter(method, i);
+            Class<?>[] classes = this.genericsToClassType(parameterResolvableType);
+            params.put(parameterName, classes);
 
         }
 
@@ -335,6 +317,49 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setName(method.getName());
         return methodMeta;
     }
+
+
+//    /**
+//     * 解析参数的类型
+//     *
+//     * @param type
+//     * @return
+//     */
+//    protected Class<?>[] parseParameterType(Type type) {
+//        if (type instanceof ParameterizedType) {
+//            ParameterizedType parameterizedType = (ParameterizedType) type;
+//            List<Type> classes = new ArrayList<>();
+//            classes.add(parameterizedType.getRawType());
+//            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+//
+//            classes.addAll(Arrays.stream(actualTypeArguments)
+//                    .filter((t) -> t instanceof Class<?>)
+//                    .collect(Collectors.toList()));
+//            return classes.toArray(new Class<?>[0]);
+//
+//        } else if (type instanceof Class<?>) {
+//            Class<?> aClass = (Class<?>) type;
+//
+//            return new Class[]{aClass};
+//        } else if (type instanceof TypeVariableImpl) {
+//            TypeVariableImpl typeVariable = (TypeVariableImpl) type;
+//            return Arrays.stream(typeVariable.getBounds()).filter(b -> b instanceof Class<?>).toArray(Class<?>[]::new);
+//        } else if (type instanceof GenericArrayTypeImpl) {
+//            GenericArrayTypeImpl typeVariable = (GenericArrayTypeImpl) type;
+//            Type genericComponentType = typeVariable.getGenericComponentType();
+//            List<Class<?>> classes = new ArrayList<>();
+//            while ((genericComponentType instanceof GenericArrayTypeImpl)) {
+//                genericComponentType = ((GenericArrayTypeImpl) genericComponentType).getGenericComponentType();
+//                classes.add(JavaArrayClassTypeMark.class);
+//            }
+//            classes.add(JavaArrayClassTypeMark.class);
+//            classes.addAll(Arrays.asList(this.parseParameterType(genericComponentType)));
+//            return classes.toArray(new Class<?>[0]);
+//
+//        } else {
+//            throw new RuntimeException("未处理的类型参数类型:" + type.getTypeName());
+//        }
+//    }
 
     /**
      * 获取属性列表
@@ -442,11 +467,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                                           Class<?> origin,
                                           boolean onlyPublic) {
 
-        Method[]   methods = ReflectUtil.getDeclaredMethodsInOrder(clazz);;
+        Method[] methods = ReflectUtil.getDeclaredMethodsInOrder(clazz);
+        ;
         if (onlyPublic) {
             //只获取public的方法
 //            methods = clazz.getMethods();
-            methods = Arrays.stream(methods).filter(method -> Modifier.isPublic( method.getModifiers())).toArray(Method[]::new);
+            methods = Arrays.stream(methods).filter(method -> Modifier.isPublic(method.getModifiers())).toArray(Method[]::new);
         } else {
 //            methods = clazz.getDeclaredMethods();
             Method.setAccessible(methods, true);
@@ -456,7 +482,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         for (Method method : methods) {
 
             JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz, origin);
-
             methodMetas.add(methodMeta);
 
         }
@@ -494,24 +519,25 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     /**
      * 获取类类型及其泛型
+     *
      * @param resolvableType
      * @return
      */
     protected Class<?>[] genericsToClassType(ResolvableType resolvableType) {
         ResolvableType[] generics = resolvableType.getGenerics();
         List<Class<?>> classes = new ArrayList<>();
-        classes.add(resolvableType.getRawClass());
-
-        for (int i = 0; i < generics.length; i++) {
-            ResolvableType generic = generics[i];
-//            Class<?>[] resolveGenerics = generic.resolveGenerics();
-//            classes.add(generic.resolve());
-//            if (resolveGenerics.length > 0) {
-//                classes.addAll(Arrays.asList(resolveGenerics));
-//            }
-            classes.addAll(Arrays.asList(this.genericsToClassType(generic)));
+        if (resolvableType.isArray()) {
+            // 数组
+            ResolvableType componentType = resolvableType.getComponentType();
+            classes.add(JavaArrayClassTypeMark.class);
+            Class<?>[] componentTypes = genericsToClassType(componentType);
+            classes.addAll(Arrays.asList(componentTypes));
+        } else {
+            classes.add(resolvableType.getRawClass());
+            for (ResolvableType generic : generics) {
+                classes.addAll(Arrays.asList(genericsToClassType(generic)));
+            }
         }
-
         return classes.stream()
                 .filter(Objects::nonNull)
                 .toArray(Class<?>[]::new);

@@ -9,6 +9,8 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.wuxp.codegen.model.CommonCodeGenClassMeta.ARRAY_TYPE_GENERIC_DESCRIPTION;
+
 
 /**
  * 简单的类型合并描述
@@ -25,13 +27,14 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         }
         int length = codeGenClassMetas.length;
         CommonCodeGenClassMeta genClassMeta = codeGenClassMetas[0];
+        CommonCodeGenClassMeta lastCodeMeta = codeGenClassMetas[codeGenClassMetas.length - 1];
 
         String metaName = genClassMeta.getName();
-        if (metaName.startsWith(CommonCodeGenClassMeta.ARRAY_TYPE_NAME_PREFIX)) {
-            //数组
-            CommonCodeGenClassMeta[] typeVariables = genClassMeta.getTypeVariables();
-            return metaName.replace("T", typeVariables[0].getName());
-        }
+//        if (lastCodeMeta.getName().endsWith(CommonCodeGenClassMeta.ARRAY_TYPE_NAME_PREFIX)) {
+//            //合并数组的类型
+//            CommonCodeGenClassMeta[] typeVariables = genClassMeta.getTypeVariables();
+//            return metaName.replace("T", typeVariables[0].getName());
+//        }
 
 
         String finallyGenericDescription = genClassMeta.getFinallyGenericDescription();
@@ -156,6 +159,11 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
      * @return 完整的泛型描述，例如：Map<String,String>
      */
     private String replaceGenericDescCode(String genericDescription, List<String> descriptors, List<String> typeVariables) {
+
+        if (ARRAY_TYPE_GENERIC_DESCRIPTION.equals(genericDescription)) {
+            // 处理数组的泛型合并
+            return typeVariables.get(0) + "[]";
+        }
         //精确匹配<T>
         return genericDescription.replaceAll("<" + String.join(",", descriptors) + ">", "<" + String.join(",", typeVariables) + ">");
 

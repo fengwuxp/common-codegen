@@ -3,6 +3,7 @@ package com.wuxp.codegen.mapping;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -48,6 +49,7 @@ public class JavaTypeMapping extends CommonTypeMapping<JavaCodeGenClassMeta> {
         AbstractTypeMapping.setBaseTypeMapping(Set.class, JavaCodeGenClassMeta.SET);
         AbstractTypeMapping.setBaseTypeMapping(List.class, JavaCodeGenClassMeta.LIST);
         AbstractTypeMapping.setBaseTypeMapping(Collection.class, JavaCodeGenClassMeta.COLLECTION);
+        AbstractTypeMapping.setBaseTypeMapping(JavaArrayClassTypeMark.class, JavaCodeGenClassMeta.JAVA_ARRAY_CLASS_TYPE_MARK);
 
     }
 

@@ -166,7 +166,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         });
                         commonCodeGenClassMeta.setDependencies(needImportDependencies);
                         this.templateStrategy.build(commonCodeGenClassMeta);
-
                         return values;
                     }).flatMap(Collection::stream)
                     .filter(CommonCodeGenClassMeta::getNeedGenerate)

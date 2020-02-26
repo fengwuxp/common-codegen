@@ -26,9 +26,14 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     public static final String ARRAY_TYPE_NAME_PREFIX = "T[]";
 
     /**
+     * 数组泛型描述符号 用于泛型合并
+     */
+    public static final String ARRAY_TYPE_GENERIC_DESCRIPTION = "[]<T>";
+
+    /**
      * 数组
      */
-    public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME_PREFIX, null, ClassType.INTERFACE, false, null, null, false, false);
+    public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME_PREFIX, ARRAY_TYPE_GENERIC_DESCRIPTION, ClassType.INTERFACE, false, null, null, false, false);
 
 
     /**

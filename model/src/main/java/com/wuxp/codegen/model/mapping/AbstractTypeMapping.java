@@ -22,6 +22,7 @@ public abstract class AbstractTypeMapping<T> implements TypeMapping<Class<?>, Li
     protected static final Map<Class<?>, Class<?>[]> CUSTOMIZE_JAVA_TYPE_MAPPING = new LinkedHashMap<>();
 
 
+
     /**
      * 基础类型映射器
      */
@@ -49,7 +50,7 @@ public abstract class AbstractTypeMapping<T> implements TypeMapping<Class<?>, Li
     }
 
     public static void setCustomizeTypeMapping(Class<?> clazz, CommonCodeGenClassMeta codeGenClassMeta) {
-        setCustomizeTypeMapping(clazz, codeGenClassMeta,false);
+        setCustomizeTypeMapping(clazz, codeGenClassMeta, false);
     }
 
     public static void setCustomizeTypeMapping(Class<?> clazz, CommonCodeGenClassMeta codeGenClassMeta, boolean forceOverride) {
