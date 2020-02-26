@@ -62,6 +62,9 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     //web file
     public final static TypescriptClassMeta BROWSER_FILE = new TypescriptClassMeta("File", null, ClassType.CLASS, false, OBJECT);
 
+    //  java数组类型标记
+    public final static TypescriptClassMeta JAVA_ARRAY_CLASS_TYPE_MARK = new TypescriptClassMeta("JavaArrayClassTypeMark", null, ClassType.CLASS, false, OBJECT);
+
     public TypescriptClassMeta() {
     }
 

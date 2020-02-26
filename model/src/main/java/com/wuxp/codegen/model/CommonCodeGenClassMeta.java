@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+//@EqualsAndHashCode(of = "source")
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
 

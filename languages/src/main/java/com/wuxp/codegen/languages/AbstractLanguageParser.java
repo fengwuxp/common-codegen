@@ -792,6 +792,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         if (argsClassMeta.getFieldMetas() == null) {
 //                            BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
                             argsClassMeta.setFieldMetas(commonCodeGenClassMeta.getFieldMetas());
+//                            argsClassMeta.setDependencies(commonCodeGenClassMeta.getDependencies());
                             return true;
                         } else {
                             //有多个复杂类型的参数，合并对象
@@ -800,20 +801,29 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                     .collect(Collectors.toList());
                             collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFieldMetas()));
                             argsClassMeta.setFieldMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
+//                            Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
+//                            commonCodeGenClassMeta.getDependencies().forEach((k, val) -> {
+//                                Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
+//                                dependencies.put(k, (C) val);
+//                            });
+
                             //TODO 合并依赖
                         }
                         return true;
                     }).filter(flag -> flag)
                     .findFirst();
-            if (isNext.isPresent() && Boolean.TRUE.equals(isNext.get())) {
-                return;
-            }
 
             Set<Class<?>> otherDependencies = new HashSet<>(Arrays.asList(classes));
             this.fetchDependencies(otherDependencies).forEach((k, v) -> {
                 Map<String, C> dependencies = (Map<String, C>) argsClassMeta.getDependencies();
                 dependencies.put(k, v);
             });
+
+            if (isNext.isPresent() && Boolean.TRUE.equals(isNext.get())) {
+                return;
+            }
+
+
             //注释
             Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
 
@@ -975,6 +985,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         Set<C> classMetas = classList.stream()
                 .map(this::parse)
+                .filter(Objects::nonNull)
+                .map(c -> {
+                    Map<String, ? extends CommonCodeGenClassMeta> cDependencies = c.getDependencies();
+                    List<C> cs = new ArrayList<>( (Collection<C>) cDependencies.values());
+                    cs.add(c);
+                    return cs;
+                })
+                .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .filter(CommonCodeGenClassMeta::getNeedImport)
                 .collect(Collectors.toSet());

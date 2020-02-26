@@ -133,7 +133,7 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     //Observable
     public static final JavaCodeGenClassMeta RX_JAVA2_OBSERVABLE = new JavaCodeGenClassMeta("Observable", "Observable<T>", ClassType.CLASS, false, null, "", false);
 
-    //java数组类型标记
+    // java数组类型标记
     public static final JavaCodeGenClassMeta JAVA_ARRAY_CLASS_TYPE_MARK = new JavaCodeGenClassMeta("JavaArrayClassTypeMark", null, ClassType.CLASS, false, null, "", false);
 
 

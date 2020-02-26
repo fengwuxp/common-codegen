@@ -3,6 +3,7 @@ package com.wuxp.codegen.mapping;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -38,6 +39,7 @@ public class TypescriptTypeMapping extends CommonTypeMapping<TypescriptClassMeta
 
         //文件上传
         AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, TypescriptClassMeta.BROWSER_FILE);
+        AbstractTypeMapping.setBaseTypeMapping(JavaArrayClassTypeMark.class, TypescriptClassMeta.JAVA_ARRAY_CLASS_TYPE_MARK);
 
     }
 
