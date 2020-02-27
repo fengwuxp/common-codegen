@@ -133,12 +133,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         List<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
                 .map(this.languageParser::parse)
                 .filter(Objects::nonNull)
-                .filter(commonCodeGenClassMeta -> {
-                    //过滤掉无效的数据
-                    boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-                    boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
-                    return !(notFiled && notMethod);
-                }).collect(Collectors.toList());
+                .filter(this::filterNoneClazz)
+                .collect(Collectors.toList());
 
 
         int i = 0;
@@ -146,6 +142,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
+                    .filter(this::filterNoneClazz)
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
@@ -208,5 +205,18 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
         log.debug("共扫描到{}个类文件", classes.size());
         return classes;
+    }
+
+    /**
+     * 过滤掉无效的数据
+     *
+     * @param commonCodeGenClassMeta
+     * @return
+     */
+    private boolean filterNoneClazz(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+
+        boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
+        boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
+        return !(notFiled && notMethod);
     }
 }

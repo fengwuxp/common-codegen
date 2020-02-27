@@ -258,15 +258,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         C meta = this.getResultToLocalCache(source);
-
-        if (meta != null) {
+        if (meta != null/* && (meta.getFieldMetas() != null || meta.getMethodMetas() != null)*/) {
             return meta;
         }
-
         //检查代码
         this.detectJavaCode(javaClassMeta);
-
         meta = this.languageMetaInstanceFactory.newClassInstance();
+        // 防止由于递归调用导致的初始化未完成，照成重新初始化
+        HANDLE_RESULT_CACHE.put(source, meta);
         meta.setSource(source);
         meta.setName(this.packageMapStrategy.convertClassName(source));
         meta.setPackagePath(this.packageMapStrategy.convert(source));
@@ -324,6 +323,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 //spring的控制器  生成方法列表
                 meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
                         .toArray(new CommonCodeGenMethodMeta[]{}));
+
             } else {
                 // 普通的java bean DTO  生成属性列表
                 meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
@@ -332,10 +332,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         .toArray(CommonCodeGenFiledMeta[]::new));
             }
         }
-
         //依赖处理
         final Map<String, C> metaDependencies = meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
-
         if (isFirst) {
             //依赖列表
             Set<Class<?>> dependencyList = javaClassMeta.getDependencyList();
@@ -356,7 +354,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         // 处理超类上面的类型变量
         javaClassMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
-
             if (val == null || val.length == 0) {
                 return;
             }
@@ -389,6 +386,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             superTypeVariables.put(typescriptClassMeta.getName(), typeVariables);
         });
 
+        //如果依赖中包含自身 则排除，用于打断循环依赖
+        metaDependencies.remove(source.getSimpleName());
         meta.setDependencies(metaDependencies);
         meta.setSuperTypeVariables(superTypeVariables);
 
@@ -406,7 +405,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         // 增强处理类
         this.enhancedProcessingClass(meta, javaClassMeta);
 
-        HANDLE_RESULT_CACHE.put(source, meta);
         return meta;
     }
 
@@ -622,8 +620,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     }
                     return Boolean.FALSE.equals(javaFieldMeta.getIsStatic());
                 })
-//                .filter(javaFieldMeta -> javaFieldMeta.getTypes() != null && javaFieldMeta.getTypes().length > 0)
-//                .filter(javaFieldMeta -> !Class.class.equals(javaFieldMeta.getTypes()[0]))
                 .map(javaFieldMeta -> this.converterField(javaFieldMeta, classMeta))
                 .filter(Objects::nonNull)
                 .distinct()
@@ -652,9 +648,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //注释来源于注解和java的类类型
         List<String> comments = this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
         Class<?>[] types = javaFieldMeta.getTypes();
-        if (types.length == 0) {
-            System.out.println(1);
-        }
         if (!isEnum) {
             comments.addAll(this.generateComments(types, false));
         } else {

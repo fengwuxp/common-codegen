@@ -70,7 +70,6 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .templateFileVersion(TemplateFileVersion.V_2_0_0)
-//                .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();
