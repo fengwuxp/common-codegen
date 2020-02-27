@@ -8,8 +8,6 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
-import java.lang.reflect.TypeVariable;
-
 @Slf4j
 public class TypescriptLanguageMetaInstanceFactory implements
         LanguageParser.LanguageMetaInstanceFactory<TypescriptClassMeta, CommonCodeGenMethodMeta, TypescriptFieldMate> {

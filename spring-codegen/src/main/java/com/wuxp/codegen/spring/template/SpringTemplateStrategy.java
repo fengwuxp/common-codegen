@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.*;
 
-import static com.wuxp.codegen.spring.model.JavaSpringCodeGenClassMeta.*;
+import static com.wuxp.codegen.spring.model.JavaSpringCodeGenClassMeta.DOT_TYPE_REQ_PREFIX;
 
 @Slf4j
 public class SpringTemplateStrategy implements TemplateStrategy<JavaSpringCodeGenClassMeta> {

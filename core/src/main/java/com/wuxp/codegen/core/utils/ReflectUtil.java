@@ -1,18 +1,9 @@
 package com.wuxp.codegen.core.utils;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
 import java.io.InputStream;
+import java.lang.reflect.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * @link https://github.com/wmacevoy/kiss/blob/master/src/main/java/kiss/util/Reflect.java

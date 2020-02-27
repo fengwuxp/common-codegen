@@ -8,10 +8,6 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
-import com.wuxp.codegen.swagger3.example.controller.HelloController;
-import com.wuxp.codegen.swagger3.example.controller.OrderController;
-import com.wuxp.codegen.swagger3.example.controller.UserController;
-import com.wuxp.codegen.swagger3.example.domain.User;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
@@ -21,7 +17,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

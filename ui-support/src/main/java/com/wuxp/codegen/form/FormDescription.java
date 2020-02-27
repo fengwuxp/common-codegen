@@ -4,8 +4,6 @@ package com.wuxp.codegen.form;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * 表单描述对象
  */

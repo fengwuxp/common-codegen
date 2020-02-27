@@ -1,7 +1,6 @@
 package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;

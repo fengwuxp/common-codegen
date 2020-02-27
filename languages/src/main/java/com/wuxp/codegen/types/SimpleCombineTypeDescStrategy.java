@@ -6,7 +6,10 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.model.CommonCodeGenClassMeta.ARRAY_TYPE_GENERIC_DESCRIPTION;

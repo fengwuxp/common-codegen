@@ -6,8 +6,6 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 
-import java.lang.reflect.TypeVariable;
-
 /**
  * 语言解析器
  *

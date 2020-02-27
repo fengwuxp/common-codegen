@@ -3,7 +3,6 @@ package com.wuxp.codegen.spring.annotations;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 

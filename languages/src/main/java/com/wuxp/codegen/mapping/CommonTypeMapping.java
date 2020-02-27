@@ -1,20 +1,17 @@
 package com.wuxp.codegen.mapping;
 
-import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ResolvableType;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.wuxp.codegen.model.CommonCodeGenClassMeta.ARRAY_TYPE_NAME_PREFIX;
 
 
 /**
