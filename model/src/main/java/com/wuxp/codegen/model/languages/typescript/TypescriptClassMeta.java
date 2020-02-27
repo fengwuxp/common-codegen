@@ -55,8 +55,7 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     public final static TypescriptClassMeta RECORD = new TypescriptClassMeta("Record", "Record<K,V>", ClassType.CLASS, false, OBJECT);
 
 
-    //type variable 类型变量
-    public final static TypescriptClassMeta TYPE_VARIABLE = new TypescriptClassMeta("T", "T", ClassType.CLASS, false, OBJECT);
+
 
 
     //web file

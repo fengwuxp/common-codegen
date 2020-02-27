@@ -1,10 +1,14 @@
 package com.wuxp.codegen.languages.factory;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+
+import java.lang.reflect.TypeVariable;
 
 @Slf4j
 public class TypescriptLanguageMetaInstanceFactory implements
@@ -22,6 +26,11 @@ public class TypescriptLanguageMetaInstanceFactory implements
 
     @Override
     public TypescriptClassMeta getTypeVariableInstance() {
-        return TypescriptClassMeta.TYPE_VARIABLE;
+        TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
+        BeanUtils.copyProperties(CommonCodeGenClassMeta.TYPE_VARIABLE, typescriptClassMeta);
+        typescriptClassMeta.setSuperClass(TypescriptClassMeta.OBJECT)
+                .setNeedGenerate(false)
+                .setNeedImport(false);
+        return typescriptClassMeta;
     }
 }

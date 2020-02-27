@@ -78,7 +78,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
     @Test
     public void testJavaParser() {
 
-        JavaClassMeta parse = new JavaClassParser(false).parse(UserController.class);
+        JavaClassMeta parse = new JavaClassParser(false).parse(ServiceResponse.class);
 
         log.debug("{}", parse);
     }

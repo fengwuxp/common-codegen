@@ -1,6 +1,6 @@
 package test.com.wuxp.codegen;
 
-import com.wuxp.codegen.dragon.strategy.SimpleCombineTypeDescStrategy;
+import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import org.junit.Assert;
 import org.junit.Test;

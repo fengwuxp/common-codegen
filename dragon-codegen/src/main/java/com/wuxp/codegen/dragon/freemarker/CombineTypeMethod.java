@@ -1,7 +1,7 @@
 package com.wuxp.codegen.dragon.freemarker;
 
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
-import com.wuxp.codegen.dragon.strategy.SimpleCombineTypeDescStrategy;
+import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import freemarker.template.DefaultArrayAdapter;
 import freemarker.template.TemplateMethodModelEx;

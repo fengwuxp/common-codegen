@@ -1,4 +1,4 @@
-package com.wuxp.codegen.dragon.strategy;
+package com.wuxp.codegen.types;
 
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;

@@ -35,10 +35,10 @@ public class SpringCodegenJavaParser extends AbstractJavaParser {
     }
 
 
-    @Override
-    public JavaCodeGenClassMeta parse(Class<?> source) {
-        return super.parse(source);
-    }
+//    @Override
+//    public JavaCodeGenClassMeta parse(Class<?> source) {
+//        return super.parse(source);
+//    }
 
 
     @Override

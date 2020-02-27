@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class Order extends BaseInfo<Long> {
+public class Order extends BaseInfo<Long,String> {
 
     @Parameter()
     private String sn;

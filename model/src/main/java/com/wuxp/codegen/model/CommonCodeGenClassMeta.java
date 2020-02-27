@@ -1,6 +1,7 @@
 package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -14,9 +15,8 @@ import java.util.stream.Collectors;
 /**
  * 通用的代码生成 class 元数据
  */
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true,exclude = {"dependencies"})
 @Data
-//@EqualsAndHashCode(of = "source")
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
@@ -36,6 +36,8 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME_PREFIX, ARRAY_TYPE_GENERIC_DESCRIPTION, ClassType.INTERFACE, false, null, null, false, false);
 
+    //type variable 类型变量
+    public final static CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null,null,false,false);
 
     /**
      * 原目标类

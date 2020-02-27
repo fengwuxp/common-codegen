@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
-
 
 
 @RestController
@@ -27,7 +27,7 @@ public class OrderController extends BaseController<String> {
     private UserService userService;
 
     @GetMapping(value = {"getOrder"})
-    public List<Order> getOrder(String[] names, List<Integer> ids, Set<Order> moneys) {
+    public List<Order> getOrder(@NotNull String[] names, List<Integer> ids, Set<Order> moneys) {
         return Collections.EMPTY_LIST;
     }
 
@@ -36,6 +36,25 @@ public class OrderController extends BaseController<String> {
         return new PageInfo<Order>();
     }
 
+    @RequestMapping(value = "queryOrder3", method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder3(@RequestBody QueryOrderEvt[] evt) {
+        return new PageInfo<Order>();
+    }
+
+    @RequestMapping(value = "queryOrder4", method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder4(@RequestBody Set<QueryOrderEvt> evt) {
+        return new PageInfo<Order>();
+    }
+
+    @RequestMapping(value = "queryOrder5", method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder5(@RequestBody Map<String, QueryOrderEvt> evt) {
+        return new PageInfo<Order>();
+    }
+
+    @RequestMapping(value = "queryOrder6", method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder6(@RequestBody List<QueryOrderEvt> evt) {
+        return new PageInfo<Order>();
+    }
 
 
     @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
