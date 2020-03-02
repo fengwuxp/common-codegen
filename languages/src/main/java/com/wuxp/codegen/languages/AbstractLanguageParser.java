@@ -602,9 +602,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         JavaFieldMeta fieldMeta = new JavaFieldMeta();
                         fieldMeta.setIsVolatile(false)
                                 .setIsTransient(false)
+                                .setField(fieldMetas.get(0).getField())
                                 .setTypes(methodMeta.getReturnType())
                                 .setAnnotations(methodMeta.getAnnotations())
-                                .setAccessPermission(AccessPermission.PUBLIC)
+                                .setAccessPermission(AccessPermission.PRIVATE)
                                 .setName(JavaMethodNameUtil.replaceGetOrIsPrefix(methodMeta.getName()))
                                 .setIsStatic(false)
                                 .setIsFinal(false);

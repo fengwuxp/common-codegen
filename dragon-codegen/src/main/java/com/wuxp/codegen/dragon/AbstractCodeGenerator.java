@@ -142,7 +142,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
-                    .filter(this::filterNoneClazz)
+//                    .filter(this::filterNoneClazz)
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
