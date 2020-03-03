@@ -18,7 +18,7 @@ public class JavaFieldMeta extends JavaBaseMeta {
 
 
     // filed
-    private Field field;
+    private Object field;
 
     //属性类型 如果有泛型则有多个
     private Class<?>[] types;
