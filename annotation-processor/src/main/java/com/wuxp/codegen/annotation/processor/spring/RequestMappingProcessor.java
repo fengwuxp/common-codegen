@@ -57,7 +57,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         Class<? extends RequestMappingMate> clazz = ANNOTATION_CLASS_MAP.get(annotation.annotationType());
         if (clazz == null) {
-            throw new RuntimeException("not spring mapping annotation，annotation name: " + annotation.annotationType().getName());
+            throw new RuntimeException(MessageFormat.format("not spring mapping annotation，annotation name: {0}", annotation.annotationType().getName()));
         }
 
         return this.newProxyMate(annotation, clazz);

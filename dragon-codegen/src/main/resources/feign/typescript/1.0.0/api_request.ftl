@@ -34,7 +34,7 @@ export interface  ${finallyClassName}<#if superClass??> extends ${superClass.fin
         </#list>
         **/
 <#--        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customize_method.combineType(field.filedTypes)};-->
-        ${field.name}<#if !field.required>?</#if>: ${customize_method.combineType(field.filedTypes)};
+        ${field.name}<#if !field.required!false>?</#if>: ${customize_method.combineType(field.filedTypes)};
     </#list>
 </#if>
 }

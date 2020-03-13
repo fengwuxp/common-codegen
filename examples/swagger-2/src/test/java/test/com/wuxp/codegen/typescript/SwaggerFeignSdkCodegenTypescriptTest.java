@@ -76,7 +76,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
         //实例化模板加载器
         HashMap<String, Object> sharedVariables = new HashMap<>();
         sharedVariables.put("codeRuntimePlatform", CodeRuntimePlatform.BROWSER);
-        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, sharedVariables);
+        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, TemplateFileVersion.V_1_0_0, sharedVariables);
 
 
         String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};

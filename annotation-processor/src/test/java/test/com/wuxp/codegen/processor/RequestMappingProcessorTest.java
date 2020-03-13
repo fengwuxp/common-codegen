@@ -27,16 +27,18 @@ public class RequestMappingProcessorTest {
 
         Method[] methods = controller.getClass().getMethods();
 
-        for (Method method : methods) {
-            Annotation[] annotations = method.getAnnotations();
+        Arrays.stream(methods)
+                .filter(method -> "helloWord".equals(method.getName()))
+                .forEach(method -> {
+                    Annotation[] annotations = method.getAnnotations();
 
-            Arrays.stream(annotations).forEach(annotation -> {
-                RequestMappingProcessor.RequestMappingMate mappingMate = annotationProcessor.process(annotation);
-                System.out.println(mappingMate.toAnnotation(method));
-                System.out.println(mappingMate.annotationType().getSimpleName());
-            });
+                    Arrays.stream(annotations).forEach(annotation -> {
+                        RequestMappingProcessor.RequestMappingMate mappingMate = annotationProcessor.process(annotation);
+                        System.out.println(mappingMate.toAnnotation(method));
+                        System.out.println(mappingMate.annotationType().getSimpleName());
+                    });
 
-        }
+                });
     }
 
     @Test
@@ -57,7 +59,7 @@ public class RequestMappingProcessorTest {
         public String name;
 
 
-        @RequestMapping(value = "hell/word",method = RequestMethod.POST)
+        @RequestMapping(value = "hell/word", method = RequestMethod.POST)
         public String helloWord() {
 
             return "";

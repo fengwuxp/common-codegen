@@ -146,15 +146,15 @@
             </properties>
         </profile>
 
-<!--        <profile>-->
-<!--            <id>跳过测试</id>-->
-<!--            <activation>-->
-<!--                <activeByDefault>false</activeByDefault>-->
-<!--            </activation>-->
-<!--            <properties>-->
-<!--                <maven.test.skip>false</maven.test.skip>-->
-<!--            </properties>-->
-<!--        </profile>-->
+        <profile>
+            <id>跳过测试</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+        </profile>
 
         <profile>
             <id>上传源代码到 Maven</id>
