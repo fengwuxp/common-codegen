@@ -467,7 +467,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected C getResultToLocalCache(Class<?> clazz) {
 
-        return (C) HANDLE_RESULT_CACHE.get(clazz);
+        C c = (C) HANDLE_RESULT_CACHE.get(clazz);
+        if (c == null) {
+            return null;
+        }
+        // 做深copy
+        C target = this.languageMetaInstanceFactory.newClassInstance();
+        BeanUtils.copyProperties(c, target);
+        target.setDependencies(new LinkedHashMap<>(c.getDependencies()));
+        return target;
     }
 
     /**

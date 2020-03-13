@@ -137,12 +137,18 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
      * @param typeVariableNames
      * @return
      */
-    private String replaceGenericDescriptor(Stack<String> typeVariableNames) {
+    private String replaceGenericDescriptor(final Stack<String> typeVariableNames) {
         String typeVariableName = typeVariableNames.pop();
         List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(typeVariableName);
         if (descriptors.isEmpty()) {
             // 没有有泛型描述变量
             throw new RuntimeException("match generic descriptor failure");
+        }
+        if (typeVariableNames.size() < descriptors.size()) {
+            // 类型变量的长度小于泛型描述符
+//            throw new RuntimeException("type variable name size error");
+            log.error("type variable name size error");
+            return "";
         }
         List<String> names = new ArrayList<>();
         descriptors.forEach(s -> {
