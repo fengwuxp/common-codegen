@@ -49,7 +49,7 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
             return;
         }
 
-        if (fieldMeta.getRequired() == null) {
+        if (!Boolean.TRUE.equals(fieldMeta.getRequired())) {
             if (apiModelProperty != null) {
                 fieldMeta.setRequired(apiModelProperty.required());
             } else {

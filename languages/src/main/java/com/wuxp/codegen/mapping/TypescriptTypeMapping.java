@@ -21,7 +21,7 @@ public class TypescriptTypeMapping extends CommonTypeMapping<TypescriptClassMeta
 
         //设置基础的数据类型映射
         AbstractTypeMapping.setBaseTypeMapping(Object.class, TypescriptClassMeta.ANY);
-        AbstractTypeMapping.setBaseTypeMapping(Date.class, TypescriptClassMeta.DATE);
+        AbstractTypeMapping.setBaseTypeMapping(Date.class, TypescriptClassMeta.NUMBER);
         AbstractTypeMapping.setBaseTypeMapping(Boolean.class, TypescriptClassMeta.BOOLEAN);
         AbstractTypeMapping.setBaseTypeMapping(String.class, TypescriptClassMeta.STRING);
         AbstractTypeMapping.setBaseTypeMapping(Number.class, TypescriptClassMeta.NUMBER);
