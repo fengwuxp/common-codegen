@@ -220,7 +220,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         if (HANDLE_COUNT.containsKey(source)) {
             //标记某个类被处理的次数如果超过2次，从缓存中返回
-            if (HANDLE_COUNT.get(source) > 5) {
+            if (HANDLE_COUNT.get(source) > 1) {
                 return this.getResultToLocalCache(source);
             } else {
                 HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
