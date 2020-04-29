@@ -38,7 +38,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("java.security.");
         IGNORE_PACKAGE_LIST.add("java.text.");
         IGNORE_PACKAGE_LIST.add("java.io.");
-//        IGNORE_PACKAGE_LIST.add("java.util.");
+        IGNORE_PACKAGE_LIST.add("java.util.concurrent.");
         IGNORE_PACKAGE_LIST.add("sun.");
         IGNORE_PACKAGE_LIST.add("com.google.");
         IGNORE_PACKAGE_LIST.add("com.alibaba.");

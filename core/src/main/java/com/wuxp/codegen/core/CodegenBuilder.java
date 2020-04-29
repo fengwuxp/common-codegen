@@ -5,6 +5,7 @@ import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 
 /**
  * 代码生成配置builder
+ * @author wxup
  */
 public interface CodegenBuilder<T> {
 

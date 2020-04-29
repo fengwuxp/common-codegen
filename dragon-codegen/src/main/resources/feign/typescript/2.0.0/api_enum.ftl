@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {Enum} from "fengwuxp-typescript-feign";
 
 <#if comments??>

@@ -23,7 +23,7 @@ import static com.wuxp.codegen.templates.TemplateLoader.CODE_RUNTIME_PLATFORM_KE
 public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
-    protected LanguageDescription languageDescription = LanguageDescription.JAVA;
+    protected LanguageDescription languageDescription;
 
     /**
      * 扫码生成的包名

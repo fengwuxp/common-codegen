@@ -296,6 +296,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             ResolvableType parameterResolvableType = ResolvableType.forMethodParameter(method, i);
             Class<?>[] classes = this.genericsToClassType(parameterResolvableType);
             params.put(parameterName, classes);
+            // 获取参数的上的注解
+            paramAnnotations.put(parameterName, parameter.getAnnotations());
 
         }
 

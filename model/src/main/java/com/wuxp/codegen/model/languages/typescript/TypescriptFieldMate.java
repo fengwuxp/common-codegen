@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 public final class TypescriptFieldMate extends CommonCodeGenFiledMeta {
 
     /**
-     * 是否必须
+     * 是否必填
      */
     private Boolean required = false;
 

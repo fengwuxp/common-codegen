@@ -778,7 +778,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
         Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
         //有效的参数
-        Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
+        final Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
         methodMetaParams.forEach((key, classes) -> {
             Class<?>[] array = Arrays.stream(classes)
                     .filter(this.packageNameCodeGenMatcher::match)
@@ -834,7 +834,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return;
             }
 
-            //注释
+            // 注解
             Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
 
             JavaFieldMeta javaFieldMeta = new JavaFieldMeta();

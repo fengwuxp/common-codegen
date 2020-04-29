@@ -3,11 +3,13 @@ package test.com.wuxp.codegen.core.parser;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * JavaClassParser Tester.
@@ -16,6 +18,7 @@ import java.util.List;
  * @version 1.0
  * @since <pre>十二月 16, 2018</pre>
  */
+@Slf4j
 public class JavaClassParserTest {
 
 
@@ -34,8 +37,6 @@ public class JavaClassParserTest {
      */
     @Test
     public void testParse() throws Exception {
-
-
         JavaClassMeta classMeta = genericParser.parse(TestJavaClassParserSimple.class);
         System.out.println(classMeta);
     }
@@ -45,7 +46,7 @@ public class JavaClassParserTest {
      */
     @Test
     public void testGetFields() throws Exception {
-//TODO: Test goes here... 
+//TODO: Test goes here...
     }
 
     /**
@@ -53,7 +54,7 @@ public class JavaClassParserTest {
      */
     @Test
     public void testGetMethods() throws Exception {
-//TODO: Test goes here... 
+//TODO: Test goes here...
     }
 
     /**
@@ -61,7 +62,7 @@ public class JavaClassParserTest {
      */
     @Test
     public void testGetClassAnnotationMap() throws Exception {
-//TODO: Test goes here... 
+//TODO: Test goes here...
     }
 
     /**
@@ -69,7 +70,7 @@ public class JavaClassParserTest {
      */
     @Test
     public void testGetAssessPermission() throws Exception {
-//TODO: Test goes here... 
+//TODO: Test goes here...
     }
 
     /**
@@ -77,7 +78,7 @@ public class JavaClassParserTest {
      */
     @Test
     public void testGenericsToClassType() throws Exception {
-//TODO: Test goes here... 
+//TODO: Test goes here...
     }
 
     /**
@@ -85,7 +86,7 @@ public class JavaClassParserTest {
      */
     @Test
     public void testFetchDependencies() throws Exception {
-//TODO: Test goes here... 
+//TODO: Test goes here...
     }
 
 
@@ -93,19 +94,27 @@ public class JavaClassParserTest {
 
 class TestJavaClassParserSimple {
 
-    public void func1(List<Integer> list){
+    public void func1(List<Integer> list) {
 
-    };
+    }
 
-    public void func2(){
+    ;
 
-    };
+    public void func2() {
 
-    public void func3(){
+    }
 
-    };
+    ;
 
-    private void func4(){
+    public void func3() {
 
-    };
+    }
+
+    ;
+
+    private void func4() {
+
+    }
+
+    ;
 }

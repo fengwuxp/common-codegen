@@ -1,6 +1,7 @@
 package com.wuxp.codegen.dragon;
 
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
+import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.path.PathResolve;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -46,20 +47,33 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
      */
     protected String extName;
 
+    /**
+     * 文件生成策略
+     */
+    protected FileNameGenerateStrategy fileNameGenerateStrategy;
+
     public DragonSimpleTemplateStrategy(TemplateLoader<Template> templateLoader,
                                         String outputPath,
                                         String extName,
-                                        boolean isDeletedOutputDirectory) {
+                                        boolean isDeletedOutputDirectory,
+                                        FileNameGenerateStrategy fileNameGenerateStrategy) {
         this.templateLoader = templateLoader;
         this.outputPath = outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator;
         this.extName = extName;
+        this.fileNameGenerateStrategy = fileNameGenerateStrategy;
 
         if (isDeletedOutputDirectory) {
             //删除原本的目录
             boolean r = FileUtil.deleteDirectory(this.outputPath);
             log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
         }
+    }
 
+    public DragonSimpleTemplateStrategy(TemplateLoader<Template> templateLoader,
+                                        String outputPath,
+                                        String extName,
+                                        boolean isDeletedOutputDirectory) {
+        this(templateLoader, outputPath, extName, isDeletedOutputDirectory, FileNameGenerateStrategy.DEFAULT);
     }
 
     @Override
@@ -76,6 +90,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
         }
 
         String packagePath = data.getPackagePath();
+        packagePath = this.fileNameGenerateStrategy.generateName(packagePath);
 
 
         String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, this.normalizationFilePath(packagePath), this.extName)).toString();

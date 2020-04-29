@@ -32,6 +32,7 @@ public class JavaRetofitRequestMappingTransformer implements
         METHOD_MAPPING_NAME_MAP.put(RequestMethod.DELETE, "DELETED");
         METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, "PUT");
         METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, "PATCH");
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.HEAD, "HEAD");
 
     }
 

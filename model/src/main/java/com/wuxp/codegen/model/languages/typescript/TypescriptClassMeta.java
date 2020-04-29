@@ -56,8 +56,6 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
 
 
 
-
-
     //web file
     public final static TypescriptClassMeta BROWSER_FILE = new TypescriptClassMeta("File", null, ClassType.CLASS, false, OBJECT);
 

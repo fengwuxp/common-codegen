@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
+import com.wuxp.codegen.transform.spring.DartRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.JavaRetofitRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,9 @@ import java.util.Map;
 
 
 /**
- * <p>
- *
+ * @author wxup
  * @see RequestMapping
  * 处理spring mvc的RequestMapping相关注解
- *
- * <p>
  */
 @Slf4j
 public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
@@ -49,6 +47,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.JAVA_ANDROID, new JavaRetofitRequestMappingTransformer());
         ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.TYPESCRIPT, new TypeScriptRequestMappingTransformer());
+        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.DART, new DartRequestMappingTransformer());
     }
 
 

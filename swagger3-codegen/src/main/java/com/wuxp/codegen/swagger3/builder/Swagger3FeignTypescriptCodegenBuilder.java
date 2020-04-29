@@ -31,6 +31,9 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
 
     @Override
     public CodeGenerator buildCodeGenerator() {
+        if (this.languageDescription == null) {
+            this.languageDescription = LanguageDescription.TYPESCRIPT;
+        }
         if (this.codeRuntimePlatform == null) {
             this.codeRuntimePlatform = CodeRuntimePlatform.BROWSER;
         }

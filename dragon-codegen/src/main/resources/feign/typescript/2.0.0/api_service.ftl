@@ -1,3 +1,4 @@
+/* tslint:disable */
 <#include "./inculdes/feign_imports.ftl">
 
 <#if dependencies??>

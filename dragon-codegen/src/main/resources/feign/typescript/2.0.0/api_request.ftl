@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 <#--<#import "../common/customize_method.ftl" as customize_method/>-->
 
 <#if dependencies??>
