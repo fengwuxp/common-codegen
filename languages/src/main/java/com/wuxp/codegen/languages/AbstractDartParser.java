@@ -39,6 +39,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
         ANNOTATION_PROCESSOR_MAP.put(RequestHeader.class, new RequestHeaderProcessor());
         ANNOTATION_PROCESSOR_MAP.put(RequestParam.class, new RequestParamProcessor());
         ANNOTATION_PROCESSOR_MAP.put(RequestPart.class, new RequestPartProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(PathVariable.class, new PathVariableProcessor());
     }
 
     public AbstractDartParser(PackageMapStrategy packageMapStrategy,
@@ -96,10 +97,6 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
     protected CommonCodeGenFiledMeta converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
         CommonCodeGenFiledMeta commonCodeGenFiledMeta = super.converterField(javaFieldMeta, classMeta);
 
-        if (commonCodeGenFiledMeta == null) {
-            return null;
-        }
-
         return commonCodeGenFiledMeta;
     }
 
@@ -121,46 +118,8 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
 
     @Override
     protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, DartClassMeta codeGenClassMeta) {
-
-        if (classMeta == null) {
-            return null;
-        }
-
-        CommonCodeGenMethodMeta genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
-        //method转换
-        genMethodMeta.setAccessPermission(classMeta.getAccessPermission());
-        //注解转注释
-        List<String> comments = this.generateComments(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod());
-        comments.addAll(this.generateComments(javaMethodMeta.getReturnType(), true));
-        genMethodMeta.setComments(comments.toArray(new String[]{}));
-        genMethodMeta.setName(javaMethodMeta.getName());
-
-        //处理方法上的相关注解
-        genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod()));
-
-
-        //处理方法的参数
-        //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
-        Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
-        //有效的参数
-        final Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
-        methodMetaParams.forEach((key, classes) -> {
-            Class<?>[] array = Arrays.stream(classes)
-                    .filter(this.packageNameCodeGenMatcher::match)
-                    .toArray(Class<?>[]::new);
-            if (array.length == 0) {
-                return;
-            }
-            effectiveParams.put(key, array);
-        });
-
-
-        // 处理注解
-        Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
-
-
-        //处理返回值
-        return genMethodMeta;
+        CommonCodeGenMethodMeta commonCodeGenMethodMeta = super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
+        return commonCodeGenMethodMeta;
     }
 
     @Override

@@ -4,37 +4,39 @@ import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
-
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wxup
- * @see CookieValue
- * 处理 CookieValue 注解
+ * @see PathVariable
+ * 处理 PathVariable 注解
  */
-public class CookieValueProcessor extends AbstractAnnotationProcessor<CookieValue, CookieValueProcessor.CookieValueMate> {
+public class PathVariableProcessor extends AbstractAnnotationProcessor<PathVariable, PathVariableProcessor.PathVariableMate> {
 
 
     @Override
-    public CookieValueProcessor.CookieValueMate process(CookieValue annotation) {
+    public PathVariableProcessor.PathVariableMate process(PathVariable annotation) {
 
-        return super.newProxyMate(annotation, CookieValueProcessor.CookieValueMate.class);
+        return super.newProxyMate(annotation, PathVariableProcessor.PathVariableMate.class);
     }
 
 
-    public abstract static class CookieValueMate implements AnnotationMate<CookieValue>, CookieValue {
+    public abstract static class PathVariableMate implements AnnotationMate<PathVariable>, PathVariable {
 
-        public CookieValueMate() {
+        public PathVariableMate() {
         }
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(CookieValue.class.getSimpleName());
+            annotation.setName(PathVariable.class.getSimpleName());
             Map<String, String> arguments = new LinkedHashMap<>();
             String value = this.value();
             if (!StringUtils.hasText(value)) {

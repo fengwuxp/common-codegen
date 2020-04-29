@@ -46,6 +46,11 @@ public class DartTypeMapping extends CommonTypeMapping<DartClassMeta> {
     }
 
 
+    @Override
+    public List<DartClassMeta> mapping(Class<?>... classes) {
+        return super.mapping(classes);
+    }
+
     public DartTypeMapping(LanguageParser<DartClassMeta> languageParser) {
         super(languageParser);
     }

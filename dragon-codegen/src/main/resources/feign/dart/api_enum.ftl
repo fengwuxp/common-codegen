@@ -13,7 +13,7 @@ part '${name?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
 class ${name} extends EnumClass  {
 
 
-    static Serializer<${name}> get serializer => _${"$"}${name?uncap_first} Serializer;
+    static Serializer<${name}> get serializer => _${"$"}${name?uncap_first}Serializer;
 
    <#list fieldMetas as field>
     static const ${name} ${field.name} = _${"$"}${field.name};

@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -31,9 +32,9 @@ public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPar
         }
 
         @Override
-        public CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
+        public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(RequestPart.class.getName());
+            annotation.setName(RequestPart.class.getSimpleName());
             Map<String, String> arguments = new LinkedHashMap<>();
             String value = this.value();
             if (!StringUtils.hasText(value)) {
@@ -48,9 +49,9 @@ public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPar
         }
 
         @Override
-        public String toComment(Field annotationOwner) {
+        public String toComment(Parameter annotationOwner) {
 
-            return MessageFormat.format("属性：{0}是一个 cookie", annotationOwner.getName());
+            return MessageFormat.format("属性：{0}是一个 requset part", annotationOwner.getName());
         }
     }
 }

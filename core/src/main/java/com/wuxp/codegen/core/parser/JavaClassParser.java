@@ -223,6 +223,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         //方法参数列表
         Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
+        Map<String, Parameter> parameterMap = new LinkedHashMap<String, Parameter>();
         Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
 
         String[] parameterNames = null;
@@ -298,7 +299,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             params.put(parameterName, classes);
             // 获取参数的上的注解
             paramAnnotations.put(parameterName, parameter.getAnnotations());
-
+            parameterMap.put(parameterName, parameter);
         }
 
 
@@ -306,6 +307,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         this.getAssessPermission(modifiers, methodMeta);
         TypeVariable<Method>[] typeParameters = method.getTypeParameters();
         methodMeta.setParams(params)
+                .setParameters(parameterMap)
                 .setIsAbstract(Modifier.isAbstract(modifiers))
                 .setIsSynchronized(Modifier.isSynchronized(modifiers))
                 .setParamAnnotations(paramAnnotations)

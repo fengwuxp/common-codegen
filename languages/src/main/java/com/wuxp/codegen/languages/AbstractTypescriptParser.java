@@ -74,6 +74,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
     @Override
     protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, TypescriptClassMeta codeGenClassMeta) {
+
         CommonCodeGenMethodMeta commonCodeGenMethodMeta = super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
         if (commonCodeGenMethodMeta == null) {
             return null;

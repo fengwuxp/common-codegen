@@ -128,7 +128,6 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
                 returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
             }
         }
-
         if (returnTypes.size() > 0) {
             //域对象类型描述
             commonCodeGenMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[]{}));
@@ -139,7 +138,6 @@ public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassM
                     javaMethodMeta.getName(),
                     this.classToNamedString(methodMetaReturnType)));
         }
-
         returnTypes.stream()
                 .filter(CommonCodeGenClassMeta::getNeedImport)
                 .forEach(returnType -> {

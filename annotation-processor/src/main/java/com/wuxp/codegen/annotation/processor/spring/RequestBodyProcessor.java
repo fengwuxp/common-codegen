@@ -6,8 +6,11 @@ import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,19 +34,22 @@ public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBod
         }
 
         @Override
-        public CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
+        public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(RequestBody.class.getName());
+            annotation.setName(RequestBody.class.getSimpleName());
             Map<String, String> namedArguments = new HashMap<>();
             namedArguments.put("required", this.required() + "");
-            annotation.setNamedArguments(namedArguments);
+            //注解位置参数
+            List<String> positionArguments = new LinkedList<>(namedArguments.values());
+            annotation.setNamedArguments(namedArguments)
+                    .setPositionArguments(positionArguments);
             return annotation;
         }
 
         @Override
-        public String toComment(Field annotationOwner) {
+        public String toComment(Parameter annotationOwner) {
 
-            return MessageFormat.format("属性：{0}是一个 cookie", annotationOwner.getName());
+            return MessageFormat.format("属性：{0}是一个 rquest body", annotationOwner.getName());
         }
     }
 }
