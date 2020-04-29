@@ -40,7 +40,9 @@ public class CookieValueProcessor extends AbstractAnnotationProcessor<CookieValu
             if (!StringUtils.hasText(value)) {
                 value = this.name();
             }
-            arguments.put("name", value);
+            if (StringUtils.hasText(value)) {
+                arguments.put("name", value);
+            }
             //注解位置参数
             List<String> positionArguments = new LinkedList<>(arguments.values());
             annotation.setNamedArguments(arguments)

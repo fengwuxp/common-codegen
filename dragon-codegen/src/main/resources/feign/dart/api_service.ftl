@@ -51,14 +51,14 @@ class ${name} extends FeignProxyClient {
                   <#assign annotation= paramAnnotation[0]/>
                  <#if annotation.positionArguments??>
                      @${annotation.name}(
-                     <#list annotation.positionArguments as item>
+                     <#list  annotation.positionArguments as item>
                          ${item},
                      </#list>
                      )
                  </#if>
-              </#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName}
+              </#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName},
            </#list>
-            , [UIOptions feignOptions]) {
+             [UIOptions feignOptions]) {
                return this.delegateInvoke<${customize_method.combineType(returnTypes)}>("${method.name}",
                 [
             <#list params as paramName,paramType>
@@ -69,8 +69,8 @@ class ${name} extends FeignProxyClient {
                     serializer: BuiltValueSerializable(
                          serializer: ${returnTypes[0]}.serializer,
                         <#if (returnTypes?size > 1) >
-                            specifiedType: FullType(${returnTypes[0]}, [FullType(${returnTypes[1]})]))
-                        </#if>>
+                            specifiedType: FullType(${returnTypes[0].name}, [FullType(${returnTypes[1].name})]))
+                        </#if>
 
             ));
             };
