@@ -66,7 +66,7 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean looseMode,
                                  boolean enableFieldUnderlineStyle) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle);
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle,null);
         init(looseMode);
     }
 

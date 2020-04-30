@@ -29,6 +29,8 @@ import java.util.Map;
 public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
 
 
+    public static final String FEIGN_CLIENT_ANNOTATION_NAME = "Feign";
+
     //Mapping和mapping元数据的对应
     private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingProcessor.RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
 
@@ -97,7 +99,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
                 return null;
             }
             //将类上的注解改为feign
-            codeGenAnnotation.setName("Feign");
+            codeGenAnnotation.setName(FEIGN_CLIENT_ANNOTATION_NAME);
             codeGenAnnotation.getPositionArguments().remove("method");
             return codeGenAnnotation;
         }

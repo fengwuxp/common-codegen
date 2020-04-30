@@ -65,6 +65,13 @@ public class DartClassMeta extends CommonCodeGenClassMeta {
     public final static DartClassMeta ITERABLE = new DartClassMeta("Iterable", "Iterable<T>", ClassType.CLASS, false, OBJECT);
     public final static DartClassMeta BUILT_ITERABLE = new DartClassMeta("BuiltIterable", "BuiltIterable<T>", ClassType.CLASS, false, OBJECT, BUILT_COLLECTION_PATH);
 
+
+    /**
+     * Serializers
+     */
+    public final static DartClassMeta BUILT_SERIALIZERS = new DartClassMeta("Serializers", null, ClassType.CLASS, false, OBJECT, "/serializers");
+
+
     /**
      * Future
      */
@@ -90,7 +97,6 @@ public class DartClassMeta extends CommonCodeGenClassMeta {
      * File
      */
     public final static DartClassMeta FILE = new DartClassMeta("File", null, ClassType.CLASS, false, null);
-
 
 
     public DartClassMeta() {

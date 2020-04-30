@@ -64,6 +64,6 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 languageParser,
                 templateStrategy,
                 this.looseMode,
-                this.enableFieldUnderlineStyle);
+                this.enableFieldUnderlineStyle, null);
     }
 }

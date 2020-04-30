@@ -67,7 +67,7 @@ public class SpringTemplateStrategy implements TemplateStrategy<JavaSpringCodeGe
     }
 
     @Override
-    public void build(JavaSpringCodeGenClassMeta data) {
+    public void build(JavaSpringCodeGenClassMeta data) throws Exception {
 
         JavaCodeGenClassMeta[] javaCodeGenClassMetas = data.getJavaCodeGenClassMetas();
         String[] controllerNames = data.getControllerNames();
@@ -89,7 +89,7 @@ public class SpringTemplateStrategy implements TemplateStrategy<JavaSpringCodeGe
             CommonCodeGenClassMeta commonCodeGenClassMeta = this.generateServiceFile(new JavaCodeGenClassMeta[]{javaCodeGenClassMeta}, serviceNames[i], dtoDependencies);
 
             // 生成控制器
-            this.generateControllerFile(javaCodeGenClassMeta, controllerNames[i], dtoDependencies,commonCodeGenClassMeta);
+            this.generateControllerFile(javaCodeGenClassMeta, controllerNames[i], dtoDependencies, commonCodeGenClassMeta);
         }
 
 

@@ -41,7 +41,7 @@ public class RequestParamProcessor extends AbstractAnnotationProcessor<RequestPa
                 value = this.name();
             }
             if (StringUtils.hasText(value)) {
-                arguments.put("name", value);
+                arguments.put("name", MessageFormat.format("\"{0}\"", value));
             }
             //注解位置参数
             List<String> positionArguments = new LinkedList<>(arguments.values());

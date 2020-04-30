@@ -2,6 +2,8 @@ package com.wuxp.codegen.dragon;
 
 
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.event.CodeGenPublisher;
+import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -15,11 +17,13 @@ import org.springframework.util.PathMatcher;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
 
 
 /**
  * abstract code generator
+ *
  * @author wxup
  */
 @Slf4j
@@ -73,12 +77,27 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     protected Boolean enableFieldUnderlineStyle;
 
 
+    /**
+     * 生成事件发送者
+     */
+    protected CodeGenPublisher codeGenPublisher;
+
+
     public AbstractCodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean enableFieldUnderlineStyle) {
-        this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle);
+        this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle, null);
     }
+
+    public AbstractCodeGenerator(String[] packagePaths,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
+    }
+
 
     public AbstractCodeGenerator(String[] packagePaths,
                                  Set<String> ignorePackages,
@@ -86,7 +105,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                                  Class<?>[] ignoreClasses,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean enableFieldUnderlineStyle) {
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
         this.packagePaths = packagePaths;
         this.includeClasses = includeClasses;
         this.languageParser = languageParser;
@@ -125,8 +145,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         }
 
         this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
-
-
+        this.codeGenPublisher = codeGenPublisher;
     }
 
     @Override
@@ -137,6 +156,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 .filter(this::filterNoneClazz)
                 .collect(Collectors.toList());
 
+        final boolean needSendEvent = this.codeGenPublisher != null;
 
         int i = 0;
         for (; ; ) {
@@ -163,7 +183,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                             }
                         });
                         commonCodeGenClassMeta.setDependencies(needImportDependencies);
-                        this.templateStrategy.build(commonCodeGenClassMeta);
+                        try {
+                            this.templateStrategy.build(commonCodeGenClassMeta);
+                            if (needSendEvent) {
+                                this.codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            if (needSendEvent) {
+                                this.codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
+                            }
+                        }
                         return values;
                     }).flatMap(Collection::stream)
                     .filter(CommonCodeGenClassMeta::getNeedGenerate)
@@ -173,6 +203,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             }
             i++;
         }
+        if (needSendEvent) {
+            this.codeGenPublisher.sendCodeGenEnd();
+            LockSupport.park();
+        }
+
     }
 
 

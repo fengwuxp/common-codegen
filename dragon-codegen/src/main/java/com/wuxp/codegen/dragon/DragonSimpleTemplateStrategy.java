@@ -77,7 +77,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
     }
 
     @Override
-    public void build(CommonCodeGenClassMeta data) {
+    public void build(CommonCodeGenClassMeta data) throws Exception{
 
         //根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
         String templateName = this.getTemplate(data);
@@ -92,13 +92,11 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
         String packagePath = data.getPackagePath();
         packagePath = this.fileNameGenerateStrategy.generateName(packagePath);
 
-
-        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, this.normalizationFilePath(packagePath), this.extName)).toString();
-
+        String extName = this.extName;
+        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, this.normalizationFilePath(packagePath), extName)).toString();
         //如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
-        if (output.contains(MessageFormat.format("{0}.{1}", File.separator, this.extName))) {
+        if (output.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
             log.warn("类{}，的生成输入路径有误,{}", data.getName(), output);
-
         }
 
         File file = new File(output);
@@ -117,9 +115,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
                     StandardCharsets.UTF_8);
             //添加自定义方法
             template.process(data, writer);
-        } catch (TemplateException | IOException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             if (writer != null) {
                 try {
                     writer.close();

@@ -252,7 +252,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //加入对spring的特别处理
         SpringControllerFilter.filterMethods(javaClassMeta);
 
-        if (javaClassMeta.isApiServiceClass()) {
+        boolean isApiServiceClass = javaClassMeta.isApiServiceClass();
+        if (isApiServiceClass) {
             //要生成的服务，判断是否需要生成
             if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
                 //跳过
@@ -320,28 +321,28 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
         meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
-
         boolean isFirst = count == 1;
-        if (isFirst) {
-            if (javaClassMeta.isApiServiceClass()) {
-                //spring的控制器  生成方法列表
-                meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
-                        .toArray(new CommonCodeGenMethodMeta[]{}));
-
-            } else {
-                // 普通的java bean DTO  生成属性列表
-                meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .toArray(CommonCodeGenFiledMeta[]::new));
-            }
+        if (isFirst && isApiServiceClass) {
+            //spring的控制器  生成方法列表
+            meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
+                    .toArray(new CommonCodeGenMethodMeta[]{}));
         }
+
+
+        if (!isApiServiceClass && (isFirst || meta.getFieldMetas() == null)) {
+            // 普通的java bean DTO  生成属性列表
+            meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .toArray(CommonCodeGenFiledMeta[]::new));
+        }
+
         //依赖处理
         final Map<String, C> metaDependencies = meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
         if (isFirst) {
             //依赖列表
             Set<Class<?>> dependencyList = javaClassMeta.getDependencyList();
-            if (javaClassMeta.isApiServiceClass()) {
+            if (isApiServiceClass) {
                 dependencyList = dependencyList.stream().
                         filter(Objects::nonNull)
                         //忽略所有接口的依赖
@@ -832,7 +833,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             C genClassInstance = this.languageMetaInstanceFactory.newClassInstance();
             List<C> paramTypes = this.typeMapping.mapping(classes);
             Class<?> paramType = classes[0];
-//            int paramTypeSize = paramTypes.size();
             genClassInstance.setTypeVariables(paramTypes.toArray(new CommonCodeGenClassMeta[0]));
             // 注解
             Annotation[] annotations = paramAnnotations.get(key);

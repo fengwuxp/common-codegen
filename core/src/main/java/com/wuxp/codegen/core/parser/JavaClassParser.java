@@ -597,6 +597,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 }).map(Arrays::asList)
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
+                .filter(c -> !c.equals(JavaArrayClassTypeMark.class))
                 .collect(Collectors.toSet());
     }
 

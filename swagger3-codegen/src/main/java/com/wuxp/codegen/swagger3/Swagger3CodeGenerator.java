@@ -1,5 +1,6 @@
 package com.wuxp.codegen.swagger3;
 
+import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
@@ -40,16 +41,18 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
     public Swagger3CodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean enableFieldUnderlineStyle) {
-        super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle,codeGenPublisher);
     }
 
     public Swagger3CodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean looseMode,
-                                 boolean enableFieldUnderlineStyle) {
-        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle,codeGenPublisher);
         init(looseMode);
     }
 
@@ -61,8 +64,9 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean looseMode,
-                                 boolean enableFieldUnderlineStyle) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle);
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle,codeGenPublisher);
         init(looseMode);
     }
 

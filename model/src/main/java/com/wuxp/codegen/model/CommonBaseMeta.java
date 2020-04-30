@@ -2,6 +2,7 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.AccessPermission;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
      * 如果是类则为类的simple名(不含包名)
      * 如果为属性或方法则为name
      */
+    @NonNull
     protected String name;
 
     //是否为静态

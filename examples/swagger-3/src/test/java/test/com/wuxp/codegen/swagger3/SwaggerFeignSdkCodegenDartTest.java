@@ -28,7 +28,6 @@ import java.util.Map;
 public class SwaggerFeignSdkCodegenDartTest {
 
 
-
     @Test
     public void testCodeGenDartApiSkd() {
 

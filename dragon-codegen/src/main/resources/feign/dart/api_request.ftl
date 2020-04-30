@@ -1,19 +1,33 @@
 import 'dart:convert';
 
-<#--import 'package:built_collection/built_collection.dart';-->
-<#--import 'package:built_value/built_value.dart';-->
-<#--import 'package:built_value/serializer.dart';-->
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
-
-part '${finallyClassName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
 
 <#if dependencies??>
 <#--依赖导入处理-->
-     <#list dependencies as key,val >
-         <#if !val.packagePath?starts_with("package:")>
-          import '${customize_method.pathoResolve(packagePath,val.packagePath)}';
-       </#if>
+    <#list dependencies as key,val >
+        <#if !val.packagePath?starts_with("package:")>
+            import '${customize_method.pathoResolve(packagePath,val.packagePath)}.dart';
+        </#if>
     </#list>
+</#if>
+
+<#assign genericIndex=finallyClassName?index_of("<")/>
+<#assign className=finallyClassName/>
+
+<#assign serializerName=finallyClassName/>
+<#--泛型描述-->
+<#assign genericDesc=""/>
+<#if (genericIndex>0)>
+    <#assign serializerName=className?substring(0,genericIndex)/>
+    <#assign genericDesc=className?substring(genericIndex)/>
+</#if>
+<#if (genericIndex>0)>
+    part '${serializerName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
+<#else >
+    part '${finallyClassName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
 </#if>
 
 <#if comments??>
@@ -22,47 +36,50 @@ part '${finallyClassName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.da
     </#list>
 </#if>
 
-abstract class ${finallyClassName} implements Built<${finallyClassName}, ${finallyClassName}Builder>, JsonSerializableObject {
 
-       ${finallyClassName}._();
 
-      factory ${finallyClassName}([Function(${finallyClassName}Builder) updates]) = _${"$"}${finallyClassName};
 
+abstract class ${className} implements Built<${className}, ${serializerName}Builder${genericDesc}>, JsonSerializableObject {
+
+       ${serializerName}._();
+
+      factory ${serializerName}([Function(${serializerName}Builder${genericDesc}) updates]) = _${"$"}${className};
 
        <#if fieldMetas??>
-            <#list fieldMetas as field>
+             <#list fieldMetas as field>
 
-         <#list field.comments as cmment>
-           /// ${cmment}
-         </#list>
-         <#if field.requered??>
-          @nullable
-         </#if>
-         <#list field.annotations as annotation>
-             @${annotation.name}({
-             <#list annotation.namedArguments as name,val>
-                 ${name}:${val},
-             </#list>
-             })
-         </#list>
-        ${customize_method.combineType(field.filedTypes)} ${field.name};
-    </#list>
+                <#list field.comments as cmment>
+                    /// ${cmment}
+                </#list>
+    <#--            <#list field.annotations as annotation>-->
+    <#--                @${annotation.name}({-->
+    <#--                <#list annotation.namedArguments as name,val>-->
+    <#--                    ${name}:${val},-->
+    <#--                </#list>-->
+    <#--                })-->
+    <#--            </#list>-->
+                <#if !field.requered??>
+                @nullable
+                </#if>
+                @BuiltValueField(wireName: '${field.name}')
+                ${customize_method.combineType(field.filedTypes)} get ${field.name};
+            </#list>
        </#if>
-
-       static Serializer<${finallyClassName}> get serializer => _${"$"}${finallyClassName?uncap_first}Serializer;
-
-        static ${finallyClassName} formJson(String json) {
-           return serializers.deserializeWith(${finallyClassName}.serializer, jsonDecode(json));
-        }
 
         @override
         Map<String, dynamic> toMap() {
-            return serializers.serializeWith(${finallyClassName}.serializer, this);
+            return serializers.serializeWith(${serializerName}.serializer, this);
         }
 
         @override
         String toJson() {
            return json.encode(toMap());
+        }
+
+        static Serializer<${serializerName}> get serializer => _${"$"}${serializerName?uncap_first}Serializer;
+
+        static ${serializerName} formJson(String json) {
+             return serializers.deserializeWith(${serializerName}.serializer, jsonDecode(json));
         }
 
 }

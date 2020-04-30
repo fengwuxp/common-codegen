@@ -1,11 +1,13 @@
 package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.*;
@@ -47,8 +49,14 @@ public class DartTypeMapping extends CommonTypeMapping<DartClassMeta> {
 
 
     @Override
-    public List<DartClassMeta> mapping(Class<?>... classes) {
-        return super.mapping(classes);
+    protected DartClassMeta mapping(Class<?> clazz) {
+        if (JavaArrayClassTypeMark.class.equals(clazz)) {
+            // 标记的数据数组类型
+            DartClassMeta array = this.languageParser.getLanguageMetaInstanceFactory().newClassInstance();
+            BeanUtils.copyProperties(DartClassMeta.BUILT_LIST, array);
+            return array;
+        }
+        return super.mapping(clazz);
     }
 
     public DartTypeMapping(LanguageParser<DartClassMeta> languageParser) {
