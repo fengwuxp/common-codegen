@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public final class GrabGenericVariablesHelper {
 
-    //    private static final String GENERIC_DESCRIPTOR = "\\<+(.*?)\\>$+";
     private static final String GENERIC_DESCRIPTOR = "<(.*?)>$+";
 
     private static final Pattern GENERIC_PATTERN = Pattern.compile(GENERIC_DESCRIPTOR);

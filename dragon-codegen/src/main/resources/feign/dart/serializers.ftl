@@ -44,9 +44,10 @@ final Serializers serializers = (_$serializers.toBuilder()
          ..addPlugin(StandardJsonPlugin())
           <#list builderFactories as factory>
               ..addBuilderFactory(
-                  const FullType(${factory[0].name}, [FullType(${factory[1].name})]),
-                 () =>  ${customize_method.combineType(factory)}>())
-
+<#--                  const FullType(${factory[0].name}, [FullType(${factory[1].name})]),-->
+<#--                 () =>  ${customize_method.combineType(factory)}>())-->
+              ${factory.fullTypeCode},
+              ${factory.functionCode}
           </#list>
          ..add(DateTimeMillisecondsSerializer()))
          .build();

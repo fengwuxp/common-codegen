@@ -103,6 +103,7 @@ public class DisruptorCodeGenPublisher<T extends CommonCodeGenClassMeta> impleme
         public boolean isCodegenEvent() {
             return this.exception == null;
         }
+
     }
 
 
