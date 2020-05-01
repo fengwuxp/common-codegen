@@ -39,7 +39,7 @@ public class SpringCodeGenerator extends AbstractCodeGenerator {
     }
 
     public SpringCodeGenerator(String[] packagePaths, Set<String> ignorePackages, Class<?>[] includeClasses, Class<?>[] ignoreClasses, LanguageParser<CommonCodeGenClassMeta> languageParser, TemplateStrategy<CommonCodeGenClassMeta> templateStrategy, boolean enableFieldUnderlineStyle) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle);
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, null);
         this.setClassPathScanningCandidateComponentProvider(new JapEntityClassPathScanningCandidateComponentProvider());
     }
 
@@ -78,8 +78,12 @@ public class SpringCodeGenerator extends AbstractCodeGenerator {
         });
 
         TemplateStrategy templateStrategy = this.templateStrategy;
-        groups.forEach((key,javaSpringCodeGenClassMeta)->{
-            templateStrategy.build(javaSpringCodeGenClassMeta);
+        groups.forEach((key, javaSpringCodeGenClassMeta) -> {
+            try {
+                templateStrategy.build(javaSpringCodeGenClassMeta);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
     }

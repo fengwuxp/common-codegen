@@ -51,7 +51,8 @@ public class DisruptorCodeGenPublisher<T extends CommonCodeGenClassMeta> impleme
         // Grab the next sequence
         long sequence = ringBuffer.next();
         try {
-            CodegenEvent<T> codegenEvent = ringBuffer.get(sequence); // Get the entry in the Disruptor
+            // Get the entry in the Disruptor
+            CodegenEvent<T> codegenEvent = ringBuffer.get(sequence);
             // for the sequence
             // Fill with data
             codegenEvent.setException(exception);
