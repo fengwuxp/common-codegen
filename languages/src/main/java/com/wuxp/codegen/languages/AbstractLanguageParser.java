@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
+import com.wuxp.codegen.annotation.processor.spring.RequestBodyProcessor;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenMatcher;
@@ -33,7 +34,10 @@ import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import com.wuxp.codegen.utils.SpringControllerFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -254,7 +258,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         boolean isApiServiceClass = javaClassMeta.isApiServiceClass();
         if (isApiServiceClass) {
-            //要生成的服务，判断是否需要生成
+            // 要生成的服务，判断是否需要生成
             if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
                 //跳过
                 log.warn("跳过类{}", source.getName());
@@ -778,11 +782,67 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (classMeta == null) {
             return null;
         }
+        checkSpringMvcMethod(javaMethodMeta, classMeta);
+
         if (codeGenClassMeta instanceof TypescriptClassMeta) {
             return converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
         } else {
             return converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
         }
+    }
+
+    /**
+     * 检查spring mvc 控制器的方法
+     *
+     * @param javaMethodMeta
+     * @param classMeta
+     */
+    private void checkSpringMvcMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+        if (classMeta.getAnnotation(Controller.class) == null || classMeta.getAnnotation(RestController.class) == null) {
+            return;
+        }
+        // 检查控制器方法是否合法
+        if (javaMethodMeta.getIsStatic() || !AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
+            //
+            throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
+        }
+        RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations()).map(annotation -> {
+            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+            if (processor == null) {
+                return null;
+            }
+
+            return processor.process(annotation);
+        }).filter(Objects::nonNull)
+                .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
+                .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate).findFirst()
+                .orElse(null);
+
+        if (requestMappingMate == null) {
+            return;
+        }
+
+        boolean isGetMethod = RequestMethod.GET.equals(requestMappingMate.getRequestMethod());
+        String[] consumes = requestMappingMate.consumes();
+        boolean hasRequestBody = javaMethodMeta.getParamAnnotations()
+                .values()
+                .stream()
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .filter(annotation -> RequestBody.class.equals(annotation.annotationType()))
+                .findFirst()
+                .orElse(null) != null;
+        if (!hasRequestBody) {
+            hasRequestBody = consumes.length > 0 && (MediaType.APPLICATION_JSON_UTF8_VALUE.equals(consumes[0]) ||
+                    MediaType.APPLICATION_JSON_VALUE.equals(consumes[0]));
+        }
+        if (isGetMethod && hasRequestBody) {
+            // get 请求不支持 requestBody
+            throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是GET请求，不支持RequestBody");
+        }
+//        if (RequestMethod.POST.equals(requestMappingMate.getRequestMethod())) {
+//            // post方法需要 ReuqestBody
+//        }
     }
 
 
