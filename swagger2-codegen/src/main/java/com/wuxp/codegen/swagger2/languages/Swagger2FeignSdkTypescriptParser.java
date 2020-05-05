@@ -62,19 +62,19 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
     @Override
     protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, TypescriptClassMeta codeGenClassMeta) {
 
-        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
-            return null;
-        }
-
-        if (!javaMethodMeta.existAnnotation(
-                SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS
-        )) {
-            return null;
-        }
-
-        if (javaMethodMeta.existAnnotation(ApiIgnore.class)) {
-            return null;
-        }
+//        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
+//            return null;
+//        }
+//
+//        if (!javaMethodMeta.existAnnotation(
+//                SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS
+//        )) {
+//            return null;
+//        }
+//
+//        if (javaMethodMeta.existAnnotation(ApiIgnore.class)) {
+//            return null;
+//        }
 
         return super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
     }

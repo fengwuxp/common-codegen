@@ -31,27 +31,27 @@ public class OrderController extends BaseController<String> {
         return Collections.EMPTY_LIST;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.POST)
     public PageInfo<Order> queryOrder(@RequestBody QueryOrderEvt evt) {
         return new PageInfo<Order>();
     }
 
-    @RequestMapping(value = "queryOrder3", method = RequestMethod.GET)
+    @RequestMapping(value = "queryOrder3", method = RequestMethod.POST)
     public PageInfo<Order> queryOrder3(@RequestBody QueryOrderEvt[] evt) {
         return new PageInfo<Order>();
     }
 
-    @RequestMapping(value = "queryOrder4", method = RequestMethod.GET)
+    @RequestMapping(value = "queryOrder4", method = RequestMethod.POST)
     public PageInfo<Order> queryOrder4(@RequestBody Set<QueryOrderEvt> evt) {
         return new PageInfo<Order>();
     }
 
-    @RequestMapping(value = "queryOrder5", method = RequestMethod.GET)
+    @RequestMapping(value = "queryOrder5", method = RequestMethod.POST)
     public PageInfo<Order> queryOrder5(@RequestBody Map<String, QueryOrderEvt> evt) {
         return new PageInfo<Order>();
     }
 
-    @RequestMapping(value = "queryOrder6", method = RequestMethod.GET)
+    @RequestMapping(value = "queryOrder6", method = RequestMethod.POST)
     public PageInfo<Order> queryOrder6(@RequestBody List<QueryOrderEvt> evt) {
         return new PageInfo<Order>();
     }
@@ -82,5 +82,11 @@ public class OrderController extends BaseController<String> {
 
         return new ServiceResponse<>();
     }
+
+//    @PostMapping(value = {"private_hello"})
+//    private ServiceResponse private_hello() {
+//
+//        return new ServiceResponse<>();
+//    }
 
 }

@@ -33,19 +33,17 @@ public class Swagger3FeignSdkJavaParser extends AbstractJavaParser {
 
     @Override
     protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, JavaCodeGenClassMeta codeGenClassMeta) {
-        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
-            return null;
-        }
+//        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
+//            return null;
+//        }
 
-        if (!javaMethodMeta.existAnnotation(
-                SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS
-        )) {
-            return null;
-        }
-
-        if (javaMethodMeta.existAnnotation(Hidden.class)) {
-            return null;
-        }
+//        if (!javaMethodMeta.existAnnotation(SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS)) {
+//            return null;
+//        }
+//
+//        if (javaMethodMeta.existAnnotation(Hidden.class)) {
+//            return null;
+//        }
 
         return super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
     }

@@ -748,7 +748,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (javaMethodMetas == null) {
             return Collections.EMPTY_LIST;
         }
-        List<M> collect = Arrays.stream(javaMethodMetas)
+        List<M> codegenMethods = Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
                 .filter(javaMethodMeta -> this.genMatchingStrategy.isMatchMethod(javaMethodMeta))
                 .map(methodMeta -> this.converterMethod(methodMeta, classMeta, codeGenClassMeta))
@@ -757,12 +757,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toList());
 
         //判断是否存在方法名称是否相同
-        collect.forEach(m -> collect.stream()
+        codegenMethods.forEach(m -> codegenMethods.stream()
                 .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
                 .findFirst()
                 .ifPresent(m2 -> m2.setName(MessageFormat.format("override_{0}", m2.getName()))));
 
-        return collect;
+        return codegenMethods;
 
 
     }
@@ -783,7 +783,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
         checkSpringMvcMethod(javaMethodMeta, classMeta);
-
         if (codeGenClassMeta instanceof TypescriptClassMeta) {
             return converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
         } else {
@@ -798,11 +797,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param classMeta
      */
     private void checkSpringMvcMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
-        if (classMeta.getAnnotation(Controller.class) == null || classMeta.getAnnotation(RestController.class) == null) {
+        if (classMeta.getAnnotation(Controller.class) == null && classMeta.getAnnotation(RestController.class) == null) {
             return;
         }
         // 检查控制器方法是否合法
-        if (javaMethodMeta.getIsStatic() || !AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
+        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
             //
             throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
         }
@@ -811,7 +810,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             if (processor == null) {
                 return null;
             }
-
             return processor.process(annotation);
         }).filter(Objects::nonNull)
                 .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
