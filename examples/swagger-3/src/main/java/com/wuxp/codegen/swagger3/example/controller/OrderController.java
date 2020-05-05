@@ -83,6 +83,12 @@ public class OrderController extends BaseController<String> {
         return new ServiceResponse<>();
     }
 
+//    @PostMapping(value = {"hello"})
+    public ServiceResponse public_hello() {
+
+        return new ServiceResponse<>();
+    }
+
 //    @PostMapping(value = {"private_hello"})
 //    private ServiceResponse private_hello() {
 //

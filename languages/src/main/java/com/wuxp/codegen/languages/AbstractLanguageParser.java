@@ -835,11 +835,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     MediaType.APPLICATION_JSON_VALUE.equals(consumes[0]));
         }
         if (isGetMethod && hasRequestBody) {
-            // get 请求不支持 requestBody
+            // get 请求不支持 RequestBody
             throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是GET请求，不支持RequestBody");
         }
 //        if (RequestMethod.POST.equals(requestMappingMate.getRequestMethod())) {
-//            // post方法需要 ReuqestBody
+//            // post方法需要 RequestBody
 //        }
     }
 
