@@ -2,10 +2,37 @@ package com.wuxp.codegen.core.event;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
+import java.util.concurrent.locks.LockSupport;
+
 /**
  * publish codegen event
+ *
+ * @author wxup
  */
 public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {
+
+
+    CodeGenPublisher NONE = new CodeGenPublisher() {
+        @Override
+        public void sendCodeGen(CommonCodeGenClassMeta data) {
+
+        }
+
+        @Override
+        public void sendCodeGenError(Exception exception, CommonCodeGenClassMeta data) {
+
+        }
+
+        @Override
+        public void sendCodeGenEnd() {
+
+        }
+
+        @Override
+        public boolean supportPark() {
+            return false;
+        }
+    };
 
 
     /**
@@ -27,4 +54,13 @@ public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {
      * 发送生成完成事件
      */
     void sendCodeGenEnd();
+
+    /**
+     * 是否是否支持 {@link LockSupport}
+     *
+     * @return
+     */
+    default boolean supportPark() {
+        return true;
+    }
 }

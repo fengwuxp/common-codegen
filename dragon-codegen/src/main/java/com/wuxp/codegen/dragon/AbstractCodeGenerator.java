@@ -156,7 +156,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 .filter(this::filterNoneClazz)
                 .collect(Collectors.toList());
 
-        final boolean needSendEvent = this.codeGenPublisher != null;
+        CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
+        final boolean needSendEvent = codeGenPublisher != null;
 
         int i = 0;
         for (; ; ) {
@@ -186,12 +187,12 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         try {
                             this.templateStrategy.build(commonCodeGenClassMeta);
                             if (needSendEvent) {
-                                this.codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
+                                codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (needSendEvent) {
-                                this.codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
+                                codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
                             }
                         }
                         return values;
@@ -204,9 +205,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             i++;
         }
         if (needSendEvent) {
-            this.codeGenPublisher.sendCodeGenEnd();
+            codeGenPublisher.sendCodeGenEnd();
             // 最多等待10秒
-            LockSupport.parkNanos(10 * 1000 * 1000);
+            if (codeGenPublisher.supportPark()) {
+                LockSupport.parkNanos(10 * 1000 * 1000);
+            }
         }
 
     }

@@ -20,6 +20,7 @@ import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -622,7 +623,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         JavaFieldMeta fieldMeta = new JavaFieldMeta();
                         fieldMeta.setIsVolatile(false)
                                 .setIsTransient(false)
-                                .setField(methodMeta.getMethod())
+//                                .setField(methodMeta.getMethod())
                                 .setTypes(methodMeta.getReturnType())
                                 .setAnnotations(methodMeta.getAnnotations())
                                 .setAccessPermission(AccessPermission.PRIVATE)
@@ -783,10 +784,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
         checkSpringMvcMethod(javaMethodMeta, classMeta);
-        if (codeGenClassMeta instanceof TypescriptClassMeta) {
-            return converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
-        } else {
+        if (codeGenClassMeta instanceof DartClassMeta) {
             return converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
+        } else {
+            return converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
         }
     }
 
