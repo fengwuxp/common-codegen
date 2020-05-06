@@ -206,10 +206,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         }
         if (needSendEvent) {
             codeGenPublisher.sendCodeGenEnd();
-            // 最多等待10秒
             if (codeGenPublisher.supportPark()) {
-                LockSupport.parkNanos(10 * 1000 * 1000);
+                // 最多等待10秒
+                LockSupport.parkNanos(10 * 1000 * 1000 * 1000);
             }
+
         }
 
     }

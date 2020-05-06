@@ -25,6 +25,11 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
         super(packageNameMap, classNameTransformers);
     }
 
+    public TypescriptPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers, String fileNamSuffix) {
+        super(packageNameMap, classNameTransformers, fileNamSuffix);
+    }
+
+
     @Override
     public String convert(Class<?> clazz) {
         String path = super.convert(clazz);

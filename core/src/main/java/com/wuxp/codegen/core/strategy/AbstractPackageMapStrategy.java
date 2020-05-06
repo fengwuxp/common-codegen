@@ -18,16 +18,25 @@ import java.util.Optional;
 @Setter
 public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 
-    protected Map<String/*类的包名前缀*/, String/*output path*/> packageNameMap;
+    /**
+     * @key 类的包名前缀
+     * @value output path
+     */
+    protected Map<String, String> packageNameMap;
 
     protected PathMatcher pathMatcher = new AntPathMatcher();
+
+    /**
+     * 用于替换文件名称的后缀
+     */
+    protected String fileNamSuffix = "Service";
 
     /**
      * 类名转换器
      *
      * @see ClassNameTransformer
      */
-    private Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers;
+    protected Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers;
 
 
     public AbstractPackageMapStrategy(Map<String, String> packageNameMap) {
@@ -37,6 +46,12 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     public AbstractPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers) {
         this.packageNameMap = packageNameMap;
         this.classNameTransformers = classNameTransformers;
+    }
+
+    public AbstractPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers, String fileNamSuffix) {
+        this.packageNameMap = packageNameMap;
+        this.classNameTransformers = classNameTransformers;
+        this.fileNamSuffix = fileNamSuffix;
     }
 
     @Override
@@ -148,6 +163,6 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     }
 
     protected String controllerToService(String simpleName) {
-        return simpleName.replaceAll("Controller", "Service");
+        return simpleName.replaceAll("Controller", this.fileNamSuffix);
     }
 }

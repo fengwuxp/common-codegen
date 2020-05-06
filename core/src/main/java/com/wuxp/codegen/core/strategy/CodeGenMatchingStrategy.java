@@ -9,6 +9,7 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
  * <p>
  * 匹配目标（类，或方法）是否需要生成
  * </p>
+ * @author wxup
  */
 public interface CodeGenMatchingStrategy {
 

@@ -29,7 +29,7 @@ public class SwaggerFeignSdkCodegenDartTest {
 
 
     @Test
-    public void testCodeGenDartApiSkd() {
+    public void testCodeGenDartApiSdk() {
 
         //设置基础数据类型的映射关系
         Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();

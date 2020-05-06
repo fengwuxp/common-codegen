@@ -11,6 +11,7 @@ import java.util.List;
  * 匹配时跳过指定的类
  * {@link CodeGenMatcher}
  * {@link IgnoreClassCodeGenMatcher#ignoreClasses}
+ * @author wxup
  */
 @Slf4j
 public class IgnoreClassCodeGenMatcher implements CodeGenMatcher {

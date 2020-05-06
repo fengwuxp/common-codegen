@@ -45,6 +45,8 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("com.alipay.");
         IGNORE_PACKAGE_LIST.add("com.baidu.");
         IGNORE_PACKAGE_LIST.add("com.github.");
+        IGNORE_PACKAGE_LIST.add("com.wuxp.api.");
+        IGNORE_PACKAGE_LIST.add("com.wuxp.basic.");
 //        IGNORE_PACKAGE_LIST.add("com.wuxp.codegen.model");
 
         //文件上传
