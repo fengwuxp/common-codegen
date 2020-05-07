@@ -384,7 +384,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                             } else {
                                 typeVariable = cs.get(0);
                             }
-
                         }
                         if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
                             metaDependencies.put(typeVariable.getName(), typeVariable);
@@ -862,6 +861,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
         List<C> returnTypes = this.typeMapping.mapping(methodMetaReturnType);
         genMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[0]));
+
+        Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies();
+        returnTypes.forEach(item -> dependencies.put(item.getName(), item));
+
 
         /**
          * 方法参数处理流程

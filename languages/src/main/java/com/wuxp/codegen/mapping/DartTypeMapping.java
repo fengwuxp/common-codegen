@@ -40,6 +40,7 @@ public class DartTypeMapping extends CommonTypeMapping<DartClassMeta> {
         AbstractTypeMapping.setBaseTypeMapping(List.class, DartClassMeta.BUILT_LIST);
         AbstractTypeMapping.setBaseTypeMapping(Collection.class, DartClassMeta.BUILT_ITERABLE);
         AbstractTypeMapping.setBaseTypeMapping(void.class, DartClassMeta.VOID);
+        AbstractTypeMapping.setBaseTypeMapping(Void.class, DartClassMeta.VOID);
 
         //文件上传
         AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, DartClassMeta.FILE);

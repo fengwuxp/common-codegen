@@ -1,12 +1,14 @@
 package com.wuxp.codegen.core.event;
 
+import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
 import java.util.concurrent.locks.LockSupport;
 
 /**
  * publish codegen event
- *
+ * if support Park {@link CodeGenPublisher#supportPark} {@link LockSupport#unpark(Thread)}
+ * {@link CodeGenerator#generate()}
  * @author wxup
  */
 public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {

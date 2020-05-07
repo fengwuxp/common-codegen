@@ -16,6 +16,9 @@ class ${name} extends EnumClass  {
     static Serializer<${name}> get serializer => _${"$"}${name?uncap_first}Serializer;
 
    <#list fieldMetas as field>
+     <#list field.comments as cmment>
+     /// ${cmment}
+     </#list>
     static const ${name} ${field.name} = _${"$"}${field.name};
    </#list>
 

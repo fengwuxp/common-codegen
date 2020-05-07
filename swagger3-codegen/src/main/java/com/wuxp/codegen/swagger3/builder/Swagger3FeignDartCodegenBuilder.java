@@ -4,6 +4,7 @@ import com.lmax.disruptor.EventHandler;
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
+import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
@@ -71,7 +72,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 packageMapStrategy,
                 new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects);
-
+        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.templateFileVersion, this.getSharedVariables());
@@ -90,7 +91,15 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
 
         Thread mainThread = Thread.currentThread();
 
-        return new Swagger3CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle,
+        return new Swagger3CodeGenerator(
+                this.scanPackages,
+                this.ignorePackages,
+                this.includeClasses,
+                this.ignoreClasses,
+                languageParser,
+                templateStrategy,
+                this.looseMode,
+                this.enableFieldUnderlineStyle,
                 new DisruptorCodeGenPublisher(new DartFeignCodeGenEventHandler(templateLoader, this.outPath, mainThread)));
     }
 
