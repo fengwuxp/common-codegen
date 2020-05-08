@@ -24,7 +24,6 @@ import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import freemarker.template.Template;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -38,16 +37,22 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
-@Builder
 @Slf4j
 public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilder {
 
 
+    private Map<Class<?>, List<String>> ignoreFields;
+
     protected Swagger3FeignDartCodegenBuilder() {
         super();
+    }
+
+
+    public Swagger3FeignDartCodegenBuilder ignoreFields(Map<Class<?>, List<String>> ignoreFields) {
+        this.ignoreFields = ignoreFields;
+        return this;
     }
 
 
@@ -71,7 +76,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         LanguageParser languageParser = new Swagger3FeignSdkDartParser(
                 packageMapStrategy,
                 new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
-                this.codeDetects);
+                this.codeDetects, this.ignoreFields);
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
 
         //实例化模板加载器

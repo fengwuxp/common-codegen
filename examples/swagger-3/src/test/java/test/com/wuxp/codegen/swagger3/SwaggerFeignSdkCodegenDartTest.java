@@ -9,6 +9,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.swagger3.example.controller.OrderController;
+import com.wuxp.codegen.swagger3.example.evt.BaseQueryEvt;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
@@ -17,9 +18,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 测试swagger 生成  dart的 feign api sdk
@@ -63,7 +62,13 @@ public class SwaggerFeignSdkCodegenDartTest {
         Map<String, Object> classNameTransformers = new HashMap<>();
         classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
 
+        Map<Class<?>, List<String>> ignoreFields = new HashMap<Class<?>, List<String>>() {{
+            put(BaseQueryEvt.class, Arrays.asList("queryPage"));
+        }};
+
+
         Swagger3FeignDartCodegenBuilder.builder()
+                .ignoreFields(ignoreFields)
                 .baseTypeMapping(baseTypeMapping)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))

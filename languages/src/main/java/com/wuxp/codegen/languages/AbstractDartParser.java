@@ -13,6 +13,7 @@ import com.wuxp.codegen.languages.factory.JavaLanguageMetaInstanceFactory;
 import com.wuxp.codegen.mapping.DartTypeMapping;
 import com.wuxp.codegen.mapping.JavaTypeMapping;
 import com.wuxp.codegen.model.*;
+import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.dart.DartFieldMate;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -29,6 +30,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor.FEIGN_CLIENT_ANNOTATION_NAME;
@@ -41,6 +43,9 @@ import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZ
  */
 @Slf4j
 public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> {
+
+
+    private Map<Class<?>, List<String>> ignoreFields;
 
     private static final String RIGHT_SLASH = "/";
 
@@ -55,25 +60,15 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
 
     public AbstractDartParser(PackageMapStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
-                              Collection<CodeDetect> codeDetects) {
-        this(null,
-                new DartLanguageMetaInstanceFactory(),
-                packageMapStrategy,
-                genMatchingStrategy,
-                codeDetects);
-        this.typeMapping = new DartTypeMapping(this);
-    }
-
-    public AbstractDartParser(PackageMapStrategy packageMapStrategy,
-                              CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects,
-                              boolean useAsync) {
+                              Map<Class<?>, List<String>> ignoreFields) {
         this(null,
                 new DartLanguageMetaInstanceFactory(),
                 packageMapStrategy,
                 genMatchingStrategy,
                 codeDetects);
         this.typeMapping = new DartTypeMapping(this);
+        this.ignoreFields = ignoreFields;
     }
 
 
@@ -112,6 +107,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
         }
 
         CommonCodeGenMethodMeta[] methodMetas = dartClassMeta.getMethodMetas();
+        boolean isFeignClient = false;
         if (methodMetas == null || methodMetas.length == 0) {
             Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) dartClassMeta.getDependencies();
             dependencies.put(BUILT_SERIALIZERS.getName(), BUILT_SERIALIZERS);
@@ -121,6 +117,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
                     .findFirst();
             if (feignAnnotation.isPresent()) {
                 feignAnnotation.get().setName("FeignClient");
+                isFeignClient = true;
             }
         }
 
@@ -128,7 +125,36 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
         if (StringUtils.hasText(packagePath)) {
             dartClassMeta.setPackagePath(dartFileNameConverter(packagePath));
         }
+
+        // 请求对象
+        if (!isFeignClient && ClassType.CLASS.equals(dartClassMeta.getClassType())) {
+            // DTO 合并超类的属性
+            CommonCodeGenClassMeta superClass = dartClassMeta.getSuperClass();
+            if (superClass == null || dartClassMeta.getFieldMetas() == null) {
+                return dartClassMeta;
+            }
+            List<CommonCodeGenFiledMeta> filedMetas = Arrays.stream(dartClassMeta.getFieldMetas())
+                    .collect(Collectors.toList());
+            filedMetas.addAll(this.filterIgnoreFiledMetas(superClass));
+            dartClassMeta.setFieldMetas(filedMetas.stream().distinct().toArray(CommonCodeGenFiledMeta[]::new));
+            Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) dartClassMeta.getDependencies();
+            dependencies.putAll(superClass.getDependencies());
+        }
+
+
         return dartClassMeta;
+    }
+
+    public static String dartFileNameConverter(String filepath) {
+
+        if (filepath.endsWith(MessageFormat.format(".{0}", LanguageDescription.DART.getSuffixName()))) {
+            return filepath;
+        }
+
+        String[] split = filepath.split(RIGHT_SLASH);
+        String s = split[split.length - 1];
+        split[split.length - 1] = JavaMethodNameUtil.humpToLine(s);
+        return String.join(RIGHT_SLASH, split);
     }
 
     @Override
@@ -201,15 +227,21 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
     }
 
 
-    public static String dartFileNameConverter(String filepath) {
-
-        if (filepath.endsWith(MessageFormat.format(".{0}", LanguageDescription.DART.getSuffixName()))) {
-            return filepath;
+    /**
+     * 过滤需要忽略的filed
+     *
+     * @param dartClassMeta
+     * @return
+     */
+    private List<CommonCodeGenFiledMeta> filterIgnoreFiledMetas(CommonCodeGenClassMeta dartClassMeta) {
+        if (dartClassMeta.getFieldMetas() == null) {
+            return Collections.emptyList();
         }
-
-        String[] split = filepath.split(RIGHT_SLASH);
-        String s = split[split.length - 1];
-        split[split.length - 1] = JavaMethodNameUtil.humpToLine(s);
-        return String.join(RIGHT_SLASH, split);
+        return Arrays.stream(dartClassMeta.getFieldMetas())
+                .filter(commonCodeGenFiledMeta -> ignoreFields.getOrDefault(dartClassMeta.getSource(), Collections.emptyList())
+                        .stream().noneMatch(filedName -> filedName.equals(commonCodeGenFiledMeta.getName())))
+                .collect(Collectors.toList());
     }
+
+
 }
