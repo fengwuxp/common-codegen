@@ -11,11 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author wxup
+ */
 @RestController
 @RequestMapping("/example_cms")
 @Tag(name = "example_cms", description = "example_cms")
 @Slf4j
-public class ExampCmsleController {
+public class ExampleCmsController {
 
 
     @GetMapping("get_num")

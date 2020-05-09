@@ -69,12 +69,17 @@ class ${name} extends FeignProxyClient {
                          returnType.name=="bool"||
                          returnType.name=="double" ||
                          returnType.name=="int" )>
-                    serializer: BuiltValueSerializable(
-                    <#if !returnTypes[0].name?starts_with("Built")>
-                        serializer: ${returnType.name}.serializer,
+                    <#assign specifiedType=customize_method.combineDartFullType(returnTypes)!""/>
+                      <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
+                        serializer: BuiltValueSerializable(
+                        <#if !returnTypes[0].name?starts_with("Built")>
+                            serializer: ${returnType.name}.serializer,
+                        </#if>
+                        <#if (specifiedType?length > 0)>
+                        specifiedType:${specifiedType}
+                        </#if>
+                        )
                     </#if>
-                    specifiedType:${customize_method.combineDartFullType(returnTypes)}
-                    )
                 </#if>
                );
             }

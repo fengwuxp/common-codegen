@@ -128,8 +128,16 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
     }
 
 
+    /**
+     * 生成事件处理者
+     */
     public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeGenPublisher.CodegenEvent<DartClassMeta>> {
 
+
+        private final List<DartClassMeta> builtList = Arrays.asList(DartClassMeta.BUILT_LIST,
+                DartClassMeta.BUILT_MAP,
+                DartClassMeta.BUILT_SET,
+                DartClassMeta.BUILT_ITERABLE);
 
         private Set<DartClassMeta> dtos = new HashSet<>();
 
@@ -225,6 +233,8 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                     .flatMap(Collection::stream)
                     .filter(returnTypes -> returnTypes.length > 1)
                     .map((returnTypes) -> {
+
+                        // 别名转换
                         List<CommonCodeGenClassMeta> types = new ArrayList();
                         DartClassMeta aliasType = SUPPORT_ALIAS_TYPES.stream().map(dartClassMeta -> {
                             List<String> alias = typeAlias.get(dartClassMeta);
@@ -252,7 +262,6 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                         }).filter(Objects::nonNull)
                                 .findFirst()
                                 .orElse(null);
-
                         if (aliasType == null) {
                             List<CommonCodeGenClassMeta[]> list = new ArrayList();
                             list.add(returnTypes);
@@ -261,6 +270,34 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
 
                         types.add(0, aliasType);
                         return Arrays.asList(returnTypes, types.toArray(new CommonCodeGenClassMeta[0]));
+                    })
+                    .flatMap(Collection::stream)
+                    .map((returnTypes) -> {
+                        // 判断是否为 built的集合对象，集合对象内部是是否存在复杂对象
+                        CommonCodeGenClassMeta returnType = returnTypes[0];
+//                        boolean isBuiltCollection = builtList.stream()
+//                                .map(type -> returnType.getName().startsWith(type.getName()))
+//                                .filter(result -> result)
+//                                .findFirst()
+//                                .orElse(false);
+//                        if (!isBuiltCollection) {
+//
+//                        }
+                        // 判断集合中是否有复杂的集合对象
+                        boolean isCollection = DartClassMeta.BUILT_LIST.getName().equals(returnType.getName()) ||
+                                DartClassMeta.BUILT_SET.getName().equals(returnType.getName()) ||
+                                DartClassMeta.BUILT_ITERABLE.getName().equals(returnType.getName());
+                        if (isCollection && returnTypes.length > 2) {
+
+                            return Arrays.asList(returnTypes, Arrays.asList(returnTypes).subList(1, returnTypes.length).toArray(new CommonCodeGenClassMeta[0]));
+                        }
+                        if (DartClassMeta.BUILT_MAP.getName().equals(returnType.getName()) && returnTypes.length > 3) {
+
+                            return Arrays.asList(returnTypes, Arrays.asList(returnTypes).subList(2, returnTypes.length).toArray(new CommonCodeGenClassMeta[0]));
+                        }
+                        List<CommonCodeGenClassMeta[]> list = new ArrayList();
+                        list.add(returnTypes);
+                        return list;
                     })
                     .flatMap(Collection::stream)
                     .map(returnTypes -> {
@@ -281,11 +318,6 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         }
 
 
-        private final List<DartClassMeta> builtList = Arrays.asList(DartClassMeta.BUILT_LIST,
-                DartClassMeta.BUILT_MAP,
-                DartClassMeta.BUILT_SET,
-                DartClassMeta.BUILT_ITERABLE);
-
         private String getFunctionCode(String originalGenericDesc) {
             Optional<Boolean> isBuiltCollection = builtList.stream()
                     .map(type -> originalGenericDesc.startsWith(type.getName()))
@@ -300,6 +332,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
             return MessageFormat.format("{0}Builder{1}", type, originalGenericDesc.substring(first));
 
         }
+
 
         private String normalizationFilePath(String packagePath) {
 

@@ -89,6 +89,9 @@ public class DartFullTypeCombineTypeDescStrategy implements CombineTypeDescStrat
             }
             tempStack.push(new String[]{key, type});
         }
+        if (tempStack.isEmpty()) {
+            return null;
+        }
         String[] items = tempStack.pop();
         String returnValue = MessageFormat.format(fullTypeFormat, originalGenericDesc.replaceAll(items[0], items[1]))
                 .replaceAll("\\<", ",[")
