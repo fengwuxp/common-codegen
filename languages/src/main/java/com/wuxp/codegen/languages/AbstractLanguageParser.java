@@ -590,14 +590,17 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return Collections.EMPTY_LIST;
         }
 
+        List<JavaFieldMeta> fieldMetas = Arrays.stream(javaFieldMetas)
+                .filter(javaFieldMeta -> Boolean.FALSE.equals(javaFieldMeta.getIsTransient()))
+                .filter(javaFieldMeta -> Boolean.FALSE.equals(javaFieldMeta.getIsStatic()))
+                .collect(Collectors.toList());
 
-        final List<String> fieldNameList = Arrays.stream(javaFieldMetas)
+        final List<String> fieldNameList = fieldMetas.stream()
                 .map(CommonBaseMeta::getName)
                 .collect(Collectors.toList());
 
         boolean isEnum = classMeta.getClazz().isEnum();
 
-        List<JavaFieldMeta> fieldMetas = new ArrayList<>(Arrays.asList(javaFieldMetas));
 
         if (!isEnum) {
             //如果是java bean 需要合并get方法
@@ -750,6 +753,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         List<M> codegenMethods = Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
+                .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsTransient()))
                 .filter(javaMethodMeta -> this.genMatchingStrategy.isMatchMethod(javaMethodMeta))
                 .map(methodMeta -> this.converterMethod(methodMeta, classMeta, codeGenClassMeta))
                 .filter(Objects::nonNull)

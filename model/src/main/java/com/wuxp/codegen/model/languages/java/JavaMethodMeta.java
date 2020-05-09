@@ -60,6 +60,12 @@ public class JavaMethodMeta extends JavaBaseMeta {
     private Boolean isNative;
 
     /**
+     * 是否序列化
+     */
+    private Boolean isTransient;
+
+
+    /**
      * 方法归属的类
      */
     private Class<?> owner;

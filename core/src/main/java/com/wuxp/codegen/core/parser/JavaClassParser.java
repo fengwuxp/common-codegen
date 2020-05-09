@@ -16,6 +16,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.StringUtils;
 
+import java.beans.Transient;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.text.MessageFormat;
@@ -310,6 +311,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setParameters(parameterMap)
                 .setIsAbstract(Modifier.isAbstract(modifiers))
                 .setIsSynchronized(Modifier.isSynchronized(modifiers))
+                .setIsTransient(Modifier.isTransient(modifiers) || method.isAnnotationPresent(Transient.class))
                 .setParamAnnotations(paramAnnotations)
                 .setOwner(owner)
                 .setIsNative(Modifier.isNative(modifiers))
@@ -399,6 +401,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     }
 
     protected JavaFieldMeta getJavaFieldMeta(Field field, Class<?> owner) {
+
         String fieldName = field.getName();
         if (owner.isEnum() && !field.isEnumConstant()) {
             //是枚举，且非枚举常量，忽略
@@ -407,6 +410,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 //                return null;
 //            }
         }
+
 
         JavaFieldMeta fieldMeta = new JavaFieldMeta();
         fieldMeta.setField(field)
