@@ -66,9 +66,13 @@ public class SwaggerFeignSdkCodegenDartTest {
             put(BaseQueryEvt.class, Arrays.asList("queryPage"));
         }};
 
+        Map<DartClassMeta, List<String>> typeAlias = new HashMap<DartClassMeta, List<String>>() {{
+            put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
+        }};
 
         Swagger3FeignDartCodegenBuilder.builder()
                 .ignoreFields(ignoreFields)
+                .typeAlias(typeAlias)
                 .baseTypeMapping(baseTypeMapping)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))

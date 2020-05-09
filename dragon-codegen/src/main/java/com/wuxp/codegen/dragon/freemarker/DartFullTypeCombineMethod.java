@@ -2,7 +2,7 @@ package com.wuxp.codegen.dragon.freemarker;
 
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
+import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import freemarker.template.DefaultArrayAdapter;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
@@ -11,15 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 /**
+ * 合并Dart Built_value FullType
  * @author wxup
  */
 @Slf4j
-public class CombineTypeMethod implements TemplateMethodModelEx {
+public class DartFullTypeCombineMethod implements TemplateMethodModelEx {
 
-    /**
-     * 泛型合并策略
-     */
-    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
+
+    protected CombineTypeDescStrategy combineTypeDescStrategy = new DartFullTypeCombineTypeDescStrategy();
 
     @Override
     public Object exec(List arguments) throws TemplateModelException {
@@ -30,9 +29,8 @@ public class CombineTypeMethod implements TemplateMethodModelEx {
 
         CommonCodeGenClassMeta[] commonCodeGenClassMetas = (CommonCodeGenClassMeta[]) arrayAdapter.getAdaptedObject(CommonCodeGenClassMeta.class);
 
-
-        log.debug("要合并的泛型描述，length={}",commonCodeGenClassMetas.length);
-
-        return this.combineTypeDescStrategy.combine(commonCodeGenClassMetas);
+        String combine = this.combineTypeDescStrategy.combine(commonCodeGenClassMetas);
+        log.info("Built Value FullType: {}",combine);
+        return combine;
     }
 }

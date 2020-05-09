@@ -15,18 +15,23 @@ import './${name?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.reflectable.
     </#list>
 </#if>
 
+void main() {
+ initializeReflectable();
+}
+
 <#if comments??>
     <#list comments as cmment>
      /// ${cmment}
     </#list>
 </#if>
-
 <#list annotations as annotation>
     @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
 </#list>
 class ${name} extends FeignProxyClient {
 
-
+    ${name}() : super() {
+       main();
+    }
 
         <#list methodMetas as method>
 
@@ -56,7 +61,7 @@ class ${name} extends FeignProxyClient {
                    [<#list params as paramName,paramType>${paramName},</#list>],
                     feignOptions: feignOptions,
             <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
-                <#if returnTypes?size<4 &&  !( returnType.name=="Object" ||
+                <#if !( returnType.name=="Object" ||
                          returnType.name=="dynamic"||
                          returnType.name=="void"||
                          returnType.name=="String"||
@@ -68,12 +73,7 @@ class ${name} extends FeignProxyClient {
                     <#if !returnTypes[0].name?starts_with("Built")>
                         serializer: ${returnType.name}.serializer,
                     </#if>
-                    <#if (returnTypes?size == 2) >
-                        specifiedType: FullType(${returnType.name}, [FullType(${returnTypes[1].name})])
-                    </#if>
-                    <#if (returnTypes?size == 3) >
-                        specifiedType: FullType(${returnType.name}, [FullType(${returnTypes[1].name},[FullType(${returnTypes[2].name})])])
-                    </#if>
+                    specifiedType:${customize_method.combineDartFullType(returnTypes)}
                     )
                 </#if>
                );
@@ -81,9 +81,7 @@ class ${name} extends FeignProxyClient {
         </#list>
 }
 
-void main() {
-  initializeReflectable();
-}
+
 
 
 final ${name?uncap_first} = ${name}();

@@ -41,7 +41,6 @@ part 'serializers.g.dart';
 ])
 
 final Serializers serializers = (_$serializers.toBuilder()
-         ..addPlugin(StandardJsonPlugin())
           <#list builderFactories as factory>
               ..addBuilderFactory(
 <#--                  const FullType(${factory[0].name}, [FullType(${factory[1].name})]),-->
@@ -49,5 +48,6 @@ final Serializers serializers = (_$serializers.toBuilder()
               ${factory.fullTypeCode},
               ${factory.functionCode}
           </#list>
+         ..addPlugin(StandardJsonPlugin())
          ..add(DateTimeMillisecondsSerializer()))
          .build();

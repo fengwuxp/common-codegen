@@ -30,6 +30,10 @@ public class DartTypeMapping extends CommonTypeMapping<DartClassMeta> {
         AbstractTypeMapping.setBaseTypeMapping(Boolean.class, DartClassMeta.BOOL);
         AbstractTypeMapping.setBaseTypeMapping(String.class, DartClassMeta.STRING);
         AbstractTypeMapping.setBaseTypeMapping(Number.class, DartClassMeta.NUM);
+        AbstractTypeMapping.setBaseTypeMapping(Long.class, DartClassMeta.INT);
+        AbstractTypeMapping.setBaseTypeMapping(Integer.class, DartClassMeta.INT);
+        AbstractTypeMapping.setBaseTypeMapping(Short.class, DartClassMeta.INT);
+        AbstractTypeMapping.setBaseTypeMapping(Byte.class, DartClassMeta.INT);
         AbstractTypeMapping.setBaseTypeMapping(double.class, DartClassMeta.DOUBLE);
         AbstractTypeMapping.setBaseTypeMapping(float.class, DartClassMeta.DOUBLE);
         AbstractTypeMapping.setBaseTypeMapping(long.class, DartClassMeta.INT);
