@@ -590,15 +590,17 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return Collections.EMPTY_LIST;
         }
 
+
+        boolean isEnum = classMeta.getClazz().isEnum();
         List<JavaFieldMeta> fieldMetas = Arrays.stream(javaFieldMetas)
+                //过滤掉非枚举的静态变量
+                .filter(javaFieldMeta -> !isEnum && Boolean.FALSE.equals(javaFieldMeta.getIsStatic()))
                 .filter(javaFieldMeta -> Boolean.FALSE.equals(javaFieldMeta.getIsTransient()))
                 .collect(Collectors.toList());
 
         final List<String> fieldNameList = fieldMetas.stream()
                 .map(CommonBaseMeta::getName)
                 .collect(Collectors.toList());
-
-        boolean isEnum = classMeta.getClazz().isEnum();
 
 
         if (!isEnum) {
@@ -635,13 +637,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         return fieldMetas.stream()
-                .filter(javaFieldMeta -> {
-                    //过滤掉非枚举的静态变量
-                    if (isEnum) {
-                        return true;
-                    }
-                    return Boolean.FALSE.equals(javaFieldMeta.getIsStatic());
-                })
                 .map(javaFieldMeta -> this.converterField(javaFieldMeta, classMeta))
                 .filter(Objects::nonNull)
                 .distinct()
