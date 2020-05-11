@@ -6,6 +6,7 @@ import com.wuxp.codegen.swagger3.example.domain.User;
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
@@ -18,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 
-// 通过这里配置使下面的映射都在/users下，可去除
+/**
+ * 通过这里配置使下面的映射都在/users下，可去除
+ */
 @RestController
 @RequestMapping(value = "/users")
 @Tag(name = "user")

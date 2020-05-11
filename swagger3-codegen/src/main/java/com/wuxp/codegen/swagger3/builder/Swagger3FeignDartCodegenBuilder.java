@@ -43,6 +43,9 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
 
 
+/**
+ * @author wxup
+ */
 @Slf4j
 public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilder {
 
@@ -97,6 +100,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 this.codeDetects,
                 this.ignoreFields);
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
+        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.templateFileVersion, this.getSharedVariables());

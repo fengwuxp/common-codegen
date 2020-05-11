@@ -32,6 +32,7 @@
         <module>spring-codegen</module>
         <module>swagger3-codegen</module>
         <module>ui-support</module>
+        <module>wuxp-api-support</module>
     </modules>
 
     <properties>
@@ -49,6 +50,7 @@
         <spring.version>5.2.4.RELEASE</spring.version>
         <swagger2.version>2.9.2</swagger2.version>
         <springdoc.version>1.2.21</springdoc.version>
+        <codegen.version>1.0.0-SNAPSHOT</codegen.version>
     </properties>
 
     <dependencies>

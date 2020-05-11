@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-dragon</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${codegen.version}</version>
         </dependency>
 
         <!--servlet-->

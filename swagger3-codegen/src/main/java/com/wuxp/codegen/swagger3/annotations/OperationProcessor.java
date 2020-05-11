@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
+ * @author wxup
  * @see Operation
  */
 public class OperationProcessor extends AbstractAnnotationProcessor<Operation, OperationProcessor.OperationMate> {

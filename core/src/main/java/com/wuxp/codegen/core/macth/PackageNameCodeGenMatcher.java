@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * 根据包名进行匹配
+ *
+ * @author wxup
  */
 @Slf4j
 public class PackageNameCodeGenMatcher implements CodeGenMatcher {
@@ -32,6 +34,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("org.hibernate.");
         IGNORE_PACKAGE_LIST.add("org.jetbrains.");
         IGNORE_PACKAGE_LIST.add("org.jodd.");
+        IGNORE_PACKAGE_LIST.add("org.apache.commons.");
         IGNORE_PACKAGE_LIST.add("lombok.");
         IGNORE_PACKAGE_LIST.add("javax.persistence.");
         IGNORE_PACKAGE_LIST.add("javax.servlet.");
@@ -45,11 +48,11 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("com.alipay.");
         IGNORE_PACKAGE_LIST.add("com.baidu.");
         IGNORE_PACKAGE_LIST.add("com.github.");
-//        IGNORE_PACKAGE_LIST.add("com.wuxp.api.");
         IGNORE_PACKAGE_LIST.add("com.wuxp.basic.");
-//        IGNORE_PACKAGE_LIST.add("com.wuxp.codegen.model");
 
-        //文件上传
+        /**
+         * 文件上传
+         */
         INCLUDE_PACKAGE_LIST.add("org.springframework.web.multipart.commons.CommonsMultipartFile");
     }
 
@@ -65,7 +68,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
             return true;
         }
 
-        //不在忽略列表里面则返回true
+        // 不在忽略列表里面则返回true
         return IGNORE_PACKAGE_LIST.stream().noneMatch(name -> (clazz.getName().startsWith(name) || clazz.getName().equals(name)));
     }
 }

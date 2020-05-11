@@ -1,5 +1,6 @@
 package test.com.wuxp.codegen.swagger3;
 
+import com.wuxp.codegen.api.WuxpApiEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -79,6 +80,7 @@ public class SwaggerFeignSdkCodegenDartTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
+                .languageEnhancedProcessor(new WuxpApiEnhancedProcessor())
                 .buildCodeGenerator()
                 .generate();
 

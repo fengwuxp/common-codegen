@@ -36,10 +36,21 @@
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-swagger3</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${codegen.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-api-support</artifactId>
+            <version>${codegen.version}</version>
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.wuxp</groupId>
+            <artifactId>fengwuxp-api-support</artifactId>
+            <version>${codegen.version}</version>
+        </dependency>
     </dependencies>
 
 

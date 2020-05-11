@@ -46,7 +46,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 this.codeDetects);
 
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
-
+        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, this.templateFileVersion, this.getSharedVariables());
 

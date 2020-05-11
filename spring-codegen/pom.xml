@@ -37,26 +37,26 @@
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${codegen.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-annotation-processor</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${codegen.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-languages</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${codegen.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-dragon</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${codegen.version}</version>
             <scope>compile</scope>
         </dependency>
 

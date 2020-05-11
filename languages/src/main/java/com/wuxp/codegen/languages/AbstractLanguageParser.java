@@ -5,7 +5,6 @@ import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
-import com.wuxp.codegen.annotation.processor.spring.RequestBodyProcessor;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenMatcher;
@@ -17,6 +16,7 @@ import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
+import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -24,8 +24,6 @@ import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.mapping.TypeMapping;
@@ -35,7 +33,6 @@ import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import com.wuxp.codegen.utils.SpringControllerFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -130,6 +127,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 匹配器链
      */
     protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+
+    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
 
     {
         codeGenMatchers.add(this.packageNameCodeGenMatcher);
@@ -411,6 +410,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             newSupperClass.setTypeVariables(supperClassTypeVariables);
             meta.setSuperClass(newSupperClass);
         }
+        this.languageEnhancedProcessor.enhancedProcessingClass(meta, javaClassMeta);
         // 增强处理类
         this.enhancedProcessingClass(meta, javaClassMeta);
 
@@ -438,17 +438,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return false;
         }
 
-        int size = this.codeGenMatchers.size();
-
         //必须满足所有的匹配器才能进行生成
-        int result = (int) codeGenMatchers.stream()
-                .map(codeGenMatcher -> codeGenMatcher.match(clazz))
-                .filter(r -> r)
-                .count();
-        if (result == size) {
+        boolean result = codeGenMatchers.stream()
+                .allMatch(codeGenMatcher -> codeGenMatcher.match(clazz));
+        if (result && log.isDebugEnabled()) {
             log.debug("符合生成条件的类：{}", clazz.getName());
         }
-        return result == size;
+        return result;
     }
 
     /**
@@ -594,7 +590,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         boolean isEnum = classMeta.getClazz().isEnum();
         List<JavaFieldMeta> fieldMetas = Arrays.stream(javaFieldMetas)
                 //过滤掉非枚举的静态变量
-                .filter(javaFieldMeta -> !isEnum && Boolean.FALSE.equals(javaFieldMeta.getIsStatic()))
+                .filter(javaFieldMeta -> isEnum || Boolean.FALSE.equals(javaFieldMeta.getIsStatic()))
                 .filter(javaFieldMeta -> Boolean.FALSE.equals(javaFieldMeta.getIsTransient()))
                 .collect(Collectors.toList());
 
@@ -716,6 +712,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //域对象类型描述
         fieldInstance.setFiledTypes(classMetaMappings.toArray(new CommonCodeGenClassMeta[]{}));
 
+        fieldInstance = this.languageEnhancedProcessor.enhancedProcessingField(fieldInstance, javaFieldMeta, classMeta);
+
         //TODO 注解转化
         //增强处理
         this.enhancedProcessingField(fieldInstance, javaFieldMeta, classMeta);
@@ -780,11 +778,16 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
         checkSpringMvcMethod(javaMethodMeta, classMeta);
+        M methodCodeMeta;
         if (codeGenClassMeta instanceof DartClassMeta) {
-            return converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
+            methodCodeMeta = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
         } else {
-            return converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
+            methodCodeMeta = converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
         }
+        methodCodeMeta = this.languageEnhancedProcessor.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
+        //增强处理
+        this.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
+        return methodCodeMeta;
     }
 
     /**
@@ -911,8 +914,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         genMethodMeta.setParams(codeGenParams)
                 .setParamAnnotations(codeGenParamAnnotations);
 
-        //增强处理
-        this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
 
         return genMethodMeta;
     }
@@ -1155,8 +1156,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         params.put("req", argsClassMeta);
         genMethodMeta.setParams(params);
 
-        //增强处理
-        this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
 
         return genMethodMeta;
     }
@@ -1242,4 +1241,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     }
 
+    @Override
+    public void setLanguageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor) {
+        languageEnhancedProcessor.setCodeGenMatchers(this.codeGenMatchers);
+        this.languageEnhancedProcessor = languageEnhancedProcessor;
+    }
+
+    @Override
+    public List<CodeGenMatcher> getCodeGenMatchers() {
+        return this.codeGenMatchers;
+    }
 }

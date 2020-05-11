@@ -1,5 +1,6 @@
 package com.wuxp.codegen.swagger3.example.controller;
 
+import com.wuxp.api.signature.ApiSignature;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +19,11 @@ import java.util.Map;
 @RequestMapping("/example_cms")
 @Tag(name = "example_cms", description = "example_cms")
 @Slf4j
-public class ExampleCmsController {
+public class ExampleController {
 
 
     @GetMapping("get_num")
-    public List<Integer> getNums(Integer num) {
+    public List<Integer> getNums(@ApiSignature Integer num) {
 
         return Arrays.asList(num, num + 1);
     }

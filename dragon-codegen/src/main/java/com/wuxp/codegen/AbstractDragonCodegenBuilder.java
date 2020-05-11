@@ -7,6 +7,7 @@ import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -61,8 +62,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     /**
      * 类名映射策略
+     *
+     * @key 类名或ant匹配
+     * @value 字符串或 ClassNameTransformer
      */
-    private Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers;
+    private Map<String, Object> classNameTransformers;
 
     /**
      * 包名映射策略
@@ -114,9 +118,16 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     /**
      * 忽略的方法
+     *
+     * @key 类
+     * @value 方法名称
      */
-    protected Map<Class<?>/*类名*/, String[]/*方法名称*/> ignoreMethods;
+    protected Map<Class<?>, String[]> ignoreMethods;
 
+    /**
+     * 语言处理增强器
+     */
+    protected LanguageEnhancedProcessor languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
 
     protected AbstractDragonCodegenBuilder() {
     }
@@ -222,6 +233,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder ignoreMethods(Map<Class<?>/*类名*/, String[]/*方法名称*/> ignoreMethods) {
         this.ignoreMethods = ignoreMethods;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder languageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor) {
+        this.languageEnhancedProcessor = languageEnhancedProcessor;
         return this;
     }
 

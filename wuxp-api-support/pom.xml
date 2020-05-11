@@ -9,15 +9,29 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wuxp-codegen-template</artifactId>
+    <artifactId>wuxp-api-support</artifactId>
+
+
     <dependencies>
         <dependency>
+            <groupId>com.wuxp</groupId>
+            <artifactId>fengwuxp-api-support</artifactId>
+            <version>${codegen.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-model</artifactId>
+            <artifactId>wuxp-codegen-annotation-processor</artifactId>
             <version>${codegen.version}</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-core</artifactId>
+            <version>${codegen.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
+    </dependencies>
 
 </project>

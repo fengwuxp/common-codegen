@@ -38,7 +38,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
                 new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects);
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
-
+        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.templateFileVersion, this.getSharedVariables());
 

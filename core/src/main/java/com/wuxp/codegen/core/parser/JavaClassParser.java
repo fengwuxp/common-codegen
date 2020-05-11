@@ -477,10 +477,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         ;
         if (onlyPublic) {
             //只获取public的方法
-//            methods = clazz.getMethods();
             methods = Arrays.stream(methods).filter(method -> Modifier.isPublic(method.getModifiers())).toArray(Method[]::new);
         } else {
-//            methods = clazz.getDeclaredMethods();
             Method.setAccessible(methods, true);
         }
 

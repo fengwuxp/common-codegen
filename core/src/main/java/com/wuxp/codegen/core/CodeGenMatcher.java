@@ -8,5 +8,11 @@ package com.wuxp.codegen.core;
 @FunctionalInterface
 public interface CodeGenMatcher {
 
+    /**
+     * 是否匹配
+     *
+     * @param clazz
+     * @return
+     */
     boolean match(Class<?> clazz);
 }
