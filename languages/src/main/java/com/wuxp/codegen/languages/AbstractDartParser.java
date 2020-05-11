@@ -218,7 +218,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
         if (returnTypes.length == 0) {
             // 补全返回值泛型
             returnTypes = new DartClassMeta[]{DartClassMeta.VOID};
-            log.warn("类 {}的方法 {}返回值类型不明确", classMeta.getName(), javaMethodMeta.getName());
+            log.warn("方法解析警告，类 {}的方法 {}返回值类型不明确", classMeta.getName(), javaMethodMeta.getName());
         }
         commonCodeGenMethodMeta.setReturnTypes(returnTypes);
 
