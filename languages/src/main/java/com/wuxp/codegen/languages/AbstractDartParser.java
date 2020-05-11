@@ -215,6 +215,11 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
                 .filter(item -> !DartClassMeta.FUTRUE.getName().equals(item.getName()))
                 .toArray(DartClassMeta[]::new);
 
+        if (returnTypes.length == 0) {
+            // 补全返回值泛型
+            returnTypes = new DartClassMeta[]{DartClassMeta.VOID};
+            log.warn("类 {}的方法 {}返回值类型不明确", classMeta.getName(), javaMethodMeta.getName());
+        }
         commonCodeGenMethodMeta.setReturnTypes(returnTypes);
 
 
@@ -223,6 +228,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
 
     @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+
 
     }
 
