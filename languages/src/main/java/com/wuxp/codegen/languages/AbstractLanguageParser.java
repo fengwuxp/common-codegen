@@ -592,7 +592,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         List<JavaFieldMeta> fieldMetas = Arrays.stream(javaFieldMetas)
                 .filter(javaFieldMeta -> Boolean.FALSE.equals(javaFieldMeta.getIsTransient()))
-                .filter(javaFieldMeta -> Boolean.FALSE.equals(javaFieldMeta.getIsStatic()))
                 .collect(Collectors.toList());
 
         final List<String> fieldNameList = fieldMetas.stream()
@@ -625,7 +624,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         JavaFieldMeta fieldMeta = new JavaFieldMeta();
                         fieldMeta.setIsVolatile(false)
                                 .setIsTransient(false)
-//                                .setField(methodMeta.getMethod())
                                 .setTypes(methodMeta.getReturnType())
                                 .setAnnotations(methodMeta.getAnnotations())
                                 .setAccessPermission(AccessPermission.PRIVATE)
