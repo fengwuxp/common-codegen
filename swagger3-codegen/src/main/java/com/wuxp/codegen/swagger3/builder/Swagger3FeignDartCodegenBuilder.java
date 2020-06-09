@@ -11,7 +11,6 @@ import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.dragon.path.PathResolve;
 import com.wuxp.codegen.enums.CodeRuntimePlatform;
-import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -24,10 +23,7 @@ import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
-import freemarker.template.DefaultArrayAdapter;
 import freemarker.template.Template;
-import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

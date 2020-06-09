@@ -39,7 +39,11 @@ class ${name} extends FeignProxyClient {
                /// ${cmment_index+1}:${cmment}
             </#list>
             <#list method.annotations as annotation>
-                @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
+                <#if annotation.name=='Signature'>
+                    @${annotation.name}(${annotation.namedArguments['fields']})
+                 <#else >
+                     @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
+                </#if>
             </#list>
             <#assign returnTypes=method.returnTypes/>
             Future<${customize_method.combineType(returnTypes)}>  ${method.name}(

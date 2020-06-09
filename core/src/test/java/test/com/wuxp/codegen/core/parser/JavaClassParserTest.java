@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * JavaClassParser Tester.

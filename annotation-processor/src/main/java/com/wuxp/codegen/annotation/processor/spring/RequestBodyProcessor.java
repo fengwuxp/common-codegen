@@ -5,7 +5,6 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
 import java.util.HashMap;

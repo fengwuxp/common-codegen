@@ -6,10 +6,12 @@ import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestPart;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wxup

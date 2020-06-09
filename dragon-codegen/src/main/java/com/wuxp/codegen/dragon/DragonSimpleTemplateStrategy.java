@@ -10,7 +10,6 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.utils.FileUtil;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;

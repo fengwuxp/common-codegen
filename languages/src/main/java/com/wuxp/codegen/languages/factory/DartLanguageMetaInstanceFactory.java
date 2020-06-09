@@ -1,11 +1,9 @@
 package com.wuxp.codegen.languages.factory;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
-import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.dart.DartFieldMate;
-import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
