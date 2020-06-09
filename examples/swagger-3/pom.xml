@@ -39,6 +39,7 @@
             <version>${codegen.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-api-support</artifactId>
@@ -51,6 +52,7 @@
             <artifactId>fengwuxp-api-support</artifactId>
             <version>${codegen.version}</version>
         </dependency>
+
     </dependencies>
 
 

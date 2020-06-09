@@ -42,7 +42,9 @@ public class DartTypeMapping extends CommonTypeMapping<DartClassMeta> {
         AbstractTypeMapping.setBaseTypeMapping(Map.class, DartClassMeta.BUILT_MAP);
         AbstractTypeMapping.setBaseTypeMapping(Set.class, DartClassMeta.BUILT_SET);
         AbstractTypeMapping.setBaseTypeMapping(List.class, DartClassMeta.BUILT_LIST);
-        AbstractTypeMapping.setBaseTypeMapping(Collection.class, DartClassMeta.BUILT_ITERABLE);
+
+        // 由于built_collection 没有导出BuiltIterable 先转化为 BuiltList
+        AbstractTypeMapping.setBaseTypeMapping(Collection.class, DartClassMeta.BUILT_LIST);
         AbstractTypeMapping.setBaseTypeMapping(void.class, DartClassMeta.VOID);
         AbstractTypeMapping.setBaseTypeMapping(Void.class, DartClassMeta.VOID);
 

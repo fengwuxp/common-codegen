@@ -3,7 +3,7 @@ package com.wuxp.codegen.model.languages.java.codegen;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
-import com.wuxp.codegen.model.utils.SnowFlakeIdGen;
+import com.wuxp.codegen.model.utils.SnowFlakeIdGenetorUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -138,7 +138,7 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
 
 
     // or use 1L?
-    private Long serialVersionUIDValue = SnowFlakeIdGen.SINGLETON.nextId();
+    private Long serialVersionUIDValue = SnowFlakeIdGenetorUtil.SINGLETON.nextId();
 
     public JavaCodeGenClassMeta() {
     }

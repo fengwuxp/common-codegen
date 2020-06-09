@@ -3,10 +3,10 @@ package com.wuxp.codegen.model.utils;
 /**
  * 雪花id
  */
-public final class SnowFlakeIdGen {
+public final class SnowFlakeIdGenetorUtil {
 
     //Singleton
-    public static final SnowFlakeIdGen SINGLETON = new SnowFlakeIdGen(2, 3);
+    public static final SnowFlakeIdGenetorUtil SINGLETON = new SnowFlakeIdGenetorUtil(2, 3);
 
     /**
      * 起始的时间戳
@@ -46,7 +46,7 @@ public final class SnowFlakeIdGen {
     //上一次时间戳
     private long lastTimeStamp = -1L;
 
-    public SnowFlakeIdGen(long dataCenterId, long machineId) {
+    public SnowFlakeIdGenetorUtil(long dataCenterId, long machineId) {
         if (dataCenterId > MAX_DATA_CENTER_NUM || dataCenterId < 0) {
             throw new IllegalArgumentException("dataCenterId can't be greater than MAX_DATA_CENTER_NUM or less than 0");
         }
