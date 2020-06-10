@@ -14,6 +14,7 @@ import java.util.Map;
 
 /**
  * freemarker的模板加载器
+ * @author wxup
  */
 @Slf4j
 public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
@@ -63,11 +64,6 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
                     StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("/{0}", this.templateFileVersion) : "",
                     templateName);
             Template template = configuration.getTemplate(templatePath);
-//            String name = template.getName();
-//            Map<String, String> autoImportTemplates = new LinkedHashMap<>();
-//            for (Map.Entry<String, String> entry : AUTO_IMPORT_TEMPLATES.entrySet()) {
-//                autoImportTemplates.put(entry.getKey(),  entry.getValue());
-//            }
             template.setAutoImports(AUTO_IMPORT_TEMPLATES);
             return template;
         } catch (IOException e) {

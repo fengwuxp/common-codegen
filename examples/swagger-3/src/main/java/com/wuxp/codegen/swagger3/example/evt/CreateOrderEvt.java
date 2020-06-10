@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.beans.Transient;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -19,6 +20,10 @@ public class CreateOrderEvt extends BaseEvt {
     private String sn;
 
     @NotNull
-    private Integer totalAmount;
+    private transient Integer totalAmount;
 
+    @Transient
+    public Integer getTotalAmount() {
+        return totalAmount;
+    }
 }

@@ -609,7 +609,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         //匹配getXX 或isXxx方法
                         return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
                     })
-                    .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) || Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()))
+                    .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()) && Boolean.FALSE.equals(javaMethodMeta.getIsTransient()))
                     .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
                     .filter(javaMethodMeta -> {
                         //属性是否已经存在
