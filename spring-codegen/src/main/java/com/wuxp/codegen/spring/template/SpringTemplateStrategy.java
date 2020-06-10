@@ -9,7 +9,7 @@ import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.spring.model.DtoObjectType;
 import com.wuxp.codegen.spring.model.JavaSpringCodeGenClassMeta;
 import com.wuxp.codegen.templates.TemplateLoader;
-import test.com.wuxp.codegen.utils.FileUtil;
+import com.wuxp.codegen.utils.FileUtil;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;

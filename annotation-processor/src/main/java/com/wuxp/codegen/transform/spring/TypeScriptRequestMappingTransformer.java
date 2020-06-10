@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 /**
+ * @author wxup
  * @see RequestMapping
  */
 @Slf4j
@@ -24,11 +25,15 @@ public class TypeScriptRequestMappingTransformer implements
         AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingProcessor.RequestMappingMate> {
 
 
-    //请求方法和Mapping名称的对应
+    /**
+     * 请求方法和Mapping名称的对应
+     */
     private static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new HashMap<>();
 
 
-    //媒体类型映射
+    /**
+     * 媒体类型映射
+     */
     private static final Map<String, String> MEDIA_TYPE_MAPPING = new LinkedHashMap<>();
 
 
@@ -76,7 +81,7 @@ public class TypeScriptRequestMappingTransformer implements
         }
         if (annotationMate.annotationType().equals(RequestMapping.class)) {
 //                arguments.put("method", "RequestMethod." + this.getRequestMethod().name());
-            //将RequestMapping 转换为其他明确的Mapping类型
+            // 将RequestMapping 转换为其他明确的Mapping类型
             RequestMethod requestMethod = annotationMate.getRequestMethod();
             if (requestMethod == null) {
                 //默认的为GET

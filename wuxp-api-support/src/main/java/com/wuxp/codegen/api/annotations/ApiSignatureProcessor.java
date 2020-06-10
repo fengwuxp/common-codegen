@@ -7,6 +7,8 @@ import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 处理api signature 注解
@@ -31,7 +33,9 @@ public class ApiSignatureProcessor extends AbstractAnnotationProcessor<ApiSignat
         CommonCodeGenAnnotation genAnnotation = new CommonCodeGenAnnotation();
         genAnnotation.setName(ANNOTATION_NAME);
         Map<String, String> namedArguments = new LinkedHashMap<>();
-        List<String> positionArguments = new ArrayList<>(needSignFields);
+        List<String> positionArguments = needSignFields.stream()
+                .sorted(Comparator.comparing(Function.identity()))
+                .collect(Collectors.toList());
         namedArguments.put("fields", JSON.toJSONString(positionArguments));
         genAnnotation.setNamedArguments(namedArguments);
         genAnnotation.setPositionArguments(positionArguments);

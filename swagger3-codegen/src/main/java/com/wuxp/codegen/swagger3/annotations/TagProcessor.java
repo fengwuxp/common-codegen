@@ -25,7 +25,7 @@ public class TagProcessor extends AbstractAnnotationProcessor<Tag, TagProcessor.
     public abstract static class TagMate implements AnnotationMate<Tag>, Tag {
 
         @Override
-        public String toComment(Field annotationOwner) {
+        public String toComment(Class<?> annotationOwner) {
             return this.getDescription();
         }
 

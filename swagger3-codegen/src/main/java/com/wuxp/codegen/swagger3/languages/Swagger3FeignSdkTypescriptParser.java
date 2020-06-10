@@ -22,6 +22,7 @@ import java.util.*;
 
 /**
  * 基于 open api3 生成 feign sdk的 typeScript的 parser
+ * @author wxup
  */
 @Slf4j
 public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {

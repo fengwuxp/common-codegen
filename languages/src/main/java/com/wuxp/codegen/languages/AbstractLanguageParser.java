@@ -18,6 +18,8 @@ import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 import com.wuxp.codegen.model.*;
+import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
+import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -44,6 +46,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -1185,7 +1188,59 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param annotation
      * @param annotationOwner
      */
-    protected abstract void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner);
+    protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
+        if (annotationOwner instanceof Class) {
+
+        }
+        if (annotationOwner instanceof Method) {
+            Class<? extends Annotation> annotationType = annotation.annotationType();
+            boolean isGetMethod = annotationType.equals(GetMapping.class) || annotationType.equals(RequestMapping.class);
+            if (isGetMethod) {
+                return;
+            }
+            //spring的mapping注解
+            if (annotationType.getSimpleName().endsWith("Mapping")) {
+                Method method = (Method) annotationOwner;
+                //判断方法参数是否有RequestBody注解
+                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
+                        .filter(Objects::nonNull)
+                        .filter(annotations -> annotations.length > 0)
+                        .map(Arrays::asList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList());
+
+
+                String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
+
+                if (StringUtils.hasText(produces)) {
+                    return;
+                } else {
+                    codeGenAnnotation.getNamedArguments().remove(MappingAnnotationPropNameConstant.PRODUCES);
+                }
+
+                //是否启用默认的 produces
+//                boolean enableDefaultProduces = true;
+//                if (!enableDefaultProduces) {
+//                    return;
+//                }
+                boolean hasRequestBodyAnnotation = annotationList.size() > 0 && annotationList.stream()
+                        .anyMatch(paramAnnotation -> RequestBody.class.equals(paramAnnotation.annotationType()));
+                if (hasRequestBodyAnnotation) {
+                    produces = TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8;
+                } else {
+                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
+                    //是spring的Mapping注解
+                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
+                }
+
+                if (!StringUtils.hasText(produces)) {
+                    return;
+                }
+
+                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
+            }
+        }
+    }
 
 
     /**
