@@ -177,7 +177,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
 
     @Override
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
-        super.enhancedProcessingAnnotation(codeGenAnnotation, annotation, annotationOwner);
+//        super.enhancedProcessingAnnotation(codeGenAnnotation, annotation, annotationOwner);
     }
 
     @Override

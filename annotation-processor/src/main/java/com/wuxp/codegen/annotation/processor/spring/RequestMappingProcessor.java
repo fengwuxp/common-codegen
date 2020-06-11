@@ -3,18 +3,23 @@ package com.wuxp.codegen.annotation.processor.spring;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.transform.spring.DartRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.JavaRetofitRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,6 +42,13 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     //注解转换器和语言类型的对应关系
     private static final Map<LanguageDescription, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate>> ANNOTATION_CODE_GEN_TRANSFORMER_MAP = new HashMap<>();
+
+    /**
+     * 需要认证的类型和相关的路径列表，使用ant匹配
+     */
+    private static final Map<AuthenticationType, String[]> AUTHENTICATION_PATH = new LinkedHashMap<>();
+
+    private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
 
     static {
         ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingProcessor.RequestMappingMate.class);
@@ -75,6 +87,10 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(languageDescription, transformer);
     }
 
+    public static void addAuthenticationTypePaths(AuthenticationType type, String[] paths) {
+        AUTHENTICATION_PATH.put(type, paths);
+    }
+
 
     public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
@@ -106,8 +122,32 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Method annotationOwner) {
+            CommonCodeGenAnnotation codeGenAnnotation = this.genAnnotation(annotationOwner);
 
-            return this.genAnnotation(annotationOwner);
+            if (AUTHENTICATION_PATH.isEmpty()) {
+                return codeGenAnnotation;
+            }
+            assert codeGenAnnotation != null;
+            Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
+            String requestUri = this.getRequestUri(annotationOwner);
+
+            AUTHENTICATION_PATH.forEach((key, value) -> {
+                Arrays.stream(value)
+                        .filter(pattern -> PATH_MATCHER.match(pattern, requestUri))
+                        .findFirst()
+                        .ifPresent(matchResult -> {
+                            String type = "AuthenticationType." + key.name();
+                            if (!namedArguments.containsKey(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE)) {
+                                namedArguments.put(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE, type);
+                                codeGenAnnotation.getPositionArguments().add(type);
+                            } else {
+                                // TODO
+                                log.error("路径匹配到多种认证类型,path = {}", requestUri);
+                            }
+                        });
+            });
+
+            return codeGenAnnotation;
         }
 
 
@@ -125,6 +165,24 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             } else {
                 return requestMethods[0];
             }
+        }
+
+        /**
+         * 获取请求 path
+         *
+         * @param annotationOwner
+         * @return
+         */
+        private String getRequestUri(Method annotationOwner) {
+
+            RequestMapping clazzMapping = annotationOwner.getDeclaringClass().getAnnotation(RequestMapping.class);
+            String[] clazzMappingValues = clazzMapping == null ? new String[]{} : clazzMapping.value();
+            String p1 = clazzMappingValues.length == 0 ? "" : clazzMappingValues[0].startsWith("/") ? clazzMappingValues[0] : "/" + clazzMappingValues[0];
+
+            String[] methodsMappingValues = this.value();
+            String p2 = methodsMappingValues.length == 0 ? "" : methodsMappingValues[0].startsWith("/") ? methodsMappingValues[0] : "/" + methodsMappingValues[0];
+
+            return p1 + p2;
         }
 
         /**

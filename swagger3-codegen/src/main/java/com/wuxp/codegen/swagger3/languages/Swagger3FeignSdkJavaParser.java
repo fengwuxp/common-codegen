@@ -18,6 +18,7 @@ import java.util.Collection;
 
 /**
  * 基于 open api3 生成 feign sdk的 java的 parser
+ * @author wxup
  */
 @Slf4j
 public class Swagger3FeignSdkJavaParser extends AbstractJavaParser {

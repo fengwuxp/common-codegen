@@ -1,7 +1,9 @@
 package test.com.wuxp.codegen.swagger3;
 
+import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.api.WuxpApiEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
+import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -67,6 +69,10 @@ public class SwaggerFeignSdkCodegenDartTest {
         Map<DartClassMeta, List<String>> typeAlias = new HashMap<DartClassMeta, List<String>>() {{
             put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
         }};
+
+        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE,new String[]{
+                "/example_cms/get_**"
+        });
 
         Swagger3FeignDartCodegenBuilder.builder()
                 .ignoreFields(ignoreFields)
