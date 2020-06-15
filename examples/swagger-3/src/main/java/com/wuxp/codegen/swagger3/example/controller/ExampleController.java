@@ -1,5 +1,6 @@
 package com.wuxp.codegen.swagger3.example.controller;
 
+import com.wuxp.api.context.InjectField;
 import com.wuxp.api.signature.ApiSignature;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class ExampleController {
     }
 
     @GetMapping("get_maps")
-    public List<Map<Integer, String>> getMaps(Integer num) {
+    public List<Map<Integer, String>> getMaps(@InjectField() Integer num) {
 
         Map<Integer, String> map = new HashMap<>();
         map.put(num, "num");

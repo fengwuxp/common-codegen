@@ -48,6 +48,23 @@ public class WuxpApiEnhancedProcessor implements LanguageEnhancedProcessor<Commo
     @Override
     public CommonCodeGenMethodMeta enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
 
+        // 过滤掉被注入的参数
+        Set<String> ignoreNames = new HashSet<>();
+        javaMethodMeta.getParameters().forEach((name, parameter) -> {
+            if (parameter.isAnnotationPresent(InjectField.class)) {
+                ignoreNames.add(name);
+            }
+        });
+        if (!ignoreNames.isEmpty()) {
+            Map<String/*参数名称*/, CommonCodeGenClassMeta/*参数类型描述*/> params = new LinkedHashMap<>();
+            methodMeta.getParams().forEach((name, parameter) -> {
+                if (!ignoreNames.contains(name)) {
+                    params.put(name, parameter);
+                }
+            });
+            methodMeta.setParams(params);
+        }
+
         // 找到需要签名的列
         Set<String> needSignFields = javaMethodMeta.getParams()
                 .values()

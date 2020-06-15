@@ -7,6 +7,7 @@ import lombok.Data;
 
 /**
  * 代码生成的全局配置
+ * @author wxup
  */
 @Data
 @Builder

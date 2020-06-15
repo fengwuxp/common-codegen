@@ -714,12 +714,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         //域对象类型描述
         fieldInstance.setFiledTypes(classMetaMappings.toArray(new CommonCodeGenClassMeta[]{}));
-
         fieldInstance = this.languageEnhancedProcessor.enhancedProcessingField(fieldInstance, javaFieldMeta, classMeta);
-
-        //TODO 注解转化
-        //增强处理
-        this.enhancedProcessingField(fieldInstance, javaFieldMeta, classMeta);
+        if (fieldInstance != null) {
+            //增强处理
+            this.enhancedProcessingField(fieldInstance, javaFieldMeta, classMeta);
+        }
 
         return fieldInstance;
     }
@@ -785,6 +784,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (codeGenClassMeta instanceof DartClassMeta) {
             methodCodeMeta = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
         } else {
+            // 需要合并参数
             methodCodeMeta = converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
         }
         methodCodeMeta = this.languageEnhancedProcessor.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
