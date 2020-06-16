@@ -5,10 +5,6 @@ import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @Slf4j
 public class JavaMethodNameUtilTest extends TestCase {
 

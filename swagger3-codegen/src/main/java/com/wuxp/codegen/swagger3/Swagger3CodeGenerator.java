@@ -22,7 +22,7 @@ import java.util.Set;
 import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
 
 /**
- *
+ * @author wxup
  */
 @Slf4j
 public class Swagger3CodeGenerator extends AbstractCodeGenerator {
@@ -43,7 +43,7 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean enableFieldUnderlineStyle,
                                  CodeGenPublisher codeGenPublisher) {
-        super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle,codeGenPublisher);
+        super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
     }
 
     public Swagger3CodeGenerator(String[] packagePaths,
@@ -52,7 +52,7 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
                                  boolean looseMode,
                                  boolean enableFieldUnderlineStyle,
                                  CodeGenPublisher codeGenPublisher) {
-        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle,codeGenPublisher);
+        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
         init(looseMode);
     }
 
@@ -66,7 +66,7 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
                                  boolean looseMode,
                                  boolean enableFieldUnderlineStyle,
                                  CodeGenPublisher codeGenPublisher) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle,codeGenPublisher);
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
         init(looseMode);
     }
 

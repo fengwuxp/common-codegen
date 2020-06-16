@@ -1,16 +1,12 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.TypescriptLanguageMetaInstanceFactory;
 import com.wuxp.codegen.mapping.TypescriptTypeMapping;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
-import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
-import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -18,16 +14,15 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 

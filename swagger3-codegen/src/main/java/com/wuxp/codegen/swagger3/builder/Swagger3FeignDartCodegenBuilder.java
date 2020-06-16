@@ -54,7 +54,9 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
 
     private Map<Class<?>, List<String>> ignoreFields;
 
-    // 类型别名
+    /**
+     * 类型别名
+     */
     private Map<DartClassMeta, List<String>> typeAlias = Collections.emptyMap();
 
     protected Swagger3FeignDartCodegenBuilder() {
@@ -115,6 +117,8 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
 
         Thread mainThread = Thread.currentThread();
 
+        DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.outPath, mainThread);
+
         return new Swagger3CodeGenerator(
                 this.scanPackages,
                 this.ignorePackages,
@@ -124,7 +128,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 templateStrategy,
                 this.looseMode,
                 this.enableFieldUnderlineStyle,
-                new DisruptorCodeGenPublisher(new DartFeignCodeGenEventHandler(templateLoader, this.outPath, mainThread)));
+                new DisruptorCodeGenPublisher(dartFeignCodeGenEventHandler));
     }
 
 
@@ -178,6 +182,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 log.error("gen error ", event.getException());
             }
         }
+
 
         /**
          * 生成 serializers

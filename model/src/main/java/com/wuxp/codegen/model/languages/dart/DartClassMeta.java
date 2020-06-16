@@ -126,4 +126,13 @@ public class DartClassMeta extends CommonCodeGenClassMeta {
         this.needGenerate = false;
         this.needImport = false;
     }
+
+    public static DartClassMeta newInstance(String name,
+                                            String genericDescription,
+                                            ClassType classType,
+                                            Boolean isAbstract,
+                                            DartClassMeta superClass,
+                                            String packagePath) {
+        return new DartClassMeta(name, genericDescription, classType, isAbstract, superClass, packagePath);
+    }
 }

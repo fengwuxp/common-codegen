@@ -24,6 +24,7 @@ void main() {
      /// ${cmment}
     </#list>
 </#if>
+@Feign
 <#list annotations as annotation>
     @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
 </#list>
