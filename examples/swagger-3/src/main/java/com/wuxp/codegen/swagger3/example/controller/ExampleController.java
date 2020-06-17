@@ -5,6 +5,7 @@ import com.wuxp.api.signature.ApiSignature;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +47,13 @@ public class ExampleController {
 
     @GetMapping("get_map_2")
     public Map<String, List<Boolean>> getMap2() {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
+
+    @GetMapping("get_map_3/{test_id}")
+    public Map<String, List<Boolean>> getMap3(@PathVariable("test_id") String id) {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
         return map;

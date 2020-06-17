@@ -1004,49 +1004,56 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
 
             // 注解
-            Annotation[] annotations = javaMethodMeta.getParamAnnotations().get(key);
+            Annotation[] paramAnnotations = javaMethodMeta.getParamAnnotations().get(key);
 
             JavaFieldMeta javaFieldMeta = new JavaFieldMeta();
             javaFieldMeta.setTypes(classes)
                     .setIsTransient(false)
                     .setIsVolatile(false);
             javaFieldMeta.setAccessPermission(AccessPermission.PUBLIC);
-            javaFieldMeta.setAnnotations(annotations);
+            javaFieldMeta.setAnnotations(paramAnnotations);
             javaFieldMeta.setName(key);
 
-
             F commonCodeGenFiledMeta = this.converterField(javaFieldMeta, classMeta);
-
             if (commonCodeGenFiledMeta == null) {
                 return;
             }
 
             this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
             commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
-            if (annotations == null) {
+            if (paramAnnotations == null || paramAnnotations.length == 0) {
                 return;
             }
-
+            String name = "";
             //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
-            RequestParam requestParam = Arrays.stream(annotations)
-                    .filter(annotation -> annotation.annotationType().equals(RequestParam.class))
-                    .map(annotation -> (RequestParam) annotation)
-                    .findFirst()
-                    .orElse(null);
-            if (requestParam == null) {
-                return;
-            }
-            String name = requestParam.value();
-            if (!StringUtils.hasText(name)) {
+            RequestParam requestParam = findSpringParamAnnotation(paramAnnotations, RequestParam.class);
+            if (requestParam != null && StringUtils.hasText(requestParam.name())) {
                 name = requestParam.name();
             }
+            PathVariable pathVariable = findSpringParamAnnotation(paramAnnotations, PathVariable.class);
+            if (pathVariable != null) {
+                if (StringUtils.hasText(pathVariable.name())) {
+                    name = pathVariable.name();
+                }
+                if (StringUtils.hasText(pathVariable.value())) {
+                    name = pathVariable.value();
+                }
+            }
+
             if (StringUtils.hasText(name)) {
                 commonCodeGenFiledMeta.setName(name);
             }
             if (commonCodeGenFiledMeta instanceof TypescriptFieldMate) {
                 TypescriptFieldMate codeGenFiledMeta = (TypescriptFieldMate) commonCodeGenFiledMeta;
                 if (!Boolean.TRUE.equals(codeGenFiledMeta.getRequired())) {
-                    codeGenFiledMeta.setRequired(requestParam.required());
+                    // 是否必填
+                    if (requestParam != null) {
+                        codeGenFiledMeta.setRequired(requestParam.required());
+                    }
+
+                    if (pathVariable != null) {
+                        codeGenFiledMeta.setRequired(true);
+                    }
                 }
             }
 
@@ -1162,6 +1169,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         return genMethodMeta;
     }
+
 
     /**
      * 增强处理 class
@@ -1294,6 +1302,21 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         return map;
 
+    }
+
+    /**
+     * 查找 Spring Param 相关的 Annotation
+     *
+     * @param annotations
+     * @param annotationType
+     * @return
+     */
+    private <T extends Annotation> T findSpringParamAnnotation(Annotation[] annotations, Class<T> annotationType) {
+        return Arrays.stream(annotations)
+                .filter(annotation -> annotation.annotationType().equals(annotationType))
+                .map(annotation -> (T) annotation)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

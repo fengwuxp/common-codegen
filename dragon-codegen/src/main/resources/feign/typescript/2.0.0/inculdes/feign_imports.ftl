@@ -7,4 +7,5 @@ GetMapping,
 PutMapping,
 Signature,
 HttpMediaType,
+AuthenticationType,
 FeignRequestOptions} from "fengwuxp-typescript-feign";
