@@ -36,7 +36,14 @@ export interface  ${finallyClassName}<#if superClass??> extends ${superClass.fin
         </#list>
         **/
 <#--        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customize_method.combineType(field.filedTypes)};-->
-        ${field.name}<#if !field.required!false>?</#if>: ${customize_method.combineType(field.filedTypes)};
+
+        <#assign returnType=customize_method.combineType(field.filedTypes)/>
+        <#if returnType?starts_with('Enum_Key_Record<')>
+          ${field.name}<#if !field.required!false>?</#if>: ${returnType?replace('Enum_Key_Record<','Omit<Partial<Record<keyof typeof ')+'>, "prototype">'};
+        <#else >
+         ${field.name}<#if !field.required!false>?</#if>: ${returnType};
+        </#if>
+
     </#list>
 </#if>
 }

@@ -11,6 +11,7 @@ import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
+import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -22,6 +23,7 @@ import java.util.*;
 
 /**
  * 基于 open api3 生成 feign sdk的 typeScript的 parser
+ *
  * @author wxup
  */
 @Slf4j
@@ -54,25 +56,12 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
                 fieldMeta.setRequired(parameter.required());
             }
         }
+
     }
 
 
     @Override
     protected CommonCodeGenMethodMeta converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, TypescriptClassMeta codeGenClassMeta) {
-
-//        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
-//            return null;
-//        }
-//
-//        if (!javaMethodMeta.existAnnotation(
-//                SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS
-//        )) {
-//            return null;
-//        }
-//
-//        if (javaMethodMeta.existAnnotation(Hidden.class)) {
-//            return null;
-//        }
 
         return super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
     }
@@ -82,7 +71,17 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
         if (javaFieldMeta.existAnnotation(Hidden.class)) {
             return null;
         }
-        return super.converterField(javaFieldMeta, classMeta);
+        TypescriptFieldMate typescriptFieldMate = super.converterField(javaFieldMeta, classMeta);
+        Class<?>[] types = javaFieldMeta.getTypes();
+        if (types.length > 2 && JavaTypeUtil.isMap(types[0])) {
+            if (JavaTypeUtil.isEnum(types[1])) {
+                // key 是枚举类型 重新设置key的类型
+//                Omit<Partial<Record<keyof typeof GoodsStatus, T>>, "prototype">
+                typescriptFieldMate.getFiledTypes()[0] = TypescriptClassMeta.ENUM_KEY_RECORD;
+            }
+        }
+
+        return typescriptFieldMate;
     }
 
     @Override

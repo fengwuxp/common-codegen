@@ -85,6 +85,17 @@ public final class JavaTypeUtil {
     }
 
     /**
+     * 是否为枚举
+     *
+     * @param clazz
+     * @return
+     */
+    public static boolean isEnum(Class<?> clazz) {
+
+        return isExtendsClass(clazz, Enum.class);
+    }
+
+    /**
      * 是否为boolean
      *
      * @param clazz
