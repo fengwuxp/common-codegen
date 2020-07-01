@@ -42,6 +42,12 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
         if (javaFieldMeta == null) {
             return;
         }
+        Class<?>[] types = javaFieldMeta.getTypes();
+        boolean isEnumField = types != null && types.length > 0 && types[0].isEnum();
+        if (isEnumField) {
+            // 设置为字符串
+            fieldMeta.setFiledTypes(new CommonCodeGenClassMeta[]{TypescriptClassMeta.STRING});
+        }
         Schema schema = javaFieldMeta.getAnnotation(Schema.class);
         Parameter parameter = javaFieldMeta.getAnnotation(Parameter.class);
         if (schema == null && parameter == null) {
@@ -56,6 +62,7 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
                 fieldMeta.setRequired(parameter.required());
             }
         }
+
 
     }
 

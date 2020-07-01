@@ -8,11 +8,12 @@ import java.util.Arrays;
 
 /**
  * 组合生成模式
+ * @author wuxp
  */
 @Slf4j
 public class CombinationCodeGenerator implements CodeGenerator {
 
-    private CodeGenerator[] codeGenerators;
+    private final CodeGenerator[] codeGenerators;
 
     public CombinationCodeGenerator(CodeGenerator[] codeGenerators) {
         this.codeGenerators = codeGenerators;

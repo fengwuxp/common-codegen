@@ -9,12 +9,13 @@ import org.springframework.util.StringUtils;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * 通用的代码生成 class 元数据
+ * @author wuxp
  */
-@EqualsAndHashCode(callSuper = true,exclude = {"dependencies"})
 @Data
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
@@ -35,8 +36,10 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     public static final CommonCodeGenClassMeta ARRAY = new CommonCodeGenClassMeta(ARRAY_TYPE_NAME_PREFIX, ARRAY_TYPE_GENERIC_DESCRIPTION, ClassType.INTERFACE, false, null, null, false, false);
 
-    //type variable 类型变量
-    public final static CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null,null,false,false);
+    /**
+     * type variable 类型变量
+     */
+    public final static CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null, null, false, false);
 
     /**
      * 原目标类
@@ -50,8 +53,10 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
     /**
      * 属性类型 如果有泛型则有多个
+     *
+     * @key 类型，父类，接口，本身
      */
-    private Map<String/*类型，父类，接口，本身*/, ? extends CommonCodeGenClassMeta[]> superTypeVariables;
+    private Map<String, ? extends CommonCodeGenClassMeta[]> superTypeVariables;
 
     /**
      * 类类型
@@ -171,4 +176,43 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
         return this.name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        CommonCodeGenClassMeta that = (CommonCodeGenClassMeta) o;
+        return Objects.equals(source, that.source) &&
+                Arrays.equals(typeVariables, that.typeVariables) &&
+                Objects.equals(superTypeVariables, that.superTypeVariables) &&
+                classType == that.classType &&
+                Objects.equals(isAbstract, that.isAbstract) &&
+                Objects.equals(superClass, that.superClass) &&
+                Arrays.equals(interfaces, that.interfaces) &&
+                Arrays.equals(annotations, that.annotations) &&
+                Objects.equals(packagePath, that.packagePath) &&
+                Objects.equals(dependencies, that.dependencies) &&
+                Objects.equals(genericDescription, that.genericDescription) &&
+                Arrays.equals(methodMetas, that.methodMetas) &&
+                Arrays.equals(fieldMetas, that.fieldMetas) &&
+                Objects.equals(needGenerate, that.needGenerate) &&
+                Objects.equals(needImport, that.needImport);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(super.hashCode(), source, superTypeVariables, classType, isAbstract, superClass, packagePath, dependencies, genericDescription, needGenerate, needImport);
+        result = 31 * result + Arrays.hashCode(typeVariables);
+        result = 31 * result + Arrays.hashCode(interfaces);
+        result = 31 * result + Arrays.hashCode(annotations);
+        result = 31 * result + Arrays.hashCode(methodMetas);
+        result = 31 * result + Arrays.hashCode(fieldMetas);
+        return result;
+    }
 }

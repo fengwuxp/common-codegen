@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 主要用定义 typescript 原本支持的类
+ * @author wuxp
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -121,4 +122,6 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
         this.needGenerate = false;
         this.needImport = false;
     }
+
+
 }

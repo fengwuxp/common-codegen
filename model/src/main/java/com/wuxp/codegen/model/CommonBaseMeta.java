@@ -5,16 +5,21 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
  * 通用的基础元数据类
+ * @author wuxp
  */
 @Data
 @Accessors(chain = true)
 public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
+
+
 
     /**
      * 如果是类则为类的simple名(不含包名)
@@ -66,8 +71,50 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
         return (T) o;
     }
 
+
     @Override
     public int compareTo(CommonBaseMeta o) {
         return this.hashCode() - o.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CommonBaseMeta that = (CommonBaseMeta) o;
+
+        if (!Objects.equals(name, that.name)) {
+            return false;
+        }
+        if (!Objects.equals(isStatic, that.isStatic)) {
+            return false;
+        }
+        if (!Objects.equals(isFinal, that.isFinal)) {
+            return false;
+        }
+        if (accessPermission != that.accessPermission) {
+            return false;
+        }
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(comments, that.comments)) {
+            return false;
+        }
+        return Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (isStatic != null ? isStatic.hashCode() : 0);
+        result = 31 * result + (isFinal != null ? isFinal.hashCode() : 0);
+        result = 31 * result + (accessPermission != null ? accessPermission.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(comments);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
     }
 }

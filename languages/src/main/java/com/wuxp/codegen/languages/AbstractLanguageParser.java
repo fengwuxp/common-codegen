@@ -271,6 +271,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         C meta = this.getResultToLocalCache(source);
         if (meta != null/* && (meta.getFieldMetas() != null || meta.getMethodMetas() != null)*/) {
+            // TODO 由于循环依赖导致，对象还没有初始化完成
             return meta;
         }
         //检查代码
@@ -335,8 +336,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .toArray(new CommonCodeGenMethodMeta[]{}));
         }
 
-
-        if (!isApiServiceClass && (isFirst || meta.getFieldMetas() == null)) {
+        boolean needGenFields = !isApiServiceClass && (isFirst || meta.getFieldMetas() == null);
+        if (needGenFields) {
             // 普通的java bean DTO  生成属性列表
             meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
                     .stream()
@@ -479,11 +480,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (c == null) {
             return null;
         }
-        // 做深copy
-        C target = this.languageMetaInstanceFactory.newClassInstance();
-        BeanUtils.copyProperties(c, target);
-        target.setDependencies(new LinkedHashMap<>(c.getDependencies()));
-        return target;
+//        // 做深copy
+//        C target = this.languageMetaInstanceFactory.newClassInstance();
+//        BeanUtils.copyProperties(c, target);
+//        target.setDependencies(new LinkedHashMap<>(c.getDependencies()));
+//        return target;
+        return c;
     }
 
     /**
