@@ -11,8 +11,6 @@ import lombok.experimental.Accessors;
  *
  * @author wxup
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
 @Accessors(chain = true)
 public class DartClassMeta extends CommonCodeGenClassMeta {
 

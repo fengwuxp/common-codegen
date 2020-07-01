@@ -32,35 +32,53 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
         JavaClassMeta.API_SERVICE_ANNOTATIONS.add(RestController.class);
     }
 
-    //属性类型 如果有泛型则有多个
-    //class B<String> extends A<String,Long>
-    private Map<Class<?>/*类型，父类，接口，本身*/, Class<?>[]> superTypeVariables;
+    /**
+     * 属性类型 如果有泛型则有多个
+     * @key 类型，父类，接口，本身
+     */
+    private Map<Class<?>, Class<?>[]> superTypeVariables;
 
-    //类类型 interface，class enum
+
     private ClassType classType;
 
-    //当前类的 Class 实例
+    /**
+     * 当前类的 Class 实例
+     */
     private Class<?> clazz;
 
-    //包名+类名
+    /**
+     * 包名+类名
+     */
     private String className;
 
-    //是否为抽象类
+    /**
+     * 是否为抽象类
+     */
     private Boolean isAbstract;
 
-    //成员变量列表
+    /**
+     * 成员变量列表
+     */
     private JavaFieldMeta[] fieldMetas;
 
-    //成员方法列表
+    /**
+     * 成员方法列表
+     */
     private JavaMethodMeta[] methodMetas;
 
-    //依赖类的列表
+    /**
+     * 依赖类的列表
+     */
     private Set<Class<?>> dependencyList;
 
-    //继承的接口列表
+    /**
+     * 继承的接口列表
+     */
     private Class<?>[] interfaces;
 
-    //父类
+    /**
+     * 父类
+     */
     private Class<?> superClass;
 
 
@@ -80,9 +98,15 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         JavaClassMeta classMeta = (JavaClassMeta) o;
         return classType == classMeta.classType &&
                 Objects.equals(clazz, classMeta.clazz) &&

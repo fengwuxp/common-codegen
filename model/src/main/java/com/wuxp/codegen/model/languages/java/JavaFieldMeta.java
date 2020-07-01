@@ -6,12 +6,13 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 /**
  * 属性元数据信息
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 public class JavaFieldMeta extends JavaBaseMeta {
@@ -42,37 +43,29 @@ public class JavaFieldMeta extends JavaBaseMeta {
      */
     private Boolean isEnumConstant;
 
-//    @Override
-//    public int hashCode() {
-//
-//        return Objects.hashCode(this);
-//    }
-//
-//    @Override
-//    public boolean equals(final Object object) {
-//        if (object == this) {
-//            return true;
-//        }
-//        if (object == null) {
-//            return false;
-//        }
-//
-//        if (!(object instanceof JavaFieldMeta)) {
-//            return false;
-//        }
-//
-//        JavaFieldMeta javaFieldMeta = (JavaFieldMeta) object;
-//
-//        if (javaFieldMeta.getName() == null) {
-//            return false;
-//        }
-//
-//        if (this.getName() == null) {
-//            return false;
-//        }
-//
-//        return this.getName().endsWith(javaFieldMeta.getName());
-//
-//
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        JavaFieldMeta that = (JavaFieldMeta) o;
+        return Objects.equals(field, that.field) &&
+                Arrays.equals(types, that.types) &&
+                Objects.equals(isVolatile, that.isVolatile) &&
+                Objects.equals(isTransient, that.isTransient) &&
+                Objects.equals(isEnumConstant, that.isEnumConstant);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(super.hashCode(), field, isVolatile, isTransient, isEnumConstant);
+        result = 31 * result + Arrays.hashCode(types);
+        return result;
+    }
 }

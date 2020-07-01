@@ -10,11 +10,11 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 public class JavaBaseMeta extends CommonBaseMeta {
@@ -72,4 +72,28 @@ public class JavaBaseMeta extends CommonBaseMeta {
         return collects.size() > 0 ? collects.get(0) : null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        JavaBaseMeta that = (JavaBaseMeta) o;
+        return Arrays.equals(annotations, that.annotations) &&
+                Arrays.equals(typeVariables, that.typeVariables) &&
+                Objects.equals(typeVariableNum, that.typeVariableNum);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(super.hashCode(), typeVariableNum);
+        result = 31 * result + Arrays.hashCode(annotations);
+        result = 31 * result + Arrays.hashCode(typeVariables);
+        return result;
+    }
 }

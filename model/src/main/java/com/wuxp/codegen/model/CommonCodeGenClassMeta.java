@@ -207,9 +207,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), source, superTypeVariables, classType, isAbstract, superClass, packagePath, dependencies, genericDescription, needGenerate, needImport);
-        result = 31 * result + Arrays.hashCode(typeVariables);
-        result = 31 * result + Arrays.hashCode(interfaces);
+        int result = Objects.hash(source, classType, packagePath, genericDescription);
         result = 31 * result + Arrays.hashCode(annotations);
         result = 31 * result + Arrays.hashCode(methodMetas);
         result = 31 * result + Arrays.hashCode(fieldMetas);
