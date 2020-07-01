@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -163,7 +164,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
-//                    .filter(this::filterNoneClazz)
+                    .filter(this::filterNoneClazz)
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
@@ -254,6 +255,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * @return
      */
     private boolean filterNoneClazz(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+
+        if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType())) {
+            return false;
+        }
 
         boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
         boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
