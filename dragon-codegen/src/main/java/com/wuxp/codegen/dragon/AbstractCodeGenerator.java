@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.utils.JavaMethodNameUtil;
 import lombok.Setter;
@@ -164,7 +165,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
-                    .filter(this::filterNoneClazz)
+//                    .filter(this::filterNoneClazz)
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
@@ -183,7 +184,13 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                                 needImportDependencies.put(key, val);
                             }
                         });
+
                         commonCodeGenClassMeta.setDependencies(needImportDependencies);
+
+
+                        filterDuplicateFields(commonCodeGenClassMeta);
+                        //移除掉不需要的依赖
+                        removeInvalidDependencies(commonCodeGenClassMeta);
                         try {
                             this.templateStrategy.build(commonCodeGenClassMeta);
                             if (needSendEvent) {
@@ -264,4 +271,78 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
         return !(notFiled && notMethod);
     }
+
+
+    private void filterDuplicateFields(CommonCodeGenClassMeta meta) {
+        CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
+        if (fieldMetas == null) {
+            return;
+        }
+        Map<String, Integer> count = new HashMap<>();
+        CommonCodeGenFiledMeta[] commonCodeGenFiledMetas = Arrays.asList(fieldMetas).stream().filter(commonCodeGenFiledMeta -> {
+            String name = commonCodeGenFiledMeta.getName();
+            int i = count.getOrDefault(name, 0);
+            if (i == 0) {
+                count.put(name, ++i);
+                return true;
+            }
+            // 属性重复了
+            return false;
+        }).toArray(CommonCodeGenFiledMeta[]::new);
+        meta.setFieldMetas(commonCodeGenFiledMetas);
+    }
+
+    /**
+     * 移除无效的依赖
+     *
+     * @param meta
+     */
+    private void removeInvalidDependencies(CommonCodeGenClassMeta meta) {
+        Set<Class<?>> effectiveDependencies = new HashSet<>();
+        // 移除无效的依赖
+        if (meta.getFieldMetas() != null) {
+            CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
+            effectiveDependencies.addAll(Arrays.stream(fieldMetas).map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getFiledTypes())
+                    .filter(Objects::nonNull)
+                    .map(Arrays::asList)
+                    .flatMap(Collection::stream)
+                    .map(CommonCodeGenClassMeta::getSource)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
+        }
+        if (meta.getMethodMetas() != null) {
+            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
+                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getReturnTypes())
+                    .filter(Objects::nonNull)
+                    .map(Arrays::asList)
+                    .flatMap(Collection::stream)
+                    .map(CommonCodeGenClassMeta::getSource)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
+            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
+                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getParams())
+                    .filter(Objects::nonNull)
+                    .map(Arrays::asList)
+                    .flatMap(Collection::stream)
+                    .map(Map::values)
+                    .flatMap(Collection::stream)
+                    .map(CommonCodeGenClassMeta::getSource)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
+        }
+        Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
+        Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
+        dependencies.forEach((key, value) -> {
+            Class<?> aClass = value.getSource();
+            if (aClass != null) {
+                if (!effectiveDependencies.contains(aClass)) {
+                    return;
+                }
+            }
+
+            newDependencies.put(key, value);
+        });
+        meta.setDependencies(newDependencies);
+    }
+
 }

@@ -121,7 +121,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
         if (StringUtils.hasText(packagePath)) {
             dartClassMeta.setPackagePath(dartFileNameConverter(packagePath));
         }
-        Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) dartClassMeta.getDependencies();
+
         // 请求对象
         if (!isFeignClient && ClassType.CLASS.equals(dartClassMeta.getClassType())) {
             // DTO 合并超类的属性
@@ -133,23 +133,10 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
                     .collect(Collectors.toList());
             filedMetas.addAll(this.filterIgnoreFiledMetas(superClass));
             dartClassMeta.setFieldMetas(filedMetas.stream().distinct().toArray(CommonCodeGenFiledMeta[]::new));
+            Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) dartClassMeta.getDependencies();
             dependencies.putAll(superClass.getDependencies());
         }
-        Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
-        // 过滤掉接口和抽象类依赖，不生成
-        dependencies.forEach((key, value) -> {
-            Class<?> aClass = value.getSource();
-            if (aClass != null) {
-                if (aClass.isInterface()) {
-                    return;
-                }
-                if (Modifier.isAbstract(aClass.getModifiers())) {
-                    return;
-                }
-            }
-            newDependencies.put(key, value);
-        });
-        dartClassMeta.setDependencies(newDependencies);
+
 
         return dartClassMeta;
     }
