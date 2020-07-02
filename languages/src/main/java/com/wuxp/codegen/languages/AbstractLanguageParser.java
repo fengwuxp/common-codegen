@@ -64,6 +64,7 @@ import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.*;
  * @param <C> 类
  * @param <M> 方法
  * @param <F> 属性
+ * @author wxup
  */
 @Slf4j
 public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
@@ -421,6 +422,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return meta;
     }
 
+
     @Override
     public LanguageMetaInstanceFactory getLanguageMetaInstanceFactory() {
         return this.languageMetaInstanceFactory;
@@ -430,6 +432,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     public void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers) {
         this.codeGenMatchers.addAll(Arrays.asList(codeGenMatchers));
     }
+
 
     /**
      * 是否匹配生成的规则
@@ -1321,6 +1324,58 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .orElse(null);
     }
 
+//    /**
+//     * 移除无效的依赖
+//     *
+//     * @param meta
+//     */
+//    private void removeInvalidDependencies(C meta) {
+//        Set<Class<?>> effectiveDependencies = new HashSet<>();
+//        // 移除无效的依赖
+//        if (meta.getFieldMetas() != null) {
+//            CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
+//            effectiveDependencies.addAll(Arrays.stream(fieldMetas).map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getFiledTypes())
+//                    .filter(Objects::nonNull)
+//                    .map(Arrays::asList)
+//                    .flatMap(Collection::stream)
+//                    .map(CommonCodeGenClassMeta::getSource)
+//                    .filter(Objects::nonNull)
+//                    .collect(Collectors.toSet()));
+//        }
+//        if (meta.getMethodMetas() != null) {
+//            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
+//                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getReturnTypes())
+//                    .filter(Objects::nonNull)
+//                    .map(Arrays::asList)
+//                    .flatMap(Collection::stream)
+//                    .map(CommonCodeGenClassMeta::getSource)
+//                    .filter(Objects::nonNull)
+//                    .collect(Collectors.toSet()));
+//            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
+//                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getParams())
+//                    .filter(Objects::nonNull)
+//                    .map(Arrays::asList)
+//                    .flatMap(Collection::stream)
+//                    .map(Map::values)
+//                    .flatMap(Collection::stream)
+//                    .map(CommonCodeGenClassMeta::getSource)
+//                    .filter(Objects::nonNull)
+//                    .collect(Collectors.toSet()));
+//        }
+//        Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
+//        Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
+//        dependencies.forEach((key, value) -> {
+//            if (value.getSource() != null) {
+//                if (!effectiveDependencies.contains(value)) {
+//                    return;
+//                }
+//            }
+//
+//            newDependencies.put(key, value);
+//        });
+//        meta.setDependencies(newDependencies);
+//    }
+
     @Override
     public void setLanguageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor) {
         languageEnhancedProcessor.setCodeGenMatchers(this.codeGenMatchers);
@@ -1331,4 +1386,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     public List<CodeGenMatcher> getCodeGenMatchers() {
         return this.codeGenMatchers;
     }
+
+
 }
