@@ -179,6 +179,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
             if (event.isEndEvent()) {
                 // 生成成功
                 this.buildSerializersFile();
+                this.buildSkdReflectFile();
                 this.buildSdkIndexFile();
                 log.info("===生成完成，释放主线程===>");
                 LockSupport.unpark(this.mainThread);
@@ -217,9 +218,9 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         }
 
         /**
-         * build sdk index 文件
+         * build sdk reflectable 文件
          */
-        public void buildSdkIndexFile() {
+        public void buildSkdReflectFile() {
             log.info("feignClients size ===> {}", feignClients.size());
 
             Template template = templateLoader.load("feign_sdk.ftl");
@@ -233,6 +234,30 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
             data.put("packagePath", MessageFormat.format("{0}{1}", PathResolve.RIGHT_SLASH, filename));
             Set<DartClassMeta> feignClients = this.feignClients;
             data.put("dependencies", feignClients);
+            data.put("sdkLibName", sdkIndexFileName);
+            // 遍历控制器所有的方法得到泛型的组合
+            buildFile(template, output, data);
+        }
+
+        /**
+         * build sdk index 文件
+         */
+        public void buildSdkIndexFile() {
+            String filename = "index";
+            Template template = templateLoader.load(filename + ".ftl");
+            // 生成路径
+            String outputPath = this.outputPath.substring(0, this.outputPath.lastIndexOf(File.separator));
+            String filepath = this.normalizationFilePath(MessageFormat.format("{0}/{1}", outputPath, filename));
+            String output = Paths.get(MessageFormat.format("{0}.{1}", filepath, LanguageDescription.DART.getSuffixName())).toString();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("packagePath", MessageFormat.format("{0}{1}", PathResolve.RIGHT_SLASH, filename));
+            Set<DartClassMeta> feignClients = this.feignClients;
+            Set<DartClassMeta> dtos = this.dtos;
+            Set<DartClassMeta> dependencies = new HashSet<>(feignClients.size() + dtos.size());
+            dependencies.addAll(feignClients);
+            dependencies.addAll(dtos);
+            data.put("dependencies", dependencies);
             data.put("sdkLibName", sdkIndexFileName);
             // 遍历控制器所有的方法得到泛型的组合
             buildFile(template, output, data);

@@ -1,5 +1,5 @@
 //@FeignLib
-library ${sdkLibName};
+<#--library ${sdkLibName};-->
 
 import 'package:reflectable/reflectable.dart';
 
