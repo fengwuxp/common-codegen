@@ -53,7 +53,7 @@ public class SwaggerFeignSdkCodegenDartTest {
 //        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         String language = LanguageDescription.DART.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), "lib", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};

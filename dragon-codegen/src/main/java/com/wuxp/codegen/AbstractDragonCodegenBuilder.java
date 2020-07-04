@@ -20,6 +20,8 @@ import static com.wuxp.codegen.templates.TemplateLoader.CODE_RUNTIME_PLATFORM_KE
 
 /**
  * 代码生成配置
+ *
+ * @author wxup
  */
 public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 

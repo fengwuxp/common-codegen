@@ -4,7 +4,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 import 'package:fengwuxp_dart_openfeign/index.dart';
-import './${name?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.reflectable.dart';
+<#--import './${name?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.reflectable.dart';-->
 
 <#if dependencies??>
 <#--依赖导入处理-->
@@ -15,9 +15,6 @@ import './${name?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.reflectable.
     </#list>
 </#if>
 
-void main() {
- initializeReflectable();
-}
 
 <#if comments??>
     <#list comments as cmment>
@@ -31,7 +28,7 @@ void main() {
 class ${name} extends FeignProxyClient {
 
     ${name}() : super() {
-       main();
+
     }
 
         <#list methodMetas as method>

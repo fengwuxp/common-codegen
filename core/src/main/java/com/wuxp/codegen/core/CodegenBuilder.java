@@ -7,7 +7,7 @@ import com.wuxp.codegen.core.config.CodegenGlobalConfig;
  * 代码生成配置builder
  * @author wxup
  */
-public interface CodegenBuilder<T> {
+public interface CodegenBuilder {
 
 
     CodegenGlobalConfig CODEGEN_GLOBAL_CONFIG = CodegenGlobalConfig.builder().build();

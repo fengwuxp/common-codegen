@@ -27,10 +27,7 @@ import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
@@ -55,6 +52,11 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
     private Map<Class<?>, List<String>> ignoreFields;
 
     /**
+     * sdk索引文件名称
+     */
+    private String sdkIndexFileName = "feign_sdk";
+
+    /**
      * 类型别名
      */
     private Map<DartClassMeta, List<String>> typeAlias = Collections.emptyMap();
@@ -71,6 +73,11 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
 
     public Swagger3FeignDartCodegenBuilder typeAlias(Map<DartClassMeta, List<String>> typeAlias) {
         this.typeAlias = typeAlias;
+        return this;
+    }
+
+    public Swagger3FeignDartCodegenBuilder sdkIndexFileName(String sdkIndexFileName) {
+        this.sdkIndexFileName = sdkIndexFileName;
         return this;
     }
 
@@ -143,8 +150,10 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 DartClassMeta.BUILT_SET,
                 DartClassMeta.BUILT_ITERABLE);
 
+        // dto 对象
         private Set<DartClassMeta> dtos = new HashSet<>();
 
+        // feign client 对象
         private Set<DartClassMeta> feignClients = new HashSet<>();
 
         private TemplateLoader<Template> templateLoader;
@@ -170,6 +179,9 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
             if (event.isEndEvent()) {
                 // 生成成功
                 this.buildSerializersFile();
+                this.buildSdkIndexFile();
+                log.info("===生成完成，释放主线程===>");
+                LockSupport.unpark(this.mainThread);
             } else if (event.isCodegenEvent()) {
                 DartClassMeta genData = event.getGenData();
                 if (genData.getMethodMetas() != null && genData.getMethodMetas().length > 0) {
@@ -201,6 +213,32 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
             data.put("dependencies", dtos);
             data.put("builderFactories", this.getBuilderFactories());
             // 遍历控制器所有的方法得到泛型的组合
+            buildFile(template, output, data);
+        }
+
+        /**
+         * build sdk index 文件
+         */
+        public void buildSdkIndexFile() {
+            log.info("feignClients size ===> {}", feignClients.size());
+
+            Template template = templateLoader.load("feign_sdk.ftl");
+            // 生成路径
+            String outputPath = this.outputPath.substring(0, this.outputPath.lastIndexOf(File.separator));
+            String filename = sdkIndexFileName;
+            String filepath = this.normalizationFilePath(MessageFormat.format("{0}/{1}", outputPath, filename));
+            String output = Paths.get(MessageFormat.format("{0}.{1}", filepath, LanguageDescription.DART.getSuffixName())).toString();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("packagePath", MessageFormat.format("{0}{1}", PathResolve.RIGHT_SLASH, filename));
+            Set<DartClassMeta> feignClients = this.feignClients;
+            data.put("dependencies", feignClients);
+            data.put("sdkLibName", sdkIndexFileName);
+            // 遍历控制器所有的方法得到泛型的组合
+            buildFile(template, output, data);
+        }
+
+        private void buildFile(Template template, String output, Map<String, Object> data) {
             Writer writer = null;
             try {
                 //输出
@@ -217,8 +255,6 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                         e.printStackTrace();
                     }
                 }
-                log.info("===生成完成，释放主线程===>");
-                LockSupport.unpark(this.mainThread);
             }
         }
 
