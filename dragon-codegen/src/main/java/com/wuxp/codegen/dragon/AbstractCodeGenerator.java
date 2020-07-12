@@ -263,11 +263,12 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      */
     private boolean filterNoneClazz(CommonCodeGenClassMeta commonCodeGenClassMeta) {
 
-        if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType())) {
+        boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
+
+        if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType()) && notMethod) {
             return false;
         }
 
-        boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
         boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
         return !(notFiled && notMethod);
     }
