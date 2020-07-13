@@ -2,6 +2,8 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 import com.wuxp.api.context.InjectField;
 import com.wuxp.api.signature.ApiSignature;
+import com.wuxp.codegen.swagger3.example.ExampleDto;
+import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,20 @@ public class ExampleController {
 
     @GetMapping("get_map_3/{test_id}")
     public Map<String, List<Boolean>> getMap3(@PathVariable("test_id") String id) {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
+
+    @GetMapping("get_map_4/{test_id}")
+    public Map<String, List<Boolean>> getMap4(ExampleDTO dto) {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
+
+    @GetMapping("get_map_5/{test_id}")
+    public Map<String, List<Boolean>> getMap5(ExampleDto dto) {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
         return map;
