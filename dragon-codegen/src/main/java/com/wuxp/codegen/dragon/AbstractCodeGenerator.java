@@ -331,6 +331,18 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet()));
         }
+
+        CommonCodeGenClassMeta superClass = meta.getSuperClass();
+        if (superClass != null) {
+            effectiveDependencies.add(superClass.getSource());
+        }
+        CommonCodeGenClassMeta[] interfaces = meta.getInterfaces();
+        if (interfaces != null) {
+            Arrays.asList(interfaces).forEach(commonCodeGenClassMeta -> {
+                effectiveDependencies.add(commonCodeGenClassMeta.getSource());
+            });
+        }
+
         Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
         dependencies.forEach((key, value) -> {
@@ -340,7 +352,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     return;
                 }
             }
-
             newDependencies.put(key, value);
         });
         meta.setDependencies(newDependencies);
