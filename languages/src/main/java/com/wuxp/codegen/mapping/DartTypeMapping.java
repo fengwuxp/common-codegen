@@ -23,7 +23,7 @@ public class DartTypeMapping extends CommonTypeMapping<DartClassMeta> {
     static {
 
         //设置基础的数据类型映射
-        AbstractTypeMapping.setBaseTypeMapping(Object.class, DartClassMeta.STRING);
+        AbstractTypeMapping.setBaseTypeMapping(Object.class, DartClassMeta.OBJECT);
         AbstractTypeMapping.setBaseTypeMapping(Date.class, DartClassMeta.DATE);
         AbstractTypeMapping.setBaseTypeMapping(Boolean.class, DartClassMeta.BOOL);
         AbstractTypeMapping.setBaseTypeMapping(String.class, DartClassMeta.STRING);
