@@ -63,22 +63,26 @@ class ${name} extends FeignProxyClient {
                    [<#list params as paramName,paramType>${paramName},</#list>],
                     feignOptions: feignOptions,
             <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
-                <#if !( returnType.name=="Object" ||
-                         returnType.name=="dynamic"||
-                         returnType.name=="void"||
+               <#assign isBaseType=
                          returnType.name=="String"||
                          returnType.name=="num"||
                          returnType.name=="bool"||
                          returnType.name=="double" ||
-                         returnType.name=="int" )>
+                         returnType.name=="int"/>
+                <#if !( returnType.name=="Object" ||
+                         returnType.name=="dynamic"||
+                         returnType.name=="void" )>
                     <#assign specifiedType=customize_method.combineDartFullType(returnTypes)!""/>
                       <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
                         serializer: BuiltValueSerializable(
-                        <#if !returnTypes[0].name?starts_with("Built")>
+                        <#if !returnTypes[0].name?starts_with("Built") && !isBaseType>
                             serializer: ${returnType.name}.serializer,
                         </#if>
-                        <#if (specifiedType?length > 0)>
+                        <#if (specifiedType?length > 0 && !isBaseType)>
                         specifiedType:${specifiedType}
+                        </#if>
+                        <#if isBaseType>
+                           specifiedType:FullType(${returnTypes[0].name})
                         </#if>
                         )
                     </#if>
