@@ -151,11 +151,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     @Override
     public void generate() {
-        List<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
+        Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
                 .map(this.languageParser::parse)
                 .filter(Objects::nonNull)
                 .filter(this::filterNoneClazz)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
         final boolean needSendEvent = codeGenPublisher != null;
@@ -205,7 +205,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         return values;
                     }).flatMap(Collection::stream)
                     .filter(CommonCodeGenClassMeta::getNeedGenerate)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
             if (commonCodeGenClassMetas.size() == 0 || i > 100) {
                 break;
             }
@@ -274,6 +274,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     }
 
 
+    /**
+     * 过滤掉重复的字段
+     *
+     * @param meta
+     */
     private void filterDuplicateFields(CommonCodeGenClassMeta meta) {
         CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
         if (fieldMetas == null) {
