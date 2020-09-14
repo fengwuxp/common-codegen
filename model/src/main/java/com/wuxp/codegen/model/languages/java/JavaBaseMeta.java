@@ -2,7 +2,6 @@ package com.wuxp.codegen.model.languages.java;
 
 import com.wuxp.codegen.model.CommonBaseMeta;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;

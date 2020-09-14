@@ -2,8 +2,6 @@ package com.wuxp.codegen.model.languages.dart;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**

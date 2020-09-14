@@ -48,6 +48,11 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
      */
     private static final Map<AuthenticationType, String[]> AUTHENTICATION_PATH = new LinkedHashMap<>();
 
+    /**
+     * 是否支持{@link MappingAnnotationPropNameConstant#AUTHENTICATION_TYPE}
+     */
+    private static boolean supportAuthenticationType = false;
+
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
 
     static {
@@ -91,6 +96,10 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         AUTHENTICATION_PATH.put(type, paths);
     }
 
+    public static void setSupportAuthenticationType(boolean supportAuthenticationType) {
+        RequestMappingProcessor.supportAuthenticationType = supportAuthenticationType;
+    }
+
 
     public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
@@ -123,7 +132,9 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         @Override
         public CommonCodeGenAnnotation toAnnotation(Method annotationOwner) {
             CommonCodeGenAnnotation codeGenAnnotation = this.genAnnotation(annotationOwner);
-
+            if (!supportAuthenticationType) {
+                return codeGenAnnotation;
+            }
             if (AUTHENTICATION_PATH.isEmpty()) {
                 return codeGenAnnotation;
             }
@@ -262,4 +273,5 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         }
 
     }
+
 }

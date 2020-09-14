@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger3.builder;
 
 import com.lmax.disruptor.EventHandler;
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
+import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
@@ -125,6 +126,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         Thread mainThread = Thread.currentThread();
 
         DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.outPath, mainThread);
+        RequestMappingProcessor.setSupportAuthenticationType(true);
 
         return new Swagger3CodeGenerator(
                 this.scanPackages,

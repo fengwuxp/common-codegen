@@ -186,8 +186,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         });
 
                         commonCodeGenClassMeta.setDependencies(needImportDependencies);
-
-
                         filterDuplicateFields(commonCodeGenClassMeta);
                         //移除掉不需要的依赖
                         removeInvalidDependencies(commonCodeGenClassMeta);

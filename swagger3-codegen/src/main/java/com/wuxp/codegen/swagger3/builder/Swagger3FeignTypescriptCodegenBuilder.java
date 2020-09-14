@@ -1,6 +1,7 @@
 package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
+import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
@@ -56,7 +57,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 this.outPath,
                 LanguageDescription.TYPESCRIPT.getSuffixName(),
                 this.isDeletedOutputDirectory);
-
+        RequestMappingProcessor.setSupportAuthenticationType(true);
         return new Swagger3CodeGenerator(
                 this.scanPackages,
                 this.ignorePackages,

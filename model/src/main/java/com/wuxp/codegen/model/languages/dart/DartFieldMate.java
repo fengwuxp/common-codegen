@@ -2,7 +2,6 @@ package com.wuxp.codegen.model.languages.dart;
 
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.Objects;

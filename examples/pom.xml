@@ -16,7 +16,7 @@
 
     <modules>
         <module>swagger-2</module>
-<!--        <module>swagger-3</module>-->
+        <module>swagger-3</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
