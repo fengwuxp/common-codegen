@@ -3,6 +3,8 @@ package com.wuxp.codegen.enums;
 
 /**
  * 表格值类型
+ *
+ * @author wuxp
  */
 public enum TableValueType {
 

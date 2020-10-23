@@ -6,6 +6,8 @@ import lombok.experimental.Accessors;
 
 /**
  * 验证规则item
+ *
+ * @author wuxp
  */
 @Data
 @Accessors(chain = true)

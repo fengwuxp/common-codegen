@@ -6,6 +6,8 @@ import lombok.experimental.Accessors;
 
 /**
  * 表格对象描述
+ *
+ * @author wuxp
  */
 @Data
 @Accessors(chain = true)

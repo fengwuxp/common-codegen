@@ -2,6 +2,8 @@ package com.wuxp.codegen.enums;
 
 /**
  * 验证规则类型
+ *
+ * @author wuxp
  */
 public enum ValidatorRuleType {
 

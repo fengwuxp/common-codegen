@@ -1,8 +1,10 @@
 package com.wuxp.codegen.enums;
 
-/*
+/**
  * 表单组件类型
- * */
+ *
+ * @author wuxp
+ */
 public enum FormComponentType {
 
     /**
