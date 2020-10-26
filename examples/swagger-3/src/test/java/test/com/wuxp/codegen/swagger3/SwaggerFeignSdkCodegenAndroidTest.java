@@ -56,6 +56,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
         String[] packagePaths = {"com.wuxp.codegen.swagger3.example.controller"};
 
         Swagger3FeignJavaCodegenBuilder.builder()
+                .useRxJava(true)
                 .build()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.JAVA_ANDROID)

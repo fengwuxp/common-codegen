@@ -5,6 +5,8 @@ import lombok.Data;
 
 /**
  * 语言名称列表
+ *
+ * @author wuxp
  */
 @Data
 public final class LanguageDescription {

@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractJavaParser;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -18,16 +19,26 @@ import java.util.Collection;
 
 /**
  * 基于 open api3 生成 feign sdk的 java的 parser
+ *
  * @author wxup
  */
 @Slf4j
 public class Swagger3FeignSdkJavaParser extends AbstractJavaParser {
 
+    private boolean enabledAndroidSqliteSupport;
+
+    private LanguageDescription languageDescription;
+
 
     public Swagger3FeignSdkJavaParser(PackageMapStrategy packageMapStrategy,
                                       CodeGenMatchingStrategy genMatchingStrategy,
-                                      Collection<CodeDetect> codeDetects) {
-        super(packageMapStrategy, genMatchingStrategy, codeDetects);
+                                      Collection<CodeDetect> codeDetects,
+                                      LanguageDescription languageDescription,
+                                      boolean useRxJava,
+                                      boolean enabledAndroidSqliteSupport) {
+        super(packageMapStrategy, genMatchingStrategy, codeDetects, useRxJava);
+        this.enabledAndroidSqliteSupport = enabledAndroidSqliteSupport;
+        this.languageDescription = languageDescription;
     }
 
     @Override
@@ -43,7 +54,6 @@ public class Swagger3FeignSdkJavaParser extends AbstractJavaParser {
 //        if (javaMethodMeta.existAnnotation(Hidden.class)) {
 //            return null;
 //        }
-
         return super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
     }
 
@@ -55,5 +65,13 @@ public class Swagger3FeignSdkJavaParser extends AbstractJavaParser {
         }
 
         return super.converterField(javaFieldMeta, classMeta);
+    }
+
+    @Override
+    public JavaCodeGenClassMeta parse(Class<?> source) {
+        if (LanguageDescription.JAVA_ANDROID.equals(languageDescription) && this.enabledAndroidSqliteSupport) {
+            // TODO  support sqlite
+        }
+        return super.parse(source);
     }
 }

@@ -18,15 +18,22 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 
+/**
+ * @author wuxp
+ */
 @Builder
 @Slf4j
 public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilder {
 
+    private Boolean enabledAndroidSqliteSupport;
+
+    private Boolean useRxJava;
 
     @Override
     public CodeGenerator buildCodeGenerator() {
-        if (this.languageDescription == null) {
-            this.languageDescription = LanguageDescription.JAVA;
+        LanguageDescription languageDescription = this.languageDescription;
+        if (languageDescription == null) {
+            languageDescription = LanguageDescription.JAVA;
         }
         if (this.codeRuntimePlatform == null) {
             this.codeRuntimePlatform = CodeRuntimePlatform.JAVA_SERVER;
@@ -36,16 +43,19 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         LanguageParser languageParser = new Swagger3FeignSdkJavaParser(
                 packageMapStrategy,
                 new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
-                this.codeDetects);
+                this.codeDetects,
+                languageDescription,
+                Boolean.TRUE.equals(useRxJava),
+                Boolean.TRUE.equals(enabledAndroidSqliteSupport));
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
         languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.templateFileVersion, this.getSharedVariables());
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(languageDescription, this.templateFileVersion, this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
                 this.outPath,
-                this.languageDescription.getSuffixName(),
+                languageDescription.getSuffixName(),
                 this.isDeletedOutputDirectory);
 
 
