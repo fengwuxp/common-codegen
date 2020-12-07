@@ -40,7 +40,7 @@ class ${name}{
         </#list>
         })
     </#list>
-    ${method.name}:(req: ${method.params["req"].name}, option?: FeignRequestOptions) => ${customize_method.combineType(method.returnTypes)};
+    ${method.name}!:(req: ${method.params["req"].name}, option?: FeignRequestOptions) => ${customize_method.combineType(method.returnTypes)};
 </#list>
 }
 
