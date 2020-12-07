@@ -38,6 +38,12 @@
             <version>${codegen.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-api-support</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

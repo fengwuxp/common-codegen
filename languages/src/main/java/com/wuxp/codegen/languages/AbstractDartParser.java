@@ -16,7 +16,7 @@ import com.wuxp.codegen.model.languages.dart.DartFieldMate;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.utils.JavaMethodNameUtil;
+import com.wuxp.codegen.util.JavaMethodNameUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -148,7 +148,7 @@ public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, Co
 
         String[] split = filepath.split(RIGHT_SLASH);
         String s = split[split.length - 1];
-        split[split.length - 1] = JavaMethodNameUtil.humpToLine(s);
+        split[split.length - 1] = JavaMethodNameUtils.humpToLine(s);
         return String.join(RIGHT_SLASH, split);
     }
 

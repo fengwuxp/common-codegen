@@ -1,4 +1,4 @@
-package com.wuxp.codegen.utils;
+package com.wuxp.codegen.util;
 
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -17,19 +17,22 @@ import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRI
 
 /**
  * 过滤spring controller 的方法或属性
+ *
+ * @author wuxp
  */
 @Slf4j
-public final class SpringControllerFilter {
+public final class SpringControllerFilterUtils {
 
 
-    private static JavaClassParser JAVA_PARSER = new JavaClassParser(true);
+    private static final JavaClassParser JAVA_PARSER = new JavaClassParser(true);
 
-
+    private SpringControllerFilterUtils() {
+    }
 
     /**
      * 过滤方法
      *
-     * @param classMeta
+     * @param classMeta 类元数据
      */
     public static void filterMethods(JavaClassMeta classMeta) {
         //判断是否为spring的控制器

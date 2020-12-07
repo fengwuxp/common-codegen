@@ -31,8 +31,8 @@ import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.utils.JavaTypeUtil;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
-import com.wuxp.codegen.utils.JavaMethodNameUtil;
-import com.wuxp.codegen.utils.SpringControllerFilter;
+import com.wuxp.codegen.util.JavaMethodNameUtils;
+import com.wuxp.codegen.util.SpringControllerFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
@@ -258,7 +258,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
         //加入对spring的特别处理
-        SpringControllerFilter.filterMethods(javaClassMeta);
+        SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
         boolean isApiServiceClass = javaClassMeta.isApiServiceClass();
         if (isApiServiceClass) {
@@ -615,13 +615,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .filter(javaMethodMeta -> !Boolean.TRUE.equals(javaMethodMeta.getIsNative()))
                     .filter(javaMethodMeta -> {
                         //匹配getXX 或isXxx方法
-                        return JavaMethodNameUtil.isGetMethodOrIsMethod(javaMethodMeta.getName());
+                        return JavaMethodNameUtils.isGetMethodOrIsMethod(javaMethodMeta.getName());
                     })
                     .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract()) && Boolean.FALSE.equals(javaMethodMeta.getIsTransient()))
                     .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
                     .filter(javaMethodMeta -> {
                         //属性是否已经存在
-                        return !fieldNameList.contains(JavaMethodNameUtil.replaceGetOrIsPrefix(javaMethodMeta.getName()));
+                        return !fieldNameList.contains(JavaMethodNameUtils.replaceGetOrIsPrefix(javaMethodMeta.getName()));
                     })
                     .map(methodMeta -> {
                         //从get方法或is方法中生成field
@@ -633,7 +633,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                 .setTypes(methodMeta.getReturnType())
                                 .setAnnotations(methodMeta.getAnnotations())
                                 .setAccessPermission(AccessPermission.PRIVATE)
-                                .setName(JavaMethodNameUtil.replaceGetOrIsPrefix(methodMeta.getName()))
+                                .setName(JavaMethodNameUtils.replaceGetOrIsPrefix(methodMeta.getName()))
                                 .setIsStatic(false)
                                 .setIsFinal(false);
                         return fieldMeta;

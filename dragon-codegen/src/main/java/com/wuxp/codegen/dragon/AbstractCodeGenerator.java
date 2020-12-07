@@ -8,7 +8,7 @@ import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.enums.ClassType;
-import com.wuxp.codegen.utils.JavaMethodNameUtil;
+import com.wuxp.codegen.util.JavaMethodNameUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -171,7 +171,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
                             //将方法参数字段名称设置为下划线
                             Arrays.stream(commonCodeGenClassMeta.getFieldMetas()).forEach(commonCodeGenFiledMeta -> {
-                                commonCodeGenFiledMeta.setName(JavaMethodNameUtil.humpToLine(commonCodeGenFiledMeta.getName()));
+                                commonCodeGenFiledMeta.setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName()));
                             });
                         }
 

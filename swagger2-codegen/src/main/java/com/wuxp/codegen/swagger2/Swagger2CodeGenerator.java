@@ -1,5 +1,6 @@
 package com.wuxp.codegen.swagger2;
 
+import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
@@ -69,6 +70,20 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
         super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle,null);
         init(looseMode);
     }
+
+    public Swagger2CodeGenerator(String[] packagePaths,
+                                 Set<String> ignorePackages,
+                                 Class<?>[] includeClasses,
+                                 Class<?>[] ignoreClasses,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean looseMode,
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
+        init(looseMode);
+    }
+
 
     private void init(boolean looseMode) {
         if (looseMode) {

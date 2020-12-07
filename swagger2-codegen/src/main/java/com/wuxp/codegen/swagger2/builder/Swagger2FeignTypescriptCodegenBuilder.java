@@ -17,6 +17,9 @@ import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author wuxp
+ */
 @Slf4j
 public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegenBuilder {
 

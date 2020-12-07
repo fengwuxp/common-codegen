@@ -1,4 +1,4 @@
-package com.wuxp.codegen.swagger3.builder;
+package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
@@ -14,9 +14,9 @@ import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
-import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
-import com.wuxp.codegen.swagger3.Swagger3FeignSdkGenMatchingStrategy;
-import com.wuxp.codegen.swagger3.languages.Swagger3FeignSdkDartParser;
+import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
+import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
+import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkDartParser;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +28,10 @@ import java.util.Map;
 
 
 /**
- * @author wxup
+ * @author wuxp
  */
 @Slf4j
-public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilder {
+public class Swagger2FeignDartCodegenBuilder extends AbstractDragonCodegenBuilder {
 
     private Map<Class<?>, List<String>> ignoreFields;
 
@@ -45,35 +45,28 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
      */
     private Map<DartClassMeta, List<String>> typeAlias = Collections.emptyMap();
 
-    protected Swagger3FeignDartCodegenBuilder() {
-        super();
+    public static Swagger2FeignDartCodegenBuilder builder() {
+        return new Swagger2FeignDartCodegenBuilder();
     }
 
-
-    public Swagger3FeignDartCodegenBuilder ignoreFields(Map<Class<?>, List<String>> ignoreFields) {
+    public Swagger2FeignDartCodegenBuilder ignoreFields(Map<Class<?>, List<String>> ignoreFields) {
         this.ignoreFields = ignoreFields;
         return this;
     }
 
-    public Swagger3FeignDartCodegenBuilder typeAlias(Map<DartClassMeta, List<String>> typeAlias) {
+    public Swagger2FeignDartCodegenBuilder typeAlias(Map<DartClassMeta, List<String>> typeAlias) {
         this.typeAlias = typeAlias;
         return this;
     }
 
-    public Swagger3FeignDartCodegenBuilder sdkIndexFileName(String sdkIndexFileName) {
+    public Swagger2FeignDartCodegenBuilder sdkIndexFileName(String sdkIndexFileName) {
         this.sdkIndexFileName = sdkIndexFileName;
         return this;
     }
 
 
-    public static Swagger3FeignDartCodegenBuilder builder() {
-        return new Swagger3FeignDartCodegenBuilder();
-    }
-
-
     @Override
     public CodeGenerator buildCodeGenerator() {
-
         if (this.languageDescription == null) {
             this.languageDescription = LanguageDescription.DART;
         }
@@ -83,9 +76,9 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         }
         this.initTypeMapping();
         //实例化语言解析器
-        LanguageParser languageParser = new Swagger3FeignSdkDartParser(
+        LanguageParser languageParser = new Swagger2FeignSdkDartParser(
                 packageMapStrategy,
-                new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
+                new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects,
                 this.ignoreFields);
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
@@ -113,7 +106,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         dartFeignCodeGenEventHandler.setTypeAlias(this.typeAlias);
         RequestMappingProcessor.setSupportAuthenticationType(true);
 
-        return new Swagger3CodeGenerator(
+        return new Swagger2CodeGenerator(
                 this.scanPackages,
                 this.ignorePackages,
                 this.includeClasses,
@@ -124,6 +117,4 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 this.enableFieldUnderlineStyle,
                 new DisruptorCodeGenPublisher(dartFeignCodeGenEventHandler));
     }
-
-
 }

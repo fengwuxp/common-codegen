@@ -1,4 +1,4 @@
-package com.wuxp.codegen.utils;
+package com.wuxp.codegen.util;
 
 import com.wuxp.codegen.core.utils.ToggleCaseUtil;
 import org.springframework.util.StringUtils;
@@ -9,8 +9,9 @@ import java.util.regex.Pattern;
 
 /**
  * 处理java method name
+ * @author wuxp
  */
-public final class JavaMethodNameUtil {
+public final class JavaMethodNameUtils {
 
     private static final String IS_GET_METHOD_NAME = "^get[A-Z]+\\w*";
 
@@ -18,11 +19,14 @@ public final class JavaMethodNameUtil {
 
     private static final Pattern TO_LINE_REGEXP = Pattern.compile("([A-Z]+)");
 
+    private JavaMethodNameUtils() {
+    }
+
     /**
      * 是否为get方法或is 方法
      *
-     * @param methodName
-     * @return
+     * @param methodName 方法名称
+     * @return 是否为 get or is 方法
      */
     public static boolean isGetMethodOrIsMethod(String methodName) {
         if (methodName == null) {
@@ -60,15 +64,16 @@ public final class JavaMethodNameUtil {
     /**
      * 驼峰格式的字符串转下划线
      *
-     * @param str
-     * @return
+     * @param str 驼峰格式内容
+     * @return 驼峰格式的字符串转下划线的字符串内容
+     * @link http://ifeve.com/google-guava/
+     * CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, str);
      */
     public static String humpToLine(String str) {
         if (!StringUtils.hasText(str)) {
             return str;
         }
-//        //@link http://ifeve.com/google-guava/
-//        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, str);
+
         StringBuffer text = new StringBuffer(str);
         Matcher matcher = TO_LINE_REGEXP.matcher(text);
         while (matcher.find()) {
