@@ -35,7 +35,6 @@ import com.wuxp.codegen.util.JavaMethodNameUtils;
 import com.wuxp.codegen.util.SpringControllerFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -828,7 +827,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return;
         }
 
-        boolean isGetMethod = RequestMethod.GET.equals(requestMappingMate.getRequestMethod());
+        RequestMethod requestMethod = requestMappingMate.getRequestMethod();
         String[] consumes = requestMappingMate.consumes();
         boolean hasRequestBody = javaMethodMeta.getParamAnnotations()
                 .values()
@@ -839,16 +838,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .findFirst()
                 .orElse(null) != null;
         if (!hasRequestBody) {
-            hasRequestBody = consumes.length > 0 && (MediaType.APPLICATION_JSON_UTF8_VALUE.equals(consumes[0]) ||
-                    MediaType.APPLICATION_JSON_VALUE.equals(consumes[0]));
+            hasRequestBody = consumes.length > 0 && StringUtils.hasText(consumes[0]);
         }
-        if (isGetMethod && hasRequestBody) {
+        boolean isSupportRequestBody = RequestMappingProcessor.RequestMappingMate.isSupportRequestBody(requestMethod);
+        if (!isSupportRequestBody && hasRequestBody) {
             // get 请求不支持 RequestBody
-            throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是GET请求，不支持RequestBody");
+            throw new RuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));
         }
-//        if (RequestMethod.POST.equals(requestMappingMate.getRequestMethod())) {
-//            // post方法需要 RequestBody
-//        }
     }
 
 
@@ -1207,10 +1203,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         if (annotationOwner instanceof Method) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
-            boolean isGetMethod = annotationType.equals(GetMapping.class) || annotationType.equals(RequestMapping.class);
-            if (isGetMethod) {
-                return;
+            RequestMethod httpMethod = RequestMethod.GET;
+            if (annotation instanceof RequestMappingProcessor.RequestMappingMate) {
+                httpMethod = ((RequestMappingProcessor.RequestMappingMate) annotation).getRequestMethod();
             }
+
             //spring的mapping注解
             if (annotationType.getSimpleName().endsWith("Mapping")) {
                 Method method = (Method) annotationOwner;
@@ -1224,7 +1221,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
                 String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
-
                 if (StringUtils.hasText(produces)) {
                     return;
                 } else {
@@ -1241,15 +1237,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 if (hasRequestBodyAnnotation) {
                     produces = TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8;
                 } else {
-                    //如果没有 RequestBody 则认为是已表单的方式提交的参数
-                    //是spring的Mapping注解
+                    // 如果没有 RequestBody 则认为是已表单的方式提交的参数
+                    // 是spring的Mapping注解
                     produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
                 }
-
                 if (!StringUtils.hasText(produces)) {
                     return;
                 }
-
                 codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
             }
         }

@@ -24,7 +24,7 @@ public class SwaggerFeignSdkCodegenDartTest {
 
 
     @Test
-    public void testCodeGenAndroidApiByStater() {
+    public void testCodeGenDartApiByStater() {
 
 
       //设置基础数据类型的映射关系

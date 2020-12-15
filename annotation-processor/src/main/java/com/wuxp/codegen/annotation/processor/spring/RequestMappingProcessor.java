@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -103,6 +100,8 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
 
+        private static final List<RequestMethod> SUPPORT_BODY_METHODS = Arrays.asList(RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH);
+
         @Override
         public String toComment(Class<?> annotationOwner) {
 
@@ -172,10 +171,20 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             RequestMethod[] requestMethods = this.method();
 
             if (requestMethods.length == 0) {
-                return RequestMethod.POST;
+                return RequestMethod.GET;
             } else {
                 return requestMethods[0];
             }
+        }
+
+        /**
+         * http method 方法是否支持 Request body
+         *
+         * @param method
+         */
+        public static boolean isSupportRequestBody(RequestMethod method) {
+
+            return SUPPORT_BODY_METHODS.contains(method);
         }
 
         /**

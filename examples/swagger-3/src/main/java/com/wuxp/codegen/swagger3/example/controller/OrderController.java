@@ -4,6 +4,7 @@ package com.wuxp.codegen.swagger3.example.controller;
 import com.wuxp.codegen.swagger3.example.domain.Order;
 import com.wuxp.codegen.swagger3.example.domain.User;
 import com.wuxp.codegen.swagger3.example.evt.CreateOrderEvt;
+import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
 import com.wuxp.codegen.swagger3.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
@@ -28,6 +29,11 @@ public class OrderController extends BaseController<String> {
     @GetMapping(value = {"getOrder"})
     public List<Order> getOrder(@RequestParam String[] names, @RequestHeader List<Integer> ids, Set<Order> moneys) {
         return Collections.EMPTY_LIST;
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder2(QueryOrderEvt evt) {
+        return new PageInfo<Order>();
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -84,6 +90,12 @@ public class OrderController extends BaseController<String> {
 
     //    @PostMapping(value = {"hello"})
     public ServiceResponse public_hello() {
+
+        return new ServiceResponse<>();
+    }
+
+    @DeleteMapping("/delete")
+    public ServiceResponse delete(ExampleDTO dto) {
 
         return new ServiceResponse<>();
     }
