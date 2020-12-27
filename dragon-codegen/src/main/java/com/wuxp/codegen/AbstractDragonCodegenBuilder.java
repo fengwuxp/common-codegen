@@ -1,6 +1,7 @@
 package com.wuxp.codegen;
 
 
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
@@ -8,15 +9,12 @@ import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
 import java.util.*;
-
-import static com.wuxp.codegen.templates.TemplateLoader.CODE_RUNTIME_PLATFORM_KEY;
 
 /**
  * 代码生成配置
@@ -27,6 +25,8 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
     protected LanguageDescription languageDescription;
+
+    protected ClientProviderType clientProviderType;
 
     /**
      * 扫码生成的包名
@@ -95,11 +95,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      */
     protected boolean enableFieldUnderlineStyle = false;
 
-
-    /**
-     * 运行平台
-     */
-    protected CodeRuntimePlatform codeRuntimePlatform;
 
     /**
      * 模板文件版本
@@ -197,6 +192,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractDragonCodegenBuilder clientProviderType(ClientProviderType clientProviderType) {
+        this.clientProviderType = clientProviderType;
+        return this;
+    }
+
     public AbstractDragonCodegenBuilder looseMode(boolean looseMode) {
         this.looseMode = looseMode;
         return this;
@@ -207,10 +207,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder codeRuntimePlatform(CodeRuntimePlatform codeRuntimePlatform) {
-        this.codeRuntimePlatform = codeRuntimePlatform;
-        return this;
-    }
 
     public AbstractDragonCodegenBuilder templateFileVersion(String templateFileVersion) {
         this.templateFileVersion = templateFileVersion;
@@ -264,6 +260,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
 
         CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);
+        CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setProviderType(this.clientProviderType);
     }
 
     /**
@@ -274,7 +271,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     protected Map<String, Object> getSharedVariables() {
         //全局共享变量
         Map<String, Object> sharedVariables = new HashMap<>();
-        sharedVariables.put(CODE_RUNTIME_PLATFORM_KEY, codeRuntimePlatform.name());
         return sharedVariables;
     }
 }

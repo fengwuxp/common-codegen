@@ -1,17 +1,25 @@
 package com.wuxp.codegen.annotation.processor;
 
 
+import com.wuxp.codegen.annotation.ClientAnnotationProvider;
+import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
+import org.springframework.util.Assert;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -19,11 +27,23 @@ import java.util.Optional;
  *
  * @param <A>
  * @param <T>
+ * @author wuxp
  */
 @Slf4j
 public abstract class AbstractAnnotationProcessor<A extends Annotation, T extends AnnotationMate<A>>
         implements AnnotationProcessor<T, A> {
 
+
+    private static final Map<ClientProviderType, ClientAnnotationProvider> ANNOTATION_PROVIDERS = new ConcurrentHashMap<>(8);
+
+    /**
+     * client provider type和AnnotationCodeGenTransformer的对应关系
+     */
+    private static final Map<ClientProviderType, Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate<Annotation>>>>
+            CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS = new HashMap<>(32);
+
+
+    private static ClientProviderType clientProviderType;
 
     /**
      * 返回一个代理的元数据对象
@@ -37,6 +57,14 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
             return null;
         }
 
+        if (clientProviderType != null) {
+            ClientAnnotationProvider clientAnnotationProvider = ANNOTATION_PROVIDERS.get(clientProviderType);
+            if (clientAnnotationProvider != null) {
+                clazz = clientAnnotationProvider.getAnnotation(annotation.annotationType());
+                Assert.notNull(clazz, "client provider type=" + clientProviderType.name() + ",annotation type=" + annotation.annotationType() + " must not null");
+            }
+        }
+
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
@@ -46,6 +74,29 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
 
         return (T) enhancer.create();
 
+    }
+
+    public static void setClientProviderType(ClientProviderType type) {
+        clientProviderType = type;
+    }
+
+    public static void registerAnnotationProvider(ClientProviderType type, ClientAnnotationProvider annotationProvider) {
+        ANNOTATION_PROVIDERS.put(type, annotationProvider);
+    }
+
+    public static void registerAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType, AnnotationCodeGenTransformer transformer) {
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate<Annotation>>> transformerMap
+                = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.computeIfAbsent(type, (key) -> new HashMap<>());
+        transformerMap.put(annotationType, transformer);
+    }
+
+
+    public static <A extends AnnotationMate> AnnotationCodeGenTransformer<CommonCodeGenAnnotation, A> getAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType) {
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate<Annotation>>> transformerMap = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
+        if (transformerMap == null) {
+            return null;
+        }
+        return (AnnotationCodeGenTransformer<CommonCodeGenAnnotation, A>) transformerMap.get(annotationType);
     }
 
 

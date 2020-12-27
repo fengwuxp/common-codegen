@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
@@ -9,7 +10,6 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.disruptor.DartFeignCodeGenEventHandler;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
-import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -77,10 +77,10 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         if (this.languageDescription == null) {
             this.languageDescription = LanguageDescription.DART;
         }
-
-        if (this.codeRuntimePlatform == null) {
-            this.codeRuntimePlatform = CodeRuntimePlatform.JAVA_SERVER;
+        if (this.clientProviderType == null) {
+            this.clientProviderType = ClientProviderType.DART_FEIGN;
         }
+
         this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger3FeignSdkDartParser(

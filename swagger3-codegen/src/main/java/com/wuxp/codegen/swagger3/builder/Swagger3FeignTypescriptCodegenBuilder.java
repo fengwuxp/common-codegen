@@ -2,12 +2,12 @@ package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
-import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
@@ -17,6 +17,9 @@ import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author wuxp
+ */
 @Slf4j
 public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegenBuilder {
 
@@ -35,8 +38,8 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         if (this.languageDescription == null) {
             this.languageDescription = LanguageDescription.TYPESCRIPT;
         }
-        if (this.codeRuntimePlatform == null) {
-            this.codeRuntimePlatform = CodeRuntimePlatform.BROWSER;
+        if (this.clientProviderType == null) {
+            this.clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
         }
 
         this.initTypeMapping();

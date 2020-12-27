@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * 抽象的typescript parser
+ *
  * @author wxup
  */
 @Slf4j
@@ -153,4 +154,8 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     }
 
 
+    @Override
+    protected boolean needMargeMethodParams() {
+        return true;
+    }
 }

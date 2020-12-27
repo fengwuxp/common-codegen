@@ -44,6 +44,19 @@ public interface ${name}{
         </#list>
         )
     </#list>
-    ${customize_method.combineType(method.returnTypes)}  ${method.name} (@Body ${method.params["req"].name} req);
+    ${customize_method.combineType(method.returnTypes)}  ${method.name} (
+    <#--参数遍历-->
+    <#assign params=method.params/>
+    <#assign paramAnnotations=method.paramAnnotations/>
+    <#list params as paramName,paramType>
+        <#assign paramAnnotation= paramAnnotations[paramName]/>
+        <#if (paramAnnotation?size>0)>
+            <#assign annotation= paramAnnotation[0]/>
+            <#if annotation.positionArguments??>
+                @${annotation.name}(<#list annotation.positionArguments as item>${item}</#list>)
+            </#if>
+        </#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName},
+    </#list>
+    );
 </#list>
 }

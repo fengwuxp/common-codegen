@@ -10,6 +10,7 @@ import java.lang.reflect.Parameter;
 
 /**
  * 注解transformer
+ * @author wuxp
  */
 public interface AnnotationCodeGenTransformer<T extends CommonCodeGenAnnotation, A extends AnnotationMate> {
 

@@ -2,14 +2,16 @@ package com.wuxp.codegen.annotation.processor.spring;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.transform.spring.DartRequestMappingTransformer;
-import com.wuxp.codegen.transform.spring.JavaRetofitRequestMappingTransformer;
+import com.wuxp.codegen.transform.spring.JavaRetrofitRequestMappingTransformer;
+import com.wuxp.codegen.transform.spring.SpringRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
@@ -19,7 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,12 +38,16 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     public static final String FEIGN_CLIENT_ANNOTATION_NAME = "Feign";
 
-    //Mapping和mapping元数据的对应
+    /**
+     * Mapping和mapping元数据的对应
+     */
     private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingProcessor.RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
 
 
-    //注解转换器和语言类型的对应关系
-    private static final Map<LanguageDescription, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate>> ANNOTATION_CODE_GEN_TRANSFORMER_MAP = new HashMap<>();
+    /**
+     * 注解转换器和语言类型的对应关系
+     */
+//    private static final Map<LanguageDescription, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate>> ANNOTATION_CODE_GEN_TRANSFORMER_MAP = new HashMap<>();
 
     /**
      * 需要认证的类型和相关的路径列表，使用ant匹配
@@ -61,9 +70,14 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         ANNOTATION_CLASS_MAP.put(PatchMapping.class, RequestMappingProcessor.PatchMappingMate.class);
 
 
-        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.JAVA_ANDROID, new JavaRetofitRequestMappingTransformer());
-        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.TYPESCRIPT, new TypeScriptRequestMappingTransformer());
-        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.DART, new DartRequestMappingTransformer());
+//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.JAVA_ANDROID, new JavaRetrofitRequestMappingTransformer());
+//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.TYPESCRIPT, new TypeScriptRequestMappingTransformer());
+//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.DART, new DartRequestMappingTransformer());
+
+        registerAnnotationTransformer(ClientProviderType.SPRING_CLOUD_OPENFEIGN, RequestMapping.class, new SpringRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.RETROFIT, RequestMapping.class, new JavaRetrofitRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN, RequestMapping.class, new TypeScriptRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.DART_FEIGN, RequestMapping.class, new DartRequestMappingTransformer());
     }
 
 
@@ -79,15 +93,15 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     }
 
-    /**
-     * 设置 注解处理器
-     *
-     * @param languageDescription
-     * @param transformer
-     */
-    public static void setAnnotationCodeGenTransformer(LanguageDescription languageDescription, AnnotationCodeGenTransformer transformer) {
-        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(languageDescription, transformer);
-    }
+//    /**
+//     * 设置 注解处理器
+//     *
+//     * @param languageDescription
+//     * @param transformer
+//     */
+//    public static void setAnnotationCodeGenTransformer(LanguageDescription languageDescription, AnnotationCodeGenTransformer transformer) {
+//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(languageDescription, transformer);
+//    }
 
     public static void addAuthenticationTypePaths(AuthenticationType type, String[] paths) {
         AUTHENTICATION_PATH.put(type, paths);
@@ -212,17 +226,14 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
          * @return
          */
         private CommonCodeGenAnnotation genAnnotation(Object annotationOwner) {
-
-            LanguageDescription languageDescription = CodegenBuilder.CODEGEN_GLOBAL_CONFIG.getLanguageDescription();
-            if (languageDescription == null) {
-                log.error("current languageDescription is null");
-                return null;
+            CodegenGlobalConfig codegenGlobalConfig = CodegenBuilder.CODEGEN_GLOBAL_CONFIG;
+            ClientProviderType providerType = codegenGlobalConfig.getProviderType();
+            if (providerType == null) {
+                throw new RuntimeException("CODEGEN_GLOBAL_CONFIG#providerType is null");
             }
-            AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate> transformer = ANNOTATION_CODE_GEN_TRANSFORMER_MAP.get(languageDescription);
-
+            AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate> transformer = getAnnotationTransformer(providerType, RequestMapping.class);
             if (transformer == null) {
-                log.error("not find {} transformer", languageDescription.getName());
-                return null;
+                throw new RuntimeException("client provider type=" + providerType.name() + " not found AnnotationCodeGenTransformer");
             }
             return transformer.transform(this, annotationOwner);
 

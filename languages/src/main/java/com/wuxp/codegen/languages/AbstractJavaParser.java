@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * 抽象的java parser
+ * @author wuxp
  */
 @Slf4j
 public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {

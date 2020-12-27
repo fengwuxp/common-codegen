@@ -1,5 +1,6 @@
 package test.com.wuxp.codegen.typescript;
 
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -60,6 +61,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
                 .build()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
+                .clientProviderType(ClientProviderType.RETROFIT)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())

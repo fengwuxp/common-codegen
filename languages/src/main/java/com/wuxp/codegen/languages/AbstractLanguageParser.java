@@ -22,7 +22,6 @@ import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
-import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -785,11 +784,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         checkSpringMvcMethod(javaMethodMeta, classMeta);
         M methodCodeMeta;
-        if (codeGenClassMeta instanceof DartClassMeta) {
-            methodCodeMeta = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
-        } else {
+        if (this.needMargeMethodParams()) {
             // 需要合并参数
             methodCodeMeta = converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
+        } else {
+            methodCodeMeta = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
         }
         methodCodeMeta = this.languageEnhancedProcessor.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
         //增强处理
@@ -797,57 +796,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return methodCodeMeta;
     }
 
+
     /**
-     * 检查spring mvc 控制器的方法
+     * 转换方法处理
      *
-     * @param javaMethodMeta
-     * @param classMeta
+     * @param javaMethodMeta   java 方法元数据信息
+     * @param classMeta        类元数据信息
+     * @param codeGenClassMeta 生成元数据系信息
+     * @return
      */
-    private void checkSpringMvcMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
-        if (classMeta.getAnnotation(Controller.class) == null && classMeta.getAnnotation(RestController.class) == null) {
-            return;
-        }
-        // 检查控制器方法是否合法
-        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
-            //
-            throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
-        }
-        RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations()).map(annotation -> {
-            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-            if (processor == null) {
-                return null;
-            }
-            return processor.process(annotation);
-        }).filter(Objects::nonNull)
-                .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
-                .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate).findFirst()
-                .orElse(null);
-
-        if (requestMappingMate == null) {
-            return;
-        }
-
-        RequestMethod requestMethod = requestMappingMate.getRequestMethod();
-        String[] consumes = requestMappingMate.consumes();
-        boolean hasRequestBody = javaMethodMeta.getParamAnnotations()
-                .values()
-                .stream()
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
-                .filter(annotation -> RequestBody.class.equals(annotation.annotationType()))
-                .findFirst()
-                .orElse(null) != null;
-        if (!hasRequestBody) {
-            hasRequestBody = consumes.length > 0 && StringUtils.hasText(consumes[0]);
-        }
-        boolean isSupportRequestBody = RequestMappingProcessor.RequestMappingMate.isSupportRequestBody(requestMethod);
-        if (!isSupportRequestBody && hasRequestBody) {
-            // get 请求不支持 RequestBody
-            throw new RuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));
-        }
-    }
-
-
     protected M converterMethodHandle(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
 
         M genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
@@ -1304,6 +1261,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     }
 
     /**
+     * 是否需要合并方法的请求参数
+     *
+     * @return
+     */
+    protected boolean needMargeMethodParams() {
+        return false;
+    }
+
+    /**
      * 查找 Spring Param 相关的 Annotation
      *
      * @param annotations
@@ -1369,6 +1335,57 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 //        });
 //        meta.setDependencies(newDependencies);
 //    }
+
+    /**
+     * 检查spring mvc 控制器的方法
+     *
+     * @param javaMethodMeta
+     * @param classMeta
+     */
+    private void checkSpringMvcMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+        if (classMeta.getAnnotation(Controller.class) == null && classMeta.getAnnotation(RestController.class) == null) {
+            return;
+        }
+        // 检查控制器方法是否合法
+        if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
+            //
+            throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
+        }
+        RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations()).map(annotation -> {
+            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+            if (processor == null) {
+                return null;
+            }
+            return processor.process(annotation);
+        }).filter(Objects::nonNull)
+                .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
+                .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate).findFirst()
+                .orElse(null);
+
+        if (requestMappingMate == null) {
+            return;
+        }
+
+        RequestMethod requestMethod = requestMappingMate.getRequestMethod();
+        String[] consumes = requestMappingMate.consumes();
+        boolean hasRequestBody = javaMethodMeta.getParamAnnotations()
+                .values()
+                .stream()
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .filter(annotation -> RequestBody.class.equals(annotation.annotationType()))
+                .findFirst()
+                .orElse(null) != null;
+        if (!hasRequestBody) {
+            hasRequestBody = consumes.length > 0 && StringUtils.hasText(consumes[0]);
+        }
+        boolean isSupportRequestBody = RequestMappingProcessor.RequestMappingMate.isSupportRequestBody(requestMethod);
+        if (!isSupportRequestBody && hasRequestBody) {
+            // get 请求不支持 RequestBody
+            throw new RuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));
+        }
+    }
+
 
     @Override
     public void setLanguageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor) {

@@ -2,12 +2,12 @@ package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
-import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
@@ -38,10 +38,9 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         if (this.languageDescription == null) {
             this.languageDescription = LanguageDescription.TYPESCRIPT;
         }
-        if (this.codeRuntimePlatform == null) {
-            this.codeRuntimePlatform = CodeRuntimePlatform.BROWSER;
+        if (this.clientProviderType == null) {
+            this.clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
         }
-
         this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger2FeignSdkTypescriptParser(

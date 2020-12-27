@@ -1,12 +1,12 @@
 package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
-import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
@@ -35,8 +35,8 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         if (languageDescription == null) {
             languageDescription = LanguageDescription.JAVA;
         }
-        if (this.codeRuntimePlatform == null) {
-            this.codeRuntimePlatform = CodeRuntimePlatform.JAVA_SERVER;
+        if (this.clientProviderType == null) {
+            this.clientProviderType = ClientProviderType.SPRING_CLOUD_OPENFEIGN;
         }
         this.initTypeMapping();
         //实例化语言解析器

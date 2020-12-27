@@ -3,6 +3,9 @@ package test.com.wuxp.codegen.processor;
 import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.config.CodegenGlobalConfig;
 import org.junit.Test;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +25,8 @@ public class RequestMappingProcessorTest {
 
     @Test
     public void testProcess() {
-
+        CodegenGlobalConfig codegenGlobalConfig = CodegenBuilder.CODEGEN_GLOBAL_CONFIG;
+        codegenGlobalConfig.setProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN);
         TestController controller = new TestController();
 
         Method[] methods = controller.getClass().getMethods();

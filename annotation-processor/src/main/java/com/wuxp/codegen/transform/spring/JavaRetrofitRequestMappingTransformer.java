@@ -14,16 +14,19 @@ import java.util.*;
 
 
 /**
- * 将spring requestMapping相关的注解转换为 retofit相关的注解
+ * 将spring requestMapping相关的注解转换为 retrofit相关的注解
+ * @author wuxp
  */
 @Slf4j
-public class JavaRetofitRequestMappingTransformer implements
+public class JavaRetrofitRequestMappingTransformer implements
         AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingProcessor.RequestMappingMate> {
 
-    //请求方法和Mapping名称的对应
+    /**
+     * 请求方法和Mapping名称的对应
+     */
     private static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new HashMap<>();
 
-    private RequestMappingProcessor requestMappingProcessor = new RequestMappingProcessor();
+    private final RequestMappingProcessor requestMappingProcessor = new RequestMappingProcessor();
 
     static {
 
@@ -95,10 +98,6 @@ public class JavaRetofitRequestMappingTransformer implements
         //注解位置参数
         List<String> positionArguments = new LinkedList<>();
         positionArguments.add(arguments.get("value"));
-//        positionArguments.add(arguments.get("method"));
-//        positionArguments.add(arguments.get("produces"));
-//        positionArguments.add(arguments.get("produces"));
-
         codeGenAnnotation.setPositionArguments(positionArguments);
 
         return codeGenAnnotation;

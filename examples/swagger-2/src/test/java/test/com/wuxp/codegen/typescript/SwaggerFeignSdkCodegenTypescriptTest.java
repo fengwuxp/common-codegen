@@ -6,7 +6,6 @@ import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
-import com.wuxp.codegen.enums.CodeRuntimePlatform;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
@@ -75,7 +74,6 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
 
         //实例化模板加载器
         HashMap<String, Object> sharedVariables = new HashMap<>();
-        sharedVariables.put("codeRuntimePlatform", CodeRuntimePlatform.BROWSER);
         FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, TemplateFileVersion.V_1_0_0, sharedVariables);
 
 

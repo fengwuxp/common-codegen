@@ -55,7 +55,7 @@ public class PathVariableProcessor extends AbstractAnnotationProcessor<PathVaria
         @Override
         public String toComment(Parameter annotationOwner) {
 
-            return MessageFormat.format("属性：{0}是一个 cookie", annotationOwner.getName());
+            return MessageFormat.format("属性：{0}是一个 path variable", annotationOwner.getName());
         }
     }
 }

@@ -3,6 +3,8 @@ package com.wuxp.codegen.model.constant;
 
 /**
  * typescript 生成 mediaType 常量
+ *
+ * @author wuxp
  */
 public final class TypescriptFeignMediaTypeConstant {
 

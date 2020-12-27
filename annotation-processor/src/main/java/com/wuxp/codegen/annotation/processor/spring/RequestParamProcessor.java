@@ -55,7 +55,7 @@ public class RequestParamProcessor extends AbstractAnnotationProcessor<RequestPa
         @Override
         public String toComment(Parameter annotationOwner) {
 
-            return MessageFormat.format("属性：{0}是一个 rqeust param", annotationOwner.getName());
+            return MessageFormat.format("属性：{0}是一个 request param", annotationOwner.getName());
         }
     }
 }
