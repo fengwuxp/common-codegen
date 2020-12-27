@@ -51,7 +51,7 @@ public class SwaggerFeignSdkCodegenAndroidTest {
         packageMap.put("com.wuxp.codegen.swagger3.example", basePackageName);
 
         String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), "swagger3", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.example.controller"};

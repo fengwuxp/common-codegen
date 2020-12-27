@@ -52,7 +52,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
 //        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(),"swagger3", "src", "api"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};

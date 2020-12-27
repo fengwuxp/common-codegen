@@ -27,7 +27,7 @@ public class SwaggerFeignSdkCodegenDartTest {
     public void testCodeGenDartApiByStater() {
 
 
-      //设置基础数据类型的映射关系
+        //设置基础数据类型的映射关系
         Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
         baseTypeMapping.put(ServiceQueryResponse.class, DartClassMeta.FUTRUE);
         baseTypeMapping.put(ServiceResponse.class, DartClassMeta.FUTRUE);
@@ -48,7 +48,7 @@ public class SwaggerFeignSdkCodegenDartTest {
         //其他类（DTO、VO等）所在的包
 
         String language = LanguageDescription.DART.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "lib", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), "swagger2", "lib", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
@@ -65,7 +65,7 @@ public class SwaggerFeignSdkCodegenDartTest {
             put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
         }};
 
-        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE,new String[]{
+        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
 
