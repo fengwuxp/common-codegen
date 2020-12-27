@@ -53,18 +53,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
     @Override
     protected TypescriptFieldMate converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
-
         TypescriptFieldMate typescriptFieldMate = super.converterField(javaFieldMeta, classMeta);
-
         if (typescriptFieldMate == null) {
             return null;
         }
-
         //是否必填
         typescriptFieldMate.setRequired(javaFieldMeta.existAnnotation(NotNull.class, NotBlank.class, NotEmpty.class));
-
-//        this.enhancedProcessingField(typescriptFieldMate, javaFieldMeta, classMeta);
-
         return typescriptFieldMate;
     }
 

@@ -44,7 +44,8 @@ public class OrderController extends BaseController<String> {
     @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
                                                    @RequestParam(name = "order_id", required = false) Long oderId,
-                                                   @ApiParam(value = "订单号", required = false) String sn) {
+                                                   @ApiParam(value = "订单号", required = false) String sn,
+                                                   @ApiParam(value = "用户id", hidden = true) Long memberId) {
 
         return new ServiceQueryResponse<>();
     }

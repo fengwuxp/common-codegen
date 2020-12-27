@@ -21,7 +21,7 @@ public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBod
         return this.newProxyMate(annotation, OperationMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<RequestBody>, RequestBody {
+    public abstract static class OperationMate implements AnnotationMate, RequestBody {
 
         @Override
         public String toComment(Field annotationOwner) {

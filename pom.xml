@@ -28,10 +28,7 @@
         <module>swagger2-codegen</module>
         <module>annotation-processor</module>
         <module>examples</module>
-        <module>spring-codegen</module>
         <module>swagger3-codegen</module>
-        <module>ui-support</module>
-        <module>wuxp-api-support</module>
         <module>language-annotations</module>
     </modules>
 

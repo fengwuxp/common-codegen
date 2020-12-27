@@ -22,7 +22,7 @@ public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, P
         return this.newProxyMate(annotation, ParameterMate.class);
     }
 
-    public abstract static class ParameterMate implements AnnotationMate<Parameter>, Parameter {
+    public abstract static class ParameterMate implements AnnotationMate, Parameter {
 
 
         @Override

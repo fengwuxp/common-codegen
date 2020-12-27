@@ -1,7 +1,5 @@
 package com.wuxp.codegen.swagger3.example.controller;
 
-import com.wuxp.api.context.InjectField;
-import com.wuxp.api.signature.ApiSignature;
 import com.wuxp.codegen.swagger3.example.ExampleDto;
 import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,13 +25,13 @@ public class ExampleController {
 
 
     @GetMapping("get_num")
-    public List<Integer> getNums(@ApiSignature Integer num) {
+    public List<Integer> getNums(Integer num) {
 
         return Arrays.asList(num, num + 1);
     }
 
     @GetMapping("get_maps")
-    public List<Map<Integer, String>> getMaps(@InjectField() Integer num) {
+    public List<Map<Integer, String>> getMaps(Integer num) {
 
         Map<Integer, String> map = new HashMap<>();
         map.put(num, "num");

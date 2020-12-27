@@ -21,7 +21,7 @@ public class TagProcessor extends AbstractAnnotationProcessor<Tag, TagProcessor.
         return this.newProxyMate(annotation, TagMate.class);
     }
 
-    public abstract static class TagMate implements AnnotationMate<Tag>, Tag {
+    public abstract static class TagMate implements AnnotationMate, Tag {
 
         @Override
         public String toComment(Class<?> annotationOwner) {

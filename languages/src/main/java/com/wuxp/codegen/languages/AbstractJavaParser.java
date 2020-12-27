@@ -24,12 +24,15 @@ import java.util.Map;
 
 /**
  * 抽象的java parser
+ *
  * @author wuxp
  */
 @Slf4j
-public class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
+public abstract class AbstractJavaParser extends AbstractLanguageParser<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
 
-    // 使用异步的方式
+    /**
+     * 使用异步的方式
+     */
     protected boolean useAsync = false;
 
     public AbstractJavaParser(PackageMapStrategy packageMapStrategy,

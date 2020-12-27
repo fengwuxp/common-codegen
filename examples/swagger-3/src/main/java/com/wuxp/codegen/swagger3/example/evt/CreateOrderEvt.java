@@ -1,7 +1,6 @@
 package com.wuxp.codegen.swagger3.example.evt;
 
 
-import com.wuxp.api.signature.ApiSignature;
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import lombok.Data;
 
@@ -18,7 +17,6 @@ public class CreateOrderEvt extends BaseEvt {
     private static DateFormat dateFormat = new SimpleDateFormat();
 
     @Size(max = 50)
-    @ApiSignature
     private String sn;
 
     @NotNull

@@ -16,4 +16,6 @@ public class QueryOrderEvt extends BaseQueryEvt {
     @ApiModelProperty(value = "id列表")
     private int[] ids;
 
+    @ApiModelProperty(value = "用户id", hidden = true)
+    private Long memberId;
 }

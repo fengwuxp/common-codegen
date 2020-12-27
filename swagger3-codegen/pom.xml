@@ -42,10 +42,5 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxup-codegen-ui-support</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>

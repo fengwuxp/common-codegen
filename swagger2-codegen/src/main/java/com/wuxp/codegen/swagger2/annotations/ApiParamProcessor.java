@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 /**
  * swagger2 注解处理
  *
+ * @author wuxp
  * @see ApiParam
  */
 public class ApiParamProcessor extends AbstractAnnotationProcessor<ApiParam, ApiParamProcessor.ApiPramMeta> {

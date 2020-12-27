@@ -21,7 +21,7 @@ public class OperationProcessor extends AbstractAnnotationProcessor<Operation, O
         return this.newProxyMate(annotation, OperationMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<Operation>, Operation {
+    public abstract static class OperationMate implements AnnotationMate, Operation {
 
 
         @Override

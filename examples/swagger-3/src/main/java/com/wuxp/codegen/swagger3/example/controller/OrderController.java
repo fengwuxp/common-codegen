@@ -10,6 +10,8 @@ import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import com.wuxp.codegen.swagger3.example.services.UserService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +59,7 @@ public class OrderController extends BaseController<String> {
     }
 
     @RequestMapping(value = "queryOrder6", method = RequestMethod.POST)
-    public PageInfo<Order> queryOrder6(@RequestBody List<QueryOrderEvt> evt) {
+    public PageInfo<Order> queryOrder6(@RequestBody List<QueryOrderEvt> evt, @Parameter(hidden = true) Long memberId) {
         return new PageInfo<Order>();
     }
 
@@ -69,7 +71,7 @@ public class OrderController extends BaseController<String> {
     }
 
     @PostMapping(value = {"queryPage"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ServiceResponse<PageInfo<Order>> queryPage(String id) {
+    public ServiceResponse<PageInfo<Order>> queryPage(String id, @Schema(hidden = true) Long memberId) {
 
         return new ServiceResponse<>();
     }

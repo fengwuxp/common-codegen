@@ -22,7 +22,7 @@ public class SchemaProcessor extends AbstractAnnotationProcessor<Schema, SchemaP
         return this.newProxyMate(annotation, OperationMate.class);
     }
 
-    public abstract static class OperationMate implements AnnotationMate<Schema>, Schema {
+    public abstract static class OperationMate implements AnnotationMate, Schema {
 
 
         @Override

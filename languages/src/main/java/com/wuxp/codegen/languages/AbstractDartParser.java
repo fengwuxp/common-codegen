@@ -37,7 +37,7 @@ import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZ
  * @author wxup
  */
 @Slf4j
-public class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> {
+public abstract class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> {
 
 
     private Map<Class<?>, List<String>> ignoreFields;

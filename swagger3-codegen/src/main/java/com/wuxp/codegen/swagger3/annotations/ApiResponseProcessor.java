@@ -20,7 +20,7 @@ public class ApiResponseProcessor extends AbstractAnnotationProcessor<ApiRespons
         return this.newProxyMate(annotation, ApiResponseMate.class);
     }
 
-    public abstract static class ApiResponseMate implements AnnotationMate<ApiResponse>, ApiResponse {
+    public abstract static class ApiResponseMate implements AnnotationMate, ApiResponse {
 
 
         @Override
