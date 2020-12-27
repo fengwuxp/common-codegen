@@ -18,7 +18,10 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 基于swagger2 生成 feign sdk的 typeScript的 parser
@@ -111,17 +114,9 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
                             })
                             .filter(Objects::nonNull)
                             .forEach(annotation -> {
-
                                 ApiImplicitParam apiImplicitParam = (ApiImplicitParam) annotation;
-
-                                //强化注释
-                                List<String> comments = new ArrayList<>(Arrays.asList(genFiledMeta.getComments()));
-                                comments.add((apiImplicitParam).value());
-                                typescriptFieldMate.setComments(comments.toArray(new String[]{}));
-
                                 //是否必填
                                 typescriptFieldMate.setRequired(typescriptFieldMate.getRequired() || apiImplicitParam.required());
-
                             });
                 });
     }

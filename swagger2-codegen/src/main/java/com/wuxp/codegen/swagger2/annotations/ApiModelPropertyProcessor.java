@@ -35,7 +35,6 @@ public class ApiModelPropertyProcessor extends AbstractAnnotationProcessor<ApiMo
             } else {
                 fieldDescription = String.format("属性说明：%s，示例输入：%s", description,this.example());
             }
-
             return fieldDescription;
         }
     }

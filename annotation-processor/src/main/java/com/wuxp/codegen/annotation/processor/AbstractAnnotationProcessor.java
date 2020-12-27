@@ -13,6 +13,7 @@ import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.util.Assert;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -71,7 +72,14 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
         enhancer.setUseCache(true);
         enhancer.setCallback(new ProxyAnnotationMethodInterceptor(annotation));
 
-        return (T) enhancer.create();
+        Constructor<?>[] constructors = clazz.getConstructors();
+
+        boolean hasEmptyConstructor = Arrays.stream(constructors).anyMatch(constructor -> constructor.getParameters().length == 0);
+
+        if (hasEmptyConstructor) {
+            return (T) enhancer.create();
+        }
+        return (T) enhancer.create(new Class[]{annotation.annotationType()}, new Object[]{annotation});
 
     }
 
@@ -99,7 +107,7 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
     }
 
 
-    private class ProxyAnnotationMethodInterceptor implements MethodInterceptor {
+    private static class ProxyAnnotationMethodInterceptor implements MethodInterceptor {
 
         /**
          * 注解实例
@@ -139,7 +147,6 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
                 //抽象方法
                 return null;
             }
-
 
             Object result = methodProxy.invokeSuper(annotationMate, args);
             if (modifiers == 1) {

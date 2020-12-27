@@ -5,6 +5,7 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 /**
  * 基于swagger2的生成 feign api sdk的匹配策略
+ *
  * @author wuxp
  */
 @Slf4j
@@ -45,6 +47,12 @@ public class Swagger3FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
         boolean b = !methodMeta.existAnnotation(Hidden.class);
         if (!b) {
             return false;
+        }
+        Operation operation = methodMeta.getAnnotation(Operation.class);
+        if (operation != null) {
+            if (!operation.hidden()) {
+                return true;
+            }
         }
 
         Map<Class<?>, String[]> ignoreMethods = this.ignoreMethods;

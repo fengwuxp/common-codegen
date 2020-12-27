@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 /**
  * swagger2 注解处理
  *
+ * @author wuxp
  * @see ApiModel
  */
 public class ApiModelProcessor extends AbstractAnnotationProcessor<ApiModel, ApiModelProcessor.ApiModelMate> {

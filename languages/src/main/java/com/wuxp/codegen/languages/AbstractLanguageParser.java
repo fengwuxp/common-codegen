@@ -494,7 +494,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      *
      * @param annotations 组件列表
      * @param owner       注解所有者
-     * @return
+     * @return 注释列表
      */
     protected List<String> generateComments(Annotation[] annotations, Object owner) {
         if (annotations == null || annotations.length == 0) {

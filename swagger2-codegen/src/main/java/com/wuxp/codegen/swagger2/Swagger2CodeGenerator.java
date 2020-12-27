@@ -32,6 +32,8 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
         ANNOTATION_PROCESSOR_MAP.put(ApiModelProperty.class, new ApiModelPropertyProcessor());
         ANNOTATION_PROCESSOR_MAP.put(ApiOperation.class, new ApiOperationProcessor());
         ANNOTATION_PROCESSOR_MAP.put(ApiParam.class, new ApiParamProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(ApiImplicitParam.class, new ApiImplicitParamProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(ApiImplicitParams.class, new ApiImplicitParamsProcessor());
     }
 
 
@@ -67,7 +69,7 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
                                  boolean looseMode,
                                  boolean enableFieldUnderlineStyle) {
-        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle,null);
+        super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, null);
         init(looseMode);
     }
 

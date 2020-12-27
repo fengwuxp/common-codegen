@@ -8,6 +8,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.swagger3.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,6 +33,7 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
         ANNOTATION_PROCESSOR_MAP.put(Operation.class, new OperationProcessor());
         ANNOTATION_PROCESSOR_MAP.put(ApiResponse.class, new ApiResponseProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Parameter.class, new ParameterProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(Parameters.class, new ParametersProcessor());
         ANNOTATION_PROCESSOR_MAP.put(RequestBody.class, new RequestBodyProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Schema.class, new SchemaProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Tag.class, new TagProcessor());

@@ -59,7 +59,9 @@ public class Swagger2FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
 
         ApiOperation annotation = methodMeta.getAnnotation(ApiOperation.class);
         if (annotation != null) {
-            return !annotation.hidden();
+            if (!annotation.hidden()) {
+                return true;
+            }
         }
 
         Map<Class<?>, String[]> ignoreMethods = this.ignoreMethods;

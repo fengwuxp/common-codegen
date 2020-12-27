@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 /**
  * swagger3 注解处理
  *
+ * @author wuxp
  * @see Parameter
  */
 public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, ParameterProcessor.ParameterMate> {
@@ -41,11 +42,10 @@ public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, P
         }
 
         private String getDescription() {
-            String description = this.description();
-            if (!StringUtils.hasText(description())) {
-                return this.name();
-            }
-            return description;
+            String desc = this.description();
+            String name = this.name();
+            String description = StringUtils.hasText(desc) ? desc : name;
+            return String.format("属性名称：%s，属性说明：%s，示例输入：%s", name, description, this.example());
         }
     }
 }

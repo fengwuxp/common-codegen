@@ -12,8 +12,8 @@ public interface AnnotationProcessor<T extends AnnotationToString, A extends Ann
     /**
      * 处理
      *
-     * @param annotation
-     * @return
+     * @param annotation 注解实例
+     * @return AnnotationToString的子类
      */
     T process(A annotation);
 }
