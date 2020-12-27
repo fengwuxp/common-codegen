@@ -1,7 +1,5 @@
 /* tslint:disable */
 
-<#--<#import "../common/customize_method.ftl" as customize_method/>-->
-
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >

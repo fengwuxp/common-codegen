@@ -69,7 +69,6 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-                .templateFileVersion(TemplateFileVersion.V_2_0_0)
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();

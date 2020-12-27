@@ -7,10 +7,10 @@ package com.wuxp.codegen.templates;
  *     2：根据生成的目标语言加载模板
  *     3：根据生成模型加载模板
  * </p>
+ * @author wuxp
  */
 public interface TemplateLoader<T> {
 
-    String CODE_RUNTIME_PLATFORM_KEY="codeRuntimePlatform";
 
     /**
      * 加载模板

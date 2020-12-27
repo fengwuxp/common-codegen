@@ -92,7 +92,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
 
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.languageDescription, this.templateFileVersion, this.getSharedVariables());
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,

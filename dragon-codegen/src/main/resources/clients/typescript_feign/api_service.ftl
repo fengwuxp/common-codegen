@@ -4,7 +4,6 @@
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-    <#--import {${key}} from "@api${val.packagePath}";-->
         import {${key}} from "${customize_method.pathoResolve(packagePath,val.packagePath)}";
     </#list>
 </#if>

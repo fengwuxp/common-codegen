@@ -5,7 +5,7 @@
     <parent>
         <artifactId>wuxp-codegen</artifactId>
         <groupId>com.wuxp.codegen</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,19 +16,19 @@
         <dependency>
             <groupId>com.wuxp</groupId>
             <artifactId>fengwuxp-api-support</artifactId>
-            <version>${codegen.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-annotation-processor</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-core</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 

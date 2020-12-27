@@ -15,9 +15,14 @@ import lombok.Data;
 @Builder
 public final class CodegenGlobalConfig {
 
-
+    /**
+     * 需要生成的语言
+     */
     private LanguageDescription languageDescription;
 
+    /**
+     * client provider type
+     */
     private ClientProviderType providerType;
 
 

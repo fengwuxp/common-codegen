@@ -1,5 +1,6 @@
 package com.wuxp.codegen.templates;
 
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
@@ -14,14 +15,16 @@ import java.util.Map;
 
 /**
  * freemarker的模板加载器
+ *
  * @author wxup
  */
 @Slf4j
 public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
 
-    protected static final Map<String, String> AUTO_IMPORT_TEMPLATES = new LinkedHashMap<>();
+    protected static final Map<String, String> AUTO_IMPORT_TEMPLATES = new LinkedHashMap<>(8);
 
+    private String templateBaseDir = "clients";
 
     static {
         //导入自定义方法 @link {dragon-codegen/src/main/resources/typescript/common/customize_method.ftl}
@@ -31,26 +34,26 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     protected Configuration configuration;
 
 
-    public FreemarkerTemplateLoader(LanguageDescription language) {
-        this(language, null);
+    public FreemarkerTemplateLoader(ClientProviderType clientProviderType) {
+        this(clientProviderType, null);
     }
 
 
-    public FreemarkerTemplateLoader(LanguageDescription language, Map<String, Object> sharedVariables) {
-        this(language, TemplateFileVersion.DEFAULT.getVersion(), sharedVariables);
+    public FreemarkerTemplateLoader(ClientProviderType clientProviderType, Map<String, Object> sharedVariables) {
+        this(clientProviderType, TemplateFileVersion.DEFAULT.getVersion(), sharedVariables);
     }
 
-    public FreemarkerTemplateLoader(LanguageDescription language, String templateFileVersion, Map<String, Object> sharedVariables) {
-        this(language, templateFileVersion, initConfiguration(sharedVariables));
+    public FreemarkerTemplateLoader(ClientProviderType clientProviderType, String templateFileVersion, Map<String, Object> sharedVariables) {
+        this(clientProviderType, templateFileVersion, initConfiguration(sharedVariables));
     }
 
-    public FreemarkerTemplateLoader(LanguageDescription language, TemplateFileVersion templateFileVersion, Map<String, Object> sharedVariables) {
-        this(language, templateFileVersion.getVersion(), initConfiguration(sharedVariables));
+    public FreemarkerTemplateLoader(ClientProviderType clientProviderType, TemplateFileVersion templateFileVersion, Map<String, Object> sharedVariables) {
+        this(clientProviderType, templateFileVersion.getVersion(), initConfiguration(sharedVariables));
     }
 
 
-    public FreemarkerTemplateLoader(LanguageDescription language, String templateFileVersion, Configuration configuration) {
-        super(language, templateFileVersion);
+    public FreemarkerTemplateLoader(ClientProviderType clientProviderType, String templateFileVersion, Configuration configuration) {
+        super(clientProviderType, templateFileVersion);
         this.configuration = configuration;
     }
 
@@ -58,18 +61,22 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     public Template load(String templateName) {
 
         try {
-            String templatePath = MessageFormat.format("{0}/{1}{2}/{3}",
-                    this.language.getCodeGenType().name().toLowerCase(),
-                    this.language.getTemplateDir(),
-                    StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("/{0}", this.templateFileVersion) : "",
+            String templatePath = MessageFormat.format("{0}/{1}/{2}{3}",
+                    this.templateBaseDir,
+                    this.clientProviderType.name().toLowerCase(),
+                    StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("{0}", this.templateFileVersion) : "",
                     templateName);
             Template template = configuration.getTemplate(templatePath);
             template.setAutoImports(AUTO_IMPORT_TEMPLATES);
             return template;
         } catch (IOException e) {
-            log.error("获取模板失败，模板名称：" + templateName, e);
+            log.error("获取模板失败，模板名称：{}", templateName, e);
         }
         return null;
+    }
+
+    public void setTemplateBaseDir(String templateBaseDir) {
+        this.templateBaseDir = templateBaseDir;
     }
 
     private static Configuration initConfiguration(Map<String, Object> sharedVariables) {
@@ -86,10 +93,6 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         if (sharedVariables == null) {
             throw new RuntimeException("sharedVariables is null");
         }
-        if (!sharedVariables.containsKey(CODE_RUNTIME_PLATFORM_KEY)) {
-            throw new RuntimeException(String.format("sharedVariables need variable ：%s", CODE_RUNTIME_PLATFORM_KEY));
-        }
-
         try {
             configuration.setAllSharedVariables(new MapModel(sharedVariables, objectWrapper));
         } catch (TemplateModelException e) {

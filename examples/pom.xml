@@ -7,11 +7,11 @@
     <parent>
         <artifactId>wuxp-codegen</artifactId>
         <groupId>com.wuxp.codegen</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+         <version>${revision}</version>
     </parent>
 
     <artifactId>wuxp-codegen-examples</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-dragon</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!--servlet-->

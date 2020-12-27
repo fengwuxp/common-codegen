@@ -1,5 +1,6 @@
 package test.com.wuxp.codegen.typescript;
 
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
@@ -74,7 +75,7 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
 
         //实例化模板加载器
         HashMap<String, Object> sharedVariables = new HashMap<>();
-        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(LanguageDescription.TYPESCRIPT, TemplateFileVersion.V_1_0_0, sharedVariables);
+        FreemarkerTemplateLoader templateLoader = new FreemarkerTemplateLoader(ClientProviderType.TYPESCRIPT_FEIGN, TemplateFileVersion.V_1_0_0, sharedVariables);
 
 
         String[] outPaths = {"codegen-result", language.toLowerCase(), "src", "api"};
@@ -147,7 +148,6 @@ public class SwaggerFeignSdkCodegenTypescriptTest {
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-                .templateFileVersion(TemplateFileVersion.V_2_0_0)
                 .buildCodeGenerator()
                 .generate();
 

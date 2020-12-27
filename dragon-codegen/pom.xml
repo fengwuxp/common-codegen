@@ -5,7 +5,7 @@
     <parent>
         <artifactId>wuxp-codegen</artifactId>
         <groupId>com.wuxp.codegen</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,26 +17,26 @@
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-template</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-model</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-core</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-languages</artifactId>
-            <version>${codegen.version}</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 

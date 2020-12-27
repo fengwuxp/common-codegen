@@ -23,11 +23,15 @@ import java.text.MessageFormat;
  * <p>
  * 负责将数据和模板合并，生成最终的文件
  * </p>
+ *
+ * @author wuxp
  */
 @Slf4j
 public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGenClassMeta> {
 
-    //在LAST_MODIFIED_MINUTE内生成的文件不在生成
+    /**
+     * 在LAST_MODIFIED_MINUTE内生成的文件不在生成
+     */
     public static final float LAST_MODIFIED_MINUTE = 0.1f;
 
 
@@ -64,7 +68,9 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
         if (isDeletedOutputDirectory) {
             //删除原本的目录
             boolean r = FileUtil.deleteDirectory(this.outputPath);
-            log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
+            if (log.isInfoEnabled()) {
+                log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
+            }
         }
     }
 
@@ -76,12 +82,10 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
     }
 
     @Override
-    public void build(CommonCodeGenClassMeta data) throws Exception{
+    public void build(CommonCodeGenClassMeta data) throws Exception {
 
         //根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
         String templateName = this.getTemplate(data);
-
-
         Template template = this.templateLoader.load(templateName);
         if (template == null) {
             log.warn("没有找到模板{}", templateName);
@@ -106,7 +110,9 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
             }
         }
         FileUtil.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
-        log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
+        if (log.isInfoEnabled()) {
+            log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
+        }
         Writer writer = null;
         try {
             //输出
@@ -114,7 +120,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
                     StandardCharsets.UTF_8);
             //添加自定义方法
             template.process(data, writer);
-        }  finally {
+        } finally {
             if (writer != null) {
                 try {
                     writer.close();
