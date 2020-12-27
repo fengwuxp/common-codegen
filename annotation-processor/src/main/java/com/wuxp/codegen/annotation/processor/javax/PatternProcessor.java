@@ -25,7 +25,7 @@ public class PatternProcessor extends AbstractAnnotationProcessor<Pattern, Patte
     }
 
 
-    public abstract static class PatternMate implements AnnotationMate<Pattern>, Pattern {
+    public abstract static class PatternMate implements AnnotationMate, Pattern {
 
 
         @Override

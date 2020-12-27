@@ -28,7 +28,7 @@ public class PathVariableProcessor extends AbstractAnnotationProcessor<PathVaria
     }
 
 
-    public abstract static class PathVariableMate implements AnnotationMate<PathVariable>, PathVariable {
+    public abstract static class PathVariableMate implements AnnotationMate, PathVariable {
 
         public PathVariableMate() {
         }

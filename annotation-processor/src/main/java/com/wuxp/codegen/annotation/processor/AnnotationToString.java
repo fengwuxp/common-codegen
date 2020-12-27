@@ -7,6 +7,7 @@ import java.lang.reflect.Parameter;
 
 /**
  * 注解 to String
+ * @author wuxp
  */
 public interface AnnotationToString {
 

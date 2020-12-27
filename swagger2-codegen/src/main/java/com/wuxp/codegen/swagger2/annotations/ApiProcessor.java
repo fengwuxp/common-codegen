@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 /**
  * swagger2 注解处理
  *
+ * @author wuxp
  * @see Api
  */
 public class ApiProcessor extends AbstractAnnotationProcessor<Api, ApiProcessor.ApiMate> {
@@ -20,7 +21,7 @@ public class ApiProcessor extends AbstractAnnotationProcessor<Api, ApiProcessor.
         return this.newProxyMate(annotation, ApiMate.class);
     }
 
-    public abstract static class ApiMate implements AnnotationMate<Api>, Api {
+    public abstract static class ApiMate implements AnnotationMate, Api {
 
 
         @Override

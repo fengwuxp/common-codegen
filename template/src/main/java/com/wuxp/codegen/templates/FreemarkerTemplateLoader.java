@@ -1,7 +1,6 @@
 package com.wuxp.codegen.templates;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
 import freemarker.template.*;

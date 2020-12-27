@@ -28,7 +28,7 @@ public class CookieValueProcessor extends AbstractAnnotationProcessor<CookieValu
     }
 
 
-    public abstract static class CookieValueMate implements AnnotationMate<CookieValue>, CookieValue {
+    public abstract static class CookieValueMate implements AnnotationMate, CookieValue {
 
         public CookieValueMate() {
         }

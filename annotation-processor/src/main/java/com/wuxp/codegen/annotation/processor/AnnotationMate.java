@@ -11,16 +11,16 @@ import java.lang.reflect.Parameter;
 /**
  * 注解的元数据
  *
- * @param <T>
+ * @author wuxp
  */
-public interface AnnotationMate<T extends Annotation> extends AnnotationToString, Annotation {
+public interface AnnotationMate extends AnnotationToString, Annotation {
 
 
     /**
      * 注解转换
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return CommonCodeGenAnnotation 实例
      */
     default CommonCodeGenAnnotation toAnnotation(Object annotationOwner) {
         if (annotationOwner == null) {
@@ -41,7 +41,7 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * 注解转换
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return CommonCodeGenAnnotation 实例
      */
     CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner);
 
@@ -49,7 +49,7 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * 注解转换
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return CommonCodeGenAnnotation 实例
      */
     CommonCodeGenAnnotation toAnnotation(Field annotationOwner);
 
@@ -57,7 +57,7 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * 注解转换
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return CommonCodeGenAnnotation 实例
      */
     CommonCodeGenAnnotation toAnnotation(Method annotationOwner);
 
@@ -65,7 +65,7 @@ public interface AnnotationMate<T extends Annotation> extends AnnotationToString
      * 注解转换
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return CommonCodeGenAnnotation 实例
      */
     CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner);
 }

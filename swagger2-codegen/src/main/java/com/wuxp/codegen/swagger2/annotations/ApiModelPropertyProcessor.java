@@ -21,7 +21,7 @@ public class ApiModelPropertyProcessor extends AbstractAnnotationProcessor<ApiMo
     }
 
 
-    public abstract static class ApiModelPropertyMate implements AnnotationMate<ApiModelProperty>, ApiModelProperty {
+    public abstract static class ApiModelPropertyMate implements AnnotationMate, ApiModelProperty {
 
 
         @Override

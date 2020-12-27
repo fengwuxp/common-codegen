@@ -25,7 +25,7 @@ public class ApiSignatureProcessor extends AbstractAnnotationProcessor<ApiSignat
         return this.newProxyMate(annotation, ApiSignatureMate.class);
     }
 
-    public abstract static class ApiSignatureMate implements AnnotationMate<ApiSignature>, ApiSignature {
+    public abstract static class ApiSignatureMate implements AnnotationMate, ApiSignature {
     }
 
     public static CommonCodeGenAnnotation genAnnotation(Set<String> needSignFields) {

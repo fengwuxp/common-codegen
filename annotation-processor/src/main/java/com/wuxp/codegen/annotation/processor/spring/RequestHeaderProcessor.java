@@ -28,7 +28,7 @@ public class RequestHeaderProcessor extends AbstractAnnotationProcessor<RequestH
     }
 
 
-    public abstract static class RequestHeaderMate implements AnnotationMate<RequestHeader>, RequestHeader {
+    public abstract static class RequestHeaderMate implements AnnotationMate, RequestHeader {
 
         public RequestHeaderMate() {
         }

@@ -28,7 +28,7 @@ public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPar
     }
 
 
-    public abstract static class RequestPartMate implements AnnotationMate<RequestPart>, RequestPart {
+    public abstract static class RequestPartMate implements AnnotationMate, RequestPart {
 
         public RequestPartMate() {
         }

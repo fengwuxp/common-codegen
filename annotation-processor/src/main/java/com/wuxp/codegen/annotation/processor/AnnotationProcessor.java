@@ -3,9 +3,17 @@ package com.wuxp.codegen.annotation.processor;
 import java.lang.annotation.Annotation;
 
 /**
- * 注解处理器
+ * 注解装换处理器，
+ *
+ * @author wuxp
  */
-public interface AnnotationProcessor<T extends AnnotationToString,A extends Annotation> {
+public interface AnnotationProcessor<T extends AnnotationToString, A extends Annotation> {
 
-    T  process(A annotation);
+    /**
+     * 处理
+     *
+     * @param annotation
+     * @return
+     */
+    T process(A annotation);
 }

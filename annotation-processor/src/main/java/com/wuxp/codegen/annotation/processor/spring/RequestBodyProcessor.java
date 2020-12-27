@@ -27,7 +27,7 @@ public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBod
     }
 
 
-    public abstract static class RequestBodyMate implements AnnotationMate<RequestBody>, RequestBody {
+    public abstract static class RequestBodyMate implements AnnotationMate, RequestBody {
 
         public RequestBodyMate() {
         }

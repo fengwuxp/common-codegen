@@ -24,7 +24,7 @@ public class SizeProcessor extends AbstractAnnotationProcessor<Size, SizeProcess
     }
 
 
-    public abstract static class SizeMate implements AnnotationMate<Size>, Size {
+    public abstract static class SizeMate implements AnnotationMate, Size {
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {

@@ -30,8 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wuxp
  */
 @Slf4j
-public abstract class AbstractAnnotationProcessor<A extends Annotation, T extends AnnotationMate<A>>
-        implements AnnotationProcessor<T, A> {
+public abstract class AbstractAnnotationProcessor<A extends Annotation, T extends AnnotationMate> implements AnnotationProcessor<T, A> {
 
 
     private static final Map<ClientProviderType, ClientAnnotationProvider> ANNOTATION_PROVIDERS = new ConcurrentHashMap<>(8);
@@ -39,7 +38,7 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
     /**
      * client provider type和AnnotationCodeGenTransformer的对应关系
      */
-    private static final Map<ClientProviderType, Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate<Annotation>>>>
+    private static final Map<ClientProviderType, Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate>>>
             CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS = new HashMap<>(32);
 
 
@@ -85,14 +84,14 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
     }
 
     public static void registerAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType, AnnotationCodeGenTransformer transformer) {
-        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate<Annotation>>> transformerMap
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate>> transformerMap
                 = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.computeIfAbsent(type, (key) -> new HashMap<>());
         transformerMap.put(annotationType, transformer);
     }
 
 
     public static <A extends AnnotationMate> AnnotationCodeGenTransformer<CommonCodeGenAnnotation, A> getAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType) {
-        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate<Annotation>>> transformerMap = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate>> transformerMap = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
         if (transformerMap == null) {
             return null;
         }

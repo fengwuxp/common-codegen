@@ -28,7 +28,7 @@ public class RequestParamProcessor extends AbstractAnnotationProcessor<RequestPa
     }
 
 
-    public abstract static class RequestParamMate implements AnnotationMate<RequestParam>, RequestParam {
+    public abstract static class RequestParamMate implements AnnotationMate, RequestParam {
 
         public RequestParamMate() {
         }

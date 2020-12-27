@@ -112,7 +112,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     }
 
 
-    public abstract static class RequestMappingMate implements AnnotationMate<Annotation>, RequestMapping {
+    public abstract static class RequestMappingMate implements AnnotationMate, RequestMapping {
 
         private static final List<RequestMethod> SUPPORT_BODY_METHODS = Arrays.asList(RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH);
 
