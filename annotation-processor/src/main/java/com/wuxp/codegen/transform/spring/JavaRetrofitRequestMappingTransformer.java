@@ -3,14 +3,12 @@ package com.wuxp.codegen.transform.spring;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
+import com.wuxp.codegen.util.RequestMappingUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.Assert;
-import org.springframework.util.PathMatcher;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.*;
@@ -32,7 +30,6 @@ public class JavaRetrofitRequestMappingTransformer implements
 
     private final RequestMappingProcessor requestMappingProcessor = new RequestMappingProcessor();
 
-    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     static {
 
@@ -51,30 +48,13 @@ public class JavaRetrofitRequestMappingTransformer implements
 
         CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
         //注解命名参数
-        Map<String, String> arguments = new LinkedHashMap<>();
+        Map<String, String> namedArguments = new LinkedHashMap<>();
 
-        Class<?> declaringClass = annotationOwner.getDeclaringClass();
-
-        Annotation[] annotations = declaringClass.getAnnotations();
-
-        Optional<RequestMappingProcessor.RequestMappingMate> mappingMate = Arrays.stream(annotations)
-                .filter(annotation -> annotation.annotationType().getSimpleName().endsWith("Mapping"))
-                .map(requestMappingProcessor::process)
-                .filter(Objects::nonNull)
-                .findFirst();
-
-        if (!mappingMate.isPresent()) {
-            return null;
-        }
-        RequestMappingProcessor.RequestMappingMate requestMappingMate = mappingMate.get();
-
-        String[] v1 = requestMappingMate.value();
-        String[] v2 = annotationMate.value();
-        String value = combinePath(v1, v2);
+        String value = RequestMappingUtils.combinePath(annotationMate, annotationOwner);
         if (value != null) {
-            arguments.put("value", MessageFormat.format("\"{0}\"", value));
+            namedArguments.put("value", MessageFormat.format("\"{0}\"", value));
         } else {
-            log.warn("类：{}的方法：{}合并的url为null，请检查控制的注解", declaringClass.getName(), annotationOwner.getName());
+            log.warn("类：{}的方法：{}合并的url为null，请检查控制的注解", annotationOwner.getDeclaringClass().getName(), annotationOwner.getName());
         }
         RequestMethod requestMethod = annotationMate.getRequestMethod();
         if (annotationMate.annotationType().equals(RequestMapping.class)) {
@@ -87,28 +67,31 @@ public class JavaRetrofitRequestMappingTransformer implements
         String name = METHOD_MAPPING_NAME_MAP.get(requestMethod);
         codeGenAnnotation.setName(name);
 
-        codeGenAnnotation.setNamedArguments(arguments);
+        codeGenAnnotation.setNamedArguments(namedArguments);
         //注解位置参数
         List<String> positionArguments = new LinkedList<>();
-        positionArguments.add(arguments.get("value"));
+        positionArguments.add(namedArguments.get("value"));
         codeGenAnnotation.setPositionArguments(positionArguments);
+        String[] produces = annotationMate.produces();
+        if (produces.length > 0) {
+            List<CommonCodeGenAnnotation> associatedAnnotations = new ArrayList<>();
+            associatedAnnotations.add(this.getHeaders(annotationMate));
+            codeGenAnnotation.setAssociatedAnnotations(associatedAnnotations);
+        }
 
         return codeGenAnnotation;
     }
 
-    private String combinePath(String[] patterns, String[] otherPatterns) {
-        if (patterns.length == 0) {
-            return null;
-        }
-        if (otherPatterns.length == 0) {
-            return patterns[0];
-        }
-        for (String pattern1 : patterns) {
-            for (String pattern2 : otherPatterns) {
-                return this.pathMatcher.combine(pattern1, pattern2);
-            }
-        }
-        return null;
+    private CommonCodeGenAnnotation getHeaders(RequestMappingProcessor.RequestMappingMate annotationMate) {
+        CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
+        annotation.setName("Headers");
+        //注解命名参数
+        String[] produces = annotationMate.produces();
+        Map<String, String> namedArguments = new LinkedHashMap<>();
+        namedArguments.put("value", "{\"" + HttpHeaders.CONTENT_TYPE + ": " + produces[0] + "\"}");
+        annotation.setNamedArguments(namedArguments);
+        return annotation;
     }
+
 
 }

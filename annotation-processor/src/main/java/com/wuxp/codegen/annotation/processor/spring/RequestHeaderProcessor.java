@@ -42,6 +42,9 @@ public class RequestHeaderProcessor extends AbstractAnnotationProcessor<RequestH
             if (!StringUtils.hasText(value)) {
                 value = this.name();
             }
+            if (!StringUtils.hasText(value)) {
+                value = annotationOwner.getName();
+            }
             if (StringUtils.hasText(value)) {
                 arguments.put("name", MessageFormat.format("\"{0}\"", value));
             }

@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 
 /**
  * swagger2 注解处理

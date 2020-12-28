@@ -13,6 +13,7 @@ import com.wuxp.codegen.transform.spring.DartRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.JavaRetrofitRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.SpringRequestMappingTransformer;
 import com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer;
+import com.wuxp.codegen.util.RequestMappingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -43,12 +44,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
      */
     private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingProcessor.RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
 
-
-    /**
-     * 注解转换器和语言类型的对应关系
-     */
-//    private static final Map<LanguageDescription, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate>> ANNOTATION_CODE_GEN_TRANSFORMER_MAP = new HashMap<>();
-
     /**
      * 需要认证的类型和相关的路径列表，使用ant匹配
      */
@@ -70,10 +65,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         ANNOTATION_CLASS_MAP.put(PatchMapping.class, RequestMappingProcessor.PatchMappingMate.class);
 
 
-//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.JAVA_ANDROID, new JavaRetrofitRequestMappingTransformer());
-//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.TYPESCRIPT, new TypeScriptRequestMappingTransformer());
-//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(LanguageDescription.DART, new DartRequestMappingTransformer());
-
         registerAnnotationTransformer(ClientProviderType.SPRING_CLOUD_OPENFEIGN, RequestMapping.class, new SpringRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.RETROFIT, RequestMapping.class, new JavaRetrofitRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN, RequestMapping.class, new TypeScriptRequestMappingTransformer());
@@ -92,16 +83,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         return this.newProxyMate(annotation, clazz);
 
     }
-
-//    /**
-//     * 设置 注解处理器
-//     *
-//     * @param languageDescription
-//     * @param transformer
-//     */
-//    public static void setAnnotationCodeGenTransformer(LanguageDescription languageDescription, AnnotationCodeGenTransformer transformer) {
-//        ANNOTATION_CODE_GEN_TRANSFORMER_MAP.put(languageDescription, transformer);
-//    }
 
     public static void addAuthenticationTypePaths(AuthenticationType type, String[] paths) {
         AUTHENTICATION_PATH.put(type, paths);
@@ -153,7 +134,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             }
             assert codeGenAnnotation != null;
             Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
-            String requestUri = this.getRequestUri(annotationOwner);
+            String requestUri = RequestMappingUtils.combinePath(this,annotationOwner);
 
             AUTHENTICATION_PATH.forEach((key, value) -> {
                 Arrays.stream(value)
@@ -201,23 +182,23 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             return SUPPORT_BODY_METHODS.contains(method);
         }
 
-        /**
-         * 获取请求 path
-         *
-         * @param annotationOwner
-         * @return
-         */
-        private String getRequestUri(Method annotationOwner) {
-
-            RequestMapping clazzMapping = annotationOwner.getDeclaringClass().getAnnotation(RequestMapping.class);
-            String[] clazzMappingValues = clazzMapping == null ? new String[]{} : clazzMapping.value();
-            String p1 = clazzMappingValues.length == 0 ? "" : clazzMappingValues[0].startsWith("/") ? clazzMappingValues[0] : "/" + clazzMappingValues[0];
-
-            String[] methodsMappingValues = this.value();
-            String p2 = methodsMappingValues.length == 0 ? "" : methodsMappingValues[0].startsWith("/") ? methodsMappingValues[0] : "/" + methodsMappingValues[0];
-
-            return p1 + p2;
-        }
+//        /**
+//         * 获取请求 path
+//         *
+//         * @param annotationOwner
+//         * @return
+//         */
+//        private String getRequestUri(Method annotationOwner) {
+//
+//            RequestMapping clazzMapping = annotationOwner.getDeclaringClass().getAnnotation(RequestMapping.class);
+//            String[] clazzMappingValues = clazzMapping == null ? new String[]{} : clazzMapping.value();
+//            String p1 = clazzMappingValues.length == 0 ? "" : clazzMappingValues[0].startsWith("/") ? clazzMappingValues[0] : "/" + clazzMappingValues[0];
+//
+//            String[] methodsMappingValues = this.value();
+//            String p2 = methodsMappingValues.length == 0 ? "" : methodsMappingValues[0].startsWith("/") ? methodsMappingValues[0] : "/" + methodsMappingValues[0];
+//
+//            return p1 + p2;
+//        }
 
         /**
          * 生成 RequestMapping 相关注解

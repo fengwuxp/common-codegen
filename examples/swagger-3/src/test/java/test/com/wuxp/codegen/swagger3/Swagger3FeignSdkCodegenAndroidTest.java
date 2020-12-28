@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public class Swagge3rFeignSdkCodegenAndroidTest {
+public class Swagger3FeignSdkCodegenAndroidTest {
 
 
     @Test

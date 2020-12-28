@@ -1,6 +1,8 @@
 package com.wuxp.codegen;
 
 
+import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
@@ -22,6 +24,10 @@ import java.util.*;
  * @author wxup
  */
 public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
+
+    static {
+        AbstractAnnotationProcessor.registerAnnotationProvider(ClientProviderType.RETROFIT, new Retrofit2AnnotationProvider());
+    }
 
 
     protected LanguageDescription languageDescription;
@@ -258,9 +264,9 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
         PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
 
-
         CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);
         CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setProviderType(this.clientProviderType);
+
     }
 
     /**

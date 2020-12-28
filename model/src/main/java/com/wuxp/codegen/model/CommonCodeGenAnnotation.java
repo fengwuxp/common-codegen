@@ -28,6 +28,12 @@ public class CommonCodeGenAnnotation extends CommonBaseMeta {
      */
     private List<String> positionArguments;
 
+    /**
+     * 由于将java相关注解转换为其他注解的时候可能需要装换成多个
+     * 次要的注解放在这个字段中
+     */
+    private List<CommonCodeGenAnnotation> associatedAnnotations;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

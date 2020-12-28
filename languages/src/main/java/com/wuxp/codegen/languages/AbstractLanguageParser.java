@@ -5,7 +5,7 @@ import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
-import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processor.spring.*;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
@@ -153,6 +153,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Size.class, new SizeProcessor());
         ANNOTATION_PROCESSOR_MAP.put(Pattern.class, new PatternProcessor());
+
         RequestMappingProcessor mappingProcessor = new RequestMappingProcessor();
         ANNOTATION_PROCESSOR_MAP.put(RequestMapping.class, mappingProcessor);
         ANNOTATION_PROCESSOR_MAP.put(GetMapping.class, mappingProcessor);
@@ -160,6 +161,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(DeleteMapping.class, mappingProcessor);
         ANNOTATION_PROCESSOR_MAP.put(PutMapping.class, mappingProcessor);
         ANNOTATION_PROCESSOR_MAP.put(PatchMapping.class, mappingProcessor);
+
+        ANNOTATION_PROCESSOR_MAP.put(CookieValue.class, new CookieValueProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(RequestBody.class, new RequestBodyProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(RequestHeader.class, new RequestHeaderProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(RequestParam.class, new RequestParamProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(RequestPart.class, new RequestPartProcessor());
+        ANNOTATION_PROCESSOR_MAP.put(PathVariable.class, new PathVariableProcessor());
     }
 
     public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
@@ -501,14 +509,16 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return new ArrayList<>();
         }
 
-        return Arrays.stream(annotations).map(annotation -> {
-            //将javax的验证注解转换为注释
-            AnnotationProcessor processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-            if (processor == null) {
-                return null;
-            }
-            return processor.process(annotation).toComment(owner);
-        }).filter(Objects::nonNull)
+        return Arrays.stream(annotations)
+                .map(annotation -> {
+                    //将javax的验证注解转换为注释
+                    AnnotationProcessor processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+                    if (processor == null) {
+                        return null;
+                    }
+                    return processor.process(annotation).toComment(owner);
+                })
+                .filter(Objects::nonNull)
                 .filter(StringUtils::hasText)
                 .collect(Collectors.toList());
     }
@@ -561,21 +571,30 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return new CommonCodeGenAnnotation[]{};
         }
 
-        return Arrays.stream(annotations).map(annotation -> {
-            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-            if (processor == null) {
-                return null;
-            }
+        final List<CommonCodeGenAnnotation> emptyList = Collections.emptyList();
 
-            AnnotationMate annotationMate = processor.process(annotation);
-            CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation(annotationOwner);
-
-            if (toAnnotation != null) {
-                this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
-            }
-
-            return toAnnotation;
-        }).filter(Objects::nonNull)
+        return Arrays.stream(annotations)
+                .map(annotation -> {
+                    AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+                    if (processor == null) {
+                        return emptyList;
+                    }
+                    AnnotationMate annotationMate = processor.process(annotation);
+                    CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation(annotationOwner);
+                    if (toAnnotation == null) {
+                        return emptyList;
+                    }
+                    List<CommonCodeGenAnnotation> associatedAnnotations = toAnnotation.getAssociatedAnnotations() == null ? Collections.emptyList() : toAnnotation.getAssociatedAnnotations();
+                    List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>(associatedAnnotations.size() + 1);
+                    toAnnotations.add(toAnnotation);
+                    toAnnotations.addAll(associatedAnnotations);
+                    // 只对主的CommonCodeGenAnnotation进行增强处理
+                    this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
+                    return toAnnotations;
+                })
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .distinct()
                 .toArray(CommonCodeGenAnnotation[]::new);
     }
 
@@ -1171,11 +1190,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         if (annotationOwner instanceof Method) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
-            RequestMethod httpMethod = RequestMethod.GET;
-            if (annotation instanceof RequestMappingProcessor.RequestMappingMate) {
-                httpMethod = ((RequestMappingProcessor.RequestMappingMate) annotation).getRequestMethod();
-            }
-
+//            RequestMethod httpMethod = RequestMethod.GET;
+//            if (annotation instanceof RequestMappingProcessor.RequestMappingMate) {
+//                httpMethod = ((RequestMappingProcessor.RequestMappingMate) annotation).getRequestMethod();
+//            }
             //spring的mapping注解
             if (annotationType.getSimpleName().endsWith("Mapping")) {
                 Method method = (Method) annotationOwner;
@@ -1186,7 +1204,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         .map(Arrays::asList)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList());
-
 
                 String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
                 if (StringUtils.hasText(produces)) {
@@ -1362,15 +1379,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             //
             throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
         }
-        RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations()).map(annotation -> {
-            AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-            if (processor == null) {
-                return null;
-            }
-            return processor.process(annotation);
-        }).filter(Objects::nonNull)
+        RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations())
+                .map(annotation -> {
+                    AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
+                    if (processor == null) {
+                        return null;
+                    }
+                    return processor.process(annotation);
+                })
+                .filter(Objects::nonNull)
                 .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
-                .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate).findFirst()
+                .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate)
+                .findFirst()
                 .orElse(null);
 
         if (requestMappingMate == null) {

@@ -2,7 +2,6 @@ package com.wuxp.codegen.languages;
 
 
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
-import com.wuxp.codegen.annotation.processor.spring.*;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -19,7 +18,6 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -43,15 +41,6 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
     private Map<Class<?>, List<String>> ignoreFields;
 
     private static final String RIGHT_SLASH = "/";
-
-    static {
-        ANNOTATION_PROCESSOR_MAP.put(CookieValue.class, new CookieValueProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestBody.class, new RequestBodyProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestHeader.class, new RequestHeaderProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestParam.class, new RequestParamProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestPart.class, new RequestPartProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(PathVariable.class, new PathVariableProcessor());
-    }
 
     public AbstractDartParser(PackageMapStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
