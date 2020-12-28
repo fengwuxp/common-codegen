@@ -7,11 +7,14 @@ import org.springframework.util.StringUtils;
 import java.text.MessageFormat;
 import java.util.Map;
 
+/**
+ * @author wuxp
+ */
 @Slf4j
 public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
 
 
-    private String basePackage;
+    private final String basePackage;
 
     public JavaPackageMapStrategy(Map<String, String> packageNameMap, String basePackage) {
         super(packageNameMap);
@@ -21,6 +24,11 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
 
     public JavaPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers, String basePackage) {
         super(packageNameMap, classNameTransformers);
+        this.basePackage = basePackage;
+    }
+
+    public JavaPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers, String fileNamSuffix, String basePackage) {
+        super(packageNameMap, classNameTransformers, fileNamSuffix);
         this.basePackage = basePackage;
     }
 

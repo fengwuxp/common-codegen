@@ -13,6 +13,7 @@ import java.util.Optional;
 
 /**
  * 抽象的包名映射策略
+ * @author wuxp
  */
 @Slf4j
 @Setter
@@ -164,5 +165,9 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
 
     protected String controllerToService(String simpleName) {
         return simpleName.replaceAll("Controller", this.fileNamSuffix);
+    }
+
+    public void setFileNamSuffix(String fileNamSuffix) {
+        this.fileNamSuffix = fileNamSuffix;
     }
 }

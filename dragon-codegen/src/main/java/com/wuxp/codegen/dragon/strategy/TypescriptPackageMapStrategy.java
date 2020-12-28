@@ -11,6 +11,8 @@ import java.util.Map;
 
 /**
  * typeScript 映射策略
+ *
+ * @author wuxp
  */
 @Slf4j
 public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
