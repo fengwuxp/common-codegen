@@ -4,6 +4,9 @@ import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.Assert;
+import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -15,6 +18,7 @@ import java.util.*;
 
 /**
  * 将spring requestMapping相关的注解转换为 retrofit相关的注解
+ *
  * @author wuxp
  */
 @Slf4j
@@ -27,6 +31,8 @@ public class JavaRetrofitRequestMappingTransformer implements
     private static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new HashMap<>();
 
     private final RequestMappingProcessor requestMappingProcessor = new RequestMappingProcessor();
+
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     static {
 
@@ -64,25 +70,12 @@ public class JavaRetrofitRequestMappingTransformer implements
 
         String[] v1 = requestMappingMate.value();
         String[] v2 = annotationMate.value();
-        String uri1 = v1.length > 0 ? v1[0] : "";
-        String uri2 = v2.length > 0 ? v2[0] : "";
-
-        String value = uri1.startsWith("/") ? uri1.substring(1, uri1.length()) : uri1;
-
-        if (value.endsWith("/")) {
-            if (uri2.startsWith("/")) {
-                uri2 = uri2.substring(1, uri1.length());
-            }
-            value = MessageFormat.format("{0}{1}", value, uri2);
+        String value = combinePath(v1, v2);
+        if (value != null) {
+            arguments.put("value", MessageFormat.format("\"{0}\"", value));
         } else {
-            if (!uri2.startsWith("/")) {
-                uri2 = MessageFormat.format("/{0}", uri2);
-            }
-            value = MessageFormat.format("{0}{1}", value, uri2);
+            log.warn("类：{}的方法：{}合并的url为null，请检查控制的注解", declaringClass.getName(), annotationOwner.getName());
         }
-
-        arguments.put("value", MessageFormat.format("\"{0}\"", value));
-
         RequestMethod requestMethod = annotationMate.getRequestMethod();
         if (annotationMate.annotationType().equals(RequestMapping.class)) {
             //将RequestMapping 转换为其他明确的Mapping类型
@@ -101,6 +94,21 @@ public class JavaRetrofitRequestMappingTransformer implements
         codeGenAnnotation.setPositionArguments(positionArguments);
 
         return codeGenAnnotation;
+    }
+
+    private String combinePath(String[] patterns, String[] otherPatterns) {
+        if (patterns.length == 0) {
+            return null;
+        }
+        if (otherPatterns.length == 0) {
+            return patterns[0];
+        }
+        for (String pattern1 : patterns) {
+            for (String pattern2 : otherPatterns) {
+                return this.pathMatcher.combine(pattern1, pattern2);
+            }
+        }
+        return null;
     }
 
 }

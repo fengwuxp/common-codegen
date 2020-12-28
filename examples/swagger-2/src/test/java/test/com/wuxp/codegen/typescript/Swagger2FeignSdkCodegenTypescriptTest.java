@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * 测试swagger 生成  typescript的 feign api sdk
  */
 @Slf4j
-public class SwaggerFeignSdkCodegenTypescriptTest {
+public class Swagger2FeignSdkCodegenTypescriptTest {
 
 
     private CodeGenerator codeGenerator;

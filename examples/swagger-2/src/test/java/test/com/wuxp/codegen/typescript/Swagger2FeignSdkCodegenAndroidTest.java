@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public class SwaggerFeignSdkCodegenAndroidTest {
+public class Swagger2FeignSdkCodegenAndroidTest {
 
 
     @Test
