@@ -678,7 +678,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
 
-        boolean isEnum = classMeta.getClazz().isEnum();
+        Class<?> clazz = classMeta.getClazz();
+        boolean isEnum = clazz.isEnum();
         if (javaFieldMeta.getIsStatic() && !isEnum) {
             //不处理静态类型的字段
             return null;
@@ -691,13 +692,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //注释来源于注解和java的类类型
         List<String> comments = this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
         Class<?>[] types = javaFieldMeta.getTypes();
-        if (!isEnum) {
-            comments.addAll(this.generateComments(types, false));
-        } else {
+        if (isEnum) {
             if (comments.size() == 0) {
                 comments.add(javaFieldMeta.getName());
-                log.error("枚举没有加上描述相关的注解");
+                log.warn("枚举{}没有加上描述相关的注解", clazz.getName());
             }
+        } else {
+            comments.addAll(this.generateComments(types, false));
+
         }
 
         //注解

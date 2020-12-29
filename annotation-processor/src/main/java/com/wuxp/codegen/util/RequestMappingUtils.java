@@ -37,10 +37,15 @@ public final class RequestMappingUtils {
      * @return 合并后的请url，可能会返回null
      */
     public static String combinePath(String[] patterns, String[] otherPatterns) {
-        if (patterns == null || patterns.length == 0) {
+        boolean patternIsEmpty = patterns == null || patterns.length == 0;
+        boolean otherIsEmpty = otherPatterns == null || otherPatterns.length == 0;
+        if (patternIsEmpty && otherIsEmpty) {
             return null;
         }
-        if (otherPatterns == null || otherPatterns.length == 0) {
+        if (patternIsEmpty) {
+            return otherPatterns[0];
+        }
+        if (otherIsEmpty) {
             return patterns[0];
         }
         for (String pattern1 : patterns) {
