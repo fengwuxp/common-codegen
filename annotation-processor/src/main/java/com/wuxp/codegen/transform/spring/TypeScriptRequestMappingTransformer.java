@@ -27,7 +27,7 @@ public class TypeScriptRequestMappingTransformer extends SpringRequestMappingTra
 
     @Override
     public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Class<?> annotationOwner) {
-        CommonCodeGenAnnotation annotation = super.transform(annotationMate, annotationOwner);
+        CommonCodeGenAnnotation annotation = super.innerTransform(annotationMate, annotationOwner.getSimpleName());
         annotation.setName(TS_FEIGN_CLIENT_ANNOTATION_NAME);
         return annotation;
     }

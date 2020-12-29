@@ -53,6 +53,8 @@ public class SpringRequestMappingTransformer implements
     public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Class<?> annotationOwner) {
         CommonCodeGenAnnotation codeGenAnnotation = this.innerTransform(annotationMate, annotationOwner.getSimpleName());
         codeGenAnnotation.setName(SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME);
+        Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
+        namedArguments.put("path", namedArguments.remove("value"));
         return codeGenAnnotation;
     }
 
