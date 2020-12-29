@@ -26,8 +26,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor.FEIGN_CLIENT_ANNOTATION_NAME;
 import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZERS;
+import static com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer.TS_FEIGN_CLIENT_ANNOTATION_NAME;
 
 /**
  * 抽象的dart parser
@@ -36,7 +36,6 @@ import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZ
  */
 @Slf4j
 public abstract class AbstractDartParser extends AbstractLanguageParser<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> {
-
 
     private Map<Class<?>, List<String>> ignoreFields;
 
@@ -97,7 +96,7 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
             dependencies.put(BUILT_SERIALIZERS.getName(), BUILT_SERIALIZERS);
         } else {
             Optional<CommonCodeGenAnnotation> feignAnnotation = Arrays.stream(dartClassMeta.getAnnotations())
-                    .filter((item) -> FEIGN_CLIENT_ANNOTATION_NAME.equals(item.getName()))
+                    .filter((item) -> TS_FEIGN_CLIENT_ANNOTATION_NAME.equals(item.getName()))
                     .findFirst();
             if (feignAnnotation.isPresent()) {
                 feignAnnotation.get().setName("FeignClient");

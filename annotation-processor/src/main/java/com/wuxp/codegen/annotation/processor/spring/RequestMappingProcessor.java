@@ -37,7 +37,6 @@ import java.util.Map;
 public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
 
 
-    public static final String FEIGN_CLIENT_ANNOTATION_NAME = "Feign";
 
     /**
      * Mapping和mapping元数据的对应
@@ -118,7 +117,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
                 return null;
             }
             //将类上的注解改为feign
-            codeGenAnnotation.setName(FEIGN_CLIENT_ANNOTATION_NAME);
+//            codeGenAnnotation.setName(SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME);
             codeGenAnnotation.getPositionArguments().remove("method");
             return codeGenAnnotation;
         }
@@ -134,23 +133,21 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             }
             assert codeGenAnnotation != null;
             Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
-            String requestUri = RequestMappingUtils.combinePath(this,annotationOwner);
+            String requestUri = RequestMappingUtils.combinePath(this, annotationOwner);
 
-            AUTHENTICATION_PATH.forEach((key, value) -> {
-                Arrays.stream(value)
-                        .filter(pattern -> PATH_MATCHER.match(pattern, requestUri))
-                        .findFirst()
-                        .ifPresent(matchResult -> {
-                            String type = "AuthenticationType." + key.name();
-                            if (!namedArguments.containsKey(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE)) {
-                                namedArguments.put(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE, type);
-                                codeGenAnnotation.getPositionArguments().add(type);
-                            } else {
-                                // TODO
-                                log.error("路径匹配到多种认证类型,path = {}", requestUri);
-                            }
-                        });
-            });
+            AUTHENTICATION_PATH.forEach((key, value) -> Arrays.stream(value)
+                    .filter(pattern -> PATH_MATCHER.match(pattern, requestUri))
+                    .findFirst()
+                    .ifPresent(matchResult -> {
+                        String type = "AuthenticationType." + key.name();
+                        if (!namedArguments.containsKey(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE)) {
+                            namedArguments.put(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE, type);
+                            codeGenAnnotation.getPositionArguments().add(type);
+                        } else {
+                            // TODO
+                            log.error("路径匹配到多种认证类型,path = {}", requestUri);
+                        }
+                    }));
 
             return codeGenAnnotation;
         }
@@ -159,7 +156,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         /**
          * 获取请求方法
          *
-         * @return
+         * @return http 请求方法
          */
         public RequestMethod getRequestMethod() {
 
@@ -175,36 +172,19 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         /**
          * http method 方法是否支持 Request body
          *
-         * @param method
+         * @param method http 请求方法
          */
         public static boolean isSupportRequestBody(RequestMethod method) {
 
             return SUPPORT_BODY_METHODS.contains(method);
         }
 
-//        /**
-//         * 获取请求 path
-//         *
-//         * @param annotationOwner
-//         * @return
-//         */
-//        private String getRequestUri(Method annotationOwner) {
-//
-//            RequestMapping clazzMapping = annotationOwner.getDeclaringClass().getAnnotation(RequestMapping.class);
-//            String[] clazzMappingValues = clazzMapping == null ? new String[]{} : clazzMapping.value();
-//            String p1 = clazzMappingValues.length == 0 ? "" : clazzMappingValues[0].startsWith("/") ? clazzMappingValues[0] : "/" + clazzMappingValues[0];
-//
-//            String[] methodsMappingValues = this.value();
-//            String p2 = methodsMappingValues.length == 0 ? "" : methodsMappingValues[0].startsWith("/") ? methodsMappingValues[0] : "/" + methodsMappingValues[0];
-//
-//            return p1 + p2;
-//        }
 
         /**
          * 生成 RequestMapping 相关注解
          *
          * @param annotationOwner 所有者的name 如果ownerName和value中的一致，则不生成value
-         * @return
+         * @return 用于生成的注解
          */
         private CommonCodeGenAnnotation genAnnotation(Object annotationOwner) {
             CodegenGlobalConfig codegenGlobalConfig = CodegenBuilder.CODEGEN_GLOBAL_CONFIG;

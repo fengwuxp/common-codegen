@@ -19,6 +19,7 @@ import java.util.*;
 public class SpringRequestMappingTransformer implements
         AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingProcessor.RequestMappingMate> {
 
+    public static final String SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME = "FeignClient";
 
     /**
      * 请求方法和Mapping名称的对应
@@ -50,7 +51,9 @@ public class SpringRequestMappingTransformer implements
 
     @Override
     public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Class<?> annotationOwner) {
-        return this.innerTransform(annotationMate, annotationOwner.getSimpleName());
+        CommonCodeGenAnnotation codeGenAnnotation = this.innerTransform(annotationMate, annotationOwner.getSimpleName());
+        codeGenAnnotation.setName(SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME);
+        return codeGenAnnotation;
     }
 
     @Override
