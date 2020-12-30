@@ -66,7 +66,7 @@ public class SpringRequestMappingTransformer implements
     /**
      * 获取数组符号
      *
-     * @return
+     * @return 不同语言的数组符号
      */
     protected String[] getArraySymbol() {
         return new String[]{"{", "}"};
