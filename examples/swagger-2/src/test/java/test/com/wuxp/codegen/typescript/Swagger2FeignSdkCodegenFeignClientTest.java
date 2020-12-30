@@ -2,7 +2,9 @@ package test.com.wuxp.codegen.typescript;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.JavaClassParser;
+import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
+import com.wuxp.codegen.languages.SpringCloudFeignClientEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -59,16 +61,19 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
 
         JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
         packageMapStrategy.setFileNamSuffix("FeignClient");
+        CombineLanguageEnhancedProcessor languageEnhancedProcessor = CombineLanguageEnhancedProcessor.of(
+                SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
-                .clientProviderType(ClientProviderType.RETROFIT)
+                .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(packageMapStrategy)
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
+                .languageEnhancedProcessor(languageEnhancedProcessor)
                 .buildCodeGenerator()
                 .generate();
 

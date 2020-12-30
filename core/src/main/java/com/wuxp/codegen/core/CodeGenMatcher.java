@@ -11,8 +11,8 @@ public interface CodeGenMatcher {
     /**
      * 是否匹配
      *
-     * @param clazz
-     * @return
+     * @param clazz class data
+     * @return <code>是否匹配</code>
      */
     boolean match(Class<?> clazz);
 }

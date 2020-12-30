@@ -588,6 +588,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>(associatedAnnotations.size() + 1);
                     toAnnotations.add(toAnnotation);
                     toAnnotations.addAll(associatedAnnotations);
+                    this.languageEnhancedProcessor.enhancedProcessingAnnotation(toAnnotation,annotation,annotationOwner);
                     // 只对主的CommonCodeGenAnnotation进行增强处理
                     this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
                     return toAnnotations;

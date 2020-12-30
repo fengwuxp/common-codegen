@@ -1,11 +1,11 @@
 package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.parser.JavaClassParser;
+import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
+import com.wuxp.codegen.languages.SpringCloudFeignClientEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
-import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
@@ -60,6 +60,8 @@ public class Swagger3FeignSdkCodegenFeignClientTest {
 
         JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
         packageMapStrategy.setFileNamSuffix("FeignClient");
+        CombineLanguageEnhancedProcessor languageEnhancedProcessor = CombineLanguageEnhancedProcessor.of(
+                SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
         Swagger3FeignJavaCodegenBuilder.builder()
                 .useRxJava(true)
                 .build()
@@ -72,6 +74,7 @@ public class Swagger3FeignSdkCodegenFeignClientTest {
                 .scanPackages(packagePaths)
                 .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(false)
+                .languageEnhancedProcessor(languageEnhancedProcessor)
                 .buildCodeGenerator()
                 .generate();
 

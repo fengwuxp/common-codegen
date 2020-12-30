@@ -1,5 +1,6 @@
 import io.reactivex.Observable;
-import retrofit2.http.*;
+import org.springframework.cloud.openfeign.*;
+import org.springframework.web.bind.annotation.*;
 
 <#if dependencies??>
 <#--依赖导入处理-->
