@@ -1,8 +1,8 @@
 package ${packagePath?replace('.'+name,'')};
-<#if comments??>
+<#if (comments?size>0)>
     /**
     <#list comments as cmment>
-        * ${cmment}
+    * ${cmment}
     </#list>
     **/
 </#if>

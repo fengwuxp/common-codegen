@@ -2,6 +2,7 @@ package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
+import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
@@ -20,10 +21,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 测试swagger 生成  typescript的 feign api sdk
+ * 测试swagger 生成  typescript的 umi request sdk
  */
 @Slf4j
-public class Swagger3FeignSdkCodegenTypescriptTest {
+public class Swagger3FeignSdkCodegenUmiRequestTest {
 
 
     @Test
@@ -52,7 +53,7 @@ public class Swagger3FeignSdkCodegenTypescriptTest {
 //        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.TYPESCRIPT_FEIGN.name().toLowerCase(), "swagger3", "src", "api"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.UMI_REQUEST.name().toLowerCase(), "swagger3", "src", "api"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
@@ -64,11 +65,14 @@ public class Swagger3FeignSdkCodegenTypescriptTest {
         Swagger3FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                .clientProviderType(ClientProviderType.UMI_REQUEST)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
+                .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
+                .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
+                .languageEnhancedProcessor(new UmiRequestEnhancedProcessor())
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();

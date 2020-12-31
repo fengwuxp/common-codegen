@@ -84,6 +84,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      */
     protected CodeGenPublisher codeGenPublisher;
 
+    /**
+     * 额外的生成代码
+     */
+    private Set<CommonCodeGenClassMeta> otherCodegenClassMetas;
+
 
     public AbstractCodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
@@ -160,6 +165,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
         CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
         final boolean needSendEvent = codeGenPublisher != null;
+
+        if (otherCodegenClassMetas != null) {
+            commonCodeGenClassMetas.addAll(otherCodegenClassMetas);
+        }
 
         int i = 0;
         for (; ; ) {
@@ -361,4 +370,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         meta.setDependencies(newDependencies);
     }
 
+    public AbstractCodeGenerator otherCodegenClassMetas(Set<CommonCodeGenClassMeta> otherCodegenClassMetas) {
+        this.otherCodegenClassMetas = otherCodegenClassMetas;
+        return this;
+    }
 }

@@ -130,9 +130,20 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     protected Map<Class<?>, String[]> ignoreMethods;
 
     /**
+     * 需要而外生成的代码
+     */
+    protected Set<CommonCodeGenClassMeta> otherCodegenClassMetas = new HashSet<>();
+
+
+    /**
      * 语言处理增强器
      */
     protected LanguageEnhancedProcessor languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
+
+    /**
+     * 模板共享变量
+     */
+    protected Map<String, Object> sharedVariables = new HashMap<>();
 
     protected AbstractDragonCodegenBuilder() {
     }
@@ -164,6 +175,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder ignorePackages(Set<String> ignorePackages) {
         this.ignorePackages = ignorePackages;
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder sharedVariables(String name, Object val) {
+        sharedVariables.put(name, val);
         return this;
     }
 
@@ -247,6 +263,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractDragonCodegenBuilder otherCodegenClassMetas(CommonCodeGenClassMeta... otherCodegenClassMetas) {
+        this.otherCodegenClassMetas.addAll(Arrays.asList(otherCodegenClassMetas));
+        return this;
+    }
+
     protected void initTypeMapping() {
         //设置基础数据类型的映射关系
         baseTypeMapping.forEach((key, val) -> {
@@ -281,7 +302,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      */
     protected Map<String, Object> getSharedVariables() {
         //全局共享变量
-        Map<String, Object> sharedVariables = new HashMap<>();
         return sharedVariables;
     }
 }

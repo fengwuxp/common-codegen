@@ -1,6 +1,7 @@
 package com.wuxp.codegen.model.languages.typescript;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 主要用定义 typescript 原本支持的类
+ *
  * @author wuxp
  */
 @EqualsAndHashCode(callSuper = true)
@@ -84,6 +86,11 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
      */
     public final static TypescriptClassMeta ENUM_KEY_RECORD = new TypescriptClassMeta("Enum_Key_Record", "Enum_Key_Record<K,V>", ClassType.CLASS, false, OBJECT);
 
+    /**
+     * 枚举类型
+     */
+    public final static TypescriptClassMeta ENUM = new TypescriptClassMeta("Enum", null, ClassType.INTERFACE, false, null,"Enum");
+
 
     /**
      * web file
@@ -94,6 +101,17 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
      * java数组类型标记
      */
     public final static TypescriptClassMeta JAVA_ARRAY_CLASS_TYPE_MARK = new TypescriptClassMeta("JavaArrayClassTypeMark", null, ClassType.CLASS, false, OBJECT);
+
+    static {
+        ENUM.setFieldMetas(new CommonCodeGenFiledMeta[]{
+                new TypescriptFieldMate("name", new TypescriptClassMeta[]{STRING}, true),
+                new TypescriptFieldMate("ordinal", new TypescriptClassMeta[]{NUMBER}, true),
+                new TypescriptFieldMate("desc", new TypescriptClassMeta[]{STRING}, true),
+        });
+        ENUM.setNeedImport(true);
+        ENUM.setNeedGenerate(true);
+
+    }
 
     public TypescriptClassMeta() {
     }

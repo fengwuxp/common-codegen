@@ -3,6 +3,7 @@ package com.wuxp.codegen.util;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.annotation.Annotation;
@@ -65,6 +66,13 @@ public final class RequestMappingUtils {
                     }
                     return null;
                 }).filter(Objects::nonNull)
+                .findFirst();
+    }
+
+    public static Optional<PathVariable> findPathVariable(Annotation[] annotations) {
+        return Arrays.stream(annotations)
+                .filter(annotation -> PathVariable.class.equals(annotation.annotationType()))
+                .map(annotation -> (PathVariable) annotation)
                 .findFirst();
     }
 }

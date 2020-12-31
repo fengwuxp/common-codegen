@@ -75,7 +75,8 @@ public interface LanguageEnhancedProcessor<C extends CommonCodeGenClassMeta, M e
      *
      * @param codeGenMatchers 代码生成匹配器
      */
-    void setCodeGenMatchers(List<CodeGenMatcher> codeGenMatchers);
+    default void setCodeGenMatchers(List<CodeGenMatcher> codeGenMatchers) {
+    }
 
 
     final class NoneLanguageEnhancedProcessor implements LanguageEnhancedProcessor<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {

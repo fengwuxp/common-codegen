@@ -55,7 +55,7 @@ public class UserController {
             @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
     })
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public String putUser(@PathVariable Long id, @RequestBody User user) {
+    public String putUser(@PathVariable(required = false) Long id, @RequestBody User user) {
         User u = users.get(id);
         u.setName(user.getName());
         u.setAge(user.getAge());

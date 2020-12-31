@@ -51,7 +51,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
         languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
         //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(ClientProviderType.TYPESCRIPT_FEIGN, this.templateFileVersion, this.getSharedVariables());
+        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
 
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
                 templateLoader,
@@ -68,6 +68,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 languageParser,
                 templateStrategy,
                 this.looseMode,
-                this.enableFieldUnderlineStyle);
+                this.enableFieldUnderlineStyle)
+                .otherCodegenClassMetas(otherCodegenClassMetas);
     }
 }

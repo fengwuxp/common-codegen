@@ -7,6 +7,8 @@ import lombok.experimental.Accessors;
 
 /**
  * typescript的field 元数据
+ *
+ * @author wuxp
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,4 +20,12 @@ public final class TypescriptFieldMate extends CommonCodeGenFiledMeta {
      */
     private Boolean required = false;
 
+    public TypescriptFieldMate() {
+    }
+
+    public TypescriptFieldMate(String name, TypescriptClassMeta[] filedTypes, boolean required) {
+        this.name=name;
+        this.filedTypes=filedTypes;
+        this.required = required;
+    }
 }

@@ -55,6 +55,8 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
 
+    private static final List<RequestMethod> SUPPORT_BODY_METHODS = Arrays.asList(RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH);
+
     static {
         ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingProcessor.RequestMappingMate.class);
         ANNOTATION_CLASS_MAP.put(PostMapping.class, RequestMappingProcessor.PostMappingMate.class);
@@ -68,6 +70,17 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
         registerAnnotationTransformer(ClientProviderType.RETROFIT, RequestMapping.class, new JavaRetrofitRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN, RequestMapping.class, new TypeScriptRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.DART_FEIGN, RequestMapping.class, new DartRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.UMI_REQUEST, RequestMapping.class, new TypeScriptRequestMappingTransformer());
+    }
+
+    /**
+     * http method 方法是否支持 Request body
+     *
+     * @param method http 请求方法
+     */
+    public static boolean isSupportRequestBody(RequestMethod method) {
+
+        return SUPPORT_BODY_METHODS.contains(method);
     }
 
 
@@ -94,7 +107,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     public abstract static class RequestMappingMate implements AnnotationMate, RequestMapping {
 
-        private static final List<RequestMethod> SUPPORT_BODY_METHODS = Arrays.asList(RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH);
 
         @Override
         public String toComment(Class<?> annotationOwner) {
@@ -169,15 +181,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             }
         }
 
-        /**
-         * http method 方法是否支持 Request body
-         *
-         * @param method http 请求方法
-         */
-        public static boolean isSupportRequestBody(RequestMethod method) {
-
-            return SUPPORT_BODY_METHODS.contains(method);
-        }
 
 
         /**

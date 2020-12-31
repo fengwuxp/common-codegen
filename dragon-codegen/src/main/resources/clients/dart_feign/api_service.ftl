@@ -16,7 +16,7 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 </#if>
 
 
-<#if comments??>
+<#if (comments?size>0)>
     <#list comments as cmment>
      /// ${cmment}
     </#list>

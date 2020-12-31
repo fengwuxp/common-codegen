@@ -1,7 +1,7 @@
 /* tslint:disable */
-import {Enum} from "fengwuxp-typescript-feign";
+import {Enum} from "${enumImportPath}";
 
-<#if (comments?size>0)>
+<#if comments??>
     /**
     <#list comments as cmment>
      * ${cmment}

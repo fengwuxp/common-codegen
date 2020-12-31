@@ -20,12 +20,12 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
      * 域对象类型列表
      * 大于一个表示有泛型泛型
      */
-    private CommonCodeGenClassMeta[] filedTypes;
+    protected CommonCodeGenClassMeta[] filedTypes;
 
     /**
      * 注解
      */
-    private CommonCodeGenAnnotation[] annotations;
+    protected CommonCodeGenAnnotation[] annotations;
 
     /**
      * 类型参数, 泛型

@@ -12,7 +12,7 @@ public interface CodegenBuilder {
     /**
      * 构建代码生成器
      *
-     * @return
+     * @return 代码配置生成器
      */
     CodeGenerator buildCodeGenerator();
 }

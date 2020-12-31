@@ -1413,7 +1413,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (!hasRequestBody) {
             hasRequestBody = consumes.length > 0 && StringUtils.hasText(consumes[0]);
         }
-        boolean isSupportRequestBody = RequestMappingProcessor.RequestMappingMate.isSupportRequestBody(requestMethod);
+        boolean isSupportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
         if (!isSupportRequestBody && hasRequestBody) {
             // get 请求不支持 RequestBody
             throw new RuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
     </#list>
 </#if>
 
-<#if comments??>
+<#if (comments?size>0)>
     /**
     <#list comments as cmment>
         * ${cmment}
@@ -34,10 +34,12 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
 
 <#if fieldMetas??>
     <#list fieldMetas as field>
+       <#if (field.comments?size>0)>
         /**
         <#list field.comments as cmment>
             *${cmment}
         </#list>
+        </#if>
         **/
        ${field.accessPermissionName} ${customize_method.combineType(field.filedTypes)} ${field.name};
     </#list>

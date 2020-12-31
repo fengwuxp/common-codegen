@@ -122,7 +122,8 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 templateStrategy,
                 this.looseMode,
                 this.enableFieldUnderlineStyle,
-                new DisruptorCodeGenPublisher(dartFeignCodeGenEventHandler));
+                new DisruptorCodeGenPublisher(dartFeignCodeGenEventHandler))
+                .otherCodegenClassMetas(otherCodegenClassMetas);
     }
 
 

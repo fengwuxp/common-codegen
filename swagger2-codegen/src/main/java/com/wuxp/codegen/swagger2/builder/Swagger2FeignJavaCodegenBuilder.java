@@ -53,6 +53,7 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
                 this.isDeletedOutputDirectory);
 
 
-        return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle);
+        return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle)
+                .otherCodegenClassMetas(otherCodegenClassMetas);
     }
 }

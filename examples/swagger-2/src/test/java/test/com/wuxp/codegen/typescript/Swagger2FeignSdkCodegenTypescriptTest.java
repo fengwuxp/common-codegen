@@ -136,7 +136,7 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
 //        packageMap.put("com.wuxp.codegen.swagger2.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "swagger2", "src", "api"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.TYPESCRIPT_FEIGN.name().toLowerCase(), "swagger2", "src", "api"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
@@ -144,6 +144,7 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
         Swagger2FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.TYPESCRIPT)
+                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())

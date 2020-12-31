@@ -1,7 +1,6 @@
 package com.wuxp.codegen.languages.java;
 
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
-import com.wuxp.codegen.core.CodeGenMatcher;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -67,7 +66,7 @@ public class SpringCloudFeignClientEnhancedProcessor implements LanguageEnhanced
 
         Optional<RequestMappingProcessor.RequestMappingMate> requestMappingAnnotation = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
         if (!requestMappingAnnotation.isPresent()) {
-            throw new RuntimeException("方法" + javaMethodMeta.getName() + "没有RequestMapping相关组件");
+            throw new RuntimeException("方法：" + javaMethodMeta.getName() + "没有RequestMapping相关注解");
         }
         RequestMethod requestMethod = requestMappingAnnotation.get().getRequestMethod();
         if (!RequestMethod.GET.equals(requestMethod)) {
@@ -90,11 +89,6 @@ public class SpringCloudFeignClientEnhancedProcessor implements LanguageEnhanced
             }
         });
         return methodMeta;
-    }
-
-    @Override
-    public void setCodeGenMatchers(List<CodeGenMatcher> codeGenMatchers) {
-
     }
 
     public static class SpringCloudFeignClientEnhancedProcessorBuilder {

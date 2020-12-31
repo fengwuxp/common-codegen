@@ -15,7 +15,7 @@
     **/
 </#if>
 
-<#if fieldMetas??>
+<#if fieldMetas?? && annotations??>
     <#list annotations as annotation>
         @${annotation.name}({
         <#list annotation.namedArguments as name,val>
@@ -28,13 +28,13 @@ export interface  ${finallyClassName}<#if superClass??> extends ${superClass.fin
 
 <#if fieldMetas??>
     <#list fieldMetas as field>
-       <#if (field.comments?size>0)>
+        <#if (field.comments?size>0)>
         /**
         <#list field.comments as cmment>
             *${cmment}
         </#list>
-        </#if>
         **/
+        </#if>
 <#--        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customize_method.combineType(field.filedTypes)};-->
 
         <#assign returnType=customize_method.combineType(field.filedTypes)/>

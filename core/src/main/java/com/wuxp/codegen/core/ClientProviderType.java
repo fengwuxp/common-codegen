@@ -34,5 +34,10 @@ public enum ClientProviderType {
     /**
      * https://github.com/fengwuxp/fengwuxp-typescript-spring/tree/master/feign
      */
-    TYPESCRIPT_FEIGN
+    TYPESCRIPT_FEIGN,
+
+    /**
+     * https://github.com/umijs/umi-request
+     */
+    UMI_REQUEST
 }

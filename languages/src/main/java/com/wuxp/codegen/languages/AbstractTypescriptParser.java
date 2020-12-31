@@ -1,6 +1,8 @@
 package com.wuxp.codegen.languages;
 
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.TypescriptLanguageMetaInstanceFactory;
@@ -50,6 +52,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //根据java 类进行匹配
         codeGenMatchers.add(clazz -> clazz.isEnum() || JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation());
     }
+
 
     @Override
     protected TypescriptFieldMate converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
@@ -113,10 +116,16 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             commonCodeGenMethodMeta.setReturnTypes(mapping.toArray(new CommonCodeGenClassMeta[0]));
         }
 
+        ClientProviderType providerType = CodegenConfigHolder.getConfig().getProviderType();
 
-        if (!mapping.contains(TypescriptClassMeta.PROMISE)) {
-            mapping.add(0, TypescriptClassMeta.PROMISE);
+        if (ClientProviderType.TYPESCRIPT_FEIGN.equals(providerType)) {
+            if (!mapping.contains(TypescriptClassMeta.PROMISE)) {
+                mapping.add(0, TypescriptClassMeta.PROMISE);
+            }
+        } else {
+            mapping.remove(TypescriptClassMeta.PROMISE);
         }
+
 
         if (mapping.size() > 0) {
             //域对象类型描述

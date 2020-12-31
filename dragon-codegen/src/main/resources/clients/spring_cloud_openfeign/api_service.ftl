@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
     </#list>
 </#if>
 
-<#if comments??>
+<#if (comments?size>0)>
     /**
     <#list comments as cmment>
         * ${cmment}
@@ -30,11 +30,13 @@ import org.springframework.web.bind.annotation.*;
 public interface ${name}{
 
 <#list methodMetas as method>
+    <#if (method.comments?size>0)>
     /**
     <#list method.comments as cmment>
         * ${cmment_index+1}:${cmment}
     </#list>
     **/
+    </#if>
     <#list method.annotations as annotation>
         <#assign len=annotation.namedArguments?size />
         <#assign currentIndex=0 />

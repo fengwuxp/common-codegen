@@ -30,7 +30,7 @@ import 'package:fengwuxp_dart_basic/index.dart';
     part '${finallyClassName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
 </#if>
 
-<#if comments??>
+<#if (comments?size>0)>
     <#list comments as cmment>
      /// ${cmment}
     </#list>
@@ -47,7 +47,6 @@ abstract class ${className} implements Built<${className}, ${serializerName}Buil
 
        <#if fieldMetas??>
              <#list fieldMetas as field>
-
                 <#list field.comments as cmment>
                     /// ${cmment}
                 </#list>
