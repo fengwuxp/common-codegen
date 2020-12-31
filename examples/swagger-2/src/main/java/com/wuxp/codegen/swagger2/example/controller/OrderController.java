@@ -34,8 +34,8 @@ public class OrderController extends BaseController<String> {
     }
 
     @ApiOperation(value = "获取订单列表", notes = "")
-    @RequestMapping(method = RequestMethod.POST)
-    public PageInfo<Order> queryOrder(@RequestBody QueryOrderEvt evt) {
+    @RequestMapping(method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
         return new PageInfo<Order>();
     }
 
@@ -64,13 +64,13 @@ public class OrderController extends BaseController<String> {
 
 
     @ApiOperation(value = "创建订单", notes = "")
-    @GetMapping(value = {"createOrder"})
-//    @ApiImplicitParams(
-//            {
-//                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
-//            }
-//    )
-    public ServiceResponse<Long> createOrder(/*@RequestBody*/ CreateOrderEvt evt) {
+    @PostMapping(value = {"createOrder"})
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
+            }
+    )
+    public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
 
         return new ServiceResponse<>();
     }

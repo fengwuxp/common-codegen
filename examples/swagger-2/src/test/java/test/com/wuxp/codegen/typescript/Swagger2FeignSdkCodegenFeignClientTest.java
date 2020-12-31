@@ -4,7 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
-import com.wuxp.codegen.languages.SpringCloudFeignClientEnhancedProcessor;
+import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -54,7 +54,7 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
 
         String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "swagger2", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(),ClientProviderType.SPRING_CLOUD_OPENFEIGN.name(), "swagger2", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
