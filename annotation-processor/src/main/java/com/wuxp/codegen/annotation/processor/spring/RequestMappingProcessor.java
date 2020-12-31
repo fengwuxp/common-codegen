@@ -3,8 +3,8 @@ package com.wuxp.codegen.annotation.processor.spring;
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.CodegenBuilder;
-import com.wuxp.codegen.core.config.CodegenGlobalConfig;
+import com.wuxp.codegen.core.config.CodegenConfig;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
@@ -187,7 +187,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
          * @return 用于生成的注解
          */
         private CommonCodeGenAnnotation genAnnotation(Object annotationOwner) {
-            CodegenGlobalConfig codegenGlobalConfig = CodegenBuilder.CODEGEN_GLOBAL_CONFIG;
+            CodegenConfig codegenGlobalConfig = CodegenConfigHolder.getConfig();
             ClientProviderType providerType = codegenGlobalConfig.getProviderType();
             if (providerType == null) {
                 throw new RuntimeException("CODEGEN_GLOBAL_CONFIG#providerType is null");

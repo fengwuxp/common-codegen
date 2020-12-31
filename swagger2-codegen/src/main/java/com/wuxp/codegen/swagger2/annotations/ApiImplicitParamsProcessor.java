@@ -2,6 +2,9 @@ package com.wuxp.codegen.swagger2.annotations;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.core.config.CodegenConfig;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.model.LanguageDescription;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
@@ -42,11 +45,14 @@ public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiI
         @Override
         public String toComment(Method annotationOwner) {
             ApiImplicitParam[] value = getApiImplicitParams();
-            return "<pre> \n 参数列表：\r\n" + Arrays.stream(value)
+            CodegenConfig config = CodegenConfigHolder.getConfig();
+            LanguageDescription languageDescription = config.getLanguageDescription();
+            String commentSymbol = LanguageDescription.DART.equals(languageDescription) ? "///" : "*";
+            return "<pre> \n " + commentSymbol + "参数列表：\r\n" + Arrays.stream(value)
                     .map(item -> {
                         ApiImplicitParamProcessor.ApiImplicitParamMate mate = (ApiImplicitParamProcessor.ApiImplicitParamMate) item;
-                        return "参数名称：" + mate.name() + "，参数说明：" + mate.toComment(annotationOwner) + "\r\n";
-                    }).collect(Collectors.joining("")) + "</pre>";
+                        return commentSymbol + "参数名称：" + mate.name() + "，参数说明：" + mate.toComment(annotationOwner) + "\r\n";
+                    }).collect(Collectors.joining("")) + commentSymbol + "</pre>";
         }
 
         private ApiImplicitParam[] getApiImplicitParams() {

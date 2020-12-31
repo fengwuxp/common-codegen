@@ -3,7 +3,7 @@ package com.wuxp.codegen.annotation.processor;
 
 import com.wuxp.codegen.annotation.ClientAnnotationProvider;
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +80,7 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
     }
 
     private Class<? extends AnnotationMate> tryGetAnnotationType(Annotation annotation, Class<? extends AnnotationMate> clazz) {
-        ClientProviderType clientProviderType = CodegenBuilder.CODEGEN_GLOBAL_CONFIG.getProviderType();
+        ClientProviderType clientProviderType = CodegenConfigHolder.getConfig().getProviderType();
         if (clientProviderType == null) {
             return clazz;
         }

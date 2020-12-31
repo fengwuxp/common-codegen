@@ -44,6 +44,7 @@ public class Swagger2FeignSdkCodegenDartTest {
         packageMap.put("com.wuxp.codegen.swagger2.controller", "com.wuxp.codegen.swagger2.services");
         //其他类（DTO、VO等）所在的包
         String basePackageName = "com.wuxp.codegen.swagger2";
+        packageMap.put("com.wuxp.codegen.swagger2.example.controller", basePackageName+".clients");
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
         //其他类（DTO、VO等）所在的包
 

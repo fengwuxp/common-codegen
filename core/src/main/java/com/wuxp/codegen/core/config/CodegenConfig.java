@@ -7,13 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * 代码生成的全局配置
+ * 代码生成配置
  *
  * @author wxup
  */
 @Data
 @Builder
-public final class CodegenGlobalConfig {
+public final class CodegenConfig {
 
     /**
      * 需要生成的语言

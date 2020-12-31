@@ -6,6 +6,8 @@ import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.config.CodegenConfig;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
@@ -264,8 +266,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
         PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
 
-        CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setLanguageDescription(this.languageDescription);
-        CodegenBuilder.CODEGEN_GLOBAL_CONFIG.setProviderType(this.clientProviderType);
+        CodegenConfig codegenConfig = CodegenConfig.builder()
+                .providerType(this.clientProviderType)
+                .languageDescription(this.languageDescription)
+                .build();
+        CodegenConfigHolder.setConfig(codegenConfig);
 
     }
 

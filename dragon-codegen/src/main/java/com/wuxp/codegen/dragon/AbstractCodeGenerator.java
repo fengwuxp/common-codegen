@@ -2,6 +2,7 @@ package com.wuxp.codegen.dragon;
 
 
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
@@ -215,8 +216,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 // 最多等待10秒
                 LockSupport.parkNanos(10 * 1000 * 1000 * 1000);
             }
-
         }
+        CodegenConfigHolder.clear();
 
     }
 
