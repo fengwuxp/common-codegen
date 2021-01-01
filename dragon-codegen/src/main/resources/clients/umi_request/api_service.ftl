@@ -1,6 +1,6 @@
 /* tslint:disable */
 import request,{RequestOptionsInit} from 'umi-request';
-import queryString from "querystring";
+<#--import queryString from "querystring";-->
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
@@ -11,10 +11,10 @@ import queryString from "querystring";
 <#if (comments?size>0)>
     /**
     <#list comments as cmment>
-   * ${cmment}
+    * ${cmment}
     </#list>
     **/
-/*===============分割线=======================*/
+/*================================================分割线，以下为接口列表===================================================*/
 </#if>
 
 
@@ -42,7 +42,7 @@ export const  ${method.name}=  (req: ${method.params["req"].name}, options?: Req
 <#--       </#if>-->
         data:req
     <#else >
-        params: queryString(req)
+        params: req
     </#if>
 
    })

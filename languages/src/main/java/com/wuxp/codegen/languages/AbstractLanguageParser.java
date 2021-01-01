@@ -1043,7 +1043,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     }
 
                     if (pathVariable != null) {
-                        codeGenFiledMeta.setRequired(true);
+                        codeGenFiledMeta.setRequired(pathVariable.required());
                     }
                 }
             }

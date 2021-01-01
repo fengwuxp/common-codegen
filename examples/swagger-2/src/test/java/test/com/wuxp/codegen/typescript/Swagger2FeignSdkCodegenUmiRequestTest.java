@@ -65,8 +65,8 @@ public class Swagger2FeignSdkCodegenUmiRequestTest {
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-                .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
-                .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
+//                .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
+//                .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
                 .languageEnhancedProcessor(new UmiRequestEnhancedProcessor())
                 .buildCodeGenerator()
                 .generate();
