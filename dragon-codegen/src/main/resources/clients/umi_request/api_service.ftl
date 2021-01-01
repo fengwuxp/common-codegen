@@ -32,14 +32,13 @@ export const  ${method.name}=  (req: ${method.params["req"].name}, options?: Req
           ...(options||{}),
           method: '${tags["httpMethod"]}',
     <#if tags['supportBody']>
-        headers:{
-           'Content-Type':'${tags["mediaType"]}'
-        },
-<#--       <#if tags['useForm']>-->
-<#--          data:queryString(req),-->
-<#--          <#else >-->
-<#--          data:JSON.stringify(req),-->
-<#--       </#if>-->
+       <#if tags['useForm']>
+          requestType:'form',
+          data:queryString(req),
+        <#else >
+          requestType:'json',
+          data:JSON.stringify(req),
+       </#if>
         data:req
     <#else >
         params: req
