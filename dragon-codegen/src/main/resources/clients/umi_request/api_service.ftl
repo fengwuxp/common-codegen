@@ -1,6 +1,5 @@
 /* tslint:disable */
 import request,{RequestOptionsInit} from 'umi-request';
-<#--import queryString from "querystring";-->
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
@@ -19,7 +18,7 @@ import request,{RequestOptionsInit} from 'umi-request';
 
 
 <#list methodMetas as method>
- <#if (method.comments?size>0)>
+<#if (method.comments?size>0)>
 /**
 <#list method.comments as cmment>
 * ${cmment_index+1}:${cmment}
@@ -29,21 +28,22 @@ import request,{RequestOptionsInit} from 'umi-request';
 export const  ${method.name}=  (req: ${method.params["req"].name}, options?: RequestOptionsInit): Promise<${customize_method.combineType(method.returnTypes)}> =>{
   <#assign tags=method.tags/>
    return request<${customize_method.combineType(method.returnTypes)}>(`${tags["url"]}`, {
-          ...(options||{}),
-          method: '${tags["httpMethod"]}',
+      method: '${tags["httpMethod"]}',
     <#if tags['supportBody']>
-       <#if tags['useForm']>
-          requestType:'form',
-          data:queryString(req),
-        <#else >
-          requestType:'json',
-          data:JSON.stringify(req),
+      <#if tags['useForm']>
+      requestType: 'form',
+      data: req,
+      <#else >
+      requestType: 'json',
+      data: req,
        </#if>
-        data:req
     <#else >
-        params: req
+      params: req,
     </#if>
-
+    <#if tags['responseType']??>
+      responseType: '${tags['responseType']}',
+    </#if>
+      ...(options || {} as RequestOptionsInit)
    })
 }
 

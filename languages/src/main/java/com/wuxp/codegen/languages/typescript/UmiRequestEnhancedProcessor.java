@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -37,17 +39,24 @@ public class UmiRequestEnhancedProcessor implements LanguageEnhancedProcessor<Co
         tags.put("httpMethod", requestMethod.name().toLowerCase());
         boolean supportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
         tags.put("supportBody", supportRequestBody);
-        String[] consumes = requestMappingMate.consumes();
-        if (consumes.length == 0) {
-            // 如果支持body 则使默认使用表单
-            consumes = new String[]{MediaType.APPLICATION_FORM_URLENCODED_VALUE};
-        }
         if (supportRequestBody) {
-            tags.put("mediaType", consumes[0]);
+            String[] consumes = requestMappingMate.consumes();
+            if (consumes.length == 0) {
+                // 如果支持body 则使默认使用表单
+                consumes = new String[]{MediaType.APPLICATION_FORM_URLENCODED_VALUE};
+            }
+            String consume = consumes[0];
+            tags.put("mediaType", consume);
+            tags.put("useForm", MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(consume));
+            tags.put("responseType", this.getResponseType(requestMappingMate, javaMethodMeta, classMeta));
         }
+        tags.put("url", getRequestUrl(javaMethodMeta, requestMappingMate));
+        return methodMeta;
+    }
+
+    private String getRequestUrl(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate) {
         String url = RequestMappingUtils.combinePath(requestMappingMate, javaMethodMeta.getMethod());
         Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
-
         for (Map.Entry<String, Annotation[]> entry : paramAnnotations.entrySet()) {
             String name = entry.getKey();
             Annotation[] annotations = entry.getValue();
@@ -61,7 +70,6 @@ public class UmiRequestEnhancedProcessor implements LanguageEnhancedProcessor<Co
                 if (!StringUtils.hasText(pathVariableName)) {
                     pathVariableName = name;
                 }
-
                 if (pathVariable.required()) {
                     url = url.replace("{" + pathVariableName + "}", "${req." + pathVariableName + "}");
                 } else {
@@ -72,8 +80,35 @@ public class UmiRequestEnhancedProcessor implements LanguageEnhancedProcessor<Co
                 }
             }
         }
+        return url;
+    }
 
-        tags.put("url", url);
-        return methodMeta;
+    private String getResponseType(RequestMappingProcessor.RequestMappingMate requestMappingMate, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+        String[] produces = requestMappingMate.produces();
+        boolean useResponseBody = javaMethodMeta.existAnnotation(ResponseBody.class) || classMeta.existAnnotation(RestController.class);
+        if (useResponseBody) {
+            if (produces.length == 0) {
+                produces = new String[]{MediaType.APPLICATION_JSON_VALUE};
+            }
+        } else {
+            if (produces.length == 0) {
+                produces = new String[]{MediaType.TEXT_PLAIN_VALUE};
+            }
+        }
+        String produce = produces[0];
+        switch (produce) {
+            case MediaType.APPLICATION_FORM_URLENCODED_VALUE:
+                return "form";
+            case MediaType.APPLICATION_JSON_VALUE:
+            case MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE:
+                return "json";
+            case MediaType.TEXT_HTML_VALUE:
+            case MediaType.TEXT_PLAIN_VALUE:
+                return "text";
+            case MediaType.APPLICATION_OCTET_STREAM_VALUE:
+                return "blob";
+            default:
+                return null;
+        }
     }
 }
