@@ -1,7 +1,7 @@
 package com.wuxp.codegen.model.mapping;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class BaseTypeMapping<T extends CommonCodeGenClassMeta> implements TypeMa
             return null;
         }
         Class<?> clazz = (Class<?>) classes[0];
-        if (JavaTypeUtil.isDate(clazz) && this.dateToClassTarget != null) {
+        if (JavaTypeUtils.isDate(clazz) && this.dateToClassTarget != null) {
             return this.dateToClassTarget;
         }
         return (T) this.typeMapping.get(clazz);

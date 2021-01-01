@@ -1,4 +1,4 @@
-package com.wuxp.codegen.utils;
+package com.wuxp.codegen.util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -7,19 +7,15 @@ import java.util.Objects;
 
 /**
  * 文件操作相关工具
+ * @author wuxp
  */
 @Slf4j
-public final class FileUtil {
-
-    public boolean fileExists(File file) {
-        return file.exists();
-    }
+public final class FileUtils {
 
     /**
      * 递归创建目录
      *
      * @param directoryName  目录名称
-     * @return 文件夹目录
      */
     public static void createDirectory(String directoryName) {
         String[] filePaths = directoryName.split(String.format("\\%s", File.separator));
@@ -30,7 +26,7 @@ public final class FileUtil {
             File directory = new File(filePath.toString());
             if (!directory.exists()) {
                 boolean r = directory.mkdir();
-                log.debug("创建目录{}，结果", directory.getPath(), r ? "成功" : "失败");
+                log.debug("创建目录：{}，结果：{}", directory.getPath(), r ? "成功" : "失败");
             }
         }
     }
@@ -62,20 +58,22 @@ public final class FileUtil {
             //删除子文件
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
-                if (!flag) break;
+                if (!flag) {
+                    break;
+                }
             } //删除子目录
             else {
                 flag = deleteDirectory(files[i].getAbsolutePath());
-                if (!flag) break;
+                if (!flag) {
+                    break;
+                }
             }
         }
-        if (!flag) return false;
-        //删除当前目录
-        if (dirFile.delete()) {
-            return true;
-        } else {
+        if (!flag) {
             return false;
         }
+        //删除当前目录
+        return dirFile.delete();
     }
 
     /**

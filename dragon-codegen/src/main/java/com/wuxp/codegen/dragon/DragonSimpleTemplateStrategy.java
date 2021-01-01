@@ -8,7 +8,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
-import com.wuxp.codegen.utils.FileUtil;
+import com.wuxp.codegen.util.FileUtils;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,7 +67,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
 
         if (isDeletedOutputDirectory) {
             //删除原本的目录
-            boolean r = FileUtil.deleteDirectory(this.outputPath);
+            boolean r = FileUtils.deleteDirectory(this.outputPath);
             if (log.isInfoEnabled()) {
                 log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
             }
@@ -109,7 +109,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
                 return;
             }
         }
-        FileUtil.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
+        FileUtils.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
             log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
         }

@@ -113,13 +113,13 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         return new Swagger3CodeGenerator(
                 this.scanPackages,
                 this.ignorePackages,
-                this.includeClasses,
-                this.ignoreClasses,
+                this.includeClasses.toArray(new Class[0]),
+                this.ignoreClasses.toArray(new Class[0]),
                 languageParser,
                 templateStrategy,
                 this.looseMode,
                 this.enableFieldUnderlineStyle,
-                new DisruptorCodeGenPublisher(dartFeignCodeGenEventHandler))
+                new DisruptorCodeGenPublisher<>(dartFeignCodeGenEventHandler))
                 .otherCodegenClassMetas(otherCodegenClassMetas);
     }
 

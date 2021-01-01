@@ -106,8 +106,8 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         return new Swagger2CodeGenerator(
                 this.scanPackages,
                 this.ignorePackages,
-                this.includeClasses,
-                this.ignoreClasses,
+                this.includeClasses.toArray(new Class[0]),
+                this.ignoreClasses.toArray(new Class[0]),
                 languageParser,
                 templateStrategy,
                 this.looseMode,

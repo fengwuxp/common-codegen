@@ -10,7 +10,7 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import java.util.List;
 
 /**
- * 语言解析器
+ * 用于将{@link java.lang.Class}对象转换为不同语言用于生成代码的元数据描述对象的解析器
  *
  * @param <C>
  * @author wxup

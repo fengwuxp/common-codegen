@@ -11,7 +11,7 @@ import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
-import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -80,8 +80,8 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
         }
         TypescriptFieldMate typescriptFieldMate = super.converterField(javaFieldMeta, classMeta);
         Class<?>[] types = javaFieldMeta.getTypes();
-        if (types.length > 2 && JavaTypeUtil.isMap(types[0])) {
-            if (JavaTypeUtil.isEnum(types[1])) {
+        if (types.length > 2 && JavaTypeUtils.isMap(types[0])) {
+            if (JavaTypeUtils.isEnum(types[1])) {
                 // key 是枚举类型 重新设置key的类型
 //                Omit<Partial<Record<keyof typeof GoodsStatus, T>>, "prototype">
                 typescriptFieldMate.getFiledTypes()[0] = TypescriptClassMeta.ENUM_KEY_RECORD;

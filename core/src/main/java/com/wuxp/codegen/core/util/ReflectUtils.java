@@ -1,4 +1,4 @@
-package com.wuxp.codegen.core.utils;
+package com.wuxp.codegen.core.util;
 
 import java.io.InputStream;
 import java.lang.reflect.*;
@@ -6,11 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
+ * @author wmacevoy
  * @link https://github.com/wmacevoy/kiss/blob/master/src/main/java/kiss/util/Reflect.java
  */
-public final class ReflectUtil {
+public final class ReflectUtils {
 
-   private final static int NOne_FLAG = -1;
+    private final static int N_ONE_FLAG = -1;
+
     /**
      * Get the underlying class for a type, or null if the type is a variable type.
      *
@@ -153,11 +155,11 @@ public final class ReflectUtil {
             String sdata = new String(data, StandardCharsets.UTF_8);
             int lnt = sdata.indexOf("LineNumberTable");
 
-            if (lnt != NOne_FLAG) {
+            if (lnt != N_ONE_FLAG) {
                 sdata = sdata.substring(lnt + "LineNumberTable".length() + 3);
             }
             int cde = sdata.lastIndexOf("SourceFile");
-            if (cde != NOne_FLAG) {
+            if (cde != N_ONE_FLAG) {
                 sdata = sdata.substring(0, cde);
             }
 
@@ -165,10 +167,10 @@ public final class ReflectUtil {
 
 
             for (int i = 0; i < methods.length; ++i) {
-                int pos = NOne_FLAG;
+                int pos = N_ONE_FLAG;
                 for (; ; ) {
                     pos = sdata.indexOf(methods[i].getName(), pos);
-                    if (pos == NOne_FLAG) {
+                    if (pos == N_ONE_FLAG) {
                         break;
                     }
                     boolean subset = false;

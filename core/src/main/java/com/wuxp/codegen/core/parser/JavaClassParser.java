@@ -1,7 +1,7 @@
 package com.wuxp.codegen.core.parser;
 
 
-import com.wuxp.codegen.core.utils.ReflectUtil;
+import com.wuxp.codegen.core.util.ReflectUtils;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
@@ -466,15 +466,14 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      *
      * @param clazz      当前类
      * @param origin     源类（当前类的子类）
-     * @param onlyPublic
-     * @return
+     * @param onlyPublic 是否只处理公共方法
+     * @return 方法列表
      */
     protected JavaMethodMeta[] getMethods(Class<?> clazz,
                                           Class<?> origin,
                                           boolean onlyPublic) {
 
-        Method[] methods = ReflectUtil.getDeclaredMethodsInOrder(clazz);
-        ;
+        Method[] methods = ReflectUtils.getDeclaredMethodsInOrder(clazz);
         if (onlyPublic) {
             //只获取public的方法
             methods = Arrays.stream(methods).filter(method -> Modifier.isPublic(method.getModifiers())).toArray(Method[]::new);
@@ -484,17 +483,13 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
         for (Method method : methods) {
-
             JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz, origin);
             methodMetas.add(methodMeta);
 
         }
-
-
         return methodMetas.stream()
                 .filter(Objects::nonNull)
                 .distinct()
-//                .sorted(Comparator.comparing(CommonBaseMeta::getName))
                 .toArray(JavaMethodMeta[]::new);
 
     }

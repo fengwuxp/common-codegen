@@ -18,7 +18,7 @@ import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.core.utils.ToggleCaseUtil;
+import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
@@ -30,7 +30,7 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.mapping.TypeMapping;
-import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import com.wuxp.codegen.util.SpringControllerFilterUtils;
@@ -216,12 +216,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         if (!this.isMatchGenCodeRule(source) ||
-                JavaTypeUtil.isMap(source) ||
-                JavaTypeUtil.isCollection(source)) {
+                JavaTypeUtils.isMap(source) ||
+                JavaTypeUtils.isCollection(source)) {
             return null;
         }
 
-        if (!JavaTypeUtil.isNoneJdkComplex(source)) {
+        if (!JavaTypeUtils.isNoneJdkComplex(source)) {
             List<C> results = this.typeMapping.mapping(source);
             if (!results.isEmpty()) {
                 return results.get(0);
@@ -395,7 +395,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                 typeVariable = cs.get(0);
                             }
                         }
-                        if (JavaTypeUtil.isNoneJdkComplex(clazz)) {
+                        if (JavaTypeUtils.isNoneJdkComplex(clazz)) {
                             metaDependencies.put(typeVariable.getName(), typeVariable);
                         }
                         return typeVariable;
@@ -976,7 +976,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
                     .filter(clazz -> !clazz.isEnum())
                     .map(clazz -> {
-                        if (!JavaTypeUtil.isNoneJdkComplex(clazz)) {
+                        if (!JavaTypeUtils.isNoneJdkComplex(clazz)) {
                             return false;
                         }
                         //非jdk中的复杂对象
@@ -1085,7 +1085,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             //没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
             String name = MessageFormat.format("{0}{1}Req",
                     this.packageMapStrategy.convertClassName(classMeta.getClazz()),
-                    ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
+                    ToggleCaseUtils.toggleFirstChart(genMethodMeta.getName()));
             argsClassMeta.setName(name);
             argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req", name}));
             //这个时候没有依赖
@@ -1096,7 +1096,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             for (Class<?>[] classes : effectiveParams.values()) {
                 Optional<Class<?>> classOptional = Arrays.stream(classes).filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
                         .filter(clazz -> !clazz.isEnum())
-                        .filter(JavaTypeUtil::isNoneJdkComplex)
+                        .filter(JavaTypeUtils::isNoneJdkComplex)
                         .findFirst();
                 if (classOptional.isPresent()) {
                     hasComplex = true;
@@ -1106,7 +1106,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
             if (hasComplex && hasSimple) {
                 //参数列表中有复杂对象，并且有额外的简单对象，将类的名称替换，使用方法的名称,重新生成过一个新的对象
-                String name = MessageFormat.format("{0}Req", ToggleCaseUtil.toggleFirstChart(genMethodMeta.getName()));
+                String name = MessageFormat.format("{0}Req", ToggleCaseUtils.toggleFirstChart(genMethodMeta.getName()));
                 argsClassMeta.setPackagePath(argsClassMeta.getPackagePath().replace(argsClassMeta.getName(), name));
                 argsClassMeta.setName(name);
             }
@@ -1120,7 +1120,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         // 是否存在复杂对象
                         Optional<Class<?>> classOptional = Arrays.stream(paramClass).filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
                                 .filter(clazz -> !clazz.isEnum())
-                                .filter(JavaTypeUtil::isNoneJdkComplex)
+                                .filter(JavaTypeUtils::isNoneJdkComplex)
                                 .findFirst();
                         return classOptional.isPresent();
                     })
@@ -1132,10 +1132,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         if (JavaArrayClassTypeMark.class.equals(paramClass)) {
                             //数组
                             argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else if (JavaTypeUtil.isCollection(paramClass)) {
+                        } else if (JavaTypeUtils.isCollection(paramClass)) {
                             //集合
                             argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else if (JavaTypeUtil.isMap(paramClass)) {
+                        } else if (JavaTypeUtils.isMap(paramClass)) {
                             //map
                             argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
                         } else {

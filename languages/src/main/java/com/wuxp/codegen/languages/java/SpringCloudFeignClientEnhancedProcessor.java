@@ -8,7 +8,7 @@ import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -74,7 +74,7 @@ public class SpringCloudFeignClientEnhancedProcessor implements LanguageEnhanced
         }
         Map<String, Parameter> parameters = javaMethodMeta.getParameters();
         parameters.forEach((name, parameter) -> {
-            if (JavaTypeUtil.isNoneJdkComplex(parameter.getType())) {
+            if (JavaTypeUtils.isNoneJdkComplex(parameter.getType())) {
                 // 对于GET请求的复杂参数 增加SpringQueryMap注解
                 CommonCodeGenAnnotation[] annotations = methodMeta.getParamAnnotations().get(name);
                 if (annotations == null) {

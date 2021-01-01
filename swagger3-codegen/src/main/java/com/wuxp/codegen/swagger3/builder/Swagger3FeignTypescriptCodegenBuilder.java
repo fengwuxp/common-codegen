@@ -61,8 +61,8 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         return new Swagger3CodeGenerator(
                 this.scanPackages,
                 this.ignorePackages,
-                this.includeClasses,
-                this.ignoreClasses,
+                this.includeClasses.toArray(new Class[0]),
+                this.ignoreClasses.toArray(new Class[0]),
                 languageParser,
                 templateStrategy,
                 this.looseMode,

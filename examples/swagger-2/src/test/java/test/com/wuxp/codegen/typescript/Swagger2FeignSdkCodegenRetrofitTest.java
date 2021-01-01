@@ -52,7 +52,7 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
 
         String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), "swagger2", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.RETROFIT.name().toLowerCase(),"swagger2", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};

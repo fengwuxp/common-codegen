@@ -9,7 +9,8 @@ import com.wuxp.codegen.core.CodeGenMatcher;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
-import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
+import com.wuxp.codegen.core.macth.ExcludeClassCodeGenMatcher;
+import com.wuxp.codegen.core.macth.IncludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
@@ -70,8 +71,31 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     /**
      * 忽略的包
      */
-    protected Set<String> ignorePackages = new LinkedHashSet<>();
+    protected Set<String> ignorePackages = new HashSet<>();
 
+    /**
+     * 需要忽略的类
+     */
+    protected Set<Class> ignoreClasses = new HashSet<>();
+
+    /**
+     * 到导入的包
+     */
+    protected Set<String> includePackages = new HashSet<>();
+
+    /**
+     * 额外导入的类
+     */
+    protected Set<Class> includeClasses = new HashSet<>();
+
+
+    /**
+     * 忽略的方法
+     *
+     * @key 类
+     * @value 方法名称
+     */
+    protected Map<Class<?>, String[]> ignoreMethods;
 
     /**
      * 类名映射策略
@@ -119,23 +143,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      */
     protected String templateFileVersion = TemplateFileVersion.DEFAULT.getVersion();
 
-    /**
-     * 额外导入的类
-     */
-    protected Class<?>[] includeClasses;
-
-    /**
-     * 需要忽略的类
-     */
-    protected Class<?>[] ignoreClasses;
-
-    /**
-     * 忽略的方法
-     *
-     * @key 类
-     * @value 方法名称
-     */
-    protected Map<Class<?>, String[]> ignoreMethods;
 
     /**
      * 需要而外生成的代码
@@ -181,8 +188,13 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder ignorePackages(Set<String> ignorePackages) {
-        this.ignorePackages = ignorePackages;
+    public AbstractDragonCodegenBuilder ignorePackages(String... ignorePackages) {
+        this.ignorePackages.addAll(Arrays.asList(ignorePackages));
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder includePackages(String... includePackages) {
+        this.includePackages.addAll(Arrays.asList(includePackages));
         return this;
     }
 
@@ -255,14 +267,14 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder includeClasses(Class<?>[] includeClasses) {
-        this.includeClasses = includeClasses;
+    public AbstractDragonCodegenBuilder includeClasses(Class<?>... includeClasses) {
+        this.includeClasses.addAll(Arrays.asList(includeClasses));
         return this;
     }
 
 
-    public AbstractDragonCodegenBuilder ignoreClasses(Class<?>[] ignoreClasses) {
-        this.ignoreClasses = ignoreClasses;
+    public AbstractDragonCodegenBuilder ignoreClasses(Class<?>... ignoreClasses) {
+        this.ignoreClasses.addAll(Arrays.asList(ignoreClasses));
         return this;
     }
 
@@ -329,8 +341,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     }
 
     protected void initLanguageParser(LanguageParser languageParser) {
-        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
+        languageParser.addCodeGenMatchers(ExcludeClassCodeGenMatcher.of(ignorePackages, ignoreClasses));
         languageParser.addCodeGenMatchers(this.codeGenMatchers.toArray(new CodeGenMatcher[0]));
         languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
+        if (!this.includePackages.isEmpty() || !includeClasses.isEmpty()) {
+            // include 模式
+            languageParser.addCodeGenMatchers(IncludeClassCodeGenMatcher.of(this.includePackages, includeClasses));
+        }
     }
 }

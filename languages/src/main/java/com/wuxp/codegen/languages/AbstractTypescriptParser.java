@@ -14,7 +14,7 @@ import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
-import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotBlank;
@@ -50,7 +50,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
     {
 
         //根据java 类进行匹配
-        codeGenMatchers.add(clazz -> clazz.isEnum() || JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isAnnotation());
+        codeGenMatchers.add(clazz -> clazz.isEnum() || JavaTypeUtils.isNoneJdkComplex(clazz) || clazz.isAnnotation());
     }
 
 
@@ -77,7 +77,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
         //处理返回值
         Class<?>[] returnTypes = javaMethodMeta.getReturnType();
         Class<?> mapClazz = Arrays.stream(returnTypes)
-                .filter(JavaTypeUtil::isMap)
+                .filter(JavaTypeUtils::isMap)
                 .findAny()
                 .orElse(null);
 
@@ -97,7 +97,7 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                         newTypes.add(Object.class);
                     }
                     Class<?> keyClazz = newTypes.get(i1);
-                    if (!JavaTypeUtil.isJavaBaseType(keyClazz)) {
+                    if (!JavaTypeUtils.isJavaBaseType(keyClazz)) {
                         // TODO 如果map的key不是基础数据类
 //                        newTypes.set(i1, Object.class);
                         log.error("类 {} 的 {} 方法的返回值Map类型的key不是基础数据类型或字符串", classMeta.getName(), javaMethodMeta.getName());

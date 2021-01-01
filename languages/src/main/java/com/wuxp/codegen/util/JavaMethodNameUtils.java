@@ -1,6 +1,6 @@
 package com.wuxp.codegen.util;
 
-import com.wuxp.codegen.core.utils.ToggleCaseUtil;
+import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
@@ -55,7 +55,7 @@ public final class JavaMethodNameUtils {
             return methodMetaName;
         }
 
-        return ToggleCaseUtil.toggleFirstChart(methodMetaName);
+        return ToggleCaseUtils.toggleFirstChart(methodMetaName);
     }
 
 

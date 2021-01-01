@@ -1,11 +1,12 @@
-package com.wuxp.codegen.core.utils;
+package com.wuxp.codegen.core.util;
 
 /**
  * 大小写转换
+ * @author wuxp
  */
-public final class ToggleCaseUtil {
+public final class ToggleCaseUtils {
 
-    private ToggleCaseUtil() {
+    private ToggleCaseUtils() {
     }
 
     /**

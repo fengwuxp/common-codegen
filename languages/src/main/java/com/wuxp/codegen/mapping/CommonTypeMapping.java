@@ -5,7 +5,7 @@ import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
-import com.wuxp.codegen.model.utils.JavaTypeUtil;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ResolvableType;
@@ -153,7 +153,7 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
         }
 
 
-        if (JavaTypeUtil.isNoneJdkComplex(clazz) || clazz.isEnum()) {
+        if (JavaTypeUtils.isNoneJdkComplex(clazz) || clazz.isEnum()) {
             //复杂的数据类型或枚举
             C meta = this.languageParser.parse(clazz);
             if (meta == null) {
@@ -188,24 +188,24 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
      * @return
      */
     protected Class<?> tryUpConversionType(Class<?> clazz) {
-        if (JavaTypeUtil.isNumber(clazz)) {
+        if (JavaTypeUtils.isNumber(clazz)) {
             //数值类型
             return Number.class;
-        } else if (JavaTypeUtil.isString(clazz)) {
+        } else if (JavaTypeUtils.isString(clazz)) {
             return String.class;
-        } else if (JavaTypeUtil.isBoolean(clazz)) {
+        } else if (JavaTypeUtils.isBoolean(clazz)) {
             return Boolean.class;
-        } else if (JavaTypeUtil.isDate(clazz)) {
+        } else if (JavaTypeUtils.isDate(clazz)) {
             return Date.class;
-        } else if (JavaTypeUtil.isVoid(clazz)) {
+        } else if (JavaTypeUtils.isVoid(clazz)) {
             return void.class;
-        } else if (JavaTypeUtil.isSet(clazz)) {
+        } else if (JavaTypeUtils.isSet(clazz)) {
             return Set.class;
-        } else if (JavaTypeUtil.isList(clazz)) {
+        } else if (JavaTypeUtils.isList(clazz)) {
             return List.class;
-        } else if (JavaTypeUtil.isCollection(clazz)) {
+        } else if (JavaTypeUtils.isCollection(clazz)) {
             return Collection.class;
-        } else if (JavaTypeUtil.isMap(clazz)) {
+        } else if (JavaTypeUtils.isMap(clazz)) {
             return Map.class;
         }
         return null;

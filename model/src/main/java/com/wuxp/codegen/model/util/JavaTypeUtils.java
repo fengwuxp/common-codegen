@@ -1,4 +1,4 @@
-package com.wuxp.codegen.model.utils;
+package com.wuxp.codegen.model.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,15 +7,15 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.*;
 
-public final class JavaTypeUtil {
+public final class JavaTypeUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaTypeUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaTypeUtils.class);
 
     /**
      * 是否为基础数据类型 包括String Date
      *
-     * @param clazz
-     * @return
+     * @param clazz 类类型
+     * @return <code>true</code> 是基础的java 数据类型
      */
     public static boolean isJavaBaseType(Class<?> clazz) {
         if (clazz == null) {
@@ -28,8 +28,8 @@ public final class JavaTypeUtil {
     /**
      * 是否为字符串类型
      *
-     * @param clazz
-     * @return
+     * @param clazz 类类型
+     * @return <code>true</code> 字符串类型
      */
     public static boolean isString(Class<?> clazz) {
 
@@ -41,19 +41,15 @@ public final class JavaTypeUtil {
             return true;
         }
 
-        if (clazz.getName().startsWith("java.lang.String")) {
-            //兼容 StringBuffer StringBuilder
-            return true;
-        }
-
-        return false;
+        //兼容 StringBuffer StringBuilder
+        return clazz.getName().startsWith("java.lang.String");
     }
 
 
     /**
      * 是否为数值类型
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isNumber(Class<?> clazz) {
@@ -74,7 +70,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为时间类型
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isDate(Class<?> clazz) {
@@ -87,7 +83,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为枚举
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isEnum(Class<?> clazz) {
@@ -98,7 +94,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为boolean
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isBoolean(Class<?> clazz) {
@@ -111,7 +107,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为List 或继承自List
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isList(Class<?> clazz) {
@@ -127,7 +123,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为Collection 或继承自 Collection
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isCollection(Class<?> clazz) {
@@ -141,7 +137,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为Map或继承自 Map
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isMap(Class<?> clazz) {
@@ -154,7 +150,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为Set或继承自 Set
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isSet(Class<?> clazz) {
@@ -168,7 +164,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为 void
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isVoid(Class<?> clazz) {
@@ -179,7 +175,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为一个数组 例如 String [] s;
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isAnArray(Class<?> clazz) {
@@ -193,7 +189,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为一个复杂的数据类型的数组
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isComplexAnArray(Class<?> clazz) {
@@ -204,7 +200,7 @@ public final class JavaTypeUtil {
     /**
      * 是否为非jdk中的复杂对象
      *
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isNoneJdkComplex(Class<?> clazz) {
@@ -213,20 +209,15 @@ public final class JavaTypeUtil {
             return false;
         }
 
-//        if (isFileUploadObject(clazz)){
-//            return false;
-//        }
-
-
-        boolean isSimple = JavaTypeUtil.isJavaBaseType(clazz) ||
-                JavaTypeUtil.isString(clazz) ||
-                JavaTypeUtil.isBoolean(clazz) ||
-                JavaTypeUtil.isDate(clazz) ||
-                JavaTypeUtil.isList(clazz) ||
-                JavaTypeUtil.isSet(clazz) ||
-                JavaTypeUtil.isMap(clazz) ||
-                JavaTypeUtil.isCollection(clazz) ||
-                JavaTypeUtil.isAnArray(clazz) ||
+        boolean isSimple = JavaTypeUtils.isJavaBaseType(clazz) ||
+                JavaTypeUtils.isString(clazz) ||
+                JavaTypeUtils.isBoolean(clazz) ||
+                JavaTypeUtils.isDate(clazz) ||
+                JavaTypeUtils.isList(clazz) ||
+                JavaTypeUtils.isSet(clazz) ||
+                JavaTypeUtils.isMap(clazz) ||
+                JavaTypeUtils.isCollection(clazz) ||
+                JavaTypeUtils.isAnArray(clazz) ||
                 void.class.equals(clazz) ||
                 Object.class.equals(clazz);
 
@@ -240,8 +231,8 @@ public final class JavaTypeUtil {
     /**
      * 某个类是否继承另外一个类
      *
-     * @param clazz
-     * @param superClazz
+     * @param clazz 类类型
+     * @param superClazz 超类的类类型
      * @return
      */
     public static boolean isExtendsClass(Class<?> clazz, Class<?> superClazz) {
@@ -257,7 +248,7 @@ public final class JavaTypeUtil {
         if (clazz.isInterface()) {
             //接口
             Class<?>[] interfaces = clazz.getInterfaces();
-            return Arrays.asList(interfaces).indexOf(superClazz) >= 0;
+            return Arrays.asList(interfaces).contains(superClazz);
         }
 
         if (Object.class.equals(clazz)) {
@@ -279,7 +270,7 @@ public final class JavaTypeUtil {
 
     /**
      * 是否为文件上传对象
-     * @param clazz
+     * @param clazz 类类型
      * @return
      */
     public static boolean isFileUploadObject(Class<?> clazz){

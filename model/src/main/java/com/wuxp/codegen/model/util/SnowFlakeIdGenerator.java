@@ -1,12 +1,13 @@
-package com.wuxp.codegen.core.utils;
+package com.wuxp.codegen.model.util;
 
 /**
- * 雪花id
+ * 雪花id 生成器
+ *
+ * @author wuxp
  */
-public final class SnowFlakeIdGen {
+public final class SnowFlakeIdGenerator {
 
-    //Singleton
-    public static final SnowFlakeIdGen SINGLETON = new SnowFlakeIdGen(2, 3);
+    public final static SnowFlakeIdGenerator SINGLETON = new SnowFlakeIdGenerator(2, 3);
 
     /**
      * 起始的时间戳
@@ -15,10 +16,19 @@ public final class SnowFlakeIdGen {
 
     /**
      * 每一部分占用的位数
+     * 序列号占用的位数
      */
-    private final static long SEQUENCE_BIT = 12; //序列号占用的位数
-    private final static long MACHINE_BIT = 5;   //机器标识占用的位数
-    private final static long DATA_CENTER_BIT = 5;//数据中心占用的位数
+    private final static long SEQUENCE_BIT = 12;
+
+    /**
+     * 机器标识占用的位数
+     */
+    private final static long MACHINE_BIT = 5;
+
+    /**
+     * 数据中心占用的位数
+     */
+    private final static long DATA_CENTER_BIT = 5;
 
     /**
      * 每一部分的最大值
@@ -34,19 +44,27 @@ public final class SnowFlakeIdGen {
     private final static long DATA_CENTER_LEFT = SEQUENCE_BIT + MACHINE_BIT;
     private final static long TIME_STAMP_LEFT = DATA_CENTER_LEFT + DATA_CENTER_BIT;
 
-    //数据中心
-    private long dataCenterId;
+    /**
+     * 数据中心
+     */
+    private final long dataCenterId;
 
-    //机器标识
-    private long machineId;
+    /**
+     * 机器标识
+     */
+    private final long machineId;
 
-    //序列号
+    /**
+     * 序列号
+     */
     private long sequence = 0L;
 
-    //上一次时间戳
+    /**
+     * 上一次时间戳
+     */
     private long lastTimeStamp = -1L;
 
-    public SnowFlakeIdGen(long dataCenterId, long machineId) {
+    public SnowFlakeIdGenerator(long dataCenterId, long machineId) {
         if (dataCenterId > MAX_DATA_CENTER_NUM || dataCenterId < 0) {
             throw new IllegalArgumentException("dataCenterId can't be greater than MAX_DATA_CENTER_NUM or less than 0");
         }

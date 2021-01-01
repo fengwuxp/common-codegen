@@ -1,7 +1,7 @@
 package com.wuxp.codegen.core;
 
 /**
- * 客户端的提供者类型
+ * 请求client工具的提供者类型
  *
  * @author wuxp
  */
