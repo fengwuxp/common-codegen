@@ -26,4 +26,8 @@ public final class CodegenConfig {
     private ClientProviderType providerType;
 
 
+    public boolean isJava() {
+        return LanguageDescription.JAVA.equals(languageDescription) || LanguageDescription.JAVA_ANDROID.equals(languageDescription);
+    }
+
 }

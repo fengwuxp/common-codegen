@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * 语言解析器
  *
- * @author wxup
  * @param <C>
+ * @author wxup
  */
 public interface LanguageParser<C extends CommonCodeGenClassMeta> extends GenericParser<C, Class<?>> {
 
@@ -28,6 +28,11 @@ public interface LanguageParser<C extends CommonCodeGenClassMeta> extends Generi
      */
     void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers);
 
+    /**
+     * 获取代码匹配器
+     *
+     * @return
+     */
     List<CodeGenMatcher> getCodeGenMatchers();
 
     /**
@@ -35,7 +40,7 @@ public interface LanguageParser<C extends CommonCodeGenClassMeta> extends Generi
      *
      * @param languageEnhancedProcessor
      */
-     void setLanguageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor);
+    void setLanguageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor);
 
     /**
      * 语言类型的实例工厂

@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.CodeGenMatcher;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -16,14 +17,14 @@ import java.util.List;
 public class PackageNameCodeGenMatcher implements CodeGenMatcher {
 
     /**
-     * 需要忽略的包名列表
+     * 需要全局忽略的包名列表
      */
-    public static final List<String> IGNORE_PACKAGE_LIST = new ArrayList<>();
+    private static final List<String> IGNORE_PACKAGE_LIST = new ArrayList<>();
 
     /**
-     * 需要导入的包
+     * 需要包全局含的包
      */
-    public static final List<String> INCLUDE_PACKAGE_LIST = new ArrayList<>();
+    private static final List<String> INCLUDE_PACKAGE_LIST = new ArrayList<>();
 
 
     static {
@@ -57,6 +58,21 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         INCLUDE_PACKAGE_LIST.add("org.springframework.web.multipart.commons.CommonsMultipartFile");
     }
 
+    private final List<String> ignorePackages;
+
+    private final List<String> includePackages;
+
+    public PackageNameCodeGenMatcher() {
+        this(new ArrayList<>(), new ArrayList<>());
+    }
+
+    public PackageNameCodeGenMatcher(List<String> ignorePackages, List<String> includePackages) {
+        this.ignorePackages = ignorePackages;
+        this.includePackages = includePackages;
+        this.ignorePackages.addAll(IGNORE_PACKAGE_LIST);
+        this.includePackages.addAll(INCLUDE_PACKAGE_LIST);
+    }
+
     @Override
     public boolean match(Class<?> clazz) {
         if (clazz == null) {
@@ -64,12 +80,21 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         }
 
         //在包含列表里面
-        boolean anyMatch = INCLUDE_PACKAGE_LIST.stream().anyMatch(name -> (clazz.getName().startsWith(name) || clazz.getName().equals(name)));
+        boolean anyMatch = includePackages.stream().anyMatch(name -> clazz.getName().startsWith(name));
         if (anyMatch) {
             return true;
         }
 
         // 不在忽略列表里面则返回true
-        return IGNORE_PACKAGE_LIST.stream().noneMatch(name -> (clazz.getName().startsWith(name) || clazz.getName().equals(name)));
+        return ignorePackages.stream().noneMatch(name -> clazz.getName().startsWith(name));
     }
+
+    public void addIgnorePackages(Collection<String> ignorePackages) {
+        this.ignorePackages.addAll(ignorePackages);
+    }
+
+    public void addIncludePackages(Collection<String> includePackages) {
+        this.includePackages.addAll(includePackages);
+    }
+
 }

@@ -3,7 +3,6 @@ package com.wuxp.codegen.swagger3.builder;
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
@@ -25,9 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilder {
 
-    private Boolean enabledAndroidSqliteSupport;
+    private final Boolean enabledAndroidSqliteSupport;
 
-    private Boolean useRxJava;
+    private final Boolean useRxJava;
 
     @Override
     public CodeGenerator buildCodeGenerator() {
@@ -47,8 +46,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
                 languageDescription,
                 Boolean.TRUE.equals(useRxJava),
                 Boolean.TRUE.equals(enabledAndroidSqliteSupport));
-        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
-        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
+        initLanguageParser(languageParser);
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(clientProviderType, this.templateFileVersion, this.getSharedVariables());
 
@@ -57,7 +55,6 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
                 this.outPath,
                 languageDescription.getSuffixName(),
                 this.isDeletedOutputDirectory);
-
 
         return new Swagger3CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle, null)
                 .otherCodegenClassMetas(otherCodegenClassMetas);

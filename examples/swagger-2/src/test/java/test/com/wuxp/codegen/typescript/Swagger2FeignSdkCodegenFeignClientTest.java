@@ -1,6 +1,7 @@
 package test.com.wuxp.codegen.typescript;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
@@ -12,6 +13,7 @@ import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger2.example.domain.User;
+import com.wuxp.codegen.swagger2.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
@@ -51,10 +53,11 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
         packageMap.put("com.wuxp.codegen.swagger2.example.controller", "com.wuxp.codegen.swagger2.clients");
         //其他类（DTO、VO等）所在的包
         String basePackageName = "com.wuxp.codegen.swagger2";
+//        packageMap.put("com.wuxp.codegen.swagger2.example.evt", "com.wuxp.codegen.swagger2.example.evt");
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
 
         String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(),ClientProviderType.SPRING_CLOUD_OPENFEIGN.name(), "swagger2", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.SPRING_CLOUD_OPENFEIGN.name().toLowerCase(), "swagger2", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
@@ -65,6 +68,7 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
                 SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
+                .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)

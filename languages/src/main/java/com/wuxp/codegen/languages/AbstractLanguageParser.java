@@ -7,7 +7,9 @@ import com.wuxp.codegen.annotation.processor.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processor.javax.SizeProcessor;
 import com.wuxp.codegen.annotation.processor.spring.*;
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.CodeGenImportMatcher;
 import com.wuxp.codegen.core.CodeGenMatcher;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
@@ -114,10 +116,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected Collection<CodeDetect> codeDetects;
 
-    /**
-     * 根据包名进行匹配
-     */
-    protected CodeGenMatcher packageNameCodeGenMatcher = new PackageNameCodeGenMatcher();
+//    /**
+//     * 根据包名进行匹配
+//     */
+//    protected CodeGenMatcher packageNameCodeGenMatcher;
 
 
     /**
@@ -126,23 +128,21 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     protected CodeGenMatchingStrategy genMatchingStrategy;
 
     /**
-     * 匹配器链
+     * 匹配需要生成的类匹配器链
      */
     protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+
+    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
 
     protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
 
     {
-        codeGenMatchers.add(this.packageNameCodeGenMatcher);
 
-        //根据java 类进行匹配
-//        codeGenMatchers.add(clazz -> clazz.isEnum() || clazz.isAnnotation());
-
-        //根据是否为spring的组件进行匹配
+        // 根据是否为spring的组件进行匹配
         codeGenMatchers.add(clazz -> {
             Annotation service = clazz.getAnnotation(Service.class);
             Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
-            //不是spring的组件
+            // 不是spring的组件
             return service == null && clazzAnnotation == null;
         });
     }
@@ -174,7 +174,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                   PackageMapStrategy packageMapStrategy,
                                   CodeGenMatchingStrategy genMatchingStrategy,
                                   Collection<CodeDetect> codeDetects) {
-        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, null);
+        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());
     }
 
 
@@ -190,7 +190,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             this.codeDetects = codeDetects;
         }
         if (includeCodeGenMatchers != null) {
-            this.codeGenMatchers.addAll(includeCodeGenMatchers);
+            this.addCodeGenMatchers(includeCodeGenMatchers.toArray(new CodeGenMatcher[0]));
         }
     }
 
@@ -200,7 +200,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                                   PackageMapStrategy packageMapStrategy,
                                   CodeGenMatchingStrategy genMatchingStrategy,
                                   Collection<CodeDetect> codeDetects) {
-        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, null);
+        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());
         if (javaParser != null) {
             this.javaParser = javaParser;
         }
@@ -424,7 +424,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         this.languageEnhancedProcessor.enhancedProcessingClass(meta, javaClassMeta);
         // 增强处理类
         this.enhancedProcessingClass(meta, javaClassMeta);
-
+        if (this.tryMatchOnlyImportClasses(source)){
+            // 只需要导入类
+            meta.setNeedGenerate(false);
+            meta.setNeedImport(true);
+            if (CodegenConfigHolder.getConfig().isJava()){
+                meta.setPackagePath(source.getName());
+            }
+        }
         return meta;
     }
 
@@ -436,15 +443,22 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     @Override
     public void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers) {
-        this.codeGenMatchers.addAll(Arrays.asList(codeGenMatchers));
+        List<CodeGenMatcher> genMatchers = Arrays.asList(codeGenMatchers);
+        this.codeGenMatchers.addAll(genMatchers.stream()
+                .filter(item-> !CodeGenImportMatcher.class.isAssignableFrom(item.getClass()))
+                .collect(Collectors.toList()));
+        this.codeGenImportMatchers.addAll(genMatchers.stream()
+                .filter(item-> item instanceof CodeGenImportMatcher)
+                .map(codeGenMatcher -> (CodeGenImportMatcher)codeGenMatcher)
+                .collect(Collectors.toList()));
     }
 
 
     /**
      * 是否匹配生成的规则
      *
-     * @param clazz
-     * @return
+     * @param clazz java 类
+     * @return <code>true</code> 匹配生成规则
      */
     protected boolean isMatchGenCodeRule(Class<?> clazz) {
         if (clazz == null) {
@@ -463,7 +477,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 检查代码是否服务自定义的规则
      *
-     * @param source
+     * @param source java 类元数据
      */
     protected void detectJavaCode(JavaClassMeta source) {
 
@@ -526,9 +540,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 通过类类型来获取注释
      *
-     * @param classes
-     * @param isMethod
-     * @return
+     * @param classes  类列表
+     * @param isMethod 是否为方法
+     * @return 注释列表
      */
     protected List<String> generateComments(Class<?>[] classes, boolean isMethod) {
         if (classes == null || classes.length == 0) {
@@ -546,14 +560,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 将class列表装换为名称字符串
      *
-     * @param classes
-     * @return
+     * @param classes 类列表
+     * @return 使用','连接后的字符串
      */
     protected String classToNamedString(Class<?>[] classes) {
         if (classes == null) {
             return "";
         }
-
         return Arrays.stream(classes)
                 .filter(Objects::nonNull)
                 .map(Class::getName).collect(Collectors.joining(","));
@@ -588,7 +601,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>(associatedAnnotations.size() + 1);
                     toAnnotations.add(toAnnotation);
                     toAnnotations.addAll(associatedAnnotations);
-                    this.languageEnhancedProcessor.enhancedProcessingAnnotation(toAnnotation,annotation,annotationOwner);
+                    this.languageEnhancedProcessor.enhancedProcessingAnnotation(toAnnotation, annotation, annotationOwner);
                     // 只对主的CommonCodeGenAnnotation进行增强处理
                     this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
                     return toAnnotations;
@@ -764,9 +777,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 转换方法列表
      *
-     * @param javaMethodMetas
-     * @param classMeta
-     * @return
+     * @param javaMethodMetas  java 方法元数据信息列表
+     * @param classMeta        java 类元数据信息
+     * @param codeGenClassMeta 用于生成的类元数据信息
+     * @return 用于生成的方法元数据信息列表
      */
     protected List<M> converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, C codeGenClassMeta) {
         if (javaMethodMetas == null) {
@@ -798,10 +812,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 2：处理方法返回值
      * 3: 处理方法参数
      *
-     * @param javaMethodMeta
-     * @param classMeta
-     * @param codeGenClassMeta
-     * @return
+     * @param javaMethodMeta   java 方法元数据信息
+     * @param classMeta        java 类元数据信息
+     * @param codeGenClassMeta 用于生成的类元数据信息
+     * @return 用于生成的方法元数据信息
      */
     protected M converterMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
         if (classMeta == null) {
@@ -862,7 +876,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         final Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
         methodMetaParams.forEach((key, classes) -> {
             Class<?>[] array = Arrays.stream(classes)
-                    .filter(this.packageNameCodeGenMatcher::match)
+                    .filter(this.getPackageNameCodeGenMatcher()::match)
                     .toArray(Class<?>[]::new);
             if (array.length == 0) {
                 return;
@@ -911,10 +925,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 方法转换 并且将多个参数合并为一个对象参数
      *
-     * @param javaMethodMeta
-     * @param classMeta
-     * @param codeGenClassMeta
-     * @return
+     * @param javaMethodMeta   java 方法元数据信息
+     * @param classMeta        java 类元数据信息
+     * @param codeGenClassMeta 用于生成的类元数据信息
+     * @return 用于生成的方法元数据信息
      */
     protected M converterMethodAndMargeParams(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
         M genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
@@ -938,7 +952,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         final Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
         methodMetaParams.forEach((key, classes) -> {
             Class<?>[] array = Arrays.stream(classes)
-                    .filter(this.packageNameCodeGenMatcher::match)
+                    .filter(this.getPackageNameCodeGenMatcher()::match)
                     .toArray(Class<?>[]::new);
             if (array.length == 0) {
                 return;
@@ -1165,8 +1179,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 增强处理 class
      *
-     * @param methodMeta
-     * @param classMeta
+     * @param methodMeta 用于生成的方法元数据
+     * @param classMeta  java 类元数据
      */
     protected abstract void enhancedProcessingClass(C methodMeta, JavaClassMeta classMeta);
 
@@ -1301,15 +1315,41 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     }
 
     /**
+     * 获取用于通过包名匹配的代码匹配器
+     *
+     * @return PackageNameCodeGenMatcher
+     */
+    protected CodeGenMatcher getPackageNameCodeGenMatcher() {
+        Optional<CodeGenMatcher> optionalCodeGenMatcher = this.codeGenMatchers.stream()
+                .filter(codeGenMatcher -> codeGenMatcher instanceof PackageNameCodeGenMatcher)
+                .findFirst();
+        if (!optionalCodeGenMatcher.isPresent()) {
+            throw new RuntimeException("PackageNameCodeGenMatcher not found");
+        }
+        return optionalCodeGenMatcher.get();
+    }
+
+    /**
+     * 尝试匹配是否Wie只需要导入的类
+     *
+     * @return <code>true</code> 改类只需要导入
+     */
+    protected boolean tryMatchOnlyImportClasses(Class clazz) {
+        return this.codeGenImportMatchers.stream()
+                .anyMatch(codeGenMatcher -> codeGenMatcher.match(clazz));
+
+    }
+
+    /**
      * 查找 Spring Param 相关的 Annotation
      *
-     * @param annotations
-     * @param annotationType
-     * @return
+     * @param annotations  注解列表
+     * @param findAnnotationType 查找的注解类型
+     * @return findAnnotationType类型注解的实例
      */
-    private <T extends Annotation> T findSpringParamAnnotation(Annotation[] annotations, Class<T> annotationType) {
+    private <T extends Annotation> T findSpringParamAnnotation(Annotation[] annotations, Class<T> findAnnotationType) {
         return Arrays.stream(annotations)
-                .filter(annotation -> annotation.annotationType().equals(annotationType))
+                .filter(annotation -> annotation.annotationType().equals(findAnnotationType))
                 .map(annotation -> (T) annotation)
                 .findFirst()
                 .orElse(null);

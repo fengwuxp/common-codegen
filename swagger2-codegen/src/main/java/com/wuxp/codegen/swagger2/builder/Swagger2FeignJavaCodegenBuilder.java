@@ -3,7 +3,6 @@ package com.wuxp.codegen.swagger2.builder;
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
@@ -40,8 +39,7 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
                 packageMapStrategy,
                 new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects);
-        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
-        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
+        initLanguageParser(languageParser);
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
@@ -56,4 +54,6 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle)
                 .otherCodegenClassMetas(otherCodegenClassMetas);
     }
+
+
 }

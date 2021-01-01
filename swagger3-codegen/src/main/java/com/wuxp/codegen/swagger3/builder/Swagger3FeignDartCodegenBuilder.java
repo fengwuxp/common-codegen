@@ -5,7 +5,6 @@ import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
-import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.disruptor.DartFeignCodeGenEventHandler;
@@ -88,8 +87,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                 new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects,
                 this.ignoreFields);
-        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
-        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
+        initLanguageParser(languageParser);
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
@@ -106,9 +104,8 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
                     return filepath;
                 });
 
-        Thread mainThread = Thread.currentThread();
-
-        DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.outPath, mainThread);
+        Thread currentThread = Thread.currentThread();
+        DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.outPath, currentThread);
         dartFeignCodeGenEventHandler.setSdkIndexFileName(this.sdkIndexFileName);
         dartFeignCodeGenEventHandler.setTypeAlias(this.typeAlias);
         RequestMappingProcessor.setSupportAuthenticationType(true);

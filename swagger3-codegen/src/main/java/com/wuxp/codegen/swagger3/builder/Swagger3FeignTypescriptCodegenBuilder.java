@@ -4,7 +4,6 @@ import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
@@ -48,9 +47,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 packageMapStrategy,
                 new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
                 this.codeDetects);
-
-        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
-        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
+        initLanguageParser(languageParser);
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());

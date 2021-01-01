@@ -5,10 +5,13 @@ import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.CodeGenMatcher;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.macth.IgnoreClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
+import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
@@ -86,7 +89,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     /**
      * 代码检测器
      */
-    protected Collection<CodeDetect> codeDetects;
+    protected Collection<CodeDetect> codeDetects = new ArrayList<>();
+
+    /**
+     * 代码匹配器
+     */
+    protected Collection<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
 
     /**
      * 是否删除输出目录
@@ -201,8 +209,13 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder codeDetects(Collection<CodeDetect> codeDetects) {
-        this.codeDetects = codeDetects;
+    public AbstractDragonCodegenBuilder codeDetects(CodeDetect... codeDetects) {
+        this.codeDetects.addAll(Arrays.asList(codeDetects));
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder codeGenMatchers(CodeGenMatcher... codeGenMatchers) {
+        this.codeGenMatchers.addAll(Arrays.asList(codeGenMatchers));
         return this;
     }
 
@@ -284,9 +297,19 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
             AbstractTypeMapping.setCustomizeJavaTypeMapping(key, val, true);
         });
 
-
-        PackageNameCodeGenMatcher.IGNORE_PACKAGE_LIST.addAll(ignorePackages);
-
+        Collection<CodeGenMatcher> codeGenMatchers = this.codeGenMatchers;
+        Optional<PackageNameCodeGenMatcher> optionalCodeGenMatcher = codeGenMatchers.stream()
+                .filter(codeGenMatcher -> codeGenMatcher instanceof PackageNameCodeGenMatcher)
+                .map(codeGenMatcher -> (PackageNameCodeGenMatcher) codeGenMatcher)
+                .findFirst();
+        if (optionalCodeGenMatcher.isPresent()) {
+            PackageNameCodeGenMatcher codeGenMatcher = optionalCodeGenMatcher.get();
+            codeGenMatcher.addIgnorePackages(ignorePackages);
+        } else {
+            PackageNameCodeGenMatcher codeGenMatcher = new PackageNameCodeGenMatcher();
+            codeGenMatcher.addIgnorePackages(ignorePackages);
+            codeGenMatchers.add(codeGenMatcher);
+        }
         CodegenConfig codegenConfig = CodegenConfig.builder()
                 .providerType(this.clientProviderType)
                 .languageDescription(this.languageDescription)
@@ -303,5 +326,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     protected Map<String, Object> getSharedVariables() {
         //全局共享变量
         return sharedVariables;
+    }
+
+    protected void initLanguageParser(LanguageParser languageParser) {
+        languageParser.addCodeGenMatchers(new IgnoreClassCodeGenMatcher(ignoreClasses));
+        languageParser.addCodeGenMatchers(this.codeGenMatchers.toArray(new CodeGenMatcher[0]));
+        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
     }
 }
