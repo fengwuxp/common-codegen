@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.swagger2.swagger3;
+package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
