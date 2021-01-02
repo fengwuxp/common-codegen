@@ -48,6 +48,7 @@
         <spring.version>5.2.4.RELEASE</spring.version>
         <swagger2.version>2.9.2</swagger2.version>
         <springdoc.version>1.2.21</springdoc.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
 
     <dependencies>
@@ -108,7 +109,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 
