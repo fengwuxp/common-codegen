@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen;
+package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;

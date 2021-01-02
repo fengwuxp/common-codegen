@@ -1,13 +1,14 @@
-package test.com.wuxp.codegen.swagger3;
+package test.com.wuxp.codegen.swagger2.swagger3;
 
-import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
-import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
+import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
-import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
-import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
+import com.wuxp.codegen.model.languages.dart.DartClassMeta;
+import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
 import com.wuxp.codegen.swagger3.example.controller.OrderController;
+import com.wuxp.codegen.swagger3.example.evt.BaseQueryEvt;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
@@ -16,24 +17,22 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
- * 测试swagger 生成  typescript的 umi request sdk
+ * 测试swagger 生成  dart的 feign api sdk
  */
 @Slf4j
-public class Swagger3FeignSdkCodegenUmiRequestTest {
+public class Swagger3FeignSdkCodegenDartTest {
 
 
     @Test
-    public void testCodeGenTypescriptApiByStater() {
+    public void testCodeGenDartApiSdk() {
 
         //设置基础数据类型的映射关系
         Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
-        baseTypeMapping.put(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
-        baseTypeMapping.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
+        baseTypeMapping.put(ServiceQueryResponse.class, DartClassMeta.FUTRUE);
+        baseTypeMapping.put(ServiceResponse.class, DartClassMeta.FUTRUE);
 
         //自定义的类型映射
         Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
@@ -52,8 +51,8 @@ public class Swagger3FeignSdkCodegenUmiRequestTest {
         //其他类（DTO、VO等）所在的包
 //        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
-        String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.UMI_REQUEST.name().toLowerCase(), "swagger3", "src", "api"};
+        String language = LanguageDescription.DART.getName();
+        String[] outPaths = {"codegen-result", language.toLowerCase(),"swagger3", "lib", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
@@ -62,17 +61,26 @@ public class Swagger3FeignSdkCodegenUmiRequestTest {
         Map<String, Object> classNameTransformers = new HashMap<>();
         classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
 
-        Swagger3FeignTypescriptCodegenBuilder.builder()
+        Map<Class<?>, List<String>> ignoreFields = new HashMap<Class<?>, List<String>>() {{
+            put(BaseQueryEvt.class, Arrays.asList("queryPage"));
+        }};
+
+        Map<DartClassMeta, List<String>> typeAlias = new HashMap<DartClassMeta, List<String>>() {{
+            put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
+        }};
+
+        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE,new String[]{
+                "/example_cms/get_**"
+        });
+
+        Swagger3FeignDartCodegenBuilder.builder()
+                .ignoreFields(ignoreFields)
+                .typeAlias(typeAlias)
                 .baseTypeMapping(baseTypeMapping)
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.UMI_REQUEST)
                 .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-                .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
-                .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
-                .languageEnhancedProcessor(new UmiRequestEnhancedProcessor())
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();

@@ -5,6 +5,7 @@ import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractJavaParser;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
@@ -15,15 +16,24 @@ import java.util.Collection;
 
 /**
  * 基于swagger2 生成 feign sdk的 java的 parser
+ * @author wuxp
  */
 @Slf4j
 public class Swagger2FeignSdkJavaParser extends AbstractJavaParser {
 
+    private final boolean enabledAndroidSqliteSupport;
+
+    private final LanguageDescription languageDescription;
 
     public Swagger2FeignSdkJavaParser(PackageMapStrategy packageMapStrategy,
                                       CodeGenMatchingStrategy genMatchingStrategy,
-                                      Collection<CodeDetect> codeDetects) {
-        super(packageMapStrategy, genMatchingStrategy, codeDetects);
+                                      Collection<CodeDetect> codeDetects,
+                                      LanguageDescription languageDescription,
+                                      boolean useRxJava,
+                                      boolean enabledAndroidSqliteSupport) {
+        super(packageMapStrategy, genMatchingStrategy, codeDetects, useRxJava);
+        this.enabledAndroidSqliteSupport = enabledAndroidSqliteSupport;
+        this.languageDescription = languageDescription;
     }
 
     @Override
@@ -43,5 +53,13 @@ public class Swagger2FeignSdkJavaParser extends AbstractJavaParser {
 //        }
 
         return super.converterMethod(javaMethodMeta, classMeta, codeGenClassMeta);
+    }
+
+    @Override
+    public JavaCodeGenClassMeta parse(Class<?> source) {
+        if (LanguageDescription.JAVA_ANDROID.equals(languageDescription) && this.enabledAndroidSqliteSupport) {
+            // TODO  support sqlite
+        }
+        return super.parse(source);
     }
 }

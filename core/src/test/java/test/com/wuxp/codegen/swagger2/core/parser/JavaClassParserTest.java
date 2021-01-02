@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.core.parser;
+package test.com.wuxp.codegen.swagger2.core.parser;
 
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;

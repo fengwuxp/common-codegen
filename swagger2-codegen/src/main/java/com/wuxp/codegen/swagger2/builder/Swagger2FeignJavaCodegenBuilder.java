@@ -24,6 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilder {
 
+    private final Boolean enabledAndroidSqliteSupport;
+
+    private final Boolean useRxJava;
 
     @Override
     public CodeGenerator buildCodeGenerator() {
@@ -38,7 +41,10 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         LanguageParser languageParser = new Swagger2FeignSdkJavaParser(
                 packageMapStrategy,
                 new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods),
-                this.codeDetects);
+                this.codeDetects,
+                languageDescription,
+                Boolean.TRUE.equals(useRxJava),
+                Boolean.TRUE.equals(enabledAndroidSqliteSupport));
         initLanguageParser(languageParser);
 
         //实例化模板加载器
@@ -54,6 +60,8 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle)
                 .otherCodegenClassMetas(otherCodegenClassMetas);
     }
+
+
 
 
 }

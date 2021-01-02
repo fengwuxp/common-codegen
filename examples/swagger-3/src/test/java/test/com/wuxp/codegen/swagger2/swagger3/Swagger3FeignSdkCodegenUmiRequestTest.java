@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.typescript;
+package test.com.wuxp.codegen.swagger2.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
@@ -6,10 +6,11 @@ import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
-import com.wuxp.codegen.swagger2.example.resp.PageInfo;
-import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
-import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
+import com.wuxp.codegen.swagger3.example.controller.OrderController;
+import com.wuxp.codegen.swagger3.example.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
+import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -20,10 +21,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 测试swagger 生成  typescript的 umi request  sdk
+ * 测试swagger 生成  typescript的 umi request sdk
  */
 @Slf4j
-public class Swagger2FeignSdkCodegenUmiRequestTest {
+public class Swagger3FeignSdkCodegenUmiRequestTest {
+
 
     @Test
     public void testCodeGenTypescriptApiByStater() {
@@ -41,36 +43,41 @@ public class Swagger2FeignSdkCodegenUmiRequestTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-//        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
-        packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");
-        packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
-        packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
-        packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
-        packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
-        packageMap.put("test.com.wuxp.codegen.typescript", "enums");
+//        packageMap.put("com.wuxp.codegen.swagger3.controller", "services");
+        packageMap.put("com.wuxp.codegen.swagger3.**.controller", "{0}services");
+        packageMap.put("com.wuxp.codegen.swagger3.**.evt", "evt");
+        packageMap.put("com.wuxp.codegen.swagger3.**.domain", "domain");
+        packageMap.put("com.wuxp.codegen.swagger3.**.resp", "resp");
+        packageMap.put("com.wuxp.codegen.swagger3.**.enums", "enums");
         //其他类（DTO、VO等）所在的包
-//        packageMap.put("com.wuxp.codegen.swagger2.example", "");
+//        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.UMI_REQUEST.name().toLowerCase(), "swagger2", "src", "api"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.UMI_REQUEST.name().toLowerCase(), "swagger3", "src", "api"};
 
         //要进行生成的源代码包名列表
-        String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
+        String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
 
-        Swagger2FeignTypescriptCodegenBuilder.builder()
+
+        Map<String, Object> classNameTransformers = new HashMap<>();
+        classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
+
+        Swagger3FeignTypescriptCodegenBuilder.builder()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.TYPESCRIPT)
                 .clientProviderType(ClientProviderType.UMI_REQUEST)
                 .customJavaTypeMapping(customTypeMapping)
-                .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
+                .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-//                .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
-//                .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
+                .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
+                .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
                 .languageEnhancedProcessor(new UmiRequestEnhancedProcessor())
+                .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();
 
     }
+
 
 }

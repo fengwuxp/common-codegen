@@ -1,11 +1,8 @@
-package test.com.wuxp.codegen.typescript;
+package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
-import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -13,7 +10,6 @@ import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger2.example.domain.User;
-import com.wuxp.codegen.swagger2.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
@@ -28,11 +24,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public class Swagger2FeignSdkCodegenFeignClientTest {
+public class Swagger2FeignSdkCodegenRetrofitTest {
 
 
     @Test
-    public void testCodeGenFeignClientByStater() {
+    public void testCodeGenRetrofitApiByStater() {
 
 
         //设置基础数据类型的映射关系
@@ -50,34 +46,29 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-        packageMap.put("com.wuxp.codegen.swagger2.example.controller", "com.wuxp.codegen.swagger2.clients");
+        packageMap.put("com.wuxp.codegen.swagger2.example.controller", "com.wuxp.codegen.swagger2.retrofits");
         //其他类（DTO、VO等）所在的包
         String basePackageName = "com.wuxp.codegen.swagger2";
-//        packageMap.put("com.wuxp.codegen.swagger2.example.evt", "com.wuxp.codegen.swagger2.example.evt");
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
 
         String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.SPRING_CLOUD_OPENFEIGN.name().toLowerCase(), "swagger2", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.RETROFIT.name().toLowerCase(),"swagger2", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
-        JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
-        packageMapStrategy.setFileNamSuffix("FeignClient");
-        CombineLanguageEnhancedProcessor languageEnhancedProcessor = CombineLanguageEnhancedProcessor.of(
-                SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
         Swagger2FeignJavaCodegenBuilder.builder()
+                .useRxJava(true)
                 .build()
-                .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
-                .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
+                .clientProviderType(ClientProviderType.RETROFIT)
                 .customJavaTypeMapping(customTypeMapping)
-                .packageMapStrategy(packageMapStrategy)
+                .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
-                .languageEnhancedProcessor(languageEnhancedProcessor)
+                .enableFieldUnderlineStyle(true)
                 .buildCodeGenerator()
                 .generate();
 

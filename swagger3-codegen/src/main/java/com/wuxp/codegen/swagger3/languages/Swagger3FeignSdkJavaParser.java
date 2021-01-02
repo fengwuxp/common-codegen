@@ -25,9 +25,9 @@ import java.util.Collection;
 @Slf4j
 public class Swagger3FeignSdkJavaParser extends AbstractJavaParser {
 
-    private boolean enabledAndroidSqliteSupport;
+    private final boolean enabledAndroidSqliteSupport;
 
-    private LanguageDescription languageDescription;
+    private final LanguageDescription languageDescription;
 
 
     public Swagger3FeignSdkJavaParser(PackageMapStrategy packageMapStrategy,

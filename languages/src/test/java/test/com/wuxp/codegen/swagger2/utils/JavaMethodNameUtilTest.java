@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.utils;
+package test.com.wuxp.codegen.swagger2.utils;
 
 
 import com.wuxp.codegen.util.JavaMethodNameUtils;

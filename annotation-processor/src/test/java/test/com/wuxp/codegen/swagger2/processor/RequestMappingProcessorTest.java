@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.processor;
+package test.com.wuxp.codegen.swagger2.processor;
 
 import com.wuxp.codegen.annotation.processor.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.javax.NotNullProcessor;

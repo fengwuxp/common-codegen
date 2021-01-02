@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.swagger3;
+package test.com.wuxp.codegen.swagger2.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;

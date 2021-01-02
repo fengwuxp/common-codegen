@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.typescript;
+package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;

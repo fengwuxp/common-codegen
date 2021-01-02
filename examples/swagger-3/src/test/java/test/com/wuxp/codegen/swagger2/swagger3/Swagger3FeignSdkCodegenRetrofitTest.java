@@ -1,4 +1,4 @@
-package test.com.wuxp.codegen.typescript;
+package test.com.wuxp.codegen.swagger2.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.JavaClassParser;
@@ -8,11 +8,10 @@ import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
-import com.wuxp.codegen.swagger2.example.domain.User;
-import com.wuxp.codegen.swagger2.example.resp.PageInfo;
-import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
-import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
+import com.wuxp.codegen.swagger3.example.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
+import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -24,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public class Swagger2FeignSdkCodegenRetrofitTest {
+public class Swagger3FeignSdkCodegenRetrofitTest {
 
 
     @Test
@@ -46,18 +45,19 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-        packageMap.put("com.wuxp.codegen.swagger2.example.controller", "com.wuxp.codegen.swagger2.retrofits");
+        packageMap.put("com.wuxp.codegen.swagger3.example.controller", "com.wuxp.codegen.swagger3.retrofits");
         //其他类（DTO、VO等）所在的包
-        String basePackageName = "com.wuxp.codegen.swagger2";
-        packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
+        String basePackageName = "com.wuxp.codegen.swagger3";
+        packageMap.put("com.wuxp.codegen.swagger3.example", basePackageName);
 
         String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.RETROFIT.name().toLowerCase(),"swagger2", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.RETROFIT.name().toLowerCase(), "swagger3", "src"};
 
         //要进行生成的源代码包名列表
-        String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
+        String[] packagePaths = {"com.wuxp.codegen.swagger3.example.controller"};
 
-        Swagger2FeignJavaCodegenBuilder.builder()
+        Swagger3FeignJavaCodegenBuilder.builder()
+                .useRxJava(true)
                 .build()
                 .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
@@ -66,6 +66,7 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
+//                .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(false)
                 .buildCodeGenerator()
                 .generate();
@@ -75,7 +76,7 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
     @Test
     public void testJavaParser() {
 
-        JavaClassMeta parse = new JavaClassParser(false).parse(User.class);
+        JavaClassMeta parse = new JavaClassParser(false).parse(ServiceResponse.class);
 
         log.debug("{}", parse);
     }
