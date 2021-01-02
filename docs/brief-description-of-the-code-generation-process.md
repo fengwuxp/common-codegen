@@ -6,9 +6,22 @@
 - 3.实例化要生成的目标语言的解析器，包名映射策略，模板加载
 - 4.通过第三方实例化的对象，构造代码生成器
 
-- 具体可以参考[SwaggerCodegenTypescriptTest.java](../examples/swagger-2/src/test/java/test/com/wuxp/codegen/typescript/SwaggerCodegenTypescriptTest.java)
+#### examples
+##### swagger2
+- [dart](../examples/swagger-2/src/test/java/test/com/wuxp/codegen/swagger2/Swagger2FeignSdkCodegenDartTest.java)
+- [spring cloud openfeign](../examples/swagger-2/src/test/java/test/com/wuxp/codegen/swagger2/Swagger2FeignSdkCodegenFeignClientTest.java)
+- [retrofit](../examples/swagger-2/src/test/java/test/com/wuxp/codegen/swagger2/Swagger2FeignSdkCodegenRetrofitTest.java)
+- [typescript feign](../examples/swagger-2/src/test/java/test/com/wuxp/codegen/swagger2/Swagger2FeignSdkCodegenTypescriptTest.java)
+- [umi request](../examples/swagger-2/src/test/java/test/com/wuxp/codegen/swagger2/Swagger2FeignSdkCodegenUmiRequestTest.java)
 
-##### 生成过程截图
+##### swagger3
+- [dart](../examples/swagger-3/src/test/java/test/com/wuxp/codegen/swagger3/Swagger3FeignSdkCodegenDartTest.java)
+- [spring cloud openfeign](../examples/swagger-3/src/test/java/test/com/wuxp/codegen/swagger3/Swagger3FeignSdkCodegenFeignClientTest.java)
+- [retrofit](../examples/swagger-3/src/test/java/test/com/wuxp/codegen/swagger3/Swagger3FeignSdkCodegenRetrofitTest.java)
+- [typescript feign](../examples/swagger-3/src/test/java/test/com/wuxp/codegen/swagger3/Swagger3FeignSdkCodegenTypescriptTest.java)
+- [umi request](../examples/swagger-3/src/test/java/test/com/wuxp/codegen/swagger3/Swagger3FeignSdkCodegenUmiRequestTest.java)
+
+##### 生成结果截图
 
 <p align="center">
   <h1>swagger-2的文档页面</h1>
