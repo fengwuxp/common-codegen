@@ -48,6 +48,7 @@ public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPar
             if (StringUtils.hasText(value)) {
                 arguments.put("name", MessageFormat.format("\"{0}\"", value));
             }
+            arguments.put("required", this.required() + "");
             //注解位置参数
             List<String> positionArguments = new LinkedList<>(arguments.values());
             annotation.setNamedArguments(arguments)

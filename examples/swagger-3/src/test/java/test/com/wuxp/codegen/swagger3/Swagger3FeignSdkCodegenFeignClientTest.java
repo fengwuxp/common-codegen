@@ -74,7 +74,7 @@ public class Swagger3FeignSdkCodegenFeignClientTest {
                 .scanPackages(packagePaths)
                 .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(false)
-                .languageEnhancedProcessor(languageEnhancedProcessor)
+                .languageEnhancedProcessors(languageEnhancedProcessor)
                 .buildCodeGenerator()
                 .generate();
 

@@ -156,6 +156,10 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
 
     }
 
+    @Override
+    protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+
+    }
 
     @Override
     protected boolean needMargeMethodParams() {

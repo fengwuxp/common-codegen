@@ -25,6 +25,7 @@ import java.util.Optional;
 
 /**
  * 基于swagger2 生成 feign sdk的 typeScript的 parser
+ * @author wuxp
  */
 @Slf4j
 public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
@@ -81,7 +82,7 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
     @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
-
+        super.enhancedProcessingMethod(methodMeta,javaMethodMeta,classMeta);
         if (!javaMethodMeta.existAnnotation(ApiImplicitParam.class, ApiImplicitParams.class)) {
             return;
         }

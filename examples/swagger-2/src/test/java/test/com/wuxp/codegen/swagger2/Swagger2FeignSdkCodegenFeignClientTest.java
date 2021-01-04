@@ -77,7 +77,7 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
-                .languageEnhancedProcessor(languageEnhancedProcessor)
+                .languageEnhancedProcessors(languageEnhancedProcessor)
                 .buildCodeGenerator()
                 .generate();
 

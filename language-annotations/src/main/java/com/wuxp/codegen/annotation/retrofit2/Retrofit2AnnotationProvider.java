@@ -9,6 +9,7 @@ import retrofit2.http.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +37,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
             annotation.setName(Body.class.getSimpleName());
+            annotation.setNamedArguments(Collections.emptyMap());
             return annotation;
         }
     }

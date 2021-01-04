@@ -83,4 +83,16 @@ public class OrderController extends BaseController<String> {
         return new ServiceResponse<>();
     }
 
+    @ApiOperation(value = "test hello", notes = "非必填参数测试")
+    @PostMapping(value = {"hello_2"})
+    public ServiceResponse hello2(@RequestParam(required = false) String name) {
+
+        return new ServiceResponse<>();
+    }
+
+    @ApiOperation(value = "test hello", notes = "测试方法名称=delete")
+    @DeleteMapping(value = {"hello_delete"})
+    public void delete(@RequestParam(required = false) String id) {
+
+    }
 }

@@ -1,4 +1,3 @@
-import io.reactivex.Observable;
 import org.springframework.cloud.openfeign.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +39,9 @@ public interface ${name}{
     <#list method.annotations as annotation>
         <#assign len=annotation.namedArguments?size />
         <#assign currentIndex=0 />
-        @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
+        @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val} <#if (currentIndex<len-1)>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
     </#list>
-<#--参数遍历-->
+    <#--参数遍历-->
     <#assign params=method.params/>
     <#assign paramAnnotations=method.paramAnnotations/>
     <#assign paramLen=params?size />
@@ -52,6 +51,8 @@ public interface ${name}{
         <#assign paramAnnotation= paramAnnotations[paramName]/>
         <#if (paramAnnotation?size>0)>
             <#assign annotation= paramAnnotation[0]/>
+            <#assign len=annotation.namedArguments?size />
+            <#assign currentIndex=0 />
             @${annotation.name}<#if annotation.namedArguments??>(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)</#if></#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName}<#if currentParamIndex<paramLen-1>,</#if>
         <#assign currentParamIndex=currentParamIndex+1 />
     </#list>

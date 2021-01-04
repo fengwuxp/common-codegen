@@ -160,7 +160,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
                 .map(this.languageParser::parse)
                 .filter(Objects::nonNull)
-                .filter(this::filterNoneClazz)
+                .filter(this::hasExistMember)
                 .collect(Collectors.toSet());
 
         CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
@@ -175,7 +175,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
                     .filter(Objects::nonNull)
-//                    .filter(this::filterNoneClazz)
+                    .filter(this::hasExistMember)
                     .map(commonCodeGenClassMeta -> {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
@@ -190,7 +190,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
                         //过滤掉不需要导入的依赖
                         dependencies.forEach((key, val) -> {
-                            if (val.getNeedImport()) {
+                            if (val.getNeedImport() && this.hasExistMember(val)) {
                                 needImportDependencies.put(key, val);
                             }
                         });
@@ -264,12 +264,12 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     }
 
     /**
-     * 过滤掉无效的数据
+     * 是否存在成员
      *
      * @param commonCodeGenClassMeta
-     * @return
+     * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
-    private boolean filterNoneClazz(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+    private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
 
         boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
 

@@ -29,6 +29,11 @@ public class UmiRequestEnhancedProcessor implements LanguageEnhancedProcessor<Co
 
     @Override
     public CommonCodeGenMethodMeta enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
+        // delete 是typescript的关键字，不能用作方法名称
+        if ("delete".equals(methodMeta.getName())) {
+            methodMeta.setName("deleteRequest");
+        }
+
         Map<String, Object> tags = methodMeta.getTags();
         Optional<RequestMappingProcessor.RequestMappingMate> mappingAnnotation = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
         if (!mappingAnnotation.isPresent()) {
@@ -111,4 +116,6 @@ public class UmiRequestEnhancedProcessor implements LanguageEnhancedProcessor<Co
                 return null;
         }
     }
+
+
 }

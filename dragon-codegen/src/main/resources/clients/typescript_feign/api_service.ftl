@@ -1,6 +1,5 @@
 /* tslint:disable */
 <#include "./inculdes/feign_imports.ftl">
-
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
@@ -29,7 +28,7 @@ class ${name}{
     <#if (method.comments?size>0)>
     /**
     <#list method.comments as cmment>
-        * ${cmment_index+1}:${cmment}
+    * ${cmment_index+1}:${cmment}
     </#list>
     **/
     </#if>
@@ -41,7 +40,8 @@ class ${name}{
         </#list>
         })
     </#list>
-    ${method.name}!:(req: ${method.params["req"].name}, option?: FeignRequestOptions) => ${customize_method.combineType(method.returnTypes)};
+    <#include "./inculdes/method_prams_required.ftl">
+    ${method.name}!:(<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name}<#else >req?: null | undefined</#if>, option?: FeignRequestOptions) => ${customize_method.combineType(method.returnTypes)};
 </#list>
 }
 

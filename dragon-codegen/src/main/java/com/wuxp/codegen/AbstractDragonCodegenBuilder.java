@@ -13,15 +13,20 @@ import com.wuxp.codegen.core.macth.ExcludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.IncludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.languages.java.IgnoreParamsByAnnotationLanguageEnhancedProcessor;
+import com.wuxp.codegen.languages.typescript.UmiModel;
+import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
@@ -153,7 +158,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     /**
      * 语言处理增强器
      */
-    protected LanguageEnhancedProcessor languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
+    protected List<LanguageEnhancedProcessor> languageEnhancedProcessors = new ArrayList<>();
+
+    /**
+     * 被改注解标记的参数需要忽略
+     */
+    protected Set<Class<? extends Annotation>> ignoreParamByAnnotations=new HashSet<>();
 
     /**
      * 模板共享变量
@@ -190,6 +200,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     public AbstractDragonCodegenBuilder ignorePackages(String... ignorePackages) {
         this.ignorePackages.addAll(Arrays.asList(ignorePackages));
+        return this;
+    }
+
+    public AbstractDragonCodegenBuilder ignoreParamByAnnotations(Class<? extends Annotation>... ignoreParamByAnnotations) {
+        this.ignoreParamByAnnotations.addAll(Arrays.asList(ignoreParamByAnnotations));
         return this;
     }
 
@@ -283,8 +298,8 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder languageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor) {
-        this.languageEnhancedProcessor = languageEnhancedProcessor;
+    public AbstractDragonCodegenBuilder languageEnhancedProcessors(LanguageEnhancedProcessor... languageEnhancedProcessors) {
+        this.languageEnhancedProcessors.addAll(Arrays.asList(languageEnhancedProcessors));
         return this;
     }
 
@@ -327,6 +342,14 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
                 .languageDescription(this.languageDescription)
                 .build();
         CodegenConfigHolder.setConfig(codegenConfig);
+        this.languageEnhancedProcessors.add(IgnoreParamsByAnnotationLanguageEnhancedProcessor.of(this.ignoreParamByAnnotations));
+
+        if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
+            this.languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
+            if (!this.sharedVariables.containsKey("umiModel")) {
+                this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
+            }
+        }
 
     }
 
@@ -343,7 +366,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     protected void initLanguageParser(LanguageParser languageParser) {
         languageParser.addCodeGenMatchers(ExcludeClassCodeGenMatcher.of(ignorePackages, ignoreClasses));
         languageParser.addCodeGenMatchers(this.codeGenMatchers.toArray(new CodeGenMatcher[0]));
-        languageParser.setLanguageEnhancedProcessor(this.languageEnhancedProcessor);
+        languageParser.setLanguageEnhancedProcessor(CombineLanguageEnhancedProcessor.of(this.languageEnhancedProcessors.toArray(new LanguageEnhancedProcessor[0])));
         if (!this.includePackages.isEmpty() || !includeClasses.isEmpty()) {
             // include 模式
             languageParser.addCodeGenMatchers(IncludeClassCodeGenMatcher.of(this.includePackages, includeClasses));

@@ -50,20 +50,21 @@ class ${name} extends FeignProxyClient {
             <#assign paramAnnotations=method.paramAnnotations/>
             <#list params as paramName,paramType>
                 <#assign paramAnnotation= paramAnnotations[paramName]/>
-              <#if (paramAnnotation?size>0)>
-                  <#assign annotation= paramAnnotation[0]/>
-                  <#if annotation.positionArguments??>
-                     @${annotation.name}(<#list annotation.positionArguments as item>${item}</#list>)
-                  </#if>
-              </#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName},
+                <#if (paramAnnotation?size>0)>
+                    <#assign annotation= paramAnnotation[0]/>
+                    <#assign len=annotation.namedArguments?size />
+                    <#assign currentIndex=0 />
+                    @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
+                </#if>
+                ${customize_method.combineType(paramType.typeVariables)} ${paramName},
            </#list>
             <#assign returnType=returnTypes[0] />
              [UIOptions feignOptions]) {
                return this.delegateInvoke<${customize_method.combineType(returnTypes)}>("${method.name}",
                    [<#list params as paramName,paramType>${paramName},</#list>],
-                    feignOptions: feignOptions,
-            <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
-               <#assign isBaseType=
+               <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
+              <#assign useSerializer=false>
+              <#assign isBaseType=
                          returnType.name=="String"||
                          returnType.name=="num"||
                          returnType.name=="bool"||
@@ -73,13 +74,15 @@ class ${name} extends FeignProxyClient {
                          returnType.name=="dynamic"||
                          returnType.name=="void" )>
                     <#assign specifiedType=customize_method.combineDartFullType(returnTypes)!""/>
-                      <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
-                        serializer: BuiltValueSerializable(
+                        <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
+                         <#assign useSerializer=true>
+                         feignOptions: feignOptions,
+                         serializer: BuiltValueSerializable(
                         <#if !returnTypes[0].name?starts_with("Built") && !isBaseType>
                             serializer: ${returnType.name}.serializer,
                         </#if>
                         <#if (specifiedType?length > 0 && !isBaseType)>
-                        specifiedType:${specifiedType}
+                            specifiedType:${specifiedType}
                         </#if>
                         <#if isBaseType>
                            specifiedType:FullType(${returnTypes[0].name})
@@ -87,6 +90,7 @@ class ${name} extends FeignProxyClient {
                         )
                     </#if>
                 </#if>
+                <#if !useSerializer>feignOptions: feignOptions</#if>
                );
             }
         </#list>

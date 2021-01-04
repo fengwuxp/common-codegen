@@ -72,7 +72,7 @@ public class Swagger3FeignSdkCodegenUmiRequestTest {
                 .scanPackages(packagePaths)
                 .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
                 .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
-                .languageEnhancedProcessor(new UmiRequestEnhancedProcessor())
+                .languageEnhancedProcessors(new UmiRequestEnhancedProcessor())
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();

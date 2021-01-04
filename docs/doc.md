@@ -1,7 +1,6 @@
-#### 一些设计思路
+#### 一些设计思路说明
 
-- 扫描的需要生成代码的包路径
-
+- 扫描的需要生成代码的包路径（和spring的包扫描一致的规则）
 ```
  那些包下的类需要进行代码生成，一般是控制器的目录，支持ant匹配模式，例如：
      com.wuxp.codegen.swagger2.**.controller
@@ -9,30 +8,51 @@
 
 - 类型的映射，将一个java类转换为其他java类或者其他语言类型
 ```
-  设置java的类型和生成目标语言类型的映射关系，例如：
+  // 设置java的类型和生成目标语言类型的映射关系，例如：
   AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
   AbstractTypeMapping.setBaseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
   AbstractTypeMapping.setBaseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE);
   
-  自定义的类型映射，将一个java映射为一个或多个其他的java类型，例如：
+  // 自定义的类型映射，将一个java映射为一个或多个其他的java类型，例如：
   Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
   customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 ```
 
-- 包名映射，将java的包路径转换为其他目录，不同的语言可能需要不同的映射策略
+- 包名映射，配置一个需要生成类所属的java包对应到输出路径下的包结构（目录结构），不同的语言可能需要不同的映射策略。
 ```
-  配置一个需要生成类所属的java包对应到输出路径下的包结构（目录结构，例如：
-     //包名映射关系
+     // 包名映射关系
      Map<String, String> packageMap = new LinkedHashMap<>();
      // com.wuxp.codegen.swagger2.example.controller下的类生成到输出路径的com/wuxp/codegen/swagger2/retrofits路径下
      packageMap.put("com.wuxp.codegen.swagger2.example.controller", "com.wuxp.codegen.swagger2.retrofits");
      
     // com.wuxp.codegen.swagger2.controlle下的类生成到输出路径下的 clients目录下
     packageMap.put("com.wuxp.codegen.swagger2.controller", "clents");
+    
     //其他类（DTO、VO等）所在的包
     // com.wuxp.codegen.swagger2.example的类生成到输出路径下的models目录下
     packageMap.put("com.wuxp.codegen.swagger2.example", "models");
 ```
+- 只需要导入类（主要针对java相关的生成，如果项目已经将一些公共的类（一把是DTO对象）提取到了一个公共的模块当中，这个时候就可以标记这些包（类）是只需要导入就可以了
+```
+     Swagger2FeignJavaCodegenBuilder.builder()
+                .build()
+                // 可以设置多个类或者多个包，DefaultCodeGenImportMatcher.of方法有多个重载，如果设置的是包名或者类名，支持ant匹配
+                .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
+                .baseTypeMapping(baseTypeMapping)
+                .languageDescription(LanguageDescription.JAVA_ANDROID)
+                .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
+                .customJavaTypeMapping(customTypeMapping)
+                .packageMapStrategy(packageMapStrategy)
+                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .scanPackages(packagePaths)
+                .isDeletedOutputDirectory(false)
+                .languageEnhancedProcessor(languageEnhancedProcessor)
+                .buildCodeGenerator()
+                .generate();
+  
+```
+- [ant path匹配](https://blog.csdn.net/chenqipc/article/details/53289721)
+
 #### 注解处理
 ```
    注解在java开发中有着重要的地位，用来标记不同的信息，用于在编译时、运行时等阶段交由其他代码解释处理，然而在其他语言中不一定java这么丰富的注解
