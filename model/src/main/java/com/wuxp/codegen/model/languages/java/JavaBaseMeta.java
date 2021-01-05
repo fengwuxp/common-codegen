@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+/**
+ * @author wuxp
+ */
 @Data
 @Accessors(chain = true)
 public class JavaBaseMeta extends CommonBaseMeta {

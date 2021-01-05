@@ -2,10 +2,12 @@ package com.wuxp.codegen.swagger2.annotations;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * swagger2 注解处理
@@ -24,10 +26,14 @@ public class ApiImplicitParamProcessor extends AbstractAnnotationProcessor<ApiIm
     public abstract static class ApiImplicitParamMate implements AnnotationMate, ApiImplicitParam {
 
         @Override
-        public String toComment(Method annotationOwner) {
-            String desc = this.value();
-            String description = StringUtils.hasText(desc) ? desc : this.value();
-            return String.format("属性名称：%s，属性说明：%s，示例输入：%s", this.name(), description, this.example());
+        public String toComment(Object annotationOwner) {
+            String description = this.value();
+            String defaultValue = defaultValue();
+            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
+            if (requestParam.isPresent() && !StringUtils.hasText(defaultValue)) {
+                defaultValue = requestParam.get().defaultValue();
+            }
+            return String.format("属性名称：%s，属性说明：%s，默认值：%s，示例输入：%s", this.name(), description, defaultValue, this.example());
         }
 
     }

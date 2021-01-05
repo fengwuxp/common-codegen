@@ -11,6 +11,7 @@ import java.util.Objects;
 
 /**
  * 属性元数据信息
+ * @author wuxp
  */
 @Data
 @Accessors(chain = true)

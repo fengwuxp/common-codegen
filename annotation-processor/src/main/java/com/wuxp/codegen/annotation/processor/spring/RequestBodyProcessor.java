@@ -47,8 +47,7 @@ public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBod
 
         @Override
         public String toComment(Parameter annotationOwner) {
-
-            return MessageFormat.format("属性：{0}是一个 request body", annotationOwner.getName());
+            return String.format("参数：%s是一个RequestBody, %s", annotationOwner.getName(), required() ? "必填" : "非必填");
         }
     }
 }

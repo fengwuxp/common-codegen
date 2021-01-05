@@ -8,16 +8,20 @@ import java.util.Map;
 
 /**
  * 基础数据的类型映射
+ *
+ * @author wuxp
  */
 public class BaseTypeMapping<T extends CommonCodeGenClassMeta> implements TypeMapping<Class<?>, T> {
 
-    private Map<Class<?>, CommonCodeGenClassMeta> typeMapping = new HashMap<>();
+    private final Map<Class<?>, CommonCodeGenClassMeta> typeMapping;
 
-    //时间类型 希望装换的目标类型
-    private T dateToClassTarget;
+    /**
+     * 时间类型 希望装换的目标类型
+     */
+    private final T dateToClassTarget;
 
     public BaseTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> typeMapping) {
-        this.typeMapping = typeMapping;
+        this(typeMapping, null);
     }
 
     public BaseTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> typeMapping, T dateToClassTarget) {
@@ -30,7 +34,7 @@ public class BaseTypeMapping<T extends CommonCodeGenClassMeta> implements TypeMa
         if (classes == null) {
             return null;
         }
-        Class<?> clazz = (Class<?>) classes[0];
+        Class<?> clazz = classes[0];
         if (JavaTypeUtils.isDate(clazz) && this.dateToClassTarget != null) {
             return this.dateToClassTarget;
         }

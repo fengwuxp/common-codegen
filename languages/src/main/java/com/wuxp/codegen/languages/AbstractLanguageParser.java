@@ -27,6 +27,7 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.mapping.TypeMapping;
@@ -704,7 +705,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         fieldInstance.setAccessPermission(javaFieldMeta.getAccessPermission());
 
         //注释来源于注解和java的类类型
-        List<String> comments = this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
+        List<String> comments;
+        if (javaFieldMeta instanceof JavaParameterMeta){
+            comments= this.generateComments(javaFieldMeta.getAnnotations(), ((JavaParameterMeta) javaFieldMeta).getParameter());
+        }else {
+            comments= this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
+        }
         Class<?>[] types = javaFieldMeta.getTypes();
         if (isEnum) {
             if (comments.size() == 0) {
@@ -967,7 +973,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //2.1：遍历展开参数列表
 
         final Set<F> commonCodeGenFiledMetas = new LinkedHashSet<>();
-
+        final Map<String/*参数名称*/, CommonCodeGenAnnotation[]> codeGenParamAnnotations = new LinkedHashMap<>();
         // 参数的元数据类型信息
         final C argsClassMeta = this.languageMetaInstanceFactory.newClassInstance();
         int effectiveParamsSize = effectiveParams.size();
@@ -1011,19 +1017,22 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             // 注解
             Annotation[] paramAnnotations = javaMethodMeta.getParamAnnotations().get(key);
 
-            JavaFieldMeta javaFieldMeta = new JavaFieldMeta();
+            JavaParameterMeta javaFieldMeta = new JavaParameterMeta();
             javaFieldMeta.setTypes(classes)
                     .setIsTransient(false)
                     .setIsVolatile(false);
             javaFieldMeta.setAccessPermission(AccessPermission.PUBLIC);
             javaFieldMeta.setAnnotations(paramAnnotations);
             javaFieldMeta.setName(key);
+            javaFieldMeta.setParameter(parameters.get(key));
 
             F commonCodeGenFiledMeta = this.converterField(javaFieldMeta, classMeta);
             if (commonCodeGenFiledMeta == null) {
                 return;
             }
-
+            if (commonCodeGenFiledMeta.getAnnotations()!=null){
+                codeGenParamAnnotations.put(key,commonCodeGenFiledMeta.getAnnotations());
+            }
             this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
             commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
             if (paramAnnotations == null || paramAnnotations.length == 0) {
@@ -1075,6 +1084,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 if (isExist) {
                     log.error("{}方法中的参数{}在类{}中已经存在", javaMethodMeta.getName(), genFiledMeta.getName(), argsClassMeta.getPackagePath() + argsClassMeta.getName());
                 } else {
+                    if (commonCodeGenFiledMeta.getAnnotations()!=null){
+                        codeGenParamAnnotations.put(codeGenClassMeta.getName(),commonCodeGenFiledMeta.getAnnotations());
+                    }
                     commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
                 }
 
@@ -1169,7 +1181,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 //        argsClassMeta.setPackagePath("");
         //请求参数名称，固定为req
         params.put("req", argsClassMeta);
-        genMethodMeta.setParams(params);
+        genMethodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);
 
 
         return genMethodMeta;

@@ -30,12 +30,13 @@ public class TypescriptTypeMapping extends CommonTypeMapping<TypescriptClassMeta
         AbstractTypeMapping.setBaseTypeMapping(long.class, TypescriptClassMeta.NUMBER);
         AbstractTypeMapping.setBaseTypeMapping(short.class, TypescriptClassMeta.NUMBER);
         AbstractTypeMapping.setBaseTypeMapping(byte.class, TypescriptClassMeta.NUMBER);
-//        AbstractTypeMapping.setBaseTypeMapping(Map.class, TypescriptClassMeta.MAP);
+
         AbstractTypeMapping.setBaseTypeMapping(Map.class, TypescriptClassMeta.RECORD);
-        AbstractTypeMapping.setBaseTypeMapping(Set.class, TypescriptClassMeta.SET);
+        AbstractTypeMapping.setBaseTypeMapping(Set.class, TypescriptClassMeta.ARRAY);
         AbstractTypeMapping.setBaseTypeMapping(List.class, TypescriptClassMeta.ARRAY);
         AbstractTypeMapping.setBaseTypeMapping(Collection.class, TypescriptClassMeta.ARRAY);
         AbstractTypeMapping.setBaseTypeMapping(void.class, TypescriptClassMeta.VOID);
+        AbstractTypeMapping.setBaseTypeMapping(Void.class, TypescriptClassMeta.VOID);
 
         //文件上传
         AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, TypescriptClassMeta.BROWSER_FILE);

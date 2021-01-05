@@ -58,8 +58,7 @@ public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPar
 
         @Override
         public String toComment(Parameter annotationOwner) {
-
-            return MessageFormat.format("属性：{0}是一个 request part", annotationOwner.getName());
+            return String.format("参数：%s是一个文件对象, %s", annotationOwner.getName(), required() ? "必填" : "非必填");
         }
     }
 }

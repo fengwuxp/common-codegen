@@ -59,7 +59,7 @@ public class PathVariableProcessor extends AbstractAnnotationProcessor<PathVaria
         @Override
         public String toComment(Parameter annotationOwner) {
 
-            return MessageFormat.format("属性：{0}是一个 path variable", annotationOwner.getName());
+            return String.format("参数：%s是一个路径参数, %s", annotationOwner.getName(), required() ? "必填" : "非必填");
         }
     }
 }

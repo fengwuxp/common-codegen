@@ -10,12 +10,13 @@ import java.util.stream.Collectors;
 
 /**
  * 自定义的java type映射
+ * @author wuxp
  */
 @Slf4j
 public class CustomizeJavaTypeMapping implements TypeMapping<Class<?>, List<Class<?>>> {
 
 
-    private Map<Class<?>, Class<?>[]> classMap;
+    private final Map<Class<?>, Class<?>[]> classMap;
 
     public CustomizeJavaTypeMapping(Map<Class<?>, Class<?>[]> classMap) {
         this.classMap = classMap;

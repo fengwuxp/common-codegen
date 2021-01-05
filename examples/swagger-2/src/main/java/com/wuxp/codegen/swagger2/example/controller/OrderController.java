@@ -85,7 +85,7 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "test hello", notes = "非必填参数测试")
     @PostMapping(value = {"hello_2"})
-    public ServiceResponse hello2(@RequestParam(required = false) String name) {
+    public ServiceResponse hello2(@RequestParam(required = false, defaultValue = "test") @ApiParam("test") String name) {
 
         return new ServiceResponse<>();
     }

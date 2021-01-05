@@ -2,11 +2,12 @@ package com.wuxp.codegen.swagger3.annotations;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.Optional;
 
 
 /**
@@ -27,25 +28,19 @@ public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, P
 
 
         @Override
-        public String toComment(Class<?> annotationOwner) {
-            return this.getDescription();
-        }
+        public String toComment(Object annotationOwner) {
 
-        @Override
-        public String toComment(Field annotationOwner) {
-            return this.getDescription();
-        }
-
-        @Override
-        public String toComment(Method annotationOwner) {
-            return this.getDescription();
-        }
-
-        private String getDescription() {
             String desc = this.description();
             String name = this.name();
             String description = StringUtils.hasText(desc) ? desc : name;
-            return String.format("属性名称：%s，属性说明：%s，示例输入：%s", name, description, this.example());
+            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
+            String defaultValue = "";
+            if (requestParam.isPresent()) {
+                defaultValue = requestParam.get().defaultValue();
+            }
+            return String.format("属性名称：%s，属性说明：%s，默认值：%s，示例输入：%s", name, defaultValue, description, this.example());
         }
+
+
     }
 }

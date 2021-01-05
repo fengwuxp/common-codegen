@@ -59,7 +59,7 @@ public class CookieValueProcessor extends AbstractAnnotationProcessor<CookieValu
         @Override
         public String toComment(Parameter annotationOwner) {
 
-            return MessageFormat.format("属性：{0}是一个 cookie", annotationOwner.getName());
+            return String.format("参数：%s是一个cookie value, %s，默认值为：%s", annotationOwner.getName(), required() ? "必填" : "非必填", defaultValue());
         }
     }
 }
