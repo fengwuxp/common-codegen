@@ -7,25 +7,25 @@ import javax.validation.constraints.NotNull;
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-        import ${customize_method.pathoResolve(packagePath,val.packagePath)};
+      import ${customize_method.pathoResolve(packagePath,val.packagePath)};
     </#list>
 </#if>
 
 <#if (comments?size>0)>
-    /**
+  /**
     <#list comments as cmment>
-        * ${cmment}
+      * ${cmment}
     </#list>
-    **/
+  **/
 </#if>
 
 <#if fieldMetas??>
     <#list annotations as annotation>
-        @${annotation.name}({
+      @${annotation.name}({
         <#list annotation.namedArguments as name,val>
             ${name}=${val}
         </#list>
-        })
+      })
     </#list>
 </#if>
 
@@ -34,14 +34,14 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
 
 <#if fieldMetas??>
     <#list fieldMetas as field>
-       <#if (field.comments?size>0)>
-        /**
-        <#list field.comments as cmment>
-            *${cmment}
-        </#list>
-        **/
+        <#if (field.comments?size>0)>
+          /**
+            <#list field.comments as cmment>
+              *${cmment}
+            </#list>
+          **/
         </#if>
-       ${field.accessPermissionName} ${customize_method.combineType(field.filedTypes)} ${field.name};
+        ${field.accessPermissionName} ${customize_method.combineType(field.filedTypes)} ${field.name};
     </#list>
 </#if>
 }

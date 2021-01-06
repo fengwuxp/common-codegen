@@ -79,66 +79,66 @@
 @RequestMapping(value = "/order")
 public class OrderController extends BaseController<String> {
 
-    static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
+  static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @ApiOperation(value = "获取订单列表", notes = "")
-    @GetMapping(value = {"get_order"})
-    public List<Order> getOrder(String[] names, List<Integer> ids, Set<Order> moneys) {
-        return Collections.EMPTY_LIST;
-    }
+  @ApiOperation(value = "获取订单列表", notes = "")
+  @GetMapping(value = {"get_order"})
+  public List<Order> getOrder(String[] names, List<Integer> ids, Set<Order> moneys) {
+    return Collections.EMPTY_LIST;
+  }
 
-    @ApiOperation(value = "获取订单列表", notes = "")
-    @RequestMapping(method = RequestMethod.GET)
-    public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
-        return new PageInfo<Order>();
-    }
-
-
-    @ApiOperation(value = "获取订单列表", notes = "")
-    @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
-                                                   @RequestParam(name = "order_id", required = false) Long oderId,
-                                                   @ApiParam(value = "订单号", required = false) String sn,
-                                                   @ApiParam(value = "用户id", hidden = true) Long memberId) {
-
-        return new ServiceQueryResponse<>();
-    }
-
-    @ApiOperation(value = "查询分页", notes = "")
-    @PostMapping(value = {"queryPage"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "id", value = "订单", required = true, dataType = "String"),
-            }
-    )
-    public ServiceResponse<PageInfo<Order>> queryPage(String id) {
-
-        return new ServiceResponse<>();
-    }
+  @ApiOperation(value = "获取订单列表", notes = "")
+  @RequestMapping(method = RequestMethod.GET)
+  public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
+    return new PageInfo<Order>();
+  }
 
 
-    @ApiOperation(value = "创建订单", notes = "")
-    @PostMapping(value = {"createOrder"})
-    @ApiImplicitParams(
-            {
-                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
-            }
-    )
-    public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
+  @ApiOperation(value = "获取订单列表", notes = "")
+  @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+  public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
+  @RequestParam(name = "order_id", required = false) Long oderId,
+      @ApiParam(value = "订单号", required = false) String sn,
+      @ApiParam(value = "用户id", hidden = true) Long memberId) {
 
-        return new ServiceResponse<>();
-    }
+    return new ServiceQueryResponse<>();
+  }
+
+  @ApiOperation(value = "查询分页", notes = "")
+  @PostMapping(value = {"queryPage"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+  @ApiImplicitParams(
+      {
+          @ApiImplicitParam(name = "id", value = "订单", required = true, dataType = "String"),
+      }
+  )
+  public ServiceResponse<PageInfo<Order>> queryPage(String id) {
+
+    return new ServiceResponse<>();
+  }
 
 
-    @ApiOperation(value = "test hello", notes = "")
-    @PostMapping(value = {"hello"})
-    public ServiceResponse hello() {
+  @ApiOperation(value = "创建订单", notes = "")
+  @PostMapping(value = {"createOrder"})
+  @ApiImplicitParams(
+      {
+          @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
+      }
+  )
+  public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
 
-        return new ServiceResponse<>();
-    }
+    return new ServiceResponse<>();
+  }
+
+
+  @ApiOperation(value = "test hello", notes = "")
+  @PostMapping(value = {"hello"})
+  public ServiceResponse hello() {
+
+    return new ServiceResponse<>();
+  }
 
 }
 
@@ -148,13 +148,13 @@ public class OrderController extends BaseController<String> {
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CreateOrderEvt extends BaseEvt {
 
-    @ApiModelProperty(value = "订单ns", example = "test method", required = true)
-    @Size(max = 50)
-    private String sn;
+  @ApiModelProperty(value = "订单ns", example = "test method", required = true)
+  @Size(max = 50)
+  private String sn;
 
-    @ApiModelProperty("订单总价")
-    @NotNull
-    private Integer totalAmount;
+  @ApiModelProperty("订单总价")
+  @NotNull
+  private Integer totalAmount;
 
 }
 ```
@@ -362,19 +362,19 @@ import {BaseQueryEvt} from "./BaseQueryEvt";
 
 export interface QueryOrderEvt extends BaseQueryEvt {
 
-    /**
-     *属性说明：订单sn，示例输入：test method
-     *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
-     *在java中的类型为：String
-     **/
-    sn?: string;
+  /**
+   *属性说明：订单sn，示例输入：test method
+   *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
+   *在java中的类型为：String
+   **/
+  sn?: string;
 
-    /**
-     *属性说明：id列表，示例输入：
-     *在java中的类型为：数组
-     *在java中的类型为：int
-     **/
-    ids?: number[];
+  /**
+   *属性说明：id列表，示例输入：
+   *在java中的类型为：数组
+   *在java中的类型为：int
+   **/
+  ids?: number[];
 
 }
 
@@ -387,17 +387,17 @@ import {BaseQueryEvt} from "./BaseQueryEvt";
 
 export interface QueryOrderEvt extends BaseQueryEvt {
 
-    /**
-     *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
-     *在java中的类型为：String
-     **/
-    sn?: string;
+  /**
+   *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
+   *在java中的类型为：String
+   **/
+  sn?: string;
 
-    /**
-     *在java中的类型为：数组
-     *在java中的类型为：int
-     **/
-    ids?: number[];
+  /**
+   *在java中的类型为：数组
+   *在java中的类型为：int
+   **/
+  ids?: number[];
 
 }
 

@@ -9,4 +9,5 @@ package com.wuxp.codegen.core;
  * @author wuxp
  */
 public interface CodeGenImportMatcher extends CodeGenMatcher {
+
 }

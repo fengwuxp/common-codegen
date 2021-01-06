@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>wuxp-codegen-examples</artifactId>
-        <groupId>com.wuxp.codegen</groupId>
-        <version>${revision}</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>wuxp-codegen-examples</artifactId>
+    <groupId>com.wuxp.codegen</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wuxp-code-examples-swagger-3</artifactId>
+  <artifactId>wuxp-code-examples-swagger-3</artifactId>
 
-    <dependencies>
+  <dependencies>
 
-        <!--spring doc open api-->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webmvc-core</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
+    <!--spring doc open api-->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-webmvc-core</artifactId>
+      <version>${springdoc.version}</version>
+    </dependency>
 
-        <!--swagger ui -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
+    <!--swagger ui -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>${springdoc.version}</version>
+    </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
-        <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.8.59</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-swagger3</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
+    <dependency>
+      <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <version>4.8.59</version>
+    </dependency>
+    <dependency>
+      <groupId>com.wuxp.codegen</groupId>
+      <artifactId>wuxp-codegen-swagger3</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
 
 
-    </dependencies>
+  </dependencies>
 
 
 </project>

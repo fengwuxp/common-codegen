@@ -9,18 +9,18 @@ import org.springframework.beans.BeanUtils;
 
 @Slf4j
 public class JavaLanguageMetaInstanceFactory implements
-        LanguageParser.LanguageMetaInstanceFactory<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
+    LanguageParser.LanguageMetaInstanceFactory<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
 
-    @Override
-    public JavaCodeGenClassMeta newClassInstance() {
-        return new JavaCodeGenClassMeta();
-    }
+  @Override
+  public JavaCodeGenClassMeta newClassInstance() {
+    return new JavaCodeGenClassMeta();
+  }
 
 
-    @Override
-    public JavaCodeGenClassMeta getTypeVariableInstance() {
-        JavaCodeGenClassMeta javaCodeGenClassMeta = new JavaCodeGenClassMeta();
-        BeanUtils.copyProperties(JavaCodeGenClassMeta.TYPE_VARIABLE, javaCodeGenClassMeta);
-        return javaCodeGenClassMeta;
-    }
+  @Override
+  public JavaCodeGenClassMeta getTypeVariableInstance() {
+    JavaCodeGenClassMeta javaCodeGenClassMeta = new JavaCodeGenClassMeta();
+    BeanUtils.copyProperties(JavaCodeGenClassMeta.TYPE_VARIABLE, javaCodeGenClassMeta);
+    return javaCodeGenClassMeta;
+  }
 }

@@ -10,7 +10,7 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 <#--依赖导入处理-->
     <#list dependencies as key,val >
         <#if !val.packagePath?starts_with("package:")>
-            import '${customize_method.pathoResolve(packagePath,val.packagePath)}.dart';
+          import '${customize_method.pathoResolve(packagePath,val.packagePath)}.dart';
         </#if>
     </#list>
 </#if>
@@ -18,85 +18,83 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 
 <#if (comments?size>0)>
     <#list comments as cmment>
-     /// ${cmment}
+      /// ${cmment}
     </#list>
 </#if>
 @Feign
 <#list annotations as annotation>
-    @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
+  @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
 </#list>
 class ${name} extends FeignProxyClient {
 
-    ${name}() : super() {
+${name}() : super() {
 
-    }
-
-        <#list methodMetas as method>
-
-            <#list method.comments as cmment>
-               /// ${cmment_index+1}:${cmment}
-            </#list>
-            <#list method.annotations as annotation>
-                <#if annotation.name=='Signature'>
-                    @${annotation.name}(${annotation.namedArguments['fields']})
-                 <#else >
-                     @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
-                </#if>
-            </#list>
-            <#assign returnTypes=method.returnTypes/>
-            Future<${customize_method.combineType(returnTypes)}>  ${method.name}(
-            <#--参数遍历-->
-            <#assign params=method.params/>
-            <#assign paramAnnotations=method.paramAnnotations/>
-            <#list params as paramName,paramType>
-                <#assign paramAnnotation= paramAnnotations[paramName]/>
-                <#if (paramAnnotation?size>0)>
-                    <#assign annotation= paramAnnotation[0]/>
-                    <#assign len=annotation.namedArguments?size />
-                    <#assign currentIndex=0 />
-                    @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
-                </#if>
-                ${customize_method.combineType(paramType.typeVariables)} ${paramName},
-           </#list>
-            <#assign returnType=returnTypes[0] />
-             [UIOptions feignOptions]) {
-               return this.delegateInvoke<${customize_method.combineType(returnTypes)}>("${method.name}",
-                   [<#list params as paramName,paramType>${paramName},</#list>],
-               <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
-              <#assign useSerializer=false>
-              <#assign isBaseType=
-                         returnType.name=="String"||
-                         returnType.name=="num"||
-                         returnType.name=="bool"||
-                         returnType.name=="double" ||
-                         returnType.name=="int"/>
-                <#if !( returnType.name=="Object" ||
-                         returnType.name=="dynamic"||
-                         returnType.name=="void" )>
-                    <#assign specifiedType=customize_method.combineDartFullType(returnTypes)!""/>
-                        <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
-                         <#assign useSerializer=true>
-                         feignOptions: feignOptions,
-                         serializer: BuiltValueSerializable(
-                        <#if !returnTypes[0].name?starts_with("Built") && !isBaseType>
-                            serializer: ${returnType.name}.serializer,
-                        </#if>
-                        <#if (specifiedType?length > 0 && !isBaseType)>
-                            specifiedType:${specifiedType}
-                        </#if>
-                        <#if isBaseType>
-                           specifiedType:FullType(${returnTypes[0].name})
-                        </#if>
-                        )
-                    </#if>
-                </#if>
-                <#if !useSerializer>feignOptions: feignOptions</#if>
-               );
-            }
-        </#list>
 }
 
+<#list methodMetas as method>
 
+    <#list method.comments as cmment>
+      /// ${cmment_index+1}:${cmment}
+    </#list>
+    <#list method.annotations as annotation>
+        <#if annotation.name=='Signature'>
+          @${annotation.name}(${annotation.namedArguments['fields']})
+        <#else >
+          @${annotation.name}(<#list annotation.namedArguments as name,val>${name}:${val},</#list>)
+        </#if>
+    </#list>
+    <#assign returnTypes=method.returnTypes/>
+  Future<${customize_method.combineType(returnTypes)}>  ${method.name}(
+<#--参数遍历-->
+    <#assign params=method.params/>
+    <#assign paramAnnotations=method.paramAnnotations/>
+    <#list params as paramName,paramType>
+        <#assign paramAnnotation= paramAnnotations[paramName]/>
+        <#if (paramAnnotation?size>0)>
+            <#assign annotation= paramAnnotation[0]/>
+            <#assign len=annotation.namedArguments?size />
+            <#assign currentIndex=0 />
+          @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
+        </#if>
+        ${customize_method.combineType(paramType.typeVariables)} ${paramName},
+    </#list>
+    <#assign returnType=returnTypes[0] />
+  [UIOptions feignOptions]) {
+  return this.delegateInvoke<${customize_method.combineType(returnTypes)}>("${method.name}",
+  [<#list params as paramName,paramType>${paramName},</#list>],
+<#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
+    <#assign useSerializer=false>
+    <#assign isBaseType=
+    returnType.name=="String"||
+    returnType.name=="num"||
+    returnType.name=="bool"||
+    returnType.name=="double" ||
+    returnType.name=="int"/>
+    <#if !( returnType.name=="Object" ||
+    returnType.name=="dynamic"||
+    returnType.name=="void" )>
+        <#assign specifiedType=customize_method.combineDartFullType(returnTypes)!""/>
+        <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
+            <#assign useSerializer=true>
+          feignOptions: feignOptions,
+          serializer: BuiltValueSerializable(
+            <#if !returnTypes[0].name?starts_with("Built") && !isBaseType>
+              serializer: ${returnType.name}.serializer,
+            </#if>
+            <#if (specifiedType?length > 0 && !isBaseType)>
+              specifiedType:${specifiedType}
+            </#if>
+            <#if isBaseType>
+              specifiedType:FullType(${returnTypes[0].name})
+            </#if>
+          )
+        </#if>
+    </#if>
+    <#if !useSerializer>feignOptions: feignOptions</#if>
+  );
+  }
+</#list>
+}
 
 
 final ${name?uncap_first} = ${name}();

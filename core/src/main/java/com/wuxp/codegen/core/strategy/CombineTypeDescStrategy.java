@@ -9,11 +9,11 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 public interface CombineTypeDescStrategy {
 
 
-    /**
-     * 合并类型
-     *
-     * @param codeGenClassMetas
-     * @return 不同语言的泛型字符串描述
-     */
-    String combine(CommonCodeGenClassMeta[] codeGenClassMetas);
+  /**
+   * 合并类型
+   *
+   * @param codeGenClassMetas
+   * @return 不同语言的泛型字符串描述
+   */
+  String combine(CommonCodeGenClassMeta[] codeGenClassMetas);
 }

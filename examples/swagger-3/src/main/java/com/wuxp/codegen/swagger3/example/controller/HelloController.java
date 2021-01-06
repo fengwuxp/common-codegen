@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    /**
-     * 标记忽略
-     *
-     * @return
-     */
-    @RequestMapping(value = "/hello", method = RequestMethod.GET)
-    @Operation(description = "Documented with OpenAPI v3 annotations")
-    public String index() {
-        return "Hello World";
-    }
+  /**
+   * 标记忽略
+   *
+   * @return
+   */
+  @RequestMapping(value = "/hello", method = RequestMethod.GET)
+  @Operation(description = "Documented with OpenAPI v3 annotations")
+  public String index() {
+    return "Hello World";
+  }
 
 }

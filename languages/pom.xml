@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>wuxp-codegen</artifactId>
-        <groupId>com.wuxp.codegen</groupId>
-         <version>${revision}</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>wuxp-codegen</artifactId>
+    <groupId>com.wuxp.codegen</groupId>
+    <version>${revision}</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wuxp-codegen-languages</artifactId>
+  <artifactId>wuxp-codegen-languages</artifactId>
 
-    <dependencies>
+  <dependencies>
 
-        <dependency>
-            <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.wuxp.codegen</groupId>
+      <artifactId>wuxp-codegen-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-annotation-processor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.wuxp.codegen</groupId>
+      <artifactId>wuxp-codegen-annotation-processor</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.google.guava</groupId>-->
-<!--            <artifactId>guava</artifactId>-->
-<!--            <version>27.1-jre</version>-->
-<!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>com.google.guava</groupId>-->
+    <!--            <artifactId>guava</artifactId>-->
+    <!--            <version>27.1-jre</version>-->
+    <!--        </dependency>-->
 
 
-    </dependencies>
+  </dependencies>
 
 </project>

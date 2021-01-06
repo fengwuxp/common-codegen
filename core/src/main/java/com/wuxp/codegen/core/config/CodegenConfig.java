@@ -15,19 +15,19 @@ import lombok.Data;
 @Builder
 public final class CodegenConfig {
 
-    /**
-     * 需要生成的语言
-     */
-    private LanguageDescription languageDescription;
+  /**
+   * 需要生成的语言
+   */
+  private LanguageDescription languageDescription;
 
-    /**
-     * client provider type
-     */
-    private ClientProviderType providerType;
+  /**
+   * client provider type
+   */
+  private ClientProviderType providerType;
 
 
-    public boolean isJava() {
-        return LanguageDescription.JAVA.equals(languageDescription) || LanguageDescription.JAVA_ANDROID.equals(languageDescription);
-    }
+  public boolean isJava() {
+    return LanguageDescription.JAVA.equals(languageDescription) || LanguageDescription.JAVA_ANDROID.equals(languageDescription);
+  }
 
 }

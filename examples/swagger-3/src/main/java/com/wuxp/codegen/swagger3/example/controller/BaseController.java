@@ -2,7 +2,6 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 public class BaseController<T> {
 
-
 //    @RequestMapping
 //    public void test1() {
 //

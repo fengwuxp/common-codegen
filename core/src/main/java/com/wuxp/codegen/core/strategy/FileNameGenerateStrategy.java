@@ -8,14 +8,14 @@ package com.wuxp.codegen.core.strategy;
 @FunctionalInterface
 public interface FileNameGenerateStrategy {
 
-    FileNameGenerateStrategy DEFAULT = filepath -> filepath;
+  FileNameGenerateStrategy DEFAULT = filepath -> filepath;
 
-    /**
-     * 生成文件名
-     *
-     * @param filepath
-     * @return
-     */
-    String generateName(String filepath);
+  /**
+   * 生成文件名
+   *
+   * @param filepath
+   * @return
+   */
+  String generateName(String filepath);
 
 }

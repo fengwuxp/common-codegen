@@ -7,10 +7,10 @@ import io.swagger.annotations.ApiModelProperty;
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class BaseQueryEvt extends BaseEvt {
 
-    @ApiModelProperty("查询大小")
-    Integer querySize;
+  @ApiModelProperty("查询大小")
+  Integer querySize;
 
-    @ApiModelProperty("查询页码")
-    Integer queryPage;
+  @ApiModelProperty("查询页码")
+  Integer queryPage;
 
 }

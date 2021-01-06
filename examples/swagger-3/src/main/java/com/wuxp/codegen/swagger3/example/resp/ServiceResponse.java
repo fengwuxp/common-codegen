@@ -6,11 +6,11 @@ import lombok.Data;
 public class ServiceResponse<T> {
 
 
-    String message;
+  String message;
 
 
-    Integer code;
+  Integer code;
 
 
-    T data;
+  T data;
 }

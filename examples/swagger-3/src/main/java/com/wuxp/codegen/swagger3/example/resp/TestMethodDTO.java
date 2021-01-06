@@ -7,14 +7,14 @@ import java.util.Date;
 public class TestMethodDTO {
 
 
-    private String name;
+  private String name;
 
 
-    private Short age;
+  private Short age;
 
 
-    private Boolean flag;
+  private Boolean flag;
 
 
-    private Date birthDay;
+  private Date birthDay;
 }

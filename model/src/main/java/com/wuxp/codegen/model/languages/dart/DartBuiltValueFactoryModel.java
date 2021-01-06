@@ -1,11 +1,10 @@
 package com.wuxp.codegen.model.languages.dart;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 /**
  * dart built value factory model
@@ -19,14 +18,14 @@ import java.io.Serializable;
 public class DartBuiltValueFactoryModel implements Serializable {
 
 
-    /**
-     * fullType code
-     */
-    private String fullTypeCode;
+  /**
+   * fullType code
+   */
+  private String fullTypeCode;
 
 
-    /**
-     * function code
-     */
-    private String functionCode;
+  /**
+   * function code
+   */
+  private String functionCode;
 }

@@ -7,13 +7,13 @@ package com.wuxp.codegen.model.enums;
 public enum CodeGenType {
 
 
-    /**
-     * feign代理sdk
-     */
-    FEIGN,
+  /**
+   * feign代理sdk
+   */
+  FEIGN,
 
-    /**
-     * 页面
-     */
-    VIEW
+  /**
+   * 页面
+   */
+  VIEW
 }

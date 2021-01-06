@@ -1,11 +1,10 @@
 package com.wuxp.codegen.model.languages.java;
 
 
+import java.lang.reflect.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.lang.reflect.Parameter;
 
 
 /**
@@ -18,10 +17,10 @@ import java.lang.reflect.Parameter;
 @Accessors(chain = true)
 public class JavaParameterMeta extends JavaFieldMeta {
 
-    /**
-     * parameter
-     */
-    private Parameter parameter;
+  /**
+   * parameter
+   */
+  private Parameter parameter;
 
 
 }

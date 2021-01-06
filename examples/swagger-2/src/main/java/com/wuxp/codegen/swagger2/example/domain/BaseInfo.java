@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class BaseInfo<ID> {
 
-    @ApiModelProperty("id")
-    protected ID id;
+  @ApiModelProperty("id")
+  protected ID id;
 }

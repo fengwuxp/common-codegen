@@ -10,25 +10,25 @@ import org.springframework.beans.BeanUtils;
 
 @Slf4j
 public class TypescriptLanguageMetaInstanceFactory implements
-        LanguageParser.LanguageMetaInstanceFactory<TypescriptClassMeta, CommonCodeGenMethodMeta, TypescriptFieldMate> {
+    LanguageParser.LanguageMetaInstanceFactory<TypescriptClassMeta, CommonCodeGenMethodMeta, TypescriptFieldMate> {
 
-    @Override
-    public TypescriptClassMeta newClassInstance() {
-        return new TypescriptClassMeta();
-    }
+  @Override
+  public TypescriptClassMeta newClassInstance() {
+    return new TypescriptClassMeta();
+  }
 
-    @Override
-    public TypescriptFieldMate newFieldInstance() {
-        return new TypescriptFieldMate();
-    }
+  @Override
+  public TypescriptFieldMate newFieldInstance() {
+    return new TypescriptFieldMate();
+  }
 
-    @Override
-    public TypescriptClassMeta getTypeVariableInstance() {
-        TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
-        BeanUtils.copyProperties(CommonCodeGenClassMeta.TYPE_VARIABLE, typescriptClassMeta);
-        typescriptClassMeta.setSuperClass(TypescriptClassMeta.OBJECT)
-                .setNeedGenerate(false)
-                .setNeedImport(false);
-        return typescriptClassMeta;
-    }
+  @Override
+  public TypescriptClassMeta getTypeVariableInstance() {
+    TypescriptClassMeta typescriptClassMeta = new TypescriptClassMeta();
+    BeanUtils.copyProperties(CommonCodeGenClassMeta.TYPE_VARIABLE, typescriptClassMeta);
+    typescriptClassMeta.setSuperClass(TypescriptClassMeta.OBJECT)
+        .setNeedGenerate(false)
+        .setNeedImport(false);
+    return typescriptClassMeta;
+  }
 }

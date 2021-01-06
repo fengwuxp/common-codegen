@@ -12,22 +12,22 @@ import org.springframework.beans.BeanUtils;
  */
 @Slf4j
 public class DartLanguageMetaInstanceFactory implements
-        LanguageParser.LanguageMetaInstanceFactory<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> {
+    LanguageParser.LanguageMetaInstanceFactory<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> {
 
-    @Override
-    public DartClassMeta newClassInstance() {
-        return new DartClassMeta();
-    }
+  @Override
+  public DartClassMeta newClassInstance() {
+    return new DartClassMeta();
+  }
 
-    @Override
-    public DartFieldMate newFieldInstance() {
-        return new DartFieldMate();
-    }
+  @Override
+  public DartFieldMate newFieldInstance() {
+    return new DartFieldMate();
+  }
 
-    @Override
-    public DartClassMeta getTypeVariableInstance() {
-        DartClassMeta dartClassMeta = new DartClassMeta();
-        BeanUtils.copyProperties(DartClassMeta.TYPE_VARIABLE, dartClassMeta);
-        return dartClassMeta;
-    }
+  @Override
+  public DartClassMeta getTypeVariableInstance() {
+    DartClassMeta dartClassMeta = new DartClassMeta();
+    BeanUtils.copyProperties(DartClassMeta.TYPE_VARIABLE, dartClassMeta);
+    return dartClassMeta;
+  }
 }

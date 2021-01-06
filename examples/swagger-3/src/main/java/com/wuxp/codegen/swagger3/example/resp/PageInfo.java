@@ -6,11 +6,11 @@ import java.util.List;
 public class PageInfo<T> {
 
 
-    List<T> records;
+  List<T> records;
 
 
-    Integer queryPage;
+  Integer queryPage;
 
 
-    Integer querySize;
+  Integer querySize;
 }

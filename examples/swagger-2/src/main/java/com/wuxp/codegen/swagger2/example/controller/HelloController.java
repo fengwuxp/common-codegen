@@ -12,15 +12,15 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class HelloController {
 
-    /**
-     * 标记忽略
-     *
-     * @return
-     */
-    @ApiIgnore
-    @RequestMapping(value = "/hello", method = RequestMethod.GET)
-    public String index() {
-        return "Hello World";
-    }
+  /**
+   * 标记忽略
+   *
+   * @return
+   */
+  @ApiIgnore
+  @RequestMapping(value = "/hello", method = RequestMethod.GET)
+  public String index() {
+    return "Hello World";
+  }
 
 }

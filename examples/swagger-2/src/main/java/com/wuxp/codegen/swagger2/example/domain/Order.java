@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 @ApiModel("订单")
 @Data
@@ -14,15 +13,15 @@ import java.util.Date;
 public class Order extends BaseInfo<Long> {
 
 
-    @ApiModelProperty(value = "sn", example = "order_sn_199223")
-    private String sn;
+  @ApiModelProperty(value = "sn", example = "order_sn_199223")
+  private String sn;
 
-    @ApiModelProperty(value = "下单用户")
-    private User user;
+  @ApiModelProperty(value = "下单用户")
+  private User user;
 
 
-    @ApiModelProperty("添加时间")
-    public Date getAddTime() {
-        return new Date();
-    }
+  @ApiModelProperty("添加时间")
+  public Date getAddTime() {
+    return new Date();
+  }
 }
