@@ -6,11 +6,9 @@ import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
-import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger2.example.domain.User;
 import com.wuxp.codegen.swagger2.example.evt.QueryOrderEvt;
@@ -23,7 +21,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,17 +31,6 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
     @Test
     public void testCodeGenFeignClientByStater() {
 
-
-        //设置基础数据类型的映射关系
-        Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
-
-        AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
-//        AbstractTypeMapping.setCustomizeJavaTypeMapping(CommonsMultipartFile.class, new Class[]{File.class});
-
-
-        //自定义的类型映射
-        Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
-        customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -69,10 +55,12 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
                 .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
-                .baseTypeMapping(baseTypeMapping)
+                //设置基础数据类型的映射关系
+                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-                .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(packageMapStrategy)
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)

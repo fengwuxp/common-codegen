@@ -17,7 +17,7 @@ public class Order extends BaseInfo<Long, String> {
 
     private User user;
 
-    @Schema(description="添加时间")
+    @Schema(description = "添加时间")
     public Date getAddTime() {
         return new Date();
     }

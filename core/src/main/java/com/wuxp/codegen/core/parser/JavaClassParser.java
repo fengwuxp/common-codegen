@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 /**
  * 解析一个java class对象
+ *
+ * @author wuxp
  */
 @Slf4j
 public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
@@ -34,16 +36,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     private final static Map<Class<?>, JavaClassMeta> PARSER_CACHE = new ConcurrentHashMap<>();
 
-
-    //spring 解析泛型是标记为空类型类名称
-    protected static final String EMPTY_TYPE_NAME = "ResolvableType$EmptyType";
-
-    //spring的方法参数发现者
-    protected ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
+    /**
+     * spring的方法参数发现者
+     */
+    protected final static ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
 
-    //是否只过滤spring的方法
-    protected boolean onlyPublic;
+    /**
+     * 是否只过滤public的方法
+     */
+    protected final boolean onlyPublic;
 
 
     public JavaClassParser(boolean onlyPublic) {
@@ -146,14 +148,14 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         superTypes.forEach(superType -> {
             //循环获取超类(包括接口)
-            while (superType.getType() != null && !superType.getType().getTypeName().contains(EMPTY_TYPE_NAME)) {
+            while (ResolvableType.NONE != superType) {
                 if (Object.class.equals(superType.getType())) {
                     //直到获取到object为止
                     break;
                 }
 
                 Type subType = superType.getSuperType().getType();
-                //subType == null 和spring的版本有关系
+                // subType == null 和spring的版本有关系
                 if (subType == null) {
                     break;
                 }
@@ -231,7 +233,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
         try {
             //参数名称列表
-            parameterNames = parameterNameDiscoverer.getParameterNames(method);
+            parameterNames = PARAMETER_NAME_DISCOVERER.getParameterNames(method);
         } catch (Exception e) {
             log.error("获取参数名称列表异常", e);
 
@@ -551,7 +553,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      * @param methodMetas
      * @return
      */
-    protected Set fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
+    protected Set<Class<?>> fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
 
         Set<Class<?>> classSet = new HashSet<>();
 
@@ -561,7 +563,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 //            if (fieldMeta.getIsStatic()) {
 //                continue;
 //            }
-            classSet.addAll(Arrays.asList((Class<?>[]) fieldMeta.getTypes()));
+            classSet.addAll(Arrays.asList(fieldMeta.getTypes()));
         }
 
         //方法的依赖
@@ -595,7 +597,25 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .filter(c -> !c.equals(JavaArrayClassTypeMark.class))
+                .map(c -> (Class<?>) c)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * 获取参数的真实名称
+     *
+     * @param parameter 方法参数对象
+     * @return 参数的名称
+     */
+    public static String getParameterName(Parameter parameter) {
+        Method method = (Method) parameter.getDeclaringExecutable();
+        int index = Arrays.asList(method.getParameters()).indexOf(parameter);
+        try {
+            return Objects.requireNonNull(PARAMETER_NAME_DISCOVERER.getParameterNames(method))[index];
+        } catch (Exception e) {
+            log.warn("获取方法{}的参数名称列表失败：{}", method, e.getMessage(), e);
+        }
+        return parameter.getName();
     }
 
 

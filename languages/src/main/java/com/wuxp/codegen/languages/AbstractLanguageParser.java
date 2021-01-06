@@ -19,6 +19,7 @@ import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
+import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
@@ -55,8 +56,6 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import static com.wuxp.codegen.model.mapping.AbstractTypeMapping.*;
 
 
 /**
@@ -103,9 +102,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     /**
-     * 映射java类和typeScript类之间的关系
+     * 映射java类型和其他语言类型之间的关系
      */
-    protected TypeMapping<Class<?>, List<C>> typeMapping;
+    protected AbstractLanguageTypeMapping<C> languageTypeMapping;
 
     /**
      * 包名映射策略
@@ -116,11 +115,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 代码检查者
      */
     protected Collection<CodeDetect> codeDetects;
-
-//    /**
-//     * 根据包名进行匹配
-//     */
-//    protected CodeGenMatcher packageNameCodeGenMatcher;
 
 
     /**
@@ -223,14 +217,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         if (!JavaTypeUtils.isNoneJdkComplex(source)) {
-            List<C> results = this.typeMapping.mapping(source);
+            List<C> results = this.languageTypeMapping.mapping(source);
             if (!results.isEmpty()) {
                 return results.get(0);
             }
         }
         if (source.isEnum()) {
             //枚举出来
-            List<C> results = this.typeMapping.mapping(Enum.class);
+            List<C> results = this.languageTypeMapping.mapping(Enum.class);
             if (!results.isEmpty()) {
                 return results.get(0);
             }
@@ -249,13 +243,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         Integer count = HANDLE_COUNT.get(source);
 
-        CommonCodeGenClassMeta mapping = customizeTypeMapping.mapping(source);
+        CommonCodeGenClassMeta mapping = languageTypeMapping.getCustomizeTypeMapping().mapping(source);
 
         if (mapping != null) {
             HANDLE_RESULT_CACHE.put(source, mapping);
             return (C) mapping;
         } else {
-            mapping = baseTypeMapping.mapping(source);
+            mapping = languageTypeMapping.getBaseTypeMapping().mapping(source);
             if (mapping != null) {
                 HANDLE_RESULT_CACHE.put(source, mapping);
                 return (C) mapping;
@@ -389,7 +383,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .map(clazz -> {
                         C typeVariable = this.parse(clazz);
                         if (typeVariable == null) {
-                            List<C> cs = this.typeMapping.mapping(clazz);
+                            List<C> cs = this.languageTypeMapping.mapping(clazz);
                             if (cs.isEmpty()) {
                                 return null;
                             } else {
@@ -425,11 +419,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         this.languageEnhancedProcessor.enhancedProcessingClass(meta, javaClassMeta);
         // 增强处理类
         this.enhancedProcessingClass(meta, javaClassMeta);
-        if (this.tryMatchOnlyImportClasses(source)){
+        if (this.tryMatchOnlyImportClasses(source)) {
             // 只需要导入类
             meta.setNeedGenerate(false);
             meta.setNeedImport(true);
-            if (CodegenConfigHolder.getConfig().isJava()){
+            if (CodegenConfigHolder.getConfig().isJava()) {
                 meta.setPackagePath(source.getName());
             }
         }
@@ -446,11 +440,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     public void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers) {
         List<CodeGenMatcher> genMatchers = Arrays.asList(codeGenMatchers);
         this.codeGenMatchers.addAll(genMatchers.stream()
-                .filter(item-> !CodeGenImportMatcher.class.isAssignableFrom(item.getClass()))
+                .filter(item -> !CodeGenImportMatcher.class.isAssignableFrom(item.getClass()))
                 .collect(Collectors.toList()));
         this.codeGenImportMatchers.addAll(genMatchers.stream()
-                .filter(item-> item instanceof CodeGenImportMatcher)
-                .map(codeGenMatcher -> (CodeGenImportMatcher)codeGenMatcher)
+                .filter(item -> item instanceof CodeGenImportMatcher)
+                .map(codeGenMatcher -> (CodeGenImportMatcher) codeGenMatcher)
                 .collect(Collectors.toList()));
     }
 
@@ -706,10 +700,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         //注释来源于注解和java的类类型
         List<String> comments;
-        if (javaFieldMeta instanceof JavaParameterMeta){
-            comments= this.generateComments(javaFieldMeta.getAnnotations(), ((JavaParameterMeta) javaFieldMeta).getParameter());
-        }else {
-            comments= this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
+        if (javaFieldMeta instanceof JavaParameterMeta) {
+            comments = this.generateComments(javaFieldMeta.getAnnotations(), ((JavaParameterMeta) javaFieldMeta).getParameter());
+        } else {
+            comments = this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
         }
         Class<?>[] types = javaFieldMeta.getTypes();
         if (isEnum) {
@@ -729,7 +723,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         fieldInstance.setAnnotations(this.converterAnnotations(javaFieldMeta.getAnnotations(), javaFieldMeta.getField()));
 
         //field 类型类别
-        Collection<C> classMetaMappings = this.typeMapping.mapping(types);
+        Collection<C> classMetaMappings = this.languageTypeMapping.mapping(types);
         //从泛型中解析
         Type[] typeVariables = javaFieldMeta.getTypeVariables();
         if (typeVariables != null && typeVariables.length > 0) {
@@ -865,7 +859,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         //处理返回值
         Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
-        List<C> returnTypes = this.typeMapping.mapping(methodMetaReturnType);
+        List<C> returnTypes = this.languageTypeMapping.mapping(methodMetaReturnType);
         genMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[0]));
 
         Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies();
@@ -903,7 +897,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return;
             }
             C genClassInstance = this.languageMetaInstanceFactory.newClassInstance();
-            List<C> paramTypes = this.typeMapping.mapping(classes);
+            List<C> paramTypes = this.languageTypeMapping.mapping(classes);
             Class<?> paramType = classes[0];
             genClassInstance.setTypeVariables(paramTypes.toArray(new CommonCodeGenClassMeta[0]));
             // 注解
@@ -1030,8 +1024,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             if (commonCodeGenFiledMeta == null) {
                 return;
             }
-            if (commonCodeGenFiledMeta.getAnnotations()!=null){
-                codeGenParamAnnotations.put(key,commonCodeGenFiledMeta.getAnnotations());
+            if (commonCodeGenFiledMeta.getAnnotations() != null) {
+                codeGenParamAnnotations.put(key, commonCodeGenFiledMeta.getAnnotations());
             }
             this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
             commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
@@ -1084,8 +1078,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 if (isExist) {
                     log.error("{}方法中的参数{}在类{}中已经存在", javaMethodMeta.getName(), genFiledMeta.getName(), argsClassMeta.getPackagePath() + argsClassMeta.getName());
                 } else {
-                    if (commonCodeGenFiledMeta.getAnnotations()!=null){
-                        codeGenParamAnnotations.put(codeGenClassMeta.getName(),commonCodeGenFiledMeta.getAnnotations());
+                    if (commonCodeGenFiledMeta.getAnnotations() != null) {
+                        codeGenParamAnnotations.put(codeGenClassMeta.getName(), commonCodeGenFiledMeta.getAnnotations());
                     }
                     commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
                 }
@@ -1138,7 +1132,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     })
                     .forEach(paramClasses -> {
                         Class<?> paramClass = paramClasses[0];
-                        CommonCodeGenClassMeta[] commonCodeGenClassMetas = typeMapping.mapping(paramClasses)
+                        CommonCodeGenClassMeta[] commonCodeGenClassMetas = languageTypeMapping.mapping(paramClasses)
                                 .stream().map(c -> (CommonCodeGenClassMeta) c)
                                 .toArray(CommonCodeGenClassMeta[]::new);
                         if (JavaArrayClassTypeMark.class.equals(paramClass)) {
@@ -1278,7 +1272,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
         List<Class<?>> classList = dependencies.stream()
-                .map(customizeJavaTypeMapping::mapping)
+                .map(languageTypeMapping.getCustomizeJavaTypeMapping()::mapping)
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .filter(this::isMatchGenCodeRule)
@@ -1301,7 +1295,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toSet());
 
         classList.stream()
-                .map(this.typeMapping::mapping)
+                .map(this.languageTypeMapping::mapping)
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .filter(CommonCodeGenClassMeta::getNeedImport)
@@ -1355,7 +1349,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 查找 Spring Param 相关的 Annotation
      *
-     * @param annotations  注解列表
+     * @param annotations        注解列表
      * @param findAnnotationType 查找的注解类型
      * @return findAnnotationType类型注解的实例
      */
@@ -1484,5 +1478,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return this.codeGenMatchers;
     }
 
-
+    public void setLanguageTypeMapping(AbstractLanguageTypeMapping<C> languageTypeMapping) {
+        this.languageTypeMapping = languageTypeMapping;
+    }
 }

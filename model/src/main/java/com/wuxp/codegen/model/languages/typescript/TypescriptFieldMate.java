@@ -24,8 +24,8 @@ public final class TypescriptFieldMate extends CommonCodeGenFiledMeta {
     }
 
     public TypescriptFieldMate(String name, TypescriptClassMeta[] filedTypes, boolean required) {
-        this.name=name;
-        this.filedTypes=filedTypes;
+        this.name = name;
+        this.filedTypes = filedTypes;
         this.required = required;
     }
 }

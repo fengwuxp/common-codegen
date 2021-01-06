@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.example.enums;
 
-public enum  Sex {
+public enum Sex {
 
     MAN,
 

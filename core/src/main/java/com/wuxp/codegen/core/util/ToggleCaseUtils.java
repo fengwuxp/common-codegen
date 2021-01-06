@@ -2,6 +2,7 @@ package com.wuxp.codegen.core.util;
 
 /**
  * 大小写转换
+ *
  * @author wuxp
  */
 public final class ToggleCaseUtils {
@@ -23,9 +24,6 @@ public final class ToggleCaseUtils {
         chars[0] = (char) (chars[0] ^ 0x20);
         return new String(chars);
     }
-
-
-
 
 
 }

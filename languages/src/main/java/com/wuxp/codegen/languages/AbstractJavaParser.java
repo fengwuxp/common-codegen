@@ -43,7 +43,6 @@ public abstract class AbstractJavaParser extends AbstractLanguageParser<JavaCode
                 packageMapStrategy,
                 genMatchingStrategy,
                 codeDetects);
-        this.typeMapping = new JavaTypeMapping(this);
     }
 
     public AbstractJavaParser(PackageMapStrategy packageMapStrategy,
@@ -55,14 +54,12 @@ public abstract class AbstractJavaParser extends AbstractLanguageParser<JavaCode
                 packageMapStrategy,
                 genMatchingStrategy,
                 codeDetects);
-        this.typeMapping = new JavaTypeMapping(this);
         this.useAsync = useAsync;
     }
 
 
     {
 
-//        codeGenMatchers.add(clazz -> clazz.isEnum() || clazz.isAnnotation());
         codeGenMatchers.add(clazz -> {
             if (clazz == null) {
                 return false;
@@ -83,8 +80,6 @@ public abstract class AbstractJavaParser extends AbstractLanguageParser<JavaCode
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects) {
         super(javaParser, languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);
-        this.typeMapping = new JavaTypeMapping(this);
-
     }
 
 
@@ -125,7 +120,7 @@ public abstract class AbstractJavaParser extends AbstractLanguageParser<JavaCode
 
         //处理返回值
         Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
-        List<JavaCodeGenClassMeta> returnTypes = this.typeMapping.mapping(methodMetaReturnType);
+        List<JavaCodeGenClassMeta> returnTypes = this.languageTypeMapping.mapping(methodMetaReturnType);
         if (this.useAsync) {
             // 使用异步处理
             if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {

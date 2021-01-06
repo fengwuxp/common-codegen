@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 
 /**
  * 类型映射
+ *
  * @author wxup
  */
 public interface TypeMapping<C extends Type, T> {

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 /**
  * 自定义的java type映射
+ *
  * @author wuxp
  */
 @Slf4j

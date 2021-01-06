@@ -6,8 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
-import java.util.Objects;
 
 
 /**
@@ -24,8 +22,6 @@ public class JavaParameterMeta extends JavaFieldMeta {
      * parameter
      */
     private Parameter parameter;
-
-
 
 
 }

@@ -112,7 +112,7 @@ public final class JavaTypeUtils {
      */
     public static boolean isList(Class<?> clazz) {
 
-        if (isAssignableFrom(clazz,List.class)){
+        if (isAssignableFrom(clazz, List.class)) {
             return true;
         }
 
@@ -128,7 +128,7 @@ public final class JavaTypeUtils {
      */
     public static boolean isCollection(Class<?> clazz) {
 
-        if (isAssignableFrom(clazz,Collection.class)){
+        if (isAssignableFrom(clazz, Collection.class)) {
             return true;
         }
         return isExtendsClass(clazz, Collection.class);
@@ -141,7 +141,7 @@ public final class JavaTypeUtils {
      * @return
      */
     public static boolean isMap(Class<?> clazz) {
-        if (isAssignableFrom(clazz,Map.class)){
+        if (isAssignableFrom(clazz, Map.class)) {
             return true;
         }
         return isExtendsClass(clazz, Map.class);
@@ -154,7 +154,7 @@ public final class JavaTypeUtils {
      * @return
      */
     public static boolean isSet(Class<?> clazz) {
-        if (isAssignableFrom(clazz,Set.class)){
+        if (isAssignableFrom(clazz, Set.class)) {
             return true;
         }
         return isExtendsClass(clazz, Set.class);
@@ -231,7 +231,7 @@ public final class JavaTypeUtils {
     /**
      * 某个类是否继承另外一个类
      *
-     * @param clazz 类类型
+     * @param clazz      类类型
      * @param superClazz 超类的类类型
      * @return
      */
@@ -270,10 +270,11 @@ public final class JavaTypeUtils {
 
     /**
      * 是否为文件上传对象
+     *
      * @param clazz 类类型
      * @return
      */
-    public static boolean isFileUploadObject(Class<?> clazz){
+    public static boolean isFileUploadObject(Class<?> clazz) {
 
         return CommonsMultipartFile.class.equals(clazz);
     }

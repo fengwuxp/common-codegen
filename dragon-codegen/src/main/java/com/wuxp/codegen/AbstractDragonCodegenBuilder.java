@@ -18,13 +18,15 @@ import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.languages.AbstractLanguageParser;
 import com.wuxp.codegen.languages.java.IgnoreParamsByAnnotationLanguageEnhancedProcessor;
 import com.wuxp.codegen.languages.typescript.UmiModel;
 import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
+import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
+import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
-import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -183,18 +185,18 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractDragonCodegenBuilder baseTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping) {
-        this.baseTypeMapping = baseTypeMapping;
+    public AbstractDragonCodegenBuilder baseTypeMapping(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
+        this.baseTypeMapping.put(javaType,classMeta);
         return this;
     }
 
-    public AbstractDragonCodegenBuilder customTypeMapping(Map<Class<?>, CommonCodeGenClassMeta> customTypeMapping) {
-        this.customTypeMapping = customTypeMapping;
+    public AbstractDragonCodegenBuilder customTypeMapping(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
+        this.customTypeMapping.put(javaType,classMeta);
         return this;
     }
 
-    public AbstractDragonCodegenBuilder customJavaTypeMapping(Map<Class<?>, Class<?>[]> customJavaTypeMapping) {
-        this.customJavaTypeMapping = customJavaTypeMapping;
+    public AbstractDragonCodegenBuilder customJavaTypeMapping(Class<?> javaType, Class<?>[] classes) {
+        this.customJavaTypeMapping.put(javaType,classes);
         return this;
     }
 
@@ -309,20 +311,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     }
 
     protected void initTypeMapping() {
-        //设置基础数据类型的映射关系
-        baseTypeMapping.forEach((key, val) -> {
-            AbstractTypeMapping.setBaseTypeMapping(key, val, true);
-        });
-
-        //自定义的类型映射
-        customTypeMapping.forEach((key, val) -> {
-            AbstractTypeMapping.setCustomizeTypeMapping(key, val, true);
-        });
-
-        //自定义的java类型映射
-        customJavaTypeMapping.forEach((key, val) -> {
-            AbstractTypeMapping.setCustomizeJavaTypeMapping(key, val, true);
-        });
 
         Collection<CodeGenMatcher> codeGenMatchers = this.codeGenMatchers;
         Optional<PackageNameCodeGenMatcher> optionalCodeGenMatcher = codeGenMatchers.stream()
@@ -370,6 +358,18 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         if (!this.includePackages.isEmpty() || !includeClasses.isEmpty()) {
             // include 模式
             languageParser.addCodeGenMatchers(IncludeClassCodeGenMatcher.of(this.includePackages, includeClasses));
+        }
+        if (languageParser instanceof AbstractLanguageParser){
+            AbstractLanguageParser<?, ?, ?> abstractLanguageParser = (AbstractLanguageParser<?, ?, ?>) languageParser;
+            AbstractLanguageTypeMapping languageTypeMapping = LanguageTypeMappingFactory.builder()
+                    .baseTypeMapping(this.baseTypeMapping)
+                    .customizeTypeMapping(this.customTypeMapping)
+                    .customizeJavaMapping(this.customJavaTypeMapping)
+                    .languageParser(languageParser)
+                    .languageDescription(languageDescription)
+                    .build()
+                    .factory();
+            abstractLanguageParser.setLanguageTypeMapping(languageTypeMapping);
         }
     }
 }

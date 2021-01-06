@@ -1,9 +1,8 @@
 package com.wuxp.codegen.annotation.processor.spring;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processor.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.lang.reflect.Parameter;
@@ -12,6 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static com.wuxp.codegen.annotation.processor.spring.RequestParamProcessor.getRequestAnnotationDesc;
 
 /**
  * @author wxup
@@ -28,9 +29,23 @@ public class RequestHeaderProcessor extends AbstractAnnotationProcessor<RequestH
     }
 
 
-    public abstract static class RequestHeaderMate implements AnnotationMate, RequestHeader {
+    public abstract static class RequestHeaderMate implements NamedAnnotationMate, RequestHeader {
 
-        public RequestHeaderMate() {
+        protected final RequestHeader requestHeader;
+
+
+        public RequestHeaderMate(RequestHeader requestHeader) {
+            this.requestHeader = requestHeader;
+        }
+
+        @Override
+        public String name() {
+            return requestHeader.name();
+        }
+
+        @Override
+        public String value() {
+            return requestHeader.value();
         }
 
         @Override
@@ -38,16 +53,8 @@ public class RequestHeaderProcessor extends AbstractAnnotationProcessor<RequestH
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
             annotation.setName(RequestHeader.class.getSimpleName());
             Map<String, String> arguments = new LinkedHashMap<>();
-            String value = this.value();
-            if (!StringUtils.hasText(value)) {
-                value = this.name();
-            }
-            if (!StringUtils.hasText(value)) {
-                value = annotationOwner.getName();
-            }
-            if (StringUtils.hasText(value)) {
-                arguments.put("name", MessageFormat.format("\"{0}\"", value));
-            }
+            String value = getParameterName(annotationOwner);
+            arguments.put("name", MessageFormat.format("\"{0}\"", value));
             arguments.put("required", this.required() + "");
             //注解位置参数
             List<String> positionArguments = new LinkedList<>(arguments.values());
@@ -58,7 +65,7 @@ public class RequestHeaderProcessor extends AbstractAnnotationProcessor<RequestH
 
         @Override
         public String toComment(Parameter annotationOwner) {
-            return String.format("参数：%s是一个请求头, %s，默认值为：%s", annotationOwner.getName(), required() ? "必填" : "非必填", defaultValue());
+            return getRequestAnnotationDesc(String.format("参数：%s是一个请求头，%s",this.getParameterName(annotationOwner), required() ? "必填" : "非必填"), defaultValue());
         }
     }
 }

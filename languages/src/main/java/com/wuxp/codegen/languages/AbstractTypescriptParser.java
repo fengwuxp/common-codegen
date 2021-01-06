@@ -44,11 +44,6 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
                 packageMapStrategy,
                 genMatchingStrategy,
                 codeDetects);
-        this.typeMapping = new TypescriptTypeMapping(this);
-    }
-
-    {
-
         //根据java 类进行匹配
         codeGenMatchers.add(clazz -> clazz.isEnum() || JavaTypeUtils.isNoneJdkComplex(clazz) || clazz.isAnnotation());
     }
@@ -107,12 +102,12 @@ public abstract class AbstractTypescriptParser extends AbstractLanguageParser<Ty
             }
         }
         Class[] newReturnTypes = newTypes.toArray(new Class[0]);
-        List<TypescriptClassMeta> mapping = this.typeMapping.mapping(newReturnTypes);
+        List<TypescriptClassMeta> mapping = this.languageTypeMapping.mapping(newReturnTypes);
         if (newTypes.size() > returnTypes.length) {
             //返回值类型列表发生变化，重新计算返回值类型
             returnTypes = newReturnTypes;
             javaMethodMeta.setReturnType(newReturnTypes);
-            mapping = this.typeMapping.mapping(newReturnTypes);
+            mapping = this.languageTypeMapping.mapping(newReturnTypes);
             commonCodeGenMethodMeta.setReturnTypes(mapping.toArray(new CommonCodeGenClassMeta[0]));
         }
 

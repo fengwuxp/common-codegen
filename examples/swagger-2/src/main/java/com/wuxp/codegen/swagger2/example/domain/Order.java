@@ -11,12 +11,10 @@ import java.util.Date;
 @ApiModel("订单")
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class Order  extends BaseInfo<Long>{
+public class Order extends BaseInfo<Long> {
 
 
-
-
-    @ApiModelProperty(value = "sn",example = "order_sn_199223")
+    @ApiModelProperty(value = "sn", example = "order_sn_199223")
     private String sn;
 
     @ApiModelProperty(value = "下单用户")
@@ -24,7 +22,7 @@ public class Order  extends BaseInfo<Long>{
 
 
     @ApiModelProperty("添加时间")
-    public Date getAddTime(){
+    public Date getAddTime() {
         return new Date();
     }
 }

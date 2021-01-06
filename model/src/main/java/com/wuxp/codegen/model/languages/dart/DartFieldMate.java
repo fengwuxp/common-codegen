@@ -8,6 +8,7 @@ import java.util.Objects;
 
 /**
  * dart的field 元数据
+ *
  * @author wxup
  */
 @Data

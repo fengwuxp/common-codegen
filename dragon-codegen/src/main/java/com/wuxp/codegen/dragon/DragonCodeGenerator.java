@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * dragon 模式的代码生成
+ *
+ * @author wuxp
  */
 @Slf4j
 public class DragonCodeGenerator extends AbstractCodeGenerator {

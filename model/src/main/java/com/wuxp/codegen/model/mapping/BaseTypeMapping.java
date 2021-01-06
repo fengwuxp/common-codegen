@@ -3,7 +3,6 @@ package com.wuxp.codegen.model.mapping;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

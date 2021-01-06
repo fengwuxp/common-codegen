@@ -4,7 +4,6 @@ import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.enums.AuthenticationType;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignDartCodegenBuilder;
@@ -27,16 +26,6 @@ public class Swagger2FeignSdkCodegenDartTest {
     @Test
     public void testCodeGenDartApiByStater() {
 
-
-        //设置基础数据类型的映射关系
-        Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
-        baseTypeMapping.put(ServiceQueryResponse.class, DartClassMeta.FUTRUE);
-        baseTypeMapping.put(ServiceResponse.class, DartClassMeta.FUTRUE);
-
-        //自定义的类型映射
-        Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
-        customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
-
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
 
@@ -44,7 +33,7 @@ public class Swagger2FeignSdkCodegenDartTest {
         packageMap.put("com.wuxp.codegen.swagger2.controller", "com.wuxp.codegen.swagger2.services");
         //其他类（DTO、VO等）所在的包
         String basePackageName = "com.wuxp.codegen.swagger2";
-        packageMap.put("com.wuxp.codegen.swagger2.example.controller", basePackageName+".clients");
+        packageMap.put("com.wuxp.codegen.swagger2.example.controller", basePackageName + ".clients");
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
         //其他类（DTO、VO等）所在的包
 
@@ -72,13 +61,15 @@ public class Swagger2FeignSdkCodegenDartTest {
         Swagger2FeignDartCodegenBuilder.builder()
                 .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
-                .baseTypeMapping(baseTypeMapping)
-                .customJavaTypeMapping(customTypeMapping)
+                //设置基础数据类型的映射关系
+                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTRUE)
+                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTRUE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
-//                .languageEnhancedProcessor(new WuxpApiEnhancedProcessor())
                 .buildCodeGenerator()
                 .generate();
     }

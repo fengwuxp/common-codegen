@@ -29,7 +29,7 @@ public class User {
     private Sex sex;
 
     @ApiModelProperty("其他")
-    private Map<String,String> other;
+    private Map<String, String> other;
 
     @ApiModelProperty("其他2")
     private Map other2;

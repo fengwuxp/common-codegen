@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+import static com.wuxp.codegen.annotation.processor.spring.RequestParamProcessor.getRequestAnnotationDesc;
+
 
 /**
  * swagger3 注解处理
@@ -29,16 +31,16 @@ public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, P
 
         @Override
         public String toComment(Object annotationOwner) {
-
-            String desc = this.description();
-            String name = this.name();
-            String description = StringUtils.hasText(desc) ? desc : name;
             Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
             String defaultValue = "";
             if (requestParam.isPresent()) {
-                defaultValue = requestParam.get().defaultValue();
+                defaultValue = getRequestAnnotationDesc(defaultValue);
             }
-            return String.format("属性名称：%s，属性说明：%s，默认值：%s，示例输入：%s", name, defaultValue, description, this.example());
+            String name = name();
+            if (annotationOwner instanceof java.lang.reflect.Parameter) {
+                name = getParameterName((java.lang.reflect.Parameter) annotationOwner, name);
+            }
+            return String.format("属性名称：%s，属性说明：%s，默认值：%s，示例输入：%s", name, defaultValue,  this.description(), this.example());
         }
 
 

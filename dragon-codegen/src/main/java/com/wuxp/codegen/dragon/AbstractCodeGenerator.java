@@ -8,6 +8,7 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import lombok.Setter;
@@ -163,7 +164,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 .filter(this::hasExistMember)
                 .collect(Collectors.toSet());
 
-        CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
+        CodeGenPublisher<CommonCodeGenClassMeta> codeGenPublisher = this.codeGenPublisher;
         final boolean needSendEvent = codeGenPublisher != null;
 
         if (otherCodegenClassMetas != null) {
@@ -180,9 +181,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                         //模板处理，生成服务
                         if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
                             //将方法参数字段名称设置为下划线
-                            Arrays.stream(commonCodeGenClassMeta.getFieldMetas()).forEach(commonCodeGenFiledMeta -> {
-                                commonCodeGenFiledMeta.setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName()));
-                            });
+                            Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
+                                    .forEach(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName())));
                         }
 
                         Map<String, ? extends CommonCodeGenClassMeta> dependencies = commonCodeGenClassMeta.getDependencies();
@@ -223,7 +223,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             codeGenPublisher.sendCodeGenEnd();
             if (codeGenPublisher.supportPark()) {
                 // 最多等待10秒
-                LockSupport.parkNanos(10 * 1000 * 1000 * 1000);
+                LockSupport.parkNanos(10L * 1000 * 1000 * 1000);
             }
         }
         CodegenConfigHolder.clear();
@@ -266,7 +266,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     /**
      * 是否存在成员
      *
-     * @param commonCodeGenClassMeta
+     * @param commonCodeGenClassMeta 用于生成代码的类描述对象
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
     private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
@@ -285,38 +285,40 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     /**
      * 过滤掉重复的字段
      *
-     * @param meta
+     * @param meta 用于生成代码的类描述对象
      */
     private void filterDuplicateFields(CommonCodeGenClassMeta meta) {
         CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
         if (fieldMetas == null) {
             return;
         }
-        Map<String, Integer> count = new HashMap<>();
-        CommonCodeGenFiledMeta[] commonCodeGenFiledMetas = Arrays.asList(fieldMetas).stream().filter(commonCodeGenFiledMeta -> {
-            String name = commonCodeGenFiledMeta.getName();
-            int i = count.getOrDefault(name, 0);
-            if (i == 0) {
-                count.put(name, ++i);
-                return true;
-            }
-            // 属性重复了
-            return false;
-        }).toArray(CommonCodeGenFiledMeta[]::new);
+        Map<String, Integer> countMap = new HashMap<>(fieldMetas.length);
+        CommonCodeGenFiledMeta[] commonCodeGenFiledMetas = Arrays.stream(fieldMetas)
+                .filter(commonCodeGenFiledMeta -> {
+                    String name = commonCodeGenFiledMeta.getName();
+                    int i = countMap.getOrDefault(name, 0);
+                    if (i == 0) {
+                        countMap.put(name, ++i);
+                        return true;
+                    }
+                    // 属性重复了
+                    return false;
+                }).toArray(CommonCodeGenFiledMeta[]::new);
         meta.setFieldMetas(commonCodeGenFiledMetas);
     }
 
     /**
      * 移除无效的依赖
      *
-     * @param meta
+     * @param meta 用于生成代码的类描述对象
      */
     private void removeInvalidDependencies(CommonCodeGenClassMeta meta) {
         Set<Class<?>> effectiveDependencies = new HashSet<>();
         // 移除无效的依赖
         if (meta.getFieldMetas() != null) {
             CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
-            effectiveDependencies.addAll(Arrays.stream(fieldMetas).map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getFiledTypes())
+            effectiveDependencies.addAll(Arrays.stream(fieldMetas)
+                    .map(CommonCodeGenFiledMeta::getFiledTypes)
                     .filter(Objects::nonNull)
                     .map(Arrays::asList)
                     .flatMap(Collection::stream)
@@ -326,7 +328,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         }
         if (meta.getMethodMetas() != null) {
             effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getReturnTypes())
+                    .map(CommonCodeGenMethodMeta::getReturnTypes)
                     .filter(Objects::nonNull)
                     .map(Arrays::asList)
                     .flatMap(Collection::stream)
@@ -334,7 +336,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet()));
             effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getParams())
+                    .map(CommonCodeGenMethodMeta::getParams)
                     .filter(Objects::nonNull)
                     .map(Arrays::asList)
                     .flatMap(Collection::stream)
@@ -351,9 +353,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         }
         CommonCodeGenClassMeta[] interfaces = meta.getInterfaces();
         if (interfaces != null) {
-            Arrays.asList(interfaces).forEach(commonCodeGenClassMeta -> {
-                effectiveDependencies.add(commonCodeGenClassMeta.getSource());
-            });
+            Arrays.asList(interfaces).forEach(commonCodeGenClassMeta -> effectiveDependencies.add(commonCodeGenClassMeta.getSource()));
         }
 
         Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * 通用的代码生成 class 元数据
+ *
  * @author wuxp
  */
 @Data

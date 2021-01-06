@@ -16,6 +16,7 @@ import java.util.Set;
 
 /**
  * 类的元数据
+ *
  * @author wuxp
  */
 @Data
@@ -35,6 +36,7 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
 
     /**
      * 属性类型 如果有泛型则有多个
+     *
      * @key 类型，父类，接口，本身
      */
     private Map<Class<?>, Class<?>[]> superTypeVariables;

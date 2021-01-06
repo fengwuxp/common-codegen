@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 /**
  * dart built value factory model
+ *
  * @author wxup
  */
 @Data

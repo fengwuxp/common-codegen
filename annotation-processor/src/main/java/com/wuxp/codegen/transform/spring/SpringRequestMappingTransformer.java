@@ -78,10 +78,10 @@ public class SpringRequestMappingTransformer implements
 
         //注解命名参数
         Map<String, String> namedArguments = new LinkedHashMap<>();
-        String[] value = annotationMate.value();
+        String[] paths = annotationMate.getPath();
         String val = null;
-        if (value.length > 0) {
-            val = value[0];
+        if (paths.length > 0) {
+            val = paths[0];
         }
 
         //如果val不存在或者ownerName和value中的一致，则不生成value

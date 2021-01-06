@@ -80,7 +80,6 @@ public class UserController {
     }
 
 
-
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public void uploadFile(@RequestParam(name = "file") CommonsMultipartFile commonsMultipartFile) {
 

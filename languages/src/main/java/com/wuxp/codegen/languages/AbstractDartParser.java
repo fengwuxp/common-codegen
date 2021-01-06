@@ -50,7 +50,6 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
                 packageMapStrategy,
                 genMatchingStrategy,
                 codeDetects);
-        this.typeMapping = new DartTypeMapping(this);
         this.ignoreFields = ignoreFields;
     }
 
@@ -77,7 +76,6 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects) {
         super(javaParser, languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);
-        this.typeMapping = new DartTypeMapping(this);
 
     }
 

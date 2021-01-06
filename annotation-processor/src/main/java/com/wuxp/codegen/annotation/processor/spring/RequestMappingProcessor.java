@@ -37,7 +37,6 @@ import java.util.Map;
 public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
 
 
-
     /**
      * Mapping和mapping元数据的对应
      */
@@ -108,6 +107,20 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     public abstract static class RequestMappingMate implements AnnotationMate, RequestMapping {
 
 
+        public String[] getPath() {
+            String[] value = this.value();
+            if (value.length > 0) {
+                return value;
+            }
+            value = this.path();
+            if (value.length > 0) {
+                return value;
+            }
+
+            return new String[]{};
+        }
+
+
         @Override
         public String toComment(Class<?> annotationOwner) {
 
@@ -128,8 +141,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             if (codeGenAnnotation == null) {
                 return null;
             }
-            //将类上的注解改为feign
-//            codeGenAnnotation.setName(SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME);
             codeGenAnnotation.getPositionArguments().remove("method");
             return codeGenAnnotation;
         }
@@ -180,7 +191,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
                 return requestMethods[0];
             }
         }
-
 
 
         /**

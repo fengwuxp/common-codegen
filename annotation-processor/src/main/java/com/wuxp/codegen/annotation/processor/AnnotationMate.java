@@ -1,6 +1,8 @@
 package com.wuxp.codegen.annotation.processor;
 
+import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -68,4 +70,31 @@ public interface AnnotationMate extends AnnotationToString, Annotation {
      * @return CommonCodeGenAnnotation 实例
      */
     CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner);
+
+    /**
+     * 获取参数名称
+     *
+     * @param annotationOwner 参数对象
+     * @return 参数名称
+     */
+    default String getParameterName(Parameter annotationOwner) {
+
+        return getParameterName(annotationOwner, null);
+    }
+
+    /**
+     * 获取参数名称
+     *
+     * @param annotationOwner 参数对象
+     * @param markName        标记名称
+     * @return 参数名称
+     */
+    default String getParameterName(Parameter annotationOwner, String markName) {
+
+        if (StringUtils.hasText(markName)) {
+            return markName;
+        }
+
+        return JavaClassParser.getParameterName(annotationOwner);
+    }
 }

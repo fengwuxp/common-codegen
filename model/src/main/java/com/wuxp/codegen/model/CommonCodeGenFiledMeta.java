@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 /**
  * 通用的代码生成 filed 元数据
+ *
  * @author wuxp
  */
 @Data

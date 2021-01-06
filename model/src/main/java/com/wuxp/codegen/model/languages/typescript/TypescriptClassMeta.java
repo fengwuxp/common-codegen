@@ -89,7 +89,7 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     /**
      * 枚举类型
      */
-    public final static TypescriptClassMeta ENUM = new TypescriptClassMeta("Enum", null, ClassType.INTERFACE, false, null,"Enum");
+    public final static TypescriptClassMeta ENUM = new TypescriptClassMeta("Enum", null, ClassType.INTERFACE, false, null, "Enum");
 
 
     /**

@@ -20,6 +20,7 @@ import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCE
 
 /**
  * swagger2 模式的代码生成
+ * @author wuxp
  */
 @Slf4j
 public class Swagger2CodeGenerator extends AbstractCodeGenerator {

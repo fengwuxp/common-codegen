@@ -13,12 +13,12 @@ import java.util.Objects;
 
 /**
  * 通用的基础元数据类
+ *
  * @author wuxp
  */
 @Data
 @Accessors(chain = true)
 public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
-
 
 
     /**

@@ -44,6 +44,10 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
 
     public abstract static class RetrofitRequestHeaderMate extends RequestHeaderProcessor.RequestHeaderMate {
 
+        public RetrofitRequestHeaderMate(RequestHeader requestHeader) {
+            super(requestHeader);
+        }
+
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
@@ -54,6 +58,10 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
     }
 
     public abstract static class RetrofitRequestParamMate extends RequestParamProcessor.RequestParamMate {
+
+        public RetrofitRequestParamMate(RequestParam requestParam) {
+            super(requestParam);
+        }
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
@@ -82,6 +90,10 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
 
     public abstract static class RetrofitPathVariableMate extends PathVariableProcessor.PathVariableMate {
 
+        public RetrofitPathVariableMate(PathVariable pathVariable) {
+            super(pathVariable);
+        }
+
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
@@ -92,6 +104,10 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
     }
 
     public abstract static class RetrofitCookieValueMate extends CookieValueProcessor.CookieValueMate {
+
+        public RetrofitCookieValueMate(CookieValue cookieValue) {
+            super(cookieValue);
+        }
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {

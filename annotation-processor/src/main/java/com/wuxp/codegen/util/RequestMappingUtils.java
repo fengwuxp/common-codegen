@@ -27,8 +27,8 @@ public final class RequestMappingUtils {
     public static String combinePath(RequestMappingProcessor.RequestMappingMate annotationMate, Method annotationOwner) {
         Class<?> declaringClass = annotationOwner.getDeclaringClass();
         Optional<RequestMappingProcessor.RequestMappingMate> requestAnnotation = findRequestMappingAnnotation(declaringClass.getAnnotations());
-        String[] clazzMappingValues = requestAnnotation.map(RequestMapping::value).orElse(null);
-        String[] v2 = annotationMate.value();
+        String[] clazzMappingValues = requestAnnotation.map(RequestMappingProcessor.RequestMappingMate::getPath).orElse(null);
+        String[] v2 = annotationMate.getPath();
         return combinePath(clazzMappingValues, v2);
     }
 

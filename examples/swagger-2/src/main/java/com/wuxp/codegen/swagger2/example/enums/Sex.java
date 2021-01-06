@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("性别")
-public enum  Sex {
+public enum Sex {
 
     @ApiModelProperty("男")
     MAN,

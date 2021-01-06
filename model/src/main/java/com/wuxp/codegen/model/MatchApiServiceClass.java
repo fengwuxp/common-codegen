@@ -6,7 +6,5 @@ package com.wuxp.codegen.model;
 public interface MatchApiServiceClass {
 
 
-
-
     boolean isApiServiceClass();
 }

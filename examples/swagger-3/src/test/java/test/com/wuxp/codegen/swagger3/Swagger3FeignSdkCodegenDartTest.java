@@ -3,7 +3,6 @@ package test.com.wuxp.codegen.swagger3;
 import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
 import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.enums.AuthenticationType;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
@@ -29,15 +28,6 @@ public class Swagger3FeignSdkCodegenDartTest {
     @Test
     public void testCodeGenDartApiSdk() {
 
-        //设置基础数据类型的映射关系
-        Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
-        baseTypeMapping.put(ServiceQueryResponse.class, DartClassMeta.FUTRUE);
-        baseTypeMapping.put(ServiceResponse.class, DartClassMeta.FUTRUE);
-
-        //自定义的类型映射
-        Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
-        customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
-
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
 
@@ -52,7 +42,7 @@ public class Swagger3FeignSdkCodegenDartTest {
 //        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
         String language = LanguageDescription.DART.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(),"swagger3", "lib", "src"};
+        String[] outPaths = {"codegen-result", language.toLowerCase(), "swagger3", "lib", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
@@ -69,15 +59,18 @@ public class Swagger3FeignSdkCodegenDartTest {
             put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
         }};
 
-        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE,new String[]{
+        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
 
         Swagger3FeignDartCodegenBuilder.builder()
                 .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
-                .baseTypeMapping(baseTypeMapping)
-                .customJavaTypeMapping(customTypeMapping)
+                //设置基础数据类型的映射关系
+                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTRUE)
+                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTRUE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)

@@ -62,10 +62,13 @@ public class Swagger3FeignSdkCodegenTypescriptTest {
         classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
 
         Swagger3FeignTypescriptCodegenBuilder.builder()
-                .baseTypeMapping(baseTypeMapping)
                 .languageDescription(LanguageDescription.TYPESCRIPT)
                 .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
-                .customJavaTypeMapping(customTypeMapping)
+                //设置基础数据类型的映射关系
+                .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
+                .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)

@@ -3,8 +3,10 @@ package com.wuxp.codegen.mapping;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.mapping.AbstractTypeMapping;
+import com.wuxp.codegen.model.mapping.BaseTypeMapping;
+import com.wuxp.codegen.model.mapping.CustomizeJavaTypeMapping;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.mapping.TypeMapping;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -15,17 +17,52 @@ import java.util.stream.Collectors;
 
 
 /**
- * 处理common的类型映射
+ * 不同语言的类型映射的抽象类，需要提供语言的基础类型映射 {@link #baseTypeMapping}
+ * 自定义类型映射{@link #customizeTypeMapping}和 java 类型映射扩展{@link #customizeJavaTypeMapping}
+ *
+ * @author wuxp
  */
 @Slf4j
-public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends AbstractTypeMapping<C> {
+public abstract class AbstractLanguageTypeMapping<C extends CommonCodeGenClassMeta> implements TypeMapping<Class<?>, List<C>> {
 
 
-    protected LanguageParser<C> languageParser;
+    /**
+     * 基础类型映射器
+     */
+    protected final TypeMapping<Class<?>, ? extends CommonCodeGenClassMeta> baseTypeMapping;
+
+    /**
+     * 自定义的类型映射器
+     */
+    protected final TypeMapping<Class<?>, ? extends CommonCodeGenClassMeta> customizeTypeMapping;
+
+    /**
+     * 自定义的java类型映射
+     */
+    protected final TypeMapping<Class<?>, List<Class<?>>> customizeJavaTypeMapping;
+
+    /**
+     * 语言处理解析器
+     */
+    protected final LanguageParser<C> languageParser;
 
 
-    public CommonTypeMapping(LanguageParser<C> languageParser) {
+    public AbstractLanguageTypeMapping(LanguageParser<C> languageParser,
+                                       Map<Class<?>, CommonCodeGenClassMeta> baseTypeMappingMap,
+                                       Map<Class<?>, CommonCodeGenClassMeta> customizeTypeMappingMap,
+                                       Map<Class<?>, Class<?>[]> customizeJavaMappingMap) {
         this.languageParser = languageParser;
+
+        Map<Class<?>, CommonCodeGenClassMeta> languageBaseTypeMappingMap = this.getBaseTypeMappingMap();
+        final Map<Class<?>, CommonCodeGenClassMeta> baseTypeMap = new LinkedHashMap<>(baseTypeMappingMap);
+        languageBaseTypeMappingMap.forEach((key, val) -> {
+            if (!baseTypeMap.containsKey(key)) {
+                baseTypeMap.put(key, val);
+            }
+        });
+        this.baseTypeMapping = new BaseTypeMapping<>(baseTypeMap);
+        this.customizeTypeMapping = new BaseTypeMapping<>(customizeTypeMappingMap);
+        this.customizeJavaTypeMapping = new CustomizeJavaTypeMapping(customizeJavaMappingMap);
     }
 
     /**
@@ -40,12 +77,12 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
         }
 
         //数组
-//        boolean isArray = JavaArrayClassType.class.equals(lastClazz);
+        //boolean isArray = JavaArrayClassType.class.equals(lastClazz);
         //1. 类型转换，如果是简单的java类型，则尝试做装换
         //2. 处理枚举类型
         //3. 循环获取泛型
         //4. 处理复杂的数据类型（自定义的java类）
-        List<C> classMetas = classMetas = Arrays.stream(classes)
+        List<C> classMetas = Arrays.stream(classes)
                 .filter(Objects::nonNull)
                 .map(customizeJavaTypeMapping::mapping)
                 .flatMap(Collection::stream)
@@ -88,6 +125,12 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
 
     }
 
+    /**
+     * 获取不同语言和java基础类型的映射关系
+     *
+     * @return
+     */
+    protected abstract Map<Class<?>, CommonCodeGenClassMeta> getBaseTypeMappingMap();
 
     protected C getAnyOrObjectType() {
 
@@ -237,8 +280,7 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
         ResolvableType[] generics = resolvableType.getGenerics();
         List<Class<?>> classes = new ArrayList<>();
         classes.add(resolvableType.getRawClass());
-        for (int i = 0; i < generics.length; i++) {
-            ResolvableType generic = generics[i];
+        for (ResolvableType generic : generics) {
             classes.addAll(Arrays.asList(genericsToClassType(generic)));
         }
 
@@ -246,4 +288,18 @@ public class CommonTypeMapping<C extends CommonCodeGenClassMeta> extends Abstrac
                 .filter(Objects::nonNull)
                 .toArray(Class<?>[]::new);
     }
+
+    public TypeMapping<Class<?>, ? extends CommonCodeGenClassMeta> getBaseTypeMapping() {
+        return baseTypeMapping;
+    }
+
+    public TypeMapping<Class<?>, ? extends CommonCodeGenClassMeta> getCustomizeTypeMapping() {
+        return customizeTypeMapping;
+    }
+
+    public TypeMapping<Class<?>, List<Class<?>>> getCustomizeJavaTypeMapping() {
+        return customizeJavaTypeMapping;
+    }
+
+
 }

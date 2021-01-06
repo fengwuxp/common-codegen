@@ -1,12 +1,14 @@
 #### 一些设计思路说明
 
 - 扫描的需要生成代码的包路径（和spring的包扫描一致的规则）
+
 ```
  那些包下的类需要进行代码生成，一般是控制器的目录，支持ant匹配模式，例如：
      com.wuxp.codegen.swagger2.**.controller
 ```  
 
 - 类型的映射，将一个java类转换为其他java类或者其他语言类型
+
 ```
   // 设置java的类型和生成目标语言类型的映射关系，例如：
   AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
@@ -19,6 +21,7 @@
 ```
 
 - 包名映射，配置一个需要生成类所属的java包对应到输出路径下的包结构（目录结构），不同的语言可能需要不同的映射策略。
+
 ```
      // 包名映射关系
      Map<String, String> packageMap = new LinkedHashMap<>();
@@ -32,16 +35,20 @@
     // com.wuxp.codegen.swagger2.example的类生成到输出路径下的models目录下
     packageMap.put("com.wuxp.codegen.swagger2.example", "models");
 ```
+
 - 只需要导入类（主要针对java相关的生成，如果项目已经将一些公共的类（一把是DTO对象）提取到了一个公共的模块当中，这个时候就可以标记这些包（类）是只需要导入就可以了
+
 ```
      Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
                 // 可以设置多个类或者多个包，DefaultCodeGenImportMatcher.of方法有多个重载，如果设置的是包名或者类名，支持ant匹配
                 .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
-                .baseTypeMapping(baseTypeMapping)
+                 // 基础类型映射
+                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-                .customJavaTypeMapping(customTypeMapping)
                 .packageMapStrategy(packageMapStrategy)
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
@@ -51,15 +58,20 @@
                 .generate();
   
 ```
+
 - [ant path匹配](https://blog.csdn.net/chenqipc/article/details/53289721)
 
 #### 注解处理
+
 ```
    注解在java开发中有着重要的地位，用来标记不同的信息，用于在编译时、运行时等阶段交由其他代码解释处理，然而在其他语言中不一定java这么丰富的注解
 ，甚至压根就不支持注解，例如：C。所以我们在生成代码时需要根据不同的语言特性和对注解的支持程度，将java的注解转换为其他语言的注解或者是注释
 ```
+
 #### 注解处理例子
+
 这是一段java的代码示例
+
 ```java
 
 @Api("订单服务")
@@ -146,7 +158,9 @@ public class CreateOrderEvt extends BaseEvt {
 
 }
 ```
+
 生成的typescript代码
+
 ```typescript
 /* tslint:disable */
 
@@ -254,8 +268,8 @@ export interface CreateOrderEvt extends BaseEvt {
 
 }
 ```
-可以看到程序将一部分(RequestMapping相关)java注解装换成了typescript的装饰器（注解），swagger和java.validation相关的注解转换成了对应的
-注释，还有Controller这个注解就直接被忽略。
+
+可以看到程序将一部分(RequestMapping相关)java注解装换成了typescript的装饰器（注解），swagger和java.validation相关的注解转换成了对应的 注释，还有Controller这个注解就直接被忽略。
 
 ##### api sdk 代码生成接入指南
 
@@ -283,20 +297,12 @@ export interface CreateOrderEvt extends BaseEvt {
 
 ```java
 // 用于生成retrofit clients的例子
+@Slf4j
 public class Swagger2FeignSdkCodegenRetrofitTest {
 
 
     @Test
     public void testCodeGenRetrofitApiByStater() {
-
-
-        //设置基础数据类型的映射关系
-        Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
-        AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
-
-        //自定义的类型映射
-        Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
-        customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -314,37 +320,36 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
         Swagger2FeignJavaCodegenBuilder.builder()
-                // 是否使用rxjava，该参数仅支持用于生成java的client
                 .useRxJava(true)
                 .build()
-                .baseTypeMapping(baseTypeMapping)
-                // 设置生成目标的语言
+                // 基础类型映射
+                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
-                // 请求client工具的提供者类型
                 .clientProviderType(ClientProviderType.RETROFIT)
-                .customJavaTypeMapping(customTypeMapping)
-                // 包名映射策略
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
-                // 输出目录
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
-                // 扫描的包路径
                 .scanPackages(packagePaths)
-                // 是否删除原本的输出目录
                 .isDeletedOutputDirectory(false)
-                // 生成dto对象时字段是否使用下划线方式命名（驼峰==>下划线）
-                .enableFieldUnderlineStyle(false)
-                // 构建代码生成器
+                .enableFieldUnderlineStyle(true)
                 .buildCodeGenerator()
-                // 生成
                 .generate();
 
     }
+
+    @Test
+    public void testJavaParser() {
+
+        JavaClassMeta parse = new JavaClassParser(false).parse(User.class);
+
+        log.debug("{}", parse);
+    }
 }
-
-
 ```
 
 - 额外说明，即时项目中没有swagger相关的注解也不影响生成，swagger的注解不是必须的，它只是用来生成注释的，例如这样：
+
 ```typescript
 // 有swagger注解
 

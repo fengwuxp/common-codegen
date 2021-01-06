@@ -6,7 +6,4 @@ import org.springframework.context.annotation.Configuration;
 public class Swagger3Config {
 
 
-
-
-
 }

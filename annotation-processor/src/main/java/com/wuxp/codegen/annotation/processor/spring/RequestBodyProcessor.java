@@ -1,12 +1,11 @@
 package com.wuxp.codegen.annotation.processor.spring;
 
 import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processor.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.lang.reflect.Parameter;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBod
     }
 
 
-    public abstract static class RequestBodyMate implements AnnotationMate, RequestBody {
+    public abstract static class RequestBodyMate implements NamedAnnotationMate, RequestBody {
 
         public RequestBodyMate() {
         }
@@ -47,7 +46,7 @@ public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBod
 
         @Override
         public String toComment(Parameter annotationOwner) {
-            return String.format("参数：%s是一个RequestBody, %s", annotationOwner.getName(), required() ? "必填" : "非必填");
+            return String.format("参数：%s是一个RequestBody, %s", this.getParameterName(annotationOwner), required() ? "必填" : "非必填");
         }
     }
 }

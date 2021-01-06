@@ -2,6 +2,7 @@ package com.wuxp.codegen.model.enums;
 
 /**
  * 类类型
+ *
  * @author wuxp
  */
 public enum ClassType {
