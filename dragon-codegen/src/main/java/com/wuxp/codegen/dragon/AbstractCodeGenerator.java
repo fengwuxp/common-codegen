@@ -167,7 +167,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
   @Override
   public void generate() {
     Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
-        .map(this.languageParser::parse)
+//        .map(this.languageParser::parse)
+        .map(clazz->{
+          CommonCodeGenClassMeta codeGenClassMeta = this.languageParser.parse(clazz);
+          return codeGenClassMeta;
+        })
         .filter(Objects::nonNull)
         .filter(this::hasExistMember)
         .collect(Collectors.toSet());

@@ -70,7 +70,7 @@ public class RequestParamProcessor extends AbstractAnnotationProcessor<RequestPa
     }
 
     public static String getRequestAnnotationDesc(String desc, String defaultValue) {
-        if (StringUtils.hasText(getRequestAnnotationDesc(defaultValue))) {
+        if (!StringUtils.hasText(getRequestAnnotationDesc(defaultValue))) {
             return desc;
         }
         return desc + "默认值：" + defaultValue;

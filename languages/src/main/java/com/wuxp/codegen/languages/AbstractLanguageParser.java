@@ -63,7 +63,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -103,22 +102,20 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     M extends CommonCodeGenMethodMeta,
     F extends CommonCodeGenFiledMeta> implements LanguageParser<C> {
 
-
-  /**
-   * 类被处理的次数
-   */
-  protected static final Map<Class<?>, Integer> HANDLE_COUNT = new ConcurrentHashMap<>();
-
-  /**
-   * 处理结果缓存
-   */
-  protected static final Map<Class<?>, Object> HANDLE_RESULT_CACHE = new ConcurrentHashMap<>();
-
-
   /**
    * annotationProcessorMap
    */
   public static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
+
+  /**
+   * 类被处理的次数
+   */
+  protected  final Map<Class<?>, Integer> handleCountMap = new HashMap<>(128);
+
+  /**
+   * 处理结果缓存
+   */
+  protected  final Map<Class<?>, Object> handleResultCacheMap = new HashMap<>(128);
 
 
   /**
@@ -260,27 +257,27 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
       }
     }
 
-    if (HANDLE_COUNT.containsKey(source)) {
+    if (handleCountMap.containsKey(source)) {
       //标记某个类被处理的次数如果超过2次，从缓存中返回
-      if (HANDLE_COUNT.get(source) > 1) {
+      if (handleCountMap.get(source) > 1) {
         return this.getResultToLocalCache(source);
       } else {
-        HANDLE_COUNT.put(source, HANDLE_COUNT.get(source) + 1);
+        handleCountMap.put(source, handleCountMap.get(source) + 1);
       }
     } else {
-      HANDLE_COUNT.put(source, 1);
+      handleCountMap.put(source, 1);
     }
-    Integer count = HANDLE_COUNT.get(source);
+    Integer count = handleCountMap.get(source);
 
     CommonCodeGenClassMeta mapping = languageTypeMapping.getCustomizeTypeMapping().mapping(source);
 
     if (mapping != null) {
-      HANDLE_RESULT_CACHE.put(source, mapping);
+      handleResultCacheMap.put(source, mapping);
       return (C) mapping;
     } else {
       mapping = languageTypeMapping.getBaseTypeMapping().mapping(source);
       if (mapping != null) {
-        HANDLE_RESULT_CACHE.put(source, mapping);
+        handleResultCacheMap.put(source, mapping);
         return (C) mapping;
       }
     }
@@ -308,7 +305,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     this.detectJavaCode(javaClassMeta);
     meta = this.languageMetaInstanceFactory.newClassInstance();
     // 防止由于递归调用导致的初始化未完成，照成重新初始化
-    HANDLE_RESULT_CACHE.put(source, meta);
+    handleResultCacheMap.put(source, meta);
     meta.setSource(source);
     meta.setName(this.packageMapStrategy.convertClassName(source));
     meta.setPackagePath(this.packageMapStrategy.convert(source));
@@ -522,7 +519,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
    */
   protected C getResultToLocalCache(Class<?> clazz) {
 
-    C c = (C) HANDLE_RESULT_CACHE.get(clazz);
+    C c = (C) handleResultCacheMap.get(clazz);
     if (c == null) {
       return null;
     }
