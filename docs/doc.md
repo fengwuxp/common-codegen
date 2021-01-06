@@ -10,14 +10,14 @@
 - 类型的映射，将一个java类转换为其他java类或者其他语言类型
 
 ```
-  // 设置java的类型和生成目标语言类型的映射关系，例如：
-  AbstractTypeMapping.setBaseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
-  AbstractTypeMapping.setBaseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
-  AbstractTypeMapping.setBaseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE);
+   // 设置java的类型和生成目标语言类型的映射关系，例如：
+   Swagger2FeignJavaCodegenBuilder.builder()
+    Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
+    Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
+    Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE);
   
   // 自定义的类型映射，将一个java映射为一个或多个其他的java类型，例如：
-  Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
-  customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
+   Swagger2FeignJavaCodegenBuilder.builder().customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
 ```
 
 - 包名映射，配置一个需要生成类所属的java包对应到输出路径下的包结构（目录结构），不同的语言可能需要不同的映射策略。
@@ -336,14 +336,6 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
                 .buildCodeGenerator()
                 .generate();
 
-    }
-
-    @Test
-    public void testJavaParser() {
-
-        JavaClassMeta parse = new JavaClassParser(false).parse(User.class);
-
-        log.debug("{}", parse);
     }
 }
 ```
