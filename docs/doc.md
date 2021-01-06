@@ -11,7 +11,6 @@
 
 ```
    // 设置java的类型和生成目标语言类型的映射关系，例如：
-   Swagger2FeignJavaCodegenBuilder.builder()
     Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
     Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
     Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE);
