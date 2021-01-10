@@ -1,291 +1,291 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.3.4.RELEASE</version>
-    <!-- lookup parent from repository -->
-    <relativePath/>
-  </parent>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.4.RELEASE</version>
+        <!-- lookup parent from repository -->
+        <relativePath/>
+    </parent>
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.wuxp.codegen</groupId>
-  <artifactId>wuxp-codegen</artifactId>
-  <version>${revision}</version>
-  <packaging>pom</packaging>
-
-
-  <modules>
-    <module>core</module>
-    <module>model</module>
-    <module>template</module>
-    <module>languages</module>
-    <module>dragon-codegen</module>
-    <module>swagger2-codegen</module>
-    <module>annotation-processor</module>
-    <module>examples</module>
-    <module>swagger3-codegen</module>
-    <module>language-annotations</module>
-  </modules>
-
-  <properties>
-    <revision>1.1.0-SNAPSHOT</revision>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <jdk.version>${maven.compiler.target}</jdk.version>
-    <java.version>${maven.compiler.target}</java.version>
-    <project.src.encoding>UTF-8</project.src.encoding>
-    <!--1.8编译参数 保留方法名称-->
-    <compilerArgument>-parameters</compilerArgument>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven-source-plugin.attach>false</maven-source-plugin.attach>
-
-    <spring.version>5.2.4.RELEASE</spring.version>
-    <swagger2.version>2.9.2</swagger2.version>
-    <springdoc.version>1.2.21</springdoc.version>
-  </properties>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.16.22</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-      <version>2.3.28</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.25</version>
-      <scope>provided</scope>
-    </dependency>
+    <groupId>com.wuxp.codegen</groupId>
+    <artifactId>wuxp-codegen</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
 
 
-    <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
-      <scope>provided</scope>
-    </dependency>
+    <modules>
+        <module>core</module>
+        <module>model</module>
+        <module>template</module>
+        <module>languages</module>
+        <module>dragon-codegen</module>
+        <module>swagger2-codegen</module>
+        <module>examples</module>
+        <module>swagger3-codegen</module>
+        <module>language-annotations</module>
+        <module>annotation-meta</module>
+    </modules>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-      <version>${spring.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/junit/junit -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!--fast json-->
-    <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-    <dependency>
-      <groupId>com.alibaba</groupId>
-      <artifactId>fastjson</artifactId>
-      <version>1.2.54</version>
-      <scope>provided</scope>
-    </dependency>
-
-
-    <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>2.0.1.Final</version>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
-
-
-  <profiles>
-    <profile>
-      <id>编译时保留方法参数名称</id>
-      <activation>
-        <jdk>1.8</jdk>
-      </activation>
-      <properties>
-        <!--1.8编译参数-保留方法名称-->
+    <properties>
+        <revision>1.1.0-SNAPSHOT</revision>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <jdk.version>${maven.compiler.target}</jdk.version>
+        <java.version>${maven.compiler.target}</java.version>
+        <project.src.encoding>UTF-8</project.src.encoding>
+        <!--1.8编译参数 保留方法名称-->
         <compilerArgument>-parameters</compilerArgument>
-      </properties>
-    </profile>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven-source-plugin.attach>false</maven-source-plugin.attach>
 
-    <profile>
-      <id>跳过测试</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <maven.test.skip>false</maven.test.skip>
-      </properties>
-    </profile>
+        <spring.version>5.2.4.RELEASE</spring.version>
+        <swagger2.version>2.9.2</swagger2.version>
+        <springdoc.version>1.2.21</springdoc.version>
+    </properties>
 
-    <profile>
-      <id>上传源代码到 Maven</id>
-      <properties>
-        <maven-source-plugin.attach>true</maven-source-plugin.attach>
-      </properties>
-    </profile>
+    <dependencies>
 
-  </profiles>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.22</version>
+            <scope>provided</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.28</version>
+        </dependency>
 
-  <!--
-      <scm>
-          &lt;!&ndash;tag：说明project所在的目录tag，默认是HEAD，表示根目录&ndash;&gt;
-          <tag>HEAD</tag>
-          <connection>scm:svn:http://somerepository.com/svn_repo/trunk</connection>
-          <developerConnection>scm:svn:https://somerepository.com/svn_repo/trunk</developerConnection>
-          &lt;!&ndash;url：公开的可浏览repository&ndash;&gt;
-          <url>http://somerepository.com/view.cvs</url>
-      </scm>
-  -->
-  <distributionManagement>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+            <scope>provided</scope>
+        </dependency>
 
-    <repository>
-      <!-- id 要查看setting.xml文件中的server配置，上传时需要用户和密码-->
-      <id>${dist-repo}</id>
-      <url>${dist-repo.releases.url}</url>
-    </repository>
-
-    <snapshotRepository>
-      <id>${dist-repo}</id>
-      <url>${dist-repo.snapshots.url}</url>
-    </snapshotRepository>
-
-  </distributionManagement>
-
-  <organization>
-    <name>wupxp</name>
-    <url>https://github.com/</url>
-  </organization>
-
-  <developers>
-    <developer>
-      <id>fengwuxp</id>
-    </developer>
-  </developers>
-
-  <build>
-
-    <plugins>
-
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <delimiters>
-            <delimiter>${*}</delimiter>
-            <delimiter>@{*}</delimiter>
-          </delimiters>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <debug>true</debug>
-          <compilerArgument>${compilerArgument}</compilerArgument>
-
-        </configuration>
-        <inherited>true</inherited>
-      </plugin>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
+            <scope>provided</scope>
+        </dependency>
 
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <inherited>true</inherited>
-        <configuration>
-          <uniqueVersion>true</uniqueVersion>
-        </configuration>
-      </plugin>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-        <configuration>
-          <!--默认不上传到maven库-->
-          <attach>${maven-source-plugin.attach}</attach>
-        </configuration>
-        <inherited>true</inherited>
-      </plugin>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--fast json-->
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.54</version>
+            <scope>provided</scope>
+        </dependency>
 
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <inherited>true</inherited>
-      </plugin>
+        <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>provided</scope>
+        </dependency>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>flatten-maven-plugin</artifactId>
-        <configuration>
-          <!--    是否更新pom文件 -->
-          <updatePomFile>true</updatePomFile>
-          <flattenMode>resolveCiFriendliesOnly</flattenMode>
-        </configuration>
-        <executions>
-          <execution>
-            <id>flatten</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>flatten</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>flatten.clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>编译时保留方法参数名称</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <!--1.8编译参数-保留方法名称-->
+                <compilerArgument>-parameters</compilerArgument>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>跳过测试</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>上传源代码到 Maven</id>
+            <properties>
+                <maven-source-plugin.attach>true</maven-source-plugin.attach>
+            </properties>
+        </profile>
+
+    </profiles>
+
+
+    <!--
+        <scm>
+            &lt;!&ndash;tag：说明project所在的目录tag，默认是HEAD，表示根目录&ndash;&gt;
+            <tag>HEAD</tag>
+            <connection>scm:svn:http://somerepository.com/svn_repo/trunk</connection>
+            <developerConnection>scm:svn:https://somerepository.com/svn_repo/trunk</developerConnection>
+            &lt;!&ndash;url：公开的可浏览repository&ndash;&gt;
+            <url>http://somerepository.com/view.cvs</url>
+        </scm>
+    -->
+    <distributionManagement>
+
+        <repository>
+            <!-- id 要查看setting.xml文件中的server配置，上传时需要用户和密码-->
+            <id>${dist-repo}</id>
+            <url>${dist-repo.releases.url}</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>${dist-repo}</id>
+            <url>${dist-repo.snapshots.url}</url>
+        </snapshotRepository>
+
+    </distributionManagement>
+
+    <organization>
+        <name>wupxp</name>
+        <url>https://github.com/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>fengwuxp</id>
+        </developer>
+    </developers>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                        <delimiter>@{*}</delimiter>
+                    </delimiters>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <debug>true</debug>
+                    <compilerArgument>${compilerArgument}</compilerArgument>
+
+                </configuration>
+                <inherited>true</inherited>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <inherited>true</inherited>
+                <configuration>
+                    <uniqueVersion>true</uniqueVersion>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <!--默认不上传到maven库-->
+                    <attach>${maven-source-plugin.attach}</attach>
+                </configuration>
+                <inherited>true</inherited>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <!--    是否更新pom文件 -->
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

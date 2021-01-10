@@ -65,7 +65,6 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
                 this.ignoreClasses.toArray(new Class[0]),
                 languageParser,
                 templateStrategy,
-                this.looseMode,
                 this.enableFieldUnderlineStyle, null)
                 .otherCodegenClassMetas(otherCodegenClassMetas);
     }

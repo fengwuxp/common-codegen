@@ -1,11 +1,20 @@
 package com.wuxp.codegen.swagger3;
 
+import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
+
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.swagger3.annotations.*;
+import com.wuxp.codegen.swagger3.annotations.ApiResponseProcessor;
+import com.wuxp.codegen.swagger3.annotations.OperationProcessor;
+import com.wuxp.codegen.swagger3.annotations.ParameterProcessor;
+import com.wuxp.codegen.swagger3.annotations.ParametersProcessor;
+import com.wuxp.codegen.swagger3.annotations.RequestBodyProcessor;
+import com.wuxp.codegen.swagger3.annotations.SchemaProcessor;
+import com.wuxp.codegen.swagger3.annotations.TagProcessor;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -13,14 +22,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
-
-import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
 
 /**
  * @author wxup
@@ -39,6 +43,11 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
         ANNOTATION_PROCESSOR_MAP.put(Tag.class, new TagProcessor());
     }
 
+    {
+        //设置扫描过滤器
+        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Tag.class));
+        classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(Hidden.class));
+    }
 
     public Swagger3CodeGenerator(String[] packagePaths,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
@@ -48,15 +57,6 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
         super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
     }
 
-    public Swagger3CodeGenerator(String[] packagePaths,
-                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
-                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode,
-                                 boolean enableFieldUnderlineStyle,
-                                 CodeGenPublisher codeGenPublisher) {
-        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
-        init(looseMode);
-    }
 
 
     public Swagger3CodeGenerator(String[] packagePaths,
@@ -65,17 +65,8 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
                                  Class<?>[] ignoreClasses,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode,
                                  boolean enableFieldUnderlineStyle,
                                  CodeGenPublisher codeGenPublisher) {
         super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
-        init(looseMode);
-    }
-
-    private void init(boolean looseMode) {
-        if (looseMode) {
-            classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
-            classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
-        }
     }
 }

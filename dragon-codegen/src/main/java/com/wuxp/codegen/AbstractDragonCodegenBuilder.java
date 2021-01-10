@@ -140,10 +140,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
    */
   protected Boolean isDeletedOutputDirectory = true;
 
-  /**
-   * 是否使用宽松模式
-   */
-  protected boolean looseMode = false;
 
   /**
    * 启用下划线风格，将字段的驼峰名转换为下线命名风格
@@ -272,11 +268,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
     return this;
   }
 
-  public AbstractDragonCodegenBuilder looseMode(boolean looseMode) {
-    this.looseMode = looseMode;
-    return this;
-  }
-
   public AbstractDragonCodegenBuilder enableFieldUnderlineStyle(boolean enableFieldUnderlineStyle) {
     this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
     return this;
@@ -320,6 +311,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
   }
 
   protected void initTypeMapping() {
+    CodegenConfig codegenConfig = CodegenConfig.builder()
+        .providerType(this.clientProviderType)
+        .languageDescription(this.languageDescription)
+        .build();
+    CodegenConfigHolder.setConfig(codegenConfig);
 
     Collection<CodeGenMatcher> codeGenMatchers = this.codeGenMatchers;
     Optional<PackageNameCodeGenMatcher> optionalCodeGenMatcher = codeGenMatchers.stream()
@@ -334,13 +330,7 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
       codeGenMatcher.addIgnorePackages(ignorePackages);
       codeGenMatchers.add(codeGenMatcher);
     }
-    CodegenConfig codegenConfig = CodegenConfig.builder()
-        .providerType(this.clientProviderType)
-        .languageDescription(this.languageDescription)
-        .build();
-    CodegenConfigHolder.setConfig(codegenConfig);
     this.languageEnhancedProcessors.add(IgnoreParamsByAnnotationLanguageEnhancedProcessor.of(this.ignoreParamByAnnotations));
-
     if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
       this.languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
       if (!this.sharedVariables.containsKey("umiModel")) {

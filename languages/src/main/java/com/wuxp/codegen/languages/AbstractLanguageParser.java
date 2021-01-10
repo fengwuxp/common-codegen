@@ -31,6 +31,7 @@ import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.MatchApiServiceClass;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
@@ -100,7 +101,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     M extends CommonCodeGenMethodMeta,
-    F extends CommonCodeGenFiledMeta> implements LanguageParser<C> {
+    F extends CommonCodeGenFiledMeta> implements LanguageParser<C> , MatchApiServiceClass {
 
   /**
    * annotationProcessorMap
@@ -283,10 +284,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     }
 
     JavaClassMeta javaClassMeta = this.javaParser.parse(source);
-    //加入对spring的特别处理
+    // 加入对spring的特别处理
     SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
-    boolean isApiServiceClass = javaClassMeta.isApiServiceClass();
+    boolean isApiServiceClass = this.isApiServiceClass(javaClassMeta);
     if (isApiServiceClass) {
       // 要生成的服务，判断是否需要生成
       if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
@@ -473,6 +474,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         .collect(Collectors.toList()));
   }
 
+  @Override
+  public boolean isApiServiceClass(JavaClassMeta javaClassMeta) {
+    return javaClassMeta.existAnnotation(CodegenConfigHolder.getConfig().getServerAnnotations().toArray(new Class[0]));
+  }
 
   /**
    * 是否匹配生成的规则
@@ -1498,5 +1503,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
   public void setLanguageTypeMapping(AbstractLanguageTypeMapping<C> languageTypeMapping) {
     this.languageTypeMapping = languageTypeMapping;
+  }
+
+  public AbstractLanguageTypeMapping<C> getLanguageTypeMapping() {
+    return languageTypeMapping;
   }
 }

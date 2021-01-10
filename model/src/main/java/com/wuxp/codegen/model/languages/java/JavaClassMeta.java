@@ -20,18 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Data
 @Accessors(chain = true)
-public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass {
-
-  /**
-   * 属于api 服务的注解
-   */
-  private static final Set<Class<? extends Annotation>> API_SERVICE_ANNOTATIONS = new LinkedHashSet<>();
-
-  static {
-    JavaClassMeta.API_SERVICE_ANNOTATIONS.add(Controller.class);
-    JavaClassMeta.API_SERVICE_ANNOTATIONS.add(RequestMapping.class);
-    JavaClassMeta.API_SERVICE_ANNOTATIONS.add(RestController.class);
-  }
+public class JavaClassMeta extends JavaBaseMeta  {
 
   /**
    * 属性类型 如果有泛型则有多个
@@ -83,20 +72,6 @@ public class JavaClassMeta extends JavaBaseMeta implements MatchApiServiceClass 
    */
   private Class<?> superClass;
 
-
-  /**
-   * 是否为spring的控制器
-   *
-   * @return
-   */
-  @Override
-  public boolean isApiServiceClass() {
-    return this.existAnnotation(JavaClassMeta.API_SERVICE_ANNOTATIONS.toArray(new Class[]{}));
-  }
-
-  public static void addApiServiceAnnotations(Class<? extends Annotation> clazz) {
-    JavaClassMeta.API_SERVICE_ANNOTATIONS.add(clazz);
-  }
 
   @Override
   public boolean equals(Object o) {

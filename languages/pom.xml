@@ -21,7 +21,7 @@
 
     <dependency>
       <groupId>com.wuxp.codegen</groupId>
-      <artifactId>wuxp-codegen-annotation-processor</artifactId>
+       <artifactId>wuxp-codegen-annotation-meta</artifactId>
       <version>${project.version}</version>
     </dependency>
 

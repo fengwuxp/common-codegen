@@ -3,6 +3,7 @@ package com.wuxp.codegen.model.mapping;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import java.util.Map;
+import org.springframework.util.Assert;
 
 /**
  * 基础数据的类型映射
@@ -37,5 +38,39 @@ public class BaseTypeMapping<T extends CommonCodeGenClassMeta> implements TypeMa
       return this.dateToClassTarget;
     }
     return (T) this.typeMapping.get(clazz);
+  }
+
+  /**
+   * 尝试设置，如果已经存在则不处理
+   *
+   * @param clazzType java 类型
+   * @param classMeta 用于生成的其他语言类型描述
+   * @return
+   */
+  public BaseTypeMapping<T> tryAddTypeMapping(Class<?> clazzType, CommonCodeGenClassMeta classMeta) {
+    if (classMeta == null) {
+      return this;
+    }
+    Assert.notNull(clazzType, "mapping class is not null");
+    if (!typeMapping.containsKey(clazzType)) {
+      typeMapping.put(clazzType, classMeta);
+    }
+    return this;
+  }
+
+  /**
+   * 强制设置
+   *
+   * @param clazzType java 类型
+   * @param classMeta 用于生成的其他语言类型描述
+   * @return
+   */
+  public BaseTypeMapping<T> forceAddTypeMapping(Class<?> clazzType, CommonCodeGenClassMeta classMeta) {
+    if (classMeta == null) {
+      return this;
+    }
+    Assert.notNull(clazzType, "mapping class is not null");
+    typeMapping.put(clazzType, classMeta);
+    return this;
   }
 }

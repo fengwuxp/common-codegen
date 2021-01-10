@@ -3,6 +3,9 @@ package com.wuxp.codegen.dragon;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -20,5 +23,9 @@ public class DragonCodeGenerator extends AbstractCodeGenerator {
       TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
       boolean enableFieldUnderlineStyle) {
     super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
+  }
+
+  public void dragonGenerate(Class<?>... services) {
+    this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
   }
 }

@@ -2,6 +2,7 @@ package com.wuxp.codegen.dragon;
 
 
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.UnifiedResponseExplorer;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
@@ -26,8 +27,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
@@ -93,9 +97,14 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
   protected CodeGenPublisher codeGenPublisher;
 
   /**
-   * 额外的生成代码
+   * 统一响应对象的探测
    */
-  private Set<CommonCodeGenClassMeta> otherCodegenClassMetas;
+  protected UnifiedResponseExplorer unifiedResponseExplorer;
+
+  /**
+   * 需要额外的生成代码
+   */
+  protected Set<CommonCodeGenClassMeta> otherCodegenClassMetas;
 
 
   public AbstractCodeGenerator(String[] packagePaths,
@@ -162,77 +171,20 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
     this.codeGenPublisher = codeGenPublisher;
+    this.unifiedResponseExplorer = new DragonUnifiedResponseExplorer(languageParser);
+
+    classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
+    classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
   }
 
   @Override
   public void generate() {
-    Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = this.scanPackages().stream()
-//        .map(this.languageParser::parse)
-        .map(clazz->{
-          CommonCodeGenClassMeta codeGenClassMeta = this.languageParser.parse(clazz);
-          return codeGenClassMeta;
-        })
-        .filter(Objects::nonNull)
-        .filter(this::hasExistMember)
-        .collect(Collectors.toSet());
-
-    CodeGenPublisher<CommonCodeGenClassMeta> codeGenPublisher = this.codeGenPublisher;
-    final boolean needSendEvent = codeGenPublisher != null;
-
-    if (otherCodegenClassMetas != null) {
-      commonCodeGenClassMetas.addAll(otherCodegenClassMetas);
+    Set<Class<?>> classes = this.scanPackages();
+    if (unifiedResponseExplorer != null) {
+      unifiedResponseExplorer.probe(classes);
     }
-
-    int i = 0;
-    for (; ; ) {
-      log.warn("循环生成，第{}次", i);
-      commonCodeGenClassMetas = commonCodeGenClassMetas.stream()
-          .filter(Objects::nonNull)
-          .filter(this::hasExistMember)
-          .map(commonCodeGenClassMeta -> {
-            //模板处理，生成服务
-            if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
-              //将方法参数字段名称设置为下划线
-              Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
-                  .forEach(commonCodeGenFiledMeta -> commonCodeGenFiledMeta
-                      .setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName())));
-            }
-
-            Map<String, ? extends CommonCodeGenClassMeta> dependencies = commonCodeGenClassMeta.getDependencies();
-            Map<String, CommonCodeGenClassMeta> needImportDependencies = new LinkedHashMap<>();
-            Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
-            //过滤掉不需要导入的依赖
-            dependencies.forEach((key, val) -> {
-              if (val.getNeedImport() && this.hasExistMember(val)) {
-                needImportDependencies.put(key, val);
-              }
-            });
-
-            commonCodeGenClassMeta.setDependencies(needImportDependencies);
-            filterDuplicateFields(commonCodeGenClassMeta);
-            //移除掉不需要的依赖
-            removeInvalidDependencies(commonCodeGenClassMeta);
-            try {
-              this.templateStrategy.build(commonCodeGenClassMeta);
-              if (needSendEvent) {
-                codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
-              }
-            } catch (Exception e) {
-              e.printStackTrace();
-              if (needSendEvent) {
-                codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
-              }
-            }
-            return values;
-          }).flatMap(Collection::stream)
-          .filter(CommonCodeGenClassMeta::getNeedGenerate)
-          .collect(Collectors.toSet());
-      if (commonCodeGenClassMetas.size() == 0 || i > 100) {
-        break;
-      }
-      i++;
-    }
-    if (needSendEvent) {
+    this.tryLoopGenerate(classes);
+    if (codeGenPublisher != null) {
       codeGenPublisher.sendCodeGenEnd();
       if (codeGenPublisher.supportPark()) {
         // 最多等待10秒
@@ -240,9 +192,78 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
       }
     }
     CodegenConfigHolder.clear();
-
   }
 
+  protected void tryLoopGenerate(Collection<Class<?>> classes) {
+    Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = parseCodegenMetas(classes);
+    if (otherCodegenClassMetas != null) {
+      commonCodeGenClassMetas.addAll(otherCodegenClassMetas);
+    }
+    int i = 0;
+    for (; ; ) {
+      log.warn("循环生成，第{}次", i);
+      commonCodeGenClassMetas = onceGenerate(commonCodeGenClassMetas);
+      if (commonCodeGenClassMetas.size() == 0 || i > 100) {
+        break;
+      }
+      i++;
+    }
+  }
+
+
+  protected Set<CommonCodeGenClassMeta> onceGenerate(Set<CommonCodeGenClassMeta> commonCodeGenClassMetas) {
+    final CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
+    final boolean needSendEvent = codeGenPublisher != null;
+    return commonCodeGenClassMetas.stream()
+        .filter(Objects::nonNull)
+        .filter(this::hasExistMember)
+        .map(commonCodeGenClassMeta -> {
+          //模板处理，生成服务
+          if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
+            //将方法参数字段名称设置为下划线
+            Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
+                .forEach(commonCodeGenFiledMeta -> commonCodeGenFiledMeta
+                    .setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName())));
+          }
+
+          Map<String, ? extends CommonCodeGenClassMeta> dependencies = commonCodeGenClassMeta.getDependencies();
+          Map<String, CommonCodeGenClassMeta> needImportDependencies = new LinkedHashMap<>();
+          Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
+          //过滤掉不需要导入的依赖
+          dependencies.forEach((key, val) -> {
+            if (val.getNeedImport() && this.hasExistMember(val)) {
+              needImportDependencies.put(key, val);
+            }
+          });
+          commonCodeGenClassMeta.setDependencies(needImportDependencies);
+          filterDuplicateFields(commonCodeGenClassMeta);
+          //移除掉不需要的依赖
+          removeInvalidDependencies(commonCodeGenClassMeta);
+          try {
+            this.templateStrategy.build(commonCodeGenClassMeta);
+            if (needSendEvent) {
+              this.codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+            if (needSendEvent) {
+              this.codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
+            }
+          }
+          return values;
+        })
+        .flatMap(Collection::stream)
+        .filter(CommonCodeGenClassMeta::getNeedGenerate)
+        .collect(Collectors.toSet());
+  }
+
+  protected Set<CommonCodeGenClassMeta> parseCodegenMetas(Collection<Class<?>> classes) {
+    return classes.stream()
+        .map(clazz -> this.languageParser.parse(clazz))
+        .filter(Objects::nonNull)
+        .filter(this::hasExistMember)
+        .collect(Collectors.toSet());
+  }
 
   /**
    * 包扫描 获的需要生成的类

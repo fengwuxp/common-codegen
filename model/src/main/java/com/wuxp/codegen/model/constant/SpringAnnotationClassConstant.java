@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author wuxp
+ */
 public final class SpringAnnotationClassConstant {
 
   public static final Class<? extends Annotation>[] SPRING_MAPPING_ANNOTATIONS = new Class[]{

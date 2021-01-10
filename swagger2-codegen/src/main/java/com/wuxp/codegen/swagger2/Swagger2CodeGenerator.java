@@ -41,7 +41,6 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
     {
         //设置扫描过滤器
         classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Api.class));
-
         classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(ApiIgnore.class));
     }
 
@@ -52,14 +51,6 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
         super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
     }
 
-    public Swagger2CodeGenerator(String[] packagePaths,
-                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
-                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode,
-                                 boolean enableFieldUnderlineStyle) {
-        this(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
-        init(looseMode);
-    }
 
 
     public Swagger2CodeGenerator(String[] packagePaths,
@@ -68,10 +59,8 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  Class<?>[] ignoreClasses,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode,
                                  boolean enableFieldUnderlineStyle) {
         super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, null);
-        init(looseMode);
     }
 
     public Swagger2CodeGenerator(String[] packagePaths,
@@ -80,18 +69,10 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  Class<?>[] ignoreClasses,
                                  LanguageParser<CommonCodeGenClassMeta> languageParser,
                                  TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                 boolean looseMode,
                                  boolean enableFieldUnderlineStyle,
                                  CodeGenPublisher codeGenPublisher) {
         super(packagePaths, ignorePackages, includeClasses, ignoreClasses, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
-        init(looseMode);
     }
 
 
-    private void init(boolean looseMode) {
-        if (looseMode) {
-            classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
-            classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
-        }
-    }
 }
