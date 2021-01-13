@@ -10,7 +10,7 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 <#--依赖导入处理-->
     <#list dependencies as key,val >
         <#if !val.packagePath?starts_with("package:")>
-          import '${customize_method.pathoResolve(packagePath,val.packagePath)}.dart';
+          import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
         </#if>
     </#list>
 </#if>
@@ -44,7 +44,7 @@ ${name}() : super() {
         </#if>
     </#list>
     <#assign returnTypes=method.returnTypes/>
-  Future<${customize_method.combineType(returnTypes)}>  ${method.name}(
+  Future<${customizeMethod.combineType(returnTypes)}>  ${method.name}(
 <#--参数遍历-->
     <#assign params=method.params/>
     <#assign paramAnnotations=method.paramAnnotations/>
@@ -56,11 +56,11 @@ ${name}() : super() {
             <#assign currentIndex=0 />
           @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
         </#if>
-        ${customize_method.combineType(paramType.typeVariables)} ${paramName},
+        ${customizeMethod.combineType(paramType.typeVariables)} ${paramName},
     </#list>
     <#assign returnType=returnTypes[0] />
   [UIOptions feignOptions]) {
-  return this.delegateInvoke<${customize_method.combineType(returnTypes)}>("${method.name}",
+  return this.delegateInvoke<${customizeMethod.combineType(returnTypes)}>("${method.name}",
   [<#list params as paramName,paramType>${paramName},</#list>],
 <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->
     <#assign useSerializer=false>
@@ -73,7 +73,7 @@ ${name}() : super() {
     <#if !( returnType.name=="Object" ||
     returnType.name=="dynamic"||
     returnType.name=="void" )>
-        <#assign specifiedType=customize_method.combineDartFullType(returnTypes)!""/>
+        <#assign specifiedType=customizeMethod.combineDartFullType(returnTypes)!""/>
         <#if (specifiedType?length > 0 || !returnTypes[0].name?starts_with("Built"))>
             <#assign useSerializer=true>
           feignOptions: feignOptions,

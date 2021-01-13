@@ -9,7 +9,7 @@ import './${sdkLibName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.reflec
 <#--依赖导入处理-->
     <#list dependencies as val >
         <#if !val.packagePath?starts_with("package:")>
-          import '${customize_method.pathoResolve(packagePath,val.packagePath)?replace(".","src")}.dart';
+          import '${customizeMethod.pathResolve(packagePath,val.packagePath)?replace(".","src")}.dart';
         </#if>
     </#list>
 </#if>

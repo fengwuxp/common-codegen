@@ -1,7 +1,7 @@
-package com.wuxp.codegen.annotation.processor.spring;
+package com.wuxp.codegen.annotation.processors.spring;
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;

@@ -1,7 +1,7 @@
-package com.wuxp.codegen.annotation.processor.javax;
+package com.wuxp.codegen.annotation.processors.javax;
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import javax.validation.constraints.Pattern;

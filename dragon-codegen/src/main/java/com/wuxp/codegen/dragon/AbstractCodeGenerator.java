@@ -194,6 +194,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     CodegenConfigHolder.clear();
   }
 
+  public void dragonGenerate(Class<?>... services) {
+    this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
+  }
+
   protected void tryLoopGenerate(Collection<Class<?>> classes) {
     Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = parseCodegenMetas(classes);
     if (otherCodegenClassMetas != null) {

@@ -3,7 +3,7 @@
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import {${key}} from "${customize_method.pathoResolve(packagePath,val.packagePath)}";
+      import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
     </#list>
 </#if>
 
@@ -35,9 +35,9 @@ export interface  ${finallyClassName}<#if superClass??> extends ${superClass.fin
             </#list>
         </#if>
       **/
-    <#--        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customize_method.combineType(field.filedTypes)};-->
+    <#--        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customizeMethod.combineType(field.filedTypes)};-->
 
-        <#assign returnType=customize_method.combineType(field.filedTypes)/>
+        <#assign returnType=customizeMethod.combineType(field.filedTypes)/>
         <#if returnType?starts_with('Enum_Key_Record<')>
             ${field.name}<#if !field.required!false>?</#if>: ${returnType?replace('Enum_Key_Record<','Omit<Partial<Record<keyof typeof ')+'>, "prototype">'};
         <#else >

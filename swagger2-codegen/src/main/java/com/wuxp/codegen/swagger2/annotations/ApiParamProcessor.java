@@ -1,7 +1,7 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.annotations.ApiParam;
 import org.springframework.util.StringUtils;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import static com.wuxp.codegen.annotation.processor.spring.RequestParamProcessor.getRequestAnnotationDesc;
+import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor.getRequestAnnotationDesc;
 
 /**
  * swagger2 注解处理

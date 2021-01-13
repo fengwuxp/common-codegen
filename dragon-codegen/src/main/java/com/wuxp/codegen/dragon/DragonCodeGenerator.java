@@ -25,7 +25,5 @@ public class DragonCodeGenerator extends AbstractCodeGenerator {
     super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
   }
 
-  public void dragonGenerate(Class<?>... services) {
-    this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
-  }
+
 }

@@ -1,7 +1,7 @@
 package com.wuxp.codegen;
 
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;

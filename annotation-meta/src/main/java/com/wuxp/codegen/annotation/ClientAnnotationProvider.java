@@ -1,6 +1,6 @@
 package com.wuxp.codegen.annotation;
 
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 
 import java.lang.annotation.Annotation;

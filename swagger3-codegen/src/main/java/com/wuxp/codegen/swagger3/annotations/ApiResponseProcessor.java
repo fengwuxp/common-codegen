@@ -1,7 +1,7 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import java.lang.reflect.Method;

@@ -5,7 +5,7 @@ import retrofit2.http.*;
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import ${customize_method.pathoResolve(packagePath,val.packagePath)};
+      import ${customizeMethod.pathResolve(packagePath,val.packagePath)};
     </#list>
 </#if>
 
@@ -47,14 +47,14 @@ public interface ${name}{
     <#assign paramAnnotations=method.paramAnnotations/>
     <#assign paramLen=params?size />
     <#assign currentParamIndex=0 />
-    ${customize_method.combineType(method.returnTypes)}  ${method.name} (
+    ${customizeMethod.combineType(method.returnTypes)}  ${method.name} (
     <#list params as paramName,paramType>
         <#assign paramAnnotation= paramAnnotations[paramName]/>
         <#if (paramAnnotation?size>0)>
             <#assign annotation= paramAnnotation[0]/>
             <#assign len=annotation.namedArguments?size />
             <#assign currentIndex=0 />
-          @${annotation.name}<#if annotation.namedArguments??>(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)</#if></#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName}<#if currentParamIndex<paramLen-1>,</#if>
+          @${annotation.name}<#if annotation.namedArguments??>(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)</#if></#if>  ${customizeMethod.combineType(paramType.typeVariables)} ${paramName}<#if currentParamIndex<paramLen-1>,</#if>
         <#assign currentParamIndex=currentParamIndex+1 />
     </#list>
   );

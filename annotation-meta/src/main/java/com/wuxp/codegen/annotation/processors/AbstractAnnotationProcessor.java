@@ -1,4 +1,4 @@
-package com.wuxp.codegen.annotation.processor;
+package com.wuxp.codegen.annotation.processors;
 
 
 import com.wuxp.codegen.annotation.ClientAnnotationProvider;

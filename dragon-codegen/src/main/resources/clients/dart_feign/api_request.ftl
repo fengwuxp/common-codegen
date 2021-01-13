@@ -9,7 +9,7 @@ import 'package:fengwuxp_dart_basic/index.dart';
 <#--依赖导入处理-->
     <#list dependencies as key,val >
         <#if !val.packagePath?starts_with("package:")>
-          import '${customize_method.pathoResolve(packagePath,val.packagePath)}.dart';
+          import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
         </#if>
     </#list>
 </#if>
@@ -59,7 +59,7 @@ factory ${serializerName}([Function(${serializerName}Builder${genericDesc}) upda
           @nullable
         </#if>
       @BuiltValueField(wireName: '${field.name}')
-        ${customize_method.combineType(field.filedTypes)} get ${field.name};
+        ${customizeMethod.combineType(field.filedTypes)} get ${field.name};
     </#list>
 </#if>
 

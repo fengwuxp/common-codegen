@@ -1,4 +1,4 @@
-package com.wuxp.codegen.annotation.processor;
+package com.wuxp.codegen.annotation.processors;
 
 
 import java.lang.reflect.Field;

@@ -1,7 +1,7 @@
 package com.wuxp.codegen.annotation.retrofit2;
 
 import com.wuxp.codegen.annotation.AbstractClientAnnotationProvider;
-import com.wuxp.codegen.annotation.processor.spring.*;
+import com.wuxp.codegen.annotation.processors.spring.*;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import org.springframework.web.bind.annotation.*;

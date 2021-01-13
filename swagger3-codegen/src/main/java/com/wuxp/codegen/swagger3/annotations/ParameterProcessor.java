@@ -1,15 +1,14 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
-import static com.wuxp.codegen.annotation.processor.spring.RequestParamProcessor.getRequestAnnotationDesc;
+import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor.getRequestAnnotationDesc;
 
 
 /**

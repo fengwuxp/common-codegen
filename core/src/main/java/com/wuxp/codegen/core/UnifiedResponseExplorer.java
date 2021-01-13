@@ -9,6 +9,11 @@ import java.util.Set;
  */
 public interface UnifiedResponseExplorer {
 
-  void probe(Set<Class<?>> classes);
+    /**
+     * 探测 统一下响应对象
+     *
+     * @param classes 需要生成服务类
+     */
+    void probe(Set<Class<?>> classes);
 
 }

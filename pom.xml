@@ -30,6 +30,7 @@
         <module>swagger3-codegen</module>
         <module>language-annotations</module>
         <module>annotation-meta</module>
+        <module>annotation-processor</module>
     </modules>
 
     <properties>

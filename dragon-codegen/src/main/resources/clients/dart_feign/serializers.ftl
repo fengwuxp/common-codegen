@@ -13,7 +13,7 @@ import 'package:fengwuxp_dart_openfeign/src/built/date_time_serializer.dart';
 <#--依赖导入处理-->
     <#list dependencies as val >
         <#if !val.packagePath?starts_with("package:")>
-          import '${customize_method.pathoResolve(packagePath,val.packagePath)}.dart';
+          import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
         </#if>
     </#list>
 </#if>
@@ -44,7 +44,7 @@ final Serializers serializers = (_$serializers.toBuilder()
 <#list builderFactories as factory>
   ..addBuilderFactory(
 <#--                  const FullType(${factory[0].name}, [FullType(${factory[1].name})]),-->
-<#--                 () =>  ${customize_method.combineType(factory)}>())-->
+<#--                 () =>  ${customizeMethod.combineType(factory)}>())-->
     ${factory.fullTypeCode},
     ${factory.functionCode}
 </#list>

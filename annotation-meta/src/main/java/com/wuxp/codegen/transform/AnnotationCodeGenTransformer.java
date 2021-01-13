@@ -1,7 +1,7 @@
 package com.wuxp.codegen.transform;
 
 
-import com.wuxp.codegen.annotation.processor.AnnotationMate;
+import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import java.lang.reflect.Field;

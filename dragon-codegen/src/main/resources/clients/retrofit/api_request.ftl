@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import ${customize_method.pathoResolve(packagePath,val.packagePath)};
+      import ${customizeMethod.pathResolve(packagePath,val.packagePath)};
     </#list>
 </#if>
 
@@ -41,7 +41,7 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
             </#list>
           **/
         </#if>
-        ${field.accessPermissionName} ${customize_method.combineType(field.filedTypes)} ${field.name};
+        ${field.accessPermissionName} ${customizeMethod.combineType(field.filedTypes)} ${field.name};
     </#list>
 </#if>
 }

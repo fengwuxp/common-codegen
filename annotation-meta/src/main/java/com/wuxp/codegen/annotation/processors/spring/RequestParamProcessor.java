@@ -1,7 +1,7 @@
-package com.wuxp.codegen.annotation.processor.spring;
+package com.wuxp.codegen.annotation.processors.spring;
 
-import com.wuxp.codegen.annotation.processor.AbstractAnnotationProcessor;
-import com.wuxp.codegen.annotation.processor.NamedAnnotationMate;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;

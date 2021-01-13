@@ -1,7 +1,7 @@
 package com.wuxp.codegen.transform.spring;
 
 
-import com.wuxp.codegen.annotation.processor.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import lombok.extern.slf4j.Slf4j;

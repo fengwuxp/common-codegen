@@ -8,7 +8,7 @@
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import {${key}} from "${customize_method.pathoResolve(packagePath,val.packagePath)}";
+      import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
     </#list>
 </#if>
 
@@ -32,9 +32,9 @@
     </#if>
     <#include "../typescript_feign/inculdes/method_prams_required.ftl">
 
-  export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name},</#if> options?: RequestOptionsInit): Promise<${customize_method.combineType(method.returnTypes)}> =>{
+  export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
     <#assign tags=method.tags/>
-  return request<${customize_method.combineType(method.returnTypes)}>(`${tags["url"]}`, {
+  return request<${customizeMethod.combineType(method.returnTypes)}>(`${tags["url"]}`, {
   method: '${tags["httpMethod"]}',
     <#if tags['supportBody'] && methodParamRequired>
         <#if tags['useForm']>

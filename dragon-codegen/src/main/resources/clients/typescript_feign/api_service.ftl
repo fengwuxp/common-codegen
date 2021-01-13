@@ -3,7 +3,7 @@
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import {${key}} from "${customize_method.pathoResolve(packagePath,val.packagePath)}";
+      import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
     </#list>
 </#if>
 
@@ -41,7 +41,7 @@ class ${name}{
       })
     </#list>
     <#include "./inculdes/method_prams_required.ftl">
-    ${method.name}!:(<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name}<#else >req?: null | undefined</#if>, option?: FeignRequestOptions) => ${customize_method.combineType(method.returnTypes)};
+    ${method.name}!:(<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name}<#else >req?: null | undefined</#if>, option?: FeignRequestOptions) => Promise<${customizeMethod.combineType(method.returnTypes)}>;
 </#list>
 }
 

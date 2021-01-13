@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import ${customize_method.pathoResolve(packagePath,val.packagePath)};
+      import ${customizeMethod.pathResolve(packagePath,val.packagePath)};
     </#list>
 </#if>
 
@@ -47,7 +47,7 @@ public interface ${name}{
         </#list>
       )
     </#list>
-    ${customize_method.combineType(method.returnTypes)}  ${method.name} (
+    ${customizeMethod.combineType(method.returnTypes)}  ${method.name} (
 <#--参数遍历-->
     <#assign params=method.params/>
     <#assign paramAnnotations=method.paramAnnotations/>
@@ -58,7 +58,7 @@ public interface ${name}{
             <#if annotation.positionArguments??>
               @${annotation.name}(<#list annotation.positionArguments as item>${item}</#list>)
             </#if>
-        </#if>  ${customize_method.combineType(paramType.typeVariables)} ${paramName},
+        </#if>  ${customizeMethod.combineType(paramType.typeVariables)} ${paramName},
     </#list>
   );
 </#list>
