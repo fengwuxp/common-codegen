@@ -24,10 +24,12 @@
 #### 模块说明
 
 ```
-|--annotation-processor      注解处理(和编译器的注解处理器不同，应该叫注解解析更合适)
+|--annotation-mate           注解元数据解析
+|--annotation-processor      maven注解处理
 |--core                      核心模块，定义了顶层的接口
 |--docs                      说明文档
 |--dragon-codegen            dragon codegen 通用的代码生成，这里会聚合其他的代码生成器
+|--dragon-codegen-starter    基于约定和探测，提供更简易的Api
 |--examples                  生成例子集合
 |-----codegen-result         生成结果目录,不同的语言会生成到不同的目录下
 |-----swagger-2              基于swagger-2的生成例子

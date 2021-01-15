@@ -2,8 +2,9 @@ package com.wuxp.codegen.dragon;
 
 
 import com.wuxp.codegen.core.CodeGenerator;
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
 
 /**
  * 组合生成模式

@@ -15,13 +15,14 @@ import com.wuxp.codegen.swagger2.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Slf4j
 public class Swagger2FeignSdkCodegenFeignClientTest {

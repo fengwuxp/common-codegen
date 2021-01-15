@@ -3,9 +3,10 @@ package com.wuxp.codegen.swagger3.example.domain;
 
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
-import lombok.Data;
 
 @Data
 @Schema(title = "用户信息", description = "用户信息描述")

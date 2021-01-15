@@ -8,15 +8,16 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.util.RequestMappingUtils;
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Optional;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 基于umi request的增强配置

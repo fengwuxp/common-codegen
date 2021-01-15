@@ -1,17 +1,12 @@
 package com.wuxp.codegen.model.languages.java;
 
-import com.wuxp.codegen.model.MatchApiServiceClass;
 import com.wuxp.codegen.model.enums.ClassType;
-import java.lang.annotation.Annotation;
-import java.util.LinkedHashSet;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 类的元数据

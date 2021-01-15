@@ -1,9 +1,10 @@
 package com.wuxp.codegen.model.languages.dart;
 
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
-import java.util.Objects;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.Objects;
 
 /**
  * dart的field 元数据

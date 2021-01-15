@@ -2,8 +2,9 @@ package com.wuxp.codegen.swagger3.example.evt;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.validation.constraints.Size;
 import lombok.Data;
+
+import javax.validation.constraints.Size;
 
 /**
  * @author wuxp

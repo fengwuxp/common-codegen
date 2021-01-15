@@ -1,15 +1,11 @@
 package com.wuxp.codegen.model.util;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import java.util.*;
 
 public final class JavaTypeUtils {
 

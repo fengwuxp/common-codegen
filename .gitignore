@@ -4,4 +4,5 @@
 *.iml
 .scannerwork
 /examples/codegen-result
+/examples/sdk
 *.flattened-pom.xml

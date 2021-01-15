@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-swagger2</artifactId>
+            <artifactId>wuxp-codegen-dragon-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

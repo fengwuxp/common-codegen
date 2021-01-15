@@ -1,11 +1,12 @@
 package com.wuxp.codegen.model;
 
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * 通用的代码生成注解描述元数据

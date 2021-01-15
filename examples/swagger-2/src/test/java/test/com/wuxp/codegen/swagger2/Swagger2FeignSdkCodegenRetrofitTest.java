@@ -2,7 +2,6 @@ package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
@@ -11,13 +10,14 @@ import com.wuxp.codegen.swagger2.example.domain.User;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @Slf4j
 public class Swagger2FeignSdkCodegenRetrofitTest {
@@ -50,7 +50,7 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
         .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
         .languageDescription(LanguageDescription.JAVA_ANDROID)
         .clientProviderType(ClientProviderType.RETROFIT)
-        .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
+//        .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
         .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
         .scanPackages(packagePaths)
         .isDeletedOutputDirectory(false)

@@ -3,8 +3,9 @@ package com.wuxp.codegen.mapping;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
-import java.util.Map;
 import lombok.Builder;
+
+import java.util.Map;
 
 /**
  * 用于构建 不同语言的{@link AbstractLanguageTypeMapping}

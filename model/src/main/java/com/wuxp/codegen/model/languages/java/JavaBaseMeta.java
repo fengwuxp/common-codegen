@@ -1,6 +1,9 @@
 package com.wuxp.codegen.model.languages.java;
 
 import com.wuxp.codegen.model.CommonBaseMeta;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -9,8 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 
 /**

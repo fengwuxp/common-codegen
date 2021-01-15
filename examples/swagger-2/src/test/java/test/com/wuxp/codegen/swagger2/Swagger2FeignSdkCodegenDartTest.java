@@ -2,7 +2,6 @@ package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -12,15 +11,12 @@ import com.wuxp.codegen.swagger2.example.evt.BaseQueryEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Slf4j
 public class Swagger2FeignSdkCodegenDartTest {
@@ -70,7 +66,7 @@ public class Swagger2FeignSdkCodegenDartTest {
         .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTRUE)
         //自定义的类型映射
         .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
-        .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
+//        .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
         .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
         .scanPackages(packagePaths)
         .isDeletedOutputDirectory(true)

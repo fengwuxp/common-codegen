@@ -1,19 +1,11 @@
 package com.wuxp.codegen.swagger3;
 
-import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
-
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.swagger3.annotations.ApiResponseProcessor;
-import com.wuxp.codegen.swagger3.annotations.OperationProcessor;
-import com.wuxp.codegen.swagger3.annotations.ParameterProcessor;
-import com.wuxp.codegen.swagger3.annotations.ParametersProcessor;
-import com.wuxp.codegen.swagger3.annotations.RequestBodyProcessor;
-import com.wuxp.codegen.swagger3.annotations.SchemaProcessor;
-import com.wuxp.codegen.swagger3.annotations.TagProcessor;
+import com.wuxp.codegen.swagger3.annotations.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,9 +14,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+
+import java.util.Set;
+
+import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
 
 /**
  * @author wxup

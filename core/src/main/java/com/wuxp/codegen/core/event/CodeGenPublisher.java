@@ -2,6 +2,7 @@ package com.wuxp.codegen.core.event;
 
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+
 import java.util.concurrent.locks.LockSupport;
 
 /**

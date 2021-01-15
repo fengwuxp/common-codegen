@@ -5,13 +5,7 @@ import com.wuxp.codegen.annotation.processors.AnnotationProcessor;
 import com.wuxp.codegen.annotation.processors.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processors.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processors.javax.SizeProcessor;
-import com.wuxp.codegen.annotation.processors.spring.CookieValueProcessor;
-import com.wuxp.codegen.annotation.processors.spring.PathVariableProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestBodyProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestHeaderProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestPartProcessor;
+import com.wuxp.codegen.annotation.processors.spring.*;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenImportMatcher;
 import com.wuxp.codegen.core.CodeGenMatcher;
@@ -26,12 +20,7 @@ import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
-import com.wuxp.codegen.model.CommonBaseMeta;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
-import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
-import com.wuxp.codegen.model.MatchApiServiceClass;
+import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
@@ -46,48 +35,25 @@ import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import com.wuxp.codegen.util.SpringControllerFilterUtils;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -476,7 +442,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
   @Override
   public boolean isApiServiceClass(JavaClassMeta javaClassMeta) {
-    return javaClassMeta.existAnnotation(CodegenConfigHolder.getConfig().getServerAnnotations().toArray(new Class[0]));
+    return javaClassMeta.existAnnotation(CodegenConfigHolder.getConfig().getApiMarkedAnnotations().toArray(new Class[0]));
   }
 
   /**

@@ -44,7 +44,11 @@
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-swagger2</artifactId>
             <version>${project.version}</version>
-<!--            <scope>test</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-dragon-starter</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

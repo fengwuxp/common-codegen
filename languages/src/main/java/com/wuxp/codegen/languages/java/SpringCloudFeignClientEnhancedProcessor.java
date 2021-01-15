@@ -1,7 +1,5 @@
 package com.wuxp.codegen.languages.java;
 
-import static com.wuxp.codegen.transform.spring.SpringRequestMappingTransformer.SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME;
-
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
@@ -12,16 +10,13 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.util.RequestMappingUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import org.springframework.web.bind.annotation.RequestMethod;
+import java.util.*;
+
+import static com.wuxp.codegen.transform.spring.SpringRequestMappingTransformer.SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME;
 
 /**
  * 增强spring feign client 生成时的相关的注解

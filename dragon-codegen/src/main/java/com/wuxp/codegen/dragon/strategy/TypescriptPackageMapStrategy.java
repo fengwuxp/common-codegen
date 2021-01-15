@@ -2,10 +2,11 @@ package com.wuxp.codegen.dragon.strategy;
 
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.dragon.path.PathResolve;
-import java.text.MessageFormat;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+
+import java.text.MessageFormat;
+import java.util.Map;
 
 
 /**

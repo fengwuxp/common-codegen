@@ -1,6 +1,6 @@
 package com.wuxp.codegen.core;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * 用于探测统一的响应对象
@@ -14,6 +14,6 @@ public interface UnifiedResponseExplorer {
      *
      * @param classes 需要生成服务类
      */
-    void probe(Set<Class<?>> classes);
+    void probe(Collection<Class<?>> classes);
 
 }

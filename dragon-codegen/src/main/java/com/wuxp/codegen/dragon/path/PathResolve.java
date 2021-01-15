@@ -1,6 +1,9 @@
 package com.wuxp.codegen.dragon.path;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,8 +12,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 /**
  * 路径解析

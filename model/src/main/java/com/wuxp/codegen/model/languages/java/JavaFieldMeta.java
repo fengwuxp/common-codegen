@@ -1,11 +1,12 @@
 package com.wuxp.codegen.model.languages.java;
 
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 
 /**

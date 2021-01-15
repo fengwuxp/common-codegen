@@ -9,8 +9,6 @@ import com.wuxp.codegen.swagger2.annotations.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Set;

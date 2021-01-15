@@ -1,11 +1,8 @@
 package com.wuxp.codegen.core.macth;
 
 import com.wuxp.codegen.core.CodeGenImportMatcher;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * 默认的 {@link CodeGenImportMatcher}匹配器，通过匹配包名和类名

@@ -1,10 +1,11 @@
 package com.wuxp.codegen.dragon.strategy;
 
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
-import java.text.MessageFormat;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+
+import java.text.MessageFormat;
+import java.util.Map;
 
 /**
  * @author wuxp
@@ -49,7 +50,6 @@ public class JavaPackageMapStrategy extends AbstractPackageMapStrategy {
     if (!packageName.startsWith(this.basePackage)) {
       packageName = MessageFormat.format("{0}.{1}", basePackage, packageName);
     }
-
     return packageName;
   }
 }

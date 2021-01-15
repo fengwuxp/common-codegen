@@ -12,15 +12,12 @@ import com.wuxp.codegen.swagger3.example.evt.BaseQueryEvt;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * 测试swagger 生成  dart的 feign api sdk

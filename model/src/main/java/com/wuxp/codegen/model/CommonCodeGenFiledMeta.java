@@ -1,9 +1,10 @@
 package com.wuxp.codegen.model;
 
 
-import java.util.Arrays;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.Arrays;
 
 
 /**

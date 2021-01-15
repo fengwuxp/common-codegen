@@ -1,29 +1,19 @@
 package com.wuxp.codegen.util;
 
-import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_CONTROLLER_ANNOTATIONS;
-import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
-
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import java.lang.annotation.Annotation;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+
+import java.lang.annotation.Annotation;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_CONTROLLER_ANNOTATIONS;
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
 
 /**
  * 过滤spring controller 的方法或属性

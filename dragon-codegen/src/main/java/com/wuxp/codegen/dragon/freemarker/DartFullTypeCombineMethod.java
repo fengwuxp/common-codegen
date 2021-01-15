@@ -6,8 +6,9 @@ import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import freemarker.template.DefaultArrayAdapter;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * 合并Dart Built_value FullType

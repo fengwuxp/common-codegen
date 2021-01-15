@@ -5,8 +5,9 @@ import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import java.util.concurrent.Executors;
 import lombok.Data;
+
+import java.util.concurrent.Executors;
 
 /**
  * 基于 disruptor 队列的的事件发送者

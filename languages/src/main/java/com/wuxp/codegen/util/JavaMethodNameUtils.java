@@ -1,10 +1,11 @@
 package com.wuxp.codegen.util;
 
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
+import org.springframework.util.StringUtils;
+
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.util.StringUtils;
 
 /**
  * 处理java method name

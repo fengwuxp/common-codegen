@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger2.example.resp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 @ApiModel("分页对象")

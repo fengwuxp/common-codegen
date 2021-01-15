@@ -31,6 +31,7 @@
         <module>language-annotations</module>
         <module>annotation-meta</module>
         <module>annotation-processor</module>
+        <module>dragon-codegen-starter</module>
     </modules>
 
     <properties>

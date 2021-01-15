@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger2.example.resp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 @ApiModel("测试的方法响应")

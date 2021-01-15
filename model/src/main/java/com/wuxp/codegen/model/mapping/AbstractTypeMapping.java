@@ -1,6 +1,7 @@
 package com.wuxp.codegen.model.mapping;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

@@ -2,13 +2,14 @@ package com.wuxp.codegen.swagger3.example.evt;
 
 
 import com.wuxp.codegen.swagger3.example.enums.Sex;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.beans.Transient;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Map;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import lombok.Data;
 
 @Data
 public class CreateOrderEvt extends BaseEvt {

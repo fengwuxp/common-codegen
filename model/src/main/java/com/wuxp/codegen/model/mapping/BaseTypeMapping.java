@@ -2,8 +2,9 @@ package com.wuxp.codegen.model.mapping;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
-import java.util.Map;
 import org.springframework.util.Assert;
+
+import java.util.Map;
 
 /**
  * 基础数据的类型映射

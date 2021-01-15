@@ -11,30 +11,18 @@ import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
+import com.wuxp.codegen.util.FileUtils;
 import freemarker.template.Template;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.locks.LockSupport;
 import java.util.stream.Collectors;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 生成事件处理者
@@ -177,6 +165,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
     data.put("dependencies", dependencies);
     data.put("sdkLibName", sdkIndexFileName);
     // 遍历控制器所有的方法得到泛型的组合
+    FileUtils.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
     buildFile(template, output, data);
   }
 

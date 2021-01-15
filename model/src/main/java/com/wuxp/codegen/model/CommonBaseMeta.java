@@ -1,13 +1,14 @@
 package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.AccessPermission;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.experimental.Accessors;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.experimental.Accessors;
 
 
 /**

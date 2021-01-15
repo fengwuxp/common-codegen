@@ -3,9 +3,10 @@ package com.wuxp.codegen.swagger2.example.evt;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import lombok.Data;
 
 @ApiModel("创建订单")
 @Data

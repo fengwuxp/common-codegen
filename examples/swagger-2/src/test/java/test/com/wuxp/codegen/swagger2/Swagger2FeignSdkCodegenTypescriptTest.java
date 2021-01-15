@@ -10,6 +10,12 @@ import com.wuxp.codegen.swagger2.example.evt.BaseEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Comparator;
@@ -17,11 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
-import org.junit.Test;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 
 /**
  * 测试swagger 生成  typescript的 feign api sdk

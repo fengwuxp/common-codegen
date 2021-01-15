@@ -1,29 +1,20 @@
 package com.wuxp.codegen.annotation.processors;
 
-import com.wuxp.codegen.annotation.enums.OpenApiType;
-import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
-import com.wuxp.codegen.dragon.strategy.JavaPackageMapStrategy;
-import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
-import com.wuxp.codegen.model.LanguageDescription;
-import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignDartCodegenBuilder;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import com.wuxp.codegen.starter.DragonSdkCodeGenerator;
+import com.wuxp.codegen.util.FileUtils;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.*;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.io.File;
 import java.lang.annotation.Annotation;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -37,44 +28,33 @@ import java.util.*;
 })
 public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
 
-
-    private static final List<String> OPEN_API__CLASSES = Arrays.asList(
-            "io.swagger.annotations.Api",
-            "io.swagger.v3.oas.annotations.OpenAPIDefinition"
-    );
-
-    private static final List<OpenApiType> OPEN_API_TYPES = Arrays.asList(
-            OpenApiType.SWAGGER_2,
-            OpenApiType.SWAGGER_3
-    );
+    private final DragonSdkCodeGenerator dragonSdkCodegenerator = new DragonSdkCodeGenerator();
 
 
-    private static OpenApiType OPEN_API_TYPE;
-
-    static {
-        for (int i = 0; i < OPEN_API__CLASSES.size(); i++) {
-            String className = OPEN_API__CLASSES.get(i);
-            try {
-                Class.forName(className);
-                OPEN_API_TYPE = OPEN_API_TYPES.get(i);
-            } catch (ClassNotFoundException ignored) {
-            }
-        }
-        if (OPEN_API_TYPE == null) {
-            OPEN_API_TYPE = OpenApiType.CUSTOM;
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        // 删除原本的输出目录
+        String baseOutPath = DragonSdkCodeGenerator.getBaseOutPath();
+        File file = new File(baseOutPath);
+        if (file.exists() && file.isDirectory()) {
+            FileUtils.deleteDirectory(baseOutPath);
         }
     }
-
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Messager messager = this.processingEnv.getMessager();
-        messager.printMessage(Diagnostic.Kind.ERROR, "开始执行SpringApiSdkCodegenProcessor");
+        messager.printMessage(Diagnostic.Kind.NOTE, "开始执行" + SpringApiSdkCodegenProcessor.class.getSimpleName());
+        Collection<CodeGenerator> codeGenerators = dragonSdkCodegenerator.getCodeGeneratorBuilders()
+                .stream()
+                .map(CodegenBuilder::buildCodeGenerator)
+                .collect(Collectors.toList());
         for (TypeElement typeElement : annotations) {
             String className = typeElement.getQualifiedName().toString();
             try {
                 Class<? extends Annotation> entityAnnotationType = (Class<? extends Annotation>) Class.forName(className);
-                processAnnotations(roundEnv.getElementsAnnotatedWith(entityAnnotationType));
+                processAnnotations(roundEnv.getElementsAnnotatedWith(entityAnnotationType), codeGenerators);
             } catch (ClassNotFoundException e) {
                 this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format("%s  can't found class %s", getClass().getSimpleName(), className));
             }
@@ -82,10 +62,8 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
         return false;
     }
 
-    protected void processAnnotations(Set<? extends Element> elementList) {
+    protected void processAnnotations(Set<? extends Element> elementList, Collection<CodeGenerator> codeGenerators) {
         Messager messager = this.processingEnv.getMessager();
-
-        Collection<CodeGenerator> codeGenerators = this.getCodeGenerators();
         for (Element element : elementList) {
             //只支持对类，接口，注解的处理，对字段不做处理
             if (!element.getKind().isClass() && !element.getKind().isInterface()) {
@@ -94,7 +72,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
             TypeElement typeElement = (TypeElement) element;
             Class<?> aClass = getClassForType(typeElement);
             codeGen(aClass, codeGenerators);
-            messager.printMessage(Diagnostic.Kind.ERROR, "扫描到的类：" + typeElement.getQualifiedName().toString());
+            messager.printMessage(Diagnostic.Kind.NOTE, "扫描到的类：" + typeElement.getQualifiedName().toString());
         }
     }
 
@@ -107,74 +85,6 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
         });
     }
 
-    protected Collection<CodeGenerator> getCodeGenerators() {
-        switch (OPEN_API_TYPE) {
-            case SWAGGER_2:
-                return getCodeSwagger2Generators();
-            case SWAGGER_3:
-            case CUSTOM:
-            default:
-                return Collections.emptyList();
-        }
-    }
-
-    protected Collection<CodeGenerator> getCodeSwagger2Generators() {
-
-
-        List<CodeGenerator> codeGenerators = new ArrayList<>();
-        codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
-                .packageMapStrategy(new TypescriptPackageMapStrategy(new HashMap<>()))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, getOutPaths(ClientProviderType.TYPESCRIPT_FEIGN))).toString())
-                .buildCodeGenerator());
-
-        codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.UMI_REQUEST)
-                .packageMapStrategy(new TypescriptPackageMapStrategy(new HashMap<>()))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, getOutPaths(ClientProviderType.UMI_REQUEST))).toString())
-                .buildCodeGenerator());
-        codeGenerators.add(
-                Swagger2FeignDartCodegenBuilder.builder()
-                        //设置基础数据类型的映射关系
-                        //自定义的类型映射
-                        .packageMapStrategy(new TypescriptPackageMapStrategy(new HashMap<>()))
-                        .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, getOutPaths(ClientProviderType.DART_FEIGN))).toString())
-                        .buildCodeGenerator());
-        codeGenerators.add(
-                Swagger2FeignJavaCodegenBuilder.builder()
-                        .build()
-                        //设置基础数据类型的映射关系
-                        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-                        //自定义的类型映射
-                        .languageDescription(LanguageDescription.JAVA)
-                        .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-                        .packageMapStrategy(new JavaPackageMapStrategy(new HashMap<>(), ""))
-                        .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, getOutPaths(ClientProviderType.SPRING_CLOUD_OPENFEIGN))).toString())
-                        .buildCodeGenerator());
-        codeGenerators.add(
-                Swagger2FeignJavaCodegenBuilder.builder()
-                        .useRxJava(true)
-                        .build()
-                        // 基础类型映射
-                        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-                        //自定义的类型映射
-                        .languageDescription(LanguageDescription.JAVA_ANDROID)
-                        .clientProviderType(ClientProviderType.RETROFIT)
-                        .packageMapStrategy(new JavaPackageMapStrategy(new HashMap<>(), ""))
-                        .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, getOutPaths(ClientProviderType.RETROFIT))).toString())
-                        .isDeletedOutputDirectory(false)
-                        .enableFieldUnderlineStyle(true)
-                        .buildCodeGenerator());
-
-        return codeGenerators;
-    }
-
-    protected String[] getOutPaths(ClientProviderType type) {
-
-        return new String[]{"codegen-result", "annotation-processor", OPEN_API_TYPE.name().toLowerCase(), type.name().toLowerCase(), "src"};
-    }
 
     private Class<?> getClassForType(TypeElement typeElement) {
         try {

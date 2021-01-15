@@ -12,17 +12,6 @@ import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.locks.LockSupport;
-import java.util.stream.Collectors;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,6 +21,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.concurrent.locks.LockSupport;
+import java.util.stream.Collectors;
 
 
 /**
@@ -180,9 +174,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
   @Override
   public void generate() {
     Set<Class<?>> classes = this.scanPackages();
-    if (unifiedResponseExplorer != null) {
-      unifiedResponseExplorer.probe(classes);
-    }
     this.tryLoopGenerate(classes);
     if (codeGenPublisher != null) {
       codeGenPublisher.sendCodeGenEnd();
@@ -199,6 +190,9 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
   }
 
   protected void tryLoopGenerate(Collection<Class<?>> classes) {
+    if (unifiedResponseExplorer != null) {
+      unifiedResponseExplorer.probe(classes);
+    }
     Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = parseCodegenMetas(classes);
     if (otherCodegenClassMetas != null) {
       commonCodeGenClassMetas.addAll(otherCodegenClassMetas);

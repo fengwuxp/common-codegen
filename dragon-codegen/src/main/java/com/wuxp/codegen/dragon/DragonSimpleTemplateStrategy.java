@@ -10,15 +10,12 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.util.FileUtils;
 import freemarker.template.Template;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**

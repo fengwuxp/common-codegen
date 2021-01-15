@@ -2,11 +2,12 @@ package com.wuxp.codegen.types;
 
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Stack;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * dart FullType 合并

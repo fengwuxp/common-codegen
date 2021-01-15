@@ -4,9 +4,10 @@ package com.wuxp.codegen.swagger2.example.domain;
 import com.wuxp.codegen.swagger2.example.enums.Sex;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
-import lombok.Data;
 
 @ApiModel("用户")
 @Data

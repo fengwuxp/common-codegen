@@ -3,11 +3,12 @@ package test.com.wuxp.codegen.swagger2.core.parser;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * JavaClassParser Tester.

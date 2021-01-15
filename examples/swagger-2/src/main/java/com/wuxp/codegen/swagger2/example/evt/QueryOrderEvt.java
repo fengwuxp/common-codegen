@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger2.example.evt;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.Size;
 
 @ApiModel("测试的API接口方法一的请求参数")
