@@ -37,370 +37,377 @@ import java.util.stream.Collectors;
 @Setter
 public abstract class AbstractCodeGenerator implements CodeGenerator {
 
-  /**
-   * spring 的包扫描组件
-   */
-  protected ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(
-      true);
+    /**
+     * spring 的包扫描组件
+     */
+    protected ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(
+            true);
 
 
-  /**
-   * 要进行生成的源代码包名列表
-   */
-  protected String[] packagePaths;
+    /**
+     * 要进行生成的源代码包名列表
+     */
+    protected String[] packagePaths;
 
-  /**
-   * 忽略的包
-   */
-  protected Set<String> ignorePackages;
+    /**
+     * 忽略的包
+     */
+    protected Set<String> ignorePackages;
 
-  /**
-   * 额外导入的类
-   */
-  protected Class<?>[] includeClasses;
+    /**
+     * 额外导入的类
+     */
+    protected Class<?>[] includeClasses;
 
-  /**
-   * 需要忽略的类
-   */
-  protected Class<?>[] ignoreClasses;
-
-
-  /**
-   * 语言解析器
-   */
-  protected LanguageParser<CommonCodeGenClassMeta> languageParser;
+    /**
+     * 需要忽略的类
+     */
+    protected Class<?>[] ignoreClasses;
 
 
-  /**
-   * 模板处理策略
-   */
-  protected TemplateStrategy<CommonCodeGenClassMeta> templateStrategy;
+    /**
+     * 语言解析器
+     */
+    protected LanguageParser<CommonCodeGenClassMeta> languageParser;
 
 
-  protected PathMatcher pathMatcher = new AntPathMatcher();
-
-  /**
-   * 启用下划线风格
-   */
-  protected Boolean enableFieldUnderlineStyle;
+    /**
+     * 模板处理策略
+     */
+    protected TemplateStrategy<CommonCodeGenClassMeta> templateStrategy;
 
 
-  /**
-   * 生成事件发送者
-   */
-  protected CodeGenPublisher codeGenPublisher;
+    protected PathMatcher pathMatcher = new AntPathMatcher();
 
-  /**
-   * 统一响应对象的探测
-   */
-  protected UnifiedResponseExplorer unifiedResponseExplorer;
-
-  /**
-   * 需要额外的生成代码
-   */
-  protected Set<CommonCodeGenClassMeta> otherCodegenClassMetas;
+    /**
+     * 启用下划线风格
+     */
+    protected Boolean enableFieldUnderlineStyle;
 
 
-  public AbstractCodeGenerator(String[] packagePaths,
-      LanguageParser<CommonCodeGenClassMeta> languageParser,
-      TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-      boolean enableFieldUnderlineStyle) {
-    this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle, null);
-  }
+    /**
+     * 生成事件发送者
+     */
+    protected CodeGenPublisher codeGenPublisher;
 
-  public AbstractCodeGenerator(String[] packagePaths,
-      LanguageParser<CommonCodeGenClassMeta> languageParser,
-      TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-      boolean enableFieldUnderlineStyle,
-      CodeGenPublisher codeGenPublisher) {
-    this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
-  }
+    /**
+     * 统一响应对象的探测
+     */
+    protected UnifiedResponseExplorer unifiedResponseExplorer;
+
+    /**
+     * 需要额外的生成代码
+     */
+    protected Set<CommonCodeGenClassMeta> otherCodegenClassMetas;
 
 
-  public AbstractCodeGenerator(String[] packagePaths,
-      Set<String> ignorePackages,
-      Class<?>[] includeClasses,
-      Class<?>[] ignoreClasses,
-      LanguageParser<CommonCodeGenClassMeta> languageParser,
-      TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-      boolean enableFieldUnderlineStyle,
-      CodeGenPublisher codeGenPublisher) {
-    this.packagePaths = packagePaths;
-    this.includeClasses = includeClasses;
-    this.languageParser = languageParser;
-    this.templateStrategy = templateStrategy;
-
-    if (ignorePackages != null) {
-      //排除的包
-      this.ignorePackages = ignorePackages.stream()
-          .filter(Objects::nonNull)
-          .map(s -> {
-            if (this.pathMatcher.isPattern(s)) {
-              return s;
-            } else {
-              return MessageFormat.format("{0}**", s);
-            }
-          }).collect(Collectors.toSet());
-
-      classPathScanningCandidateComponentProvider.addExcludeFilter((metadataReader, metadataReaderFactory) -> this.ignorePackages.stream()
-          .map(s -> this.pathMatcher.match(s, metadataReader.getClassMetadata().getClassName()))
-          .filter(b -> b)
-          .findFirst()
-          .orElse(false));
+    public AbstractCodeGenerator(String[] packagePaths,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle) {
+        this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle, null);
     }
 
-    if (ignoreClasses != null) {
-      //排除的的类
-      this.ignoreClasses = ignoreClasses;
-
-      classPathScanningCandidateComponentProvider
-          .addExcludeFilter((metadataReader, metadataReaderFactory) -> Arrays.stream(this.ignoreClasses)
-              .filter(Objects::nonNull)
-              .map(clazz -> metadataReader.getClassMetadata().getClassName().equals(clazz.getName()))
-              .filter(b -> b)
-              .findFirst()
-              .orElse(false));
-
+    public AbstractCodeGenerator(String[] packagePaths,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        this(packagePaths, null, null, null, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
     }
 
-    this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
-    this.codeGenPublisher = codeGenPublisher;
-    this.unifiedResponseExplorer = new DragonUnifiedResponseExplorer(languageParser);
 
-    classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
-    classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
-  }
+    public AbstractCodeGenerator(String[] packagePaths,
+                                 Set<String> ignorePackages,
+                                 Class<?>[] includeClasses,
+                                 Class<?>[] ignoreClasses,
+                                 LanguageParser<CommonCodeGenClassMeta> languageParser,
+                                 TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                 boolean enableFieldUnderlineStyle,
+                                 CodeGenPublisher codeGenPublisher) {
+        this.packagePaths = packagePaths;
+        this.includeClasses = includeClasses;
+        this.languageParser = languageParser;
+        this.templateStrategy = templateStrategy;
 
-  @Override
-  public void generate() {
-    Set<Class<?>> classes = this.scanPackages();
-    this.tryLoopGenerate(classes);
-    if (codeGenPublisher != null) {
-      codeGenPublisher.sendCodeGenEnd();
-      if (codeGenPublisher.supportPark()) {
-        // 最多等待10秒
-        LockSupport.parkNanos(10L * 1000 * 1000 * 1000);
-      }
-    }
-    CodegenConfigHolder.clear();
-  }
+        this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
+        this.codeGenPublisher = codeGenPublisher;
+        this.unifiedResponseExplorer = new DragonUnifiedResponseExplorer(languageParser);
 
-  public void dragonGenerate(Class<?>... services) {
-    this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
-  }
-
-  protected void tryLoopGenerate(Collection<Class<?>> classes) {
-    if (unifiedResponseExplorer != null) {
-      unifiedResponseExplorer.probe(classes);
-    }
-    Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = parseCodegenMetas(classes);
-    if (otherCodegenClassMetas != null) {
-      commonCodeGenClassMetas.addAll(otherCodegenClassMetas);
-    }
-    int i = 0;
-    for (; ; ) {
-      log.warn("循环生成，第{}次", i);
-      commonCodeGenClassMetas = onceGenerate(commonCodeGenClassMetas);
-      if (commonCodeGenClassMetas.size() == 0 || i > 100) {
-        break;
-      }
-      i++;
-    }
-  }
-
-
-  protected Set<CommonCodeGenClassMeta> onceGenerate(Set<CommonCodeGenClassMeta> commonCodeGenClassMetas) {
-    final CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
-    final boolean needSendEvent = codeGenPublisher != null;
-    return commonCodeGenClassMetas.stream()
-        .filter(Objects::nonNull)
-        .filter(this::hasExistMember)
-        .map(commonCodeGenClassMeta -> {
-          //模板处理，生成服务
-          if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
-            //将方法参数字段名称设置为下划线
-            Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
-                .forEach(commonCodeGenFiledMeta -> commonCodeGenFiledMeta
-                    .setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName())));
-          }
-
-          Map<String, ? extends CommonCodeGenClassMeta> dependencies = commonCodeGenClassMeta.getDependencies();
-          Map<String, CommonCodeGenClassMeta> needImportDependencies = new LinkedHashMap<>();
-          Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
-          //过滤掉不需要导入的依赖
-          dependencies.forEach((key, val) -> {
-            if (val.getNeedImport() && this.hasExistMember(val)) {
-              needImportDependencies.put(key, val);
-            }
-          });
-          commonCodeGenClassMeta.setDependencies(needImportDependencies);
-          filterDuplicateFields(commonCodeGenClassMeta);
-          //移除掉不需要的依赖
-          removeInvalidDependencies(commonCodeGenClassMeta);
-          try {
-            this.templateStrategy.build(commonCodeGenClassMeta);
-            if (needSendEvent) {
-              this.codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
-            if (needSendEvent) {
-              this.codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
-            }
-          }
-          return values;
-        })
-        .flatMap(Collection::stream)
-        .filter(CommonCodeGenClassMeta::getNeedGenerate)
-        .collect(Collectors.toSet());
-  }
-
-  protected Set<CommonCodeGenClassMeta> parseCodegenMetas(Collection<Class<?>> classes) {
-    return classes.stream()
-        .map(clazz -> this.languageParser.parse(clazz))
-        .filter(Objects::nonNull)
-        .filter(this::hasExistMember)
-        .collect(Collectors.toSet());
-  }
-
-  /**
-   * 包扫描 获的需要生成的类
-   *
-   * @return 需要生成的类
-   */
-  protected Set<Class<?>> scanPackages() {
-
-    Set<Class<?>> classes = Arrays.stream(packagePaths)
-        .map(classPathScanningCandidateComponentProvider::findCandidateComponents)
-        .flatMap(Collection::stream)
-        .map(BeanDefinition::getBeanClassName)
-        .map(className -> {
-          try {
-            return Thread.currentThread().getContextClassLoader().loadClass(className);
-          } catch (ClassNotFoundException e) {
-            log.error("加载类失败", e);
-          }
-          return null;
-        }).filter(Objects::nonNull)
-        .collect(Collectors.toSet());
-
-    if (this.includeClasses != null) {
-      classes.addAll(Arrays.asList(this.includeClasses));
-    }
-
-    log.debug("共扫描到{}个类文件", classes.size());
-    return classes;
-  }
-
-  /**
-   * 是否存在成员
-   *
-   * @param commonCodeGenClassMeta 用于生成代码的类描述对象
-   * @return <code>true</code> 存在成员（方法或字段）需要进行生成
-   */
-  private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
-
-    boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-
-    if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType()) && notMethod) {
-      return false;
-    }
-
-    boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
-    return !(notFiled && notMethod);
-  }
-
-
-  /**
-   * 过滤掉重复的字段
-   *
-   * @param meta 用于生成代码的类描述对象
-   */
-  private void filterDuplicateFields(CommonCodeGenClassMeta meta) {
-    CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
-    if (fieldMetas == null) {
-      return;
-    }
-    Map<String, Integer> countMap = new HashMap<>(fieldMetas.length);
-    CommonCodeGenFiledMeta[] commonCodeGenFiledMetas = Arrays.stream(fieldMetas)
-        .filter(commonCodeGenFiledMeta -> {
-          String name = commonCodeGenFiledMeta.getName();
-          int i = countMap.getOrDefault(name, 0);
-          if (i == 0) {
-            countMap.put(name, ++i);
-            return true;
-          }
-          // 属性重复了
-          return false;
-        }).toArray(CommonCodeGenFiledMeta[]::new);
-    meta.setFieldMetas(commonCodeGenFiledMetas);
-  }
-
-  /**
-   * 移除无效的依赖
-   *
-   * @param meta 用于生成代码的类描述对象
-   */
-  private void removeInvalidDependencies(CommonCodeGenClassMeta meta) {
-    Set<Class<?>> effectiveDependencies = new HashSet<>();
-    // 移除无效的依赖
-    if (meta.getFieldMetas() != null) {
-      CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
-      effectiveDependencies.addAll(Arrays.stream(fieldMetas)
-          .map(CommonCodeGenFiledMeta::getFiledTypes)
-          .filter(Objects::nonNull)
-          .map(Arrays::asList)
-          .flatMap(Collection::stream)
-          .map(CommonCodeGenClassMeta::getSource)
-          .filter(Objects::nonNull)
-          .collect(Collectors.toSet()));
-    }
-    if (meta.getMethodMetas() != null) {
-      effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-          .map(CommonCodeGenMethodMeta::getReturnTypes)
-          .filter(Objects::nonNull)
-          .map(Arrays::asList)
-          .flatMap(Collection::stream)
-          .map(CommonCodeGenClassMeta::getSource)
-          .filter(Objects::nonNull)
-          .collect(Collectors.toSet()));
-      effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-          .map(CommonCodeGenMethodMeta::getParams)
-          .filter(Objects::nonNull)
-          .map(Arrays::asList)
-          .flatMap(Collection::stream)
-          .map(Map::values)
-          .flatMap(Collection::stream)
-          .map(CommonCodeGenClassMeta::getSource)
-          .filter(Objects::nonNull)
-          .collect(Collectors.toSet()));
-    }
-
-    CommonCodeGenClassMeta superClass = meta.getSuperClass();
-    if (superClass != null) {
-      effectiveDependencies.add(superClass.getSource());
-    }
-    CommonCodeGenClassMeta[] interfaces = meta.getInterfaces();
-    if (interfaces != null) {
-      Arrays.asList(interfaces).forEach(commonCodeGenClassMeta -> effectiveDependencies.add(commonCodeGenClassMeta.getSource()));
-    }
-
-    Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
-    Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
-    dependencies.forEach((key, value) -> {
-      Class<?> aClass = value.getSource();
-      if (aClass != null) {
-        if (!effectiveDependencies.contains(aClass)) {
-          return;
+        if (ignorePackages != null) {
+            //排除的包
+            this.ignorePackages = ignorePackages.stream()
+                    .filter(Objects::nonNull)
+                    .map(s -> {
+                        if (this.pathMatcher.isPattern(s)) {
+                            return s;
+                        } else {
+                            return MessageFormat.format("{0}**", s);
+                        }
+                    }).collect(Collectors.toSet());
         }
-      }
-      newDependencies.put(key, value);
-    });
-    meta.setDependencies(newDependencies);
+        //排除的的类
+        this.ignoreClasses = ignoreClasses;
+        initClassPathScanner();
+    }
+
+
+    @Override
+    public void generate() {
+        Set<Class<?>> classes = this.scanPackages();
+        this.tryLoopGenerate(classes);
+        if (codeGenPublisher != null) {
+            codeGenPublisher.sendCodeGenEnd();
+            if (codeGenPublisher.supportPark()) {
+                // 最多等待10秒
+                LockSupport.parkNanos(10L * 1000 * 1000 * 1000);
+            }
+        }
+        CodegenConfigHolder.clear();
+    }
+
+    public void dragonGenerate(Class<?>... services) {
+        this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
+    }
+
+    protected void tryLoopGenerate(Collection<Class<?>> classes) {
+        if (unifiedResponseExplorer != null) {
+            unifiedResponseExplorer.probe(classes);
+        }
+        Set<CommonCodeGenClassMeta> commonCodeGenClassMetas = parseCodegenMetas(classes);
+        if (otherCodegenClassMetas != null) {
+            commonCodeGenClassMetas.addAll(otherCodegenClassMetas);
+        }
+        int i = 0;
+        for (; ; ) {
+            log.warn("循环生成，第{}次", i);
+            commonCodeGenClassMetas = onceGenerate(commonCodeGenClassMetas);
+            if (commonCodeGenClassMetas.size() == 0 || i > 100) {
+                break;
+            }
+            i++;
+        }
+    }
+
+
+    protected Set<CommonCodeGenClassMeta> onceGenerate(Set<CommonCodeGenClassMeta> commonCodeGenClassMetas) {
+        final CodeGenPublisher codeGenPublisher = this.codeGenPublisher;
+        final boolean needSendEvent = codeGenPublisher != null;
+        return commonCodeGenClassMetas.stream()
+                .filter(Objects::nonNull)
+                .filter(this::hasExistMember)
+                .map(commonCodeGenClassMeta -> {
+                    //模板处理，生成服务
+                    if (Boolean.TRUE.equals(enableFieldUnderlineStyle) && commonCodeGenClassMeta.getFieldMetas() != null) {
+                        //将方法参数字段名称设置为下划线
+                        Arrays.stream(commonCodeGenClassMeta.getFieldMetas())
+                                .forEach(commonCodeGenFiledMeta -> commonCodeGenFiledMeta
+                                        .setName(JavaMethodNameUtils.humpToLine(commonCodeGenFiledMeta.getName())));
+                    }
+
+                    Map<String, ? extends CommonCodeGenClassMeta> dependencies = commonCodeGenClassMeta.getDependencies();
+                    Map<String, CommonCodeGenClassMeta> needImportDependencies = new LinkedHashMap<>();
+                    Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
+                    //过滤掉不需要导入的依赖
+                    dependencies.forEach((key, val) -> {
+                        if (val.getNeedImport() && this.hasExistMember(val)) {
+                            needImportDependencies.put(key, val);
+                        }
+                    });
+                    commonCodeGenClassMeta.setDependencies(needImportDependencies);
+                    filterDuplicateFields(commonCodeGenClassMeta);
+                    //移除掉不需要的依赖
+                    removeInvalidDependencies(commonCodeGenClassMeta);
+                    try {
+                        this.templateStrategy.build(commonCodeGenClassMeta);
+                        if (needSendEvent) {
+                            this.codeGenPublisher.sendCodeGen(commonCodeGenClassMeta);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (needSendEvent) {
+                            this.codeGenPublisher.sendCodeGenError(e, commonCodeGenClassMeta);
+                        }
+                    }
+                    return values;
+                })
+                .flatMap(Collection::stream)
+                .filter(CommonCodeGenClassMeta::getNeedGenerate)
+                .collect(Collectors.toSet());
+    }
+
+    protected Set<CommonCodeGenClassMeta> parseCodegenMetas(Collection<Class<?>> classes) {
+        return classes.stream()
+                .map(clazz -> this.languageParser.parse(clazz))
+                .filter(Objects::nonNull)
+                .filter(this::hasExistMember)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * 包扫描 获的需要生成的类
+     *
+     * @return 需要生成的类
+     */
+    protected Set<Class<?>> scanPackages() {
+
+        Set<Class<?>> classes = Arrays.stream(packagePaths)
+                .map(classPathScanningCandidateComponentProvider::findCandidateComponents)
+                .flatMap(Collection::stream)
+                .map(BeanDefinition::getBeanClassName)
+                .map(className -> {
+                    try {
+                        return Thread.currentThread().getContextClassLoader().loadClass(className);
+                    } catch (ClassNotFoundException e) {
+                        log.error("加载类失败", e);
+                    }
+                    return null;
+                }).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        if (this.includeClasses != null) {
+            classes.addAll(Arrays.asList(this.includeClasses));
+        }
+
+        log.debug("共扫描到{}个类文件", classes.size());
+        return classes;
+    }
+
+    /**
+     * 是否存在成员
+     *
+     * @param commonCodeGenClassMeta 用于生成代码的类描述对象
+     * @return <code>true</code> 存在成员（方法或字段）需要进行生成
+     */
+    private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+
+        boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
+
+        if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType()) && notMethod) {
+            return false;
+        }
+
+        boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
+        return !(notFiled && notMethod);
+    }
+
+
+    /**
+     * 过滤掉重复的字段
+     *
+     * @param meta 用于生成代码的类描述对象
+     */
+    private void filterDuplicateFields(CommonCodeGenClassMeta meta) {
+        CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
+        if (fieldMetas == null) {
+            return;
+        }
+        Map<String, Integer> countMap = new HashMap<>(fieldMetas.length);
+        CommonCodeGenFiledMeta[] commonCodeGenFiledMetas = Arrays.stream(fieldMetas)
+                .filter(commonCodeGenFiledMeta -> {
+                    String name = commonCodeGenFiledMeta.getName();
+                    int i = countMap.getOrDefault(name, 0);
+                    if (i == 0) {
+                        countMap.put(name, ++i);
+                        return true;
+                    }
+                    // 属性重复了
+                    return false;
+                }).toArray(CommonCodeGenFiledMeta[]::new);
+        meta.setFieldMetas(commonCodeGenFiledMetas);
+    }
+
+    /**
+     * 移除无效的依赖
+     *
+     * @param meta 用于生成代码的类描述对象
+     */
+    private void removeInvalidDependencies(CommonCodeGenClassMeta meta) {
+        Set<Class<?>> effectiveDependencies = new HashSet<>();
+        // 移除无效的依赖
+        if (meta.getFieldMetas() != null) {
+            CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
+            effectiveDependencies.addAll(Arrays.stream(fieldMetas)
+                    .map(CommonCodeGenFiledMeta::getFiledTypes)
+                    .filter(Objects::nonNull)
+                    .map(Arrays::asList)
+                    .flatMap(Collection::stream)
+                    .map(CommonCodeGenClassMeta::getSource)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
+        }
+        if (meta.getMethodMetas() != null) {
+            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
+                    .map(CommonCodeGenMethodMeta::getReturnTypes)
+                    .filter(Objects::nonNull)
+                    .map(Arrays::asList)
+                    .flatMap(Collection::stream)
+                    .map(CommonCodeGenClassMeta::getSource)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
+            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
+                    .map(CommonCodeGenMethodMeta::getParams)
+                    .filter(Objects::nonNull)
+                    .map(Arrays::asList)
+                    .flatMap(Collection::stream)
+                    .map(Map::values)
+                    .flatMap(Collection::stream)
+                    .map(CommonCodeGenClassMeta::getSource)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
+        }
+
+        CommonCodeGenClassMeta superClass = meta.getSuperClass();
+        if (superClass != null) {
+            effectiveDependencies.add(superClass.getSource());
+        }
+        CommonCodeGenClassMeta[] interfaces = meta.getInterfaces();
+        if (interfaces != null) {
+            Arrays.asList(interfaces).forEach(commonCodeGenClassMeta -> effectiveDependencies.add(commonCodeGenClassMeta.getSource()));
+        }
+
+        Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
+        Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
+        dependencies.forEach((key, value) -> {
+            Class<?> aClass = value.getSource();
+            if (aClass != null) {
+                if (!effectiveDependencies.contains(aClass)) {
+                    return;
+                }
+            }
+            newDependencies.put(key, value);
+        });
+        meta.setDependencies(newDependencies);
+    }
+
+    public AbstractCodeGenerator otherCodegenClassMetas(Set<CommonCodeGenClassMeta> otherCodegenClassMetas) {
+        this.otherCodegenClassMetas = otherCodegenClassMetas;
+        return this;
+    }
+
+  public ClassPathScanningCandidateComponentProvider getClassPathScanningCandidateComponentProvider() {
+    return classPathScanningCandidateComponentProvider;
   }
 
-  public AbstractCodeGenerator otherCodegenClassMetas(Set<CommonCodeGenClassMeta> otherCodegenClassMetas) {
-    this.otherCodegenClassMetas = otherCodegenClassMetas;
-    return this;
-  }
+  private void initClassPathScanner() {
+        if (ignoreClasses != null) {
+            classPathScanningCandidateComponentProvider
+                    .addExcludeFilter((metadataReader, metadataReaderFactory) -> Arrays.stream(this.ignoreClasses)
+                            .filter(Objects::nonNull)
+                            .map(clazz -> metadataReader.getClassMetadata().getClassName().equals(clazz.getName()))
+                            .filter(b -> b)
+                            .findFirst()
+                            .orElse(false));
+        }
+
+        if (ignorePackages != null) {
+            classPathScanningCandidateComponentProvider.addExcludeFilter((metadataReader, metadataReaderFactory) -> this.ignorePackages.stream()
+                    .map(s -> this.pathMatcher.match(s, metadataReader.getClassMetadata().getClassName()))
+                    .filter(b -> b)
+                    .findFirst()
+                    .orElse(false));
+        }
+        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
+        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
+    }
 }

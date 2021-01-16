@@ -32,6 +32,7 @@
         <module>annotation-meta</module>
         <module>annotation-processor</module>
         <module>dragon-codegen-starter</module>
+        <module>dragon-maven-plugin</module>
     </modules>
 
     <properties>

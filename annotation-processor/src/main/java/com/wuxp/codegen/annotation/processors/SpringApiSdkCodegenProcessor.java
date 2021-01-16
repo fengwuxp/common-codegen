@@ -81,7 +81,9 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
             return;
         }
         codeGenerators.forEach(codeGenerator -> {
-            ((AbstractCodeGenerator) codeGenerator).dragonGenerate(aClass);
+            if (codeGenerator instanceof AbstractCodeGenerator) {
+                ((AbstractCodeGenerator) codeGenerator).dragonGenerate(aClass);
+            }
         });
     }
 
