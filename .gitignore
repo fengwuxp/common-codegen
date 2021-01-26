@@ -5,4 +5,5 @@
 .scannerwork
 /examples/codegen-result
 /examples/sdk
+/sdk
 *.flattened-pom.xml

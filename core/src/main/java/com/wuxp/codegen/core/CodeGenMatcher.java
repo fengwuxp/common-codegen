@@ -9,11 +9,11 @@ package com.wuxp.codegen.core;
 @FunctionalInterface
 public interface CodeGenMatcher {
 
-  /**
-   * 是否匹配
-   *
-   * @param clazz class data
-   * @return <code>true</code> 匹配生成
-   */
-  boolean match(Class<?> clazz);
+    /**
+     * 是否匹配
+     *
+     * @param clazz class data
+     * @return <code>true</code> 匹配生成
+     */
+    boolean match(Class<?> clazz);
 }

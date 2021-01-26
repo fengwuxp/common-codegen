@@ -19,14 +19,14 @@ import java.io.Serializable;
 public class DartBuiltValueFactoryModel implements Serializable {
 
 
-  /**
-   * fullType code
-   */
-  private String fullTypeCode;
+    /**
+     * fullType code
+     */
+    private String fullTypeCode;
 
 
-  /**
-   * function code
-   */
-  private String functionCode;
+    /**
+     * function code
+     */
+    private String functionCode;
 }

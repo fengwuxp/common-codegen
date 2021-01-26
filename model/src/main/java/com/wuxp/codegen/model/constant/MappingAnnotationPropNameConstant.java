@@ -7,17 +7,17 @@ package com.wuxp.codegen.model.constant;
 public final class MappingAnnotationPropNameConstant {
 
 
-  public static final String VALUE = "value";
+    public static final String VALUE = "value";
 
 
-  public static final String METHOD = "method";
+    public static final String METHOD = "method";
 
-  public static final String PRODUCES = "produces";
+    public static final String PRODUCES = "produces";
 
-  public static final String CONSUMES = "consumes";
+    public static final String CONSUMES = "consumes";
 
-  /**
-   * 认证类型
-   */
-  public static final String AUTHENTICATION_TYPE = "authenticationType";
+    /**
+     * 认证类型
+     */
+    public static final String AUTHENTICATION_TYPE = "authenticationType";
 }

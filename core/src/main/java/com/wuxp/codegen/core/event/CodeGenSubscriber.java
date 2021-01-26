@@ -5,5 +5,5 @@ package com.wuxp.codegen.core.event;
  */
 public interface CodeGenSubscriber {
 
-  void onCodegen();
+    void onCodegen();
 }

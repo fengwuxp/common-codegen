@@ -13,25 +13,25 @@ import java.util.Set;
  */
 public abstract class AbstractCodeGenMatcher implements CodeGenMatcher {
 
-  protected final static PathMatcher PATH_MATCHER = new AntPathMatcher();
+    protected final static PathMatcher PATH_MATCHER = new AntPathMatcher();
 
-  protected final Set<String> matchPackages;
+    protected final Set<String> matchPackages;
 
-  protected final Set<Class> matchClasses;
+    protected final Set<Class> matchClasses;
 
-  public AbstractCodeGenMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
-    this.matchPackages = matchPackages;
-    this.matchClasses = matchClasses;
-  }
-
-  @Override
-  public boolean match(Class<?> clazz) {
-    if (matchClasses != null) {
-      boolean match = matchClasses.stream().anyMatch(aClass -> aClass.equals(clazz));
-      if (match) {
-        return true;
-      }
+    public AbstractCodeGenMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
+        this.matchPackages = matchPackages;
+        this.matchClasses = matchClasses;
     }
-    return matchPackages.stream().anyMatch(name -> clazz.getName().startsWith(name) || PATH_MATCHER.match(name, clazz.getName()));
-  }
+
+    @Override
+    public boolean match(Class<?> clazz) {
+        if (matchClasses != null) {
+            boolean match = matchClasses.stream().anyMatch(aClass -> aClass.equals(clazz));
+            if (match) {
+                return true;
+            }
+        }
+        return matchPackages.stream().anyMatch(name -> clazz.getName().startsWith(name) || PATH_MATCHER.match(name, clazz.getName()));
+    }
 }

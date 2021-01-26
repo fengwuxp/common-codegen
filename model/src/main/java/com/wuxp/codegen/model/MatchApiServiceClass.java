@@ -10,10 +10,10 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 public interface MatchApiServiceClass {
 
 
-  /**
-   * 是否为一个api service 需要进行生成
-   *
-   * @return
-   */
-  boolean isApiServiceClass(JavaClassMeta javaClassMeta);
+    /**
+     * 是否为一个api service 需要进行生成
+     *
+     * @return
+     */
+    boolean isApiServiceClass(JavaClassMeta javaClassMeta);
 }

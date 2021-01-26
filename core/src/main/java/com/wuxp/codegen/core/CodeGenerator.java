@@ -13,8 +13,8 @@ package com.wuxp.codegen.core;
  */
 public interface CodeGenerator {
 
-  /**
-   * 生成
-   */
-  void generate();
+    /**
+     * 生成
+     */
+    void generate();
 }

@@ -10,23 +10,23 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TemplateFileVersion {
 
-  /**
-   * default
-   */
-  DEFAULT(""),
+    /**
+     * default
+     */
+    DEFAULT(""),
 
-  /**
-   * 1.0.0 version
-   */
-  V_1_0_0("1.0.0"),
+    /**
+     * 1.0.0 version
+     */
+    V_1_0_0("1.0.0"),
 
-  /**
-   * 2.0.0 version
-   */
-  V_2_0_0("2.0.0");
+    /**
+     * 2.0.0 version
+     */
+    V_2_0_0("2.0.0");
 
 
-  private String version;
+    private String version;
 
 
 }

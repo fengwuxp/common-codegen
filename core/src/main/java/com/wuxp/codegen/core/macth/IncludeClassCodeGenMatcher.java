@@ -13,19 +13,19 @@ import java.util.*;
 @Slf4j
 public class IncludeClassCodeGenMatcher extends AbstractCodeGenMatcher {
 
-  public static IncludeClassCodeGenMatcher of(String... includePackages) {
-    return new IncludeClassCodeGenMatcher(new HashSet<>(Arrays.asList(includePackages)), Collections.emptySet());
-  }
+    public static IncludeClassCodeGenMatcher of(String... includePackages) {
+        return new IncludeClassCodeGenMatcher(new HashSet<>(Arrays.asList(includePackages)), Collections.emptySet());
+    }
 
-  public static IncludeClassCodeGenMatcher of(Class... includeClasses) {
-    return new IncludeClassCodeGenMatcher(Collections.emptySet(), new HashSet<>(Arrays.asList(includeClasses)));
-  }
+    public static IncludeClassCodeGenMatcher of(Class... includeClasses) {
+        return new IncludeClassCodeGenMatcher(Collections.emptySet(), new HashSet<>(Arrays.asList(includeClasses)));
+    }
 
-  public static IncludeClassCodeGenMatcher of(Collection<String> includePackages, Collection<Class> includeClasses) {
-    return new IncludeClassCodeGenMatcher(new HashSet<>(includePackages), new HashSet<>(includeClasses));
-  }
+    public static IncludeClassCodeGenMatcher of(Collection<String> includePackages, Collection<Class> includeClasses) {
+        return new IncludeClassCodeGenMatcher(new HashSet<>(includePackages), new HashSet<>(includeClasses));
+    }
 
-  private IncludeClassCodeGenMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
-    super(matchPackages, matchClasses);
-  }
+    private IncludeClassCodeGenMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
+        super(matchPackages, matchClasses);
+    }
 }

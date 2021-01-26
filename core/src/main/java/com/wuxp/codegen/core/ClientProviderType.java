@@ -8,36 +8,36 @@ package com.wuxp.codegen.core;
 public enum ClientProviderType {
 
 
-  /**
-   * https://github.com/OpenFeign/feign
-   * openfeign client
-   */
-  OPENFEIGN,
+    /**
+     * https://github.com/OpenFeign/feign
+     * openfeign client
+     */
+    OPENFEIGN,
 
-  /**
-   * https://github.com/spring-cloud/spring-cloud-openfeign
-   * spring cloud openfeign client
-   */
-  SPRING_CLOUD_OPENFEIGN,
+    /**
+     * https://github.com/spring-cloud/spring-cloud-openfeign
+     * spring cloud openfeign client
+     */
+    SPRING_CLOUD_OPENFEIGN,
 
-  /**
-   * https://github.com/square/retrofit
-   * okhttp retrofit
-   */
-  RETROFIT,
+    /**
+     * https://github.com/square/retrofit
+     * okhttp retrofit
+     */
+    RETROFIT,
 
-  /**
-   * https://github.com/fengwuxp/fengwuxp_dart_feign
-   */
-  DART_FEIGN,
+    /**
+     * https://github.com/fengwuxp/fengwuxp_dart_feign
+     */
+    DART_FEIGN,
 
-  /**
-   * https://github.com/fengwuxp/fengwuxp-typescript-spring/tree/master/feign
-   */
-  TYPESCRIPT_FEIGN,
+    /**
+     * https://github.com/fengwuxp/fengwuxp-typescript-spring/tree/master/feign
+     */
+    TYPESCRIPT_FEIGN,
 
-  /**
-   * https://github.com/umijs/umi-request
-   */
-  UMI_REQUEST
+    /**
+     * https://github.com/umijs/umi-request
+     */
+    UMI_REQUEST
 }
