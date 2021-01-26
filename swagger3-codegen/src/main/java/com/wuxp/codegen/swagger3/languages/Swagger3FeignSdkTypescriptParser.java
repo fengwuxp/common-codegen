@@ -39,14 +39,9 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
+        super.enhancedProcessingField(fieldMeta, javaFieldMeta, classMeta);
         if (javaFieldMeta == null) {
             return;
-        }
-        Class<?>[] types = javaFieldMeta.getTypes();
-        boolean isEnumField = types != null && types.length > 0 && types[0].isEnum();
-        if (isEnumField) {
-            // 设置为字符串
-            fieldMeta.setFiledTypes(new CommonCodeGenClassMeta[]{TypescriptClassMeta.STRING});
         }
         Schema schema = javaFieldMeta.getAnnotation(Schema.class);
         Parameter parameter = javaFieldMeta.getAnnotation(Parameter.class);
@@ -62,8 +57,6 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
                 fieldMeta.setRequired(parameter.required());
             }
         }
-
-
     }
 
 
@@ -83,7 +76,7 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
         if (types.length > 2 && JavaTypeUtils.isMap(types[0])) {
             if (JavaTypeUtils.isEnum(types[1])) {
                 // key 是枚举类型 重新设置key的类型
-//                Omit<Partial<Record<keyof typeof GoodsStatus, T>>, "prototype">
+                // Omit<Partial<Record<keyof typeof GoodsStatus, T>>, "prototype">
                 typescriptFieldMate.getFiledTypes()[0] = TypescriptClassMeta.ENUM_KEY_RECORD;
             }
         }

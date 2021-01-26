@@ -69,9 +69,7 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
 
     @Override
     public void generate() {
-        getCodeGeneratorBuilders().forEach(codegenBuilder -> {
-            codegenBuilder.buildCodeGenerator().generate();
-        });
+        getCodeGeneratorBuilders().forEach(codegenBuilder -> codegenBuilder.buildCodeGenerator().generate());
     }
 
     public Collection<CodegenBuilder> getCodeGeneratorBuilders() {

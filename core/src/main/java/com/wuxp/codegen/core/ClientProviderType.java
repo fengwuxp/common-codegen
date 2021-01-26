@@ -9,17 +9,20 @@ public enum ClientProviderType {
 
 
   /**
-   * https://github.com/OpenFeign/feign openfeign client
+   * https://github.com/OpenFeign/feign
+   * openfeign client
    */
   OPENFEIGN,
 
   /**
-   * https://github.com/spring-cloud/spring-cloud-openfeign spring cloud openfeign client
+   * https://github.com/spring-cloud/spring-cloud-openfeign
+   * spring cloud openfeign client
    */
   SPRING_CLOUD_OPENFEIGN,
 
   /**
-   * https://github.com/square/retrofit okhttp retrofit
+   * https://github.com/square/retrofit
+   * okhttp retrofit
    */
   RETROFIT,
 
