@@ -397,10 +397,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
         dependencies.forEach((key, value) -> {
             Class<?> aClass = value.getSource();
-            if (aClass != null) {
-                if (!effectiveDependencies.contains(aClass)) {
-                    return;
-                }
+            // 排除掉无效的依赖
+            boolean isExclude = aClass != null && !effectiveDependencies.contains(aClass);
+            if (isExclude) {
+                return;
             }
             newDependencies.put(key, value);
         });

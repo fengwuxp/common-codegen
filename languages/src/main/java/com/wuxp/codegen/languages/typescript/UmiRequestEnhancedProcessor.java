@@ -59,9 +59,6 @@ public class UmiRequestEnhancedProcessor implements
         tags.put("httpMethod", requestMethod.name().toLowerCase());
         boolean supportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
         if (supportRequestBody) {
-//            if ("uploadFile".equals(javaMethodMeta.getName())){
-//                System.out.println("1");
-//            }
             tags.put("requestType", this.getRequestType(javaMethodMeta, requestMappingMate));
         }
         tags.put("supportBody", supportRequestBody);
