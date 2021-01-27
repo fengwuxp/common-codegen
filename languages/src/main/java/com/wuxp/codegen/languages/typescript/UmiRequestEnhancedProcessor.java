@@ -1,6 +1,7 @@
 package com.wuxp.codegen.languages.typescript;
 
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
@@ -10,12 +11,10 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,7 +22,7 @@ import java.util.Optional;
  * 基于umi request的增强配置
  *
  * @author wuxp
- * @see https://github.com/umijs/umi-request
+ * <a href="https://github.com/umijs/umi-request"></a>
  */
 public class UmiRequestEnhancedProcessor implements
         LanguageEnhancedProcessor<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
@@ -53,24 +52,20 @@ public class UmiRequestEnhancedProcessor implements
         Optional<RequestMappingProcessor.RequestMappingMate> mappingAnnotation = RequestMappingUtils
                 .findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
         if (!mappingAnnotation.isPresent()) {
-            throw new RuntimeException("方法：" + javaMethodMeta.getName() + "没有RequestMapping相关注解");
+            throw new CodegenRuntimeException("方法：" + javaMethodMeta.getName() + "没有RequestMapping相关注解");
         }
         RequestMappingProcessor.RequestMappingMate requestMappingMate = mappingAnnotation.get();
         RequestMethod requestMethod = requestMappingMate.getRequestMethod();
         tags.put("httpMethod", requestMethod.name().toLowerCase());
         boolean supportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
-        tags.put("supportBody", supportRequestBody);
         if (supportRequestBody) {
-            String[] consumes = requestMappingMate.consumes();
-            if (consumes.length == 0) {
-                // 如果支持body 则使默认使用表单
-                consumes = new String[]{MediaType.APPLICATION_FORM_URLENCODED_VALUE};
-            }
-            String consume = consumes[0];
-            tags.put("mediaType", consume);
-            tags.put("useForm", MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(consume));
-            tags.put("responseType", this.getResponseType(requestMappingMate, javaMethodMeta, classMeta));
+//            if ("uploadFile".equals(javaMethodMeta.getName())){
+//                System.out.println("1");
+//            }
+            tags.put("requestType", this.getRequestType(javaMethodMeta, requestMappingMate));
         }
+        tags.put("supportBody", supportRequestBody);
+        tags.put("responseType", this.getResponseType(requestMappingMate, javaMethodMeta, classMeta));
         tags.put("url", getRequestUrl(javaMethodMeta, requestMappingMate).replace(prefix, ""));
         return methodMeta;
     }
@@ -104,6 +99,23 @@ public class UmiRequestEnhancedProcessor implements
         return url;
     }
 
+    private String getRequestType(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate) {
+        boolean hasRequestBody = hasRequestBody(javaMethodMeta);
+        String[] consumes = requestMappingMate.consumes();
+        boolean isEmpty = consumes.length == 0;
+        if (hasRequestBody) {
+            if (isEmpty) {
+                consumes = new String[]{MediaType.APPLICATION_JSON_VALUE};
+            }
+        } else {
+            if (isEmpty) {
+                // 如果支持body 在没有{@link RequestBody}注解的情况下则使默认使用表单
+                consumes = new String[]{MediaType.APPLICATION_FORM_URLENCODED_VALUE};
+            }
+        }
+        return getContentTypeAlisName(consumes[0]);
+    }
+
     private String getResponseType(RequestMappingProcessor.RequestMappingMate requestMappingMate, JavaMethodMeta javaMethodMeta,
                                    JavaClassMeta classMeta) {
         String[] produces = requestMappingMate.produces();
@@ -118,20 +130,33 @@ public class UmiRequestEnhancedProcessor implements
             }
         }
         String produce = produces[0];
-        switch (produce) {
+        return getContentTypeAlisName(produce);
+    }
+
+    private String getContentTypeAlisName(String contentType) {
+        switch (contentType) {
             case MediaType.APPLICATION_FORM_URLENCODED_VALUE:
+            case MediaType.MULTIPART_FORM_DATA_VALUE:
                 return "form";
-            case MediaType.APPLICATION_JSON_VALUE:
-            case MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE:
-                return "json";
             case MediaType.TEXT_HTML_VALUE:
             case MediaType.TEXT_PLAIN_VALUE:
                 return "text";
             case MediaType.APPLICATION_OCTET_STREAM_VALUE:
                 return "blob";
+            case MediaType.APPLICATION_JSON_VALUE:
+            case MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE:
+                return "json";
             default:
                 return null;
         }
+    }
+
+    private boolean hasRequestBody(JavaMethodMeta javaMethodMeta) {
+        return javaMethodMeta.getParamAnnotations()
+                .values()
+                .stream()
+                .anyMatch(annotations -> Arrays.stream(annotations)
+                        .anyMatch(annotation -> RequestBody.class.isAssignableFrom(annotation.annotationType())));
     }
 
 

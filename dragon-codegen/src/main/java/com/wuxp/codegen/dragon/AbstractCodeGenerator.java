@@ -37,6 +37,8 @@ import java.util.stream.Collectors;
 @Setter
 public abstract class AbstractCodeGenerator implements CodeGenerator {
 
+    private static final int MAX_CODEGEN_LOOP_COUNT = 100;
+
     /**
      * spring 的包扫描组件
      */
@@ -181,6 +183,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     /**
      * 需要调用者执行 {@link CodegenConfigHolder#clear()}
+     *
      * @param services 需要生成的接口
      */
     public void dragonGenerate(Class<?>... services) {
@@ -199,7 +202,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         for (; ; ) {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = onceGenerate(commonCodeGenClassMetas);
-            if (commonCodeGenClassMetas.size() == 0 || i > 100) {
+            if (commonCodeGenClassMetas.isEmpty() || i > MAX_CODEGEN_LOOP_COUNT) {
                 break;
             }
             i++;

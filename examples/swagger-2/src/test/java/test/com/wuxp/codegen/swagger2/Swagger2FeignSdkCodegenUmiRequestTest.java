@@ -30,15 +30,12 @@ public class Swagger2FeignSdkCodegenUmiRequestTest {
         Map<String, String> packageMap = new LinkedHashMap<>();
 
         //控制器的包所在
-//        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
         packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");
         packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
         packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
         packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
         packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
         packageMap.put("test.com.wuxp.codegen.typescript", "enums");
-        //其他类（DTO、VO等）所在的包
-//        packageMap.put("com.wuxp.codegen.swagger2.example", "");
 
         String language = LanguageDescription.TYPESCRIPT.getName();
         String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.UMI_REQUEST.name().toLowerCase(), "swagger2", "src",

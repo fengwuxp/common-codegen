@@ -5,6 +5,7 @@ import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
@@ -73,6 +74,18 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     }
 
     /**
+     * 是否支持 annotation
+     *
+     * @param annotation 注解
+     */
+    public static boolean isSupportAnnotationType(Annotation annotation) {
+        if (annotation == null) {
+            return false;
+        }
+        return ANNOTATION_CLASS_MAP.containsKey(annotation.annotationType());
+    }
+
+    /**
      * http method 方法是否支持 Request body
      *
      * @param method http 请求方法
@@ -85,12 +98,10 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
     @Override
     public RequestMappingMate process(Annotation annotation) {
-
         Class<? extends RequestMappingMate> clazz = ANNOTATION_CLASS_MAP.get(annotation.annotationType());
         if (clazz == null) {
-            throw new RuntimeException(MessageFormat.format("not spring mapping annotation，annotation name: {0}", annotation.annotationType().getName()));
+            throw new CodegenRuntimeException(MessageFormat.format("not spring mapping annotation，annotation name: {0}", annotation.annotationType().getName()));
         }
-
         return this.newProxyMate(annotation, clazz);
 
     }
@@ -116,7 +127,6 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             if (value.length > 0) {
                 return value;
             }
-
             return new String[]{};
         }
 
