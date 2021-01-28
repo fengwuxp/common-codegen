@@ -20,7 +20,9 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -171,6 +173,8 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
         classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
         classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
+        classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(ControllerAdvice.class));
+        classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(RestControllerAdvice.class));
     }
 
     @Override
