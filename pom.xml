@@ -191,6 +191,13 @@
 
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <organization>
         <name>wupxp</name>
         <url>https://github.com/</url>

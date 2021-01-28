@@ -1,5 +1,6 @@
 package com.wuxp.codegen.dragon.freemarker;
 
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.dragon.path.PathResolve;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * 相对路径解析
+ * @author wuxp
  */
 @Slf4j
 public class PathResolveMethod implements TemplateMethodModelEx {
@@ -20,8 +22,8 @@ public class PathResolveMethod implements TemplateMethodModelEx {
 
   @Override
   public Object exec(List arguments) throws TemplateModelException {
-    if (arguments.size() == 0) {
-      throw new RuntimeException("arguments size is 0");
+    if (arguments.isEmpty()) {
+      throw new CodegenRuntimeException("arguments size is 0");
     }
     List<String> paths = ((List<Object>) arguments).stream()
         .filter(Objects::nonNull)
