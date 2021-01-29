@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 
 /**
@@ -26,7 +27,7 @@ public class ApiImplicitParamProcessor extends AbstractAnnotationProcessor<ApiIm
     public abstract static class ApiImplicitParamMate implements AnnotationMate, ApiImplicitParam {
 
         @Override
-        public String toComment(Object annotationOwner) {
+        public String toComment(AnnotatedElement annotationOwner) {
             String description = this.value();
             String defaultValue = defaultValue();
             Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);

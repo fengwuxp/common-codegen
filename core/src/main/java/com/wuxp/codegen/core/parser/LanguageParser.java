@@ -24,21 +24,21 @@ public interface LanguageParser<C extends CommonCodeGenClassMeta> extends Generi
     /**
      * 添加匹配器
      *
-     * @param codeGenMatchers
+     * @param codeGenMatchers 代码生成匹配器列表
      */
     void addCodeGenMatchers(CodeGenMatcher... codeGenMatchers);
 
     /**
      * 获取代码匹配器
      *
-     * @return
+     * @return 代码生成匹配器列表
      */
     List<CodeGenMatcher> getCodeGenMatchers();
 
     /**
      * 设置一个语言增强器
      *
-     * @param languageEnhancedProcessor
+     * @param languageEnhancedProcessor 语言增强处理者
      */
     void setLanguageEnhancedProcessor(LanguageEnhancedProcessor languageEnhancedProcessor);
 

@@ -39,7 +39,7 @@ public final class JavaMethodNameUtils {
   /**
    * 去除方法名称的 get 或者 is 前缀
    *
-   * @param methodName
+   * @param methodName 方法名称
    * @return
    */
   public static String replaceGetOrIsPrefix(String methodName) {
@@ -74,7 +74,7 @@ public final class JavaMethodNameUtils {
       return str;
     }
 
-    StringBuffer text = new StringBuffer(str);
+    StringBuilder text = new StringBuilder(str);
     Matcher matcher = TO_LINE_REGEXP.matcher(text);
     while (matcher.find()) {
       String replaceText = MessageFormat.format("{0}{1}", LINE_CHAR, text.substring(matcher.start(0), matcher.end(0)));
