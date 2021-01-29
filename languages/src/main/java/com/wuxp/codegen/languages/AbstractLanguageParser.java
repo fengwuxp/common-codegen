@@ -125,6 +125,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
 
+    protected  EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer();
+
     {
 
         // 根据是否为spring的组件进行匹配
@@ -524,8 +526,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        codeGenCommentEnhancers.add(new EnumCommentEnhancer());
 
+        codeGenCommentEnhancers.add(enumCommentEnhancer);
         return codeGenCommentEnhancers.stream()
                 .map(codeGenCommentEnhancer -> codeGenCommentEnhancer.toComment(owner))
                 .filter(StringUtils::hasText)
@@ -707,7 +709,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         Class<?>[] types = javaFieldMeta.getTypes();
         if (isEnum) {
             if (comments.isEmpty()) {
-                comments.add(javaFieldMeta.getName());
+                comments.add( enumCommentEnhancer.toComment(javaFieldMeta.getField()));
                 log.warn("枚举{}没有加上描述相关的注解", clazz.getName());
             }
         } else {
