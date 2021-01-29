@@ -1,24 +1,26 @@
-package com.wuxp.codegen.annotation.processors;
+package com.wuxp.codegen.core;
 
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 /**
- * 注解 to String
+ * 代码生成用于增强注释获取的增强器
+ *
  * @author wuxp
  */
-public interface AnnotationToString {
+public interface CodeGenCommentEnhancer {
 
 
     /**
-     * 注解转换
+     * 生成注释
      *
-     * @param annotationOwner 注解所有者
-     * @return
+     * @param annotationOwner 注释的owner
+     * @return 从owner得到的注释
      */
-    default String toComment(Object annotationOwner) {
+    default String toComment(AnnotatedElement annotationOwner) {
         if (annotationOwner == null) {
             return null;
         }
@@ -26,7 +28,7 @@ public interface AnnotationToString {
             return this.toComment((Class<?>) annotationOwner);
         } else if (annotationOwner instanceof Field) {
             return this.toComment((Field) annotationOwner);
-        }else if (annotationOwner instanceof Parameter) {
+        } else if (annotationOwner instanceof Parameter) {
             return this.toComment((Parameter) annotationOwner);
         } else {
             return this.toComment((Method) annotationOwner);
@@ -37,34 +39,40 @@ public interface AnnotationToString {
      * 转换为注释
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return 从owner得到的注释
      */
-     String toComment(Class<?> annotationOwner);
+    default String toComment(Class<?> annotationOwner) {
+        return null;
+    }
 
 
     /**
      * 转换为注释
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return 从owner得到的注释
      */
-     String toComment(Field annotationOwner);
+    default String toComment(Field annotationOwner) {
+        return null;
+    }
 
     /**
      * 转换为注释
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return 从owner得到的注释
      */
-    String toComment(Parameter annotationOwner);
+    default String toComment(Parameter annotationOwner) {
+        return null;
+    }
 
     /**
      * 转换为注释
      *
      * @param annotationOwner 注解所有者
-     * @return
+     * @return 从owner得到的注释
      */
-     String toComment(Method annotationOwner);
-
-
+    default String toComment(Method annotationOwner) {
+        return null;
+    }
 }

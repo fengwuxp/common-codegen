@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.parser;
 
 
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.util.ReflectUtils;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -115,34 +116,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     /**
      * 获取超类上的泛型变量
      *
-     * @param source
-     * @return
+     * @param source 类对象
+     * @return 类的超类泛型变量描述
      */
     private Map<Class<?>, ClassGenericVariableDesc[]> getSuperTypeVariables(Class<?> source) {
-        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariables = new LinkedHashMap<>();
 
-        if (source == null) {
-            return superTypeVariables;
-        }
+        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariables = new LinkedHashMap<>();
 
         List<ResolvableType> superTypes = new ArrayList<>();
         superTypes.add(ResolvableType.forClass(source).getSuperType());
         superTypes.addAll(Arrays.asList(ResolvableType.forClass(source).getInterfaces()));
-
-        //超类
-//        ResolvableType[] superTypes = new ResolvableType[]{
-//                ResolvableType.forClass(source).getSuperType()
-//        };
-
-        //获取超类上的泛型
-//        ParameterizedTypeImpl genericSuperclass = (ParameterizedTypeImpl) source.getGenericSuperclass();
-//        Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
-//        if (actualTypeArguments != null && actualTypeArguments.length > 0) {
-//            superTypeVariables.put(
-//                    source.getSuperclass(),
-//                    Arrays.stream(actualTypeArguments).map(type -> (Class<?>) type).toArray(Class<?>[]::new));
-//
-//        }
 
         superTypes.forEach(superType -> {
             //循环获取超类(包括接口)
@@ -286,7 +269,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 if (aClass != null) {
                     params.put(parameterName, new Class[]{aClass});
                 } else {
-                    throw new RuntimeException(MessageFormat.format("获取方法中泛型类型的参数失败，类：{0}，方法:{1}",
+                    throw new CodegenRuntimeException(MessageFormat.format("获取方法中泛型类型的参数失败，类：{0}，方法:{1}",
                             owner.getName(), method.getName()));
                 }
                 continue;
@@ -318,47 +301,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         return methodMeta;
     }
 
-//    /**
-//     * 解析参数的类型
-//     *
-//     * @param type
-//     * @return
-//     */
-//    protected Class<?>[] parseParameterType(Type type) {
-//        if (type instanceof ParameterizedType) {
-//            ParameterizedType parameterizedType = (ParameterizedType) type;
-//            List<Type> classes = new ArrayList<>();
-//            classes.add(parameterizedType.getRawType());
-//            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-//
-//            classes.addAll(Arrays.stream(actualTypeArguments)
-//                    .filter((t) -> t instanceof Class<?>)
-//                    .collect(Collectors.toList()));
-//            return classes.toArray(new Class<?>[0]);
-//
-//        } else if (type instanceof Class<?>) {
-//            Class<?> aClass = (Class<?>) type;
-//
-//            return new Class[]{aClass};
-//        } else if (type instanceof TypeVariableImpl) {
-//            TypeVariableImpl typeVariable = (TypeVariableImpl) type;
-//            return Arrays.stream(typeVariable.getBounds()).filter(b -> b instanceof Class<?>).toArray(Class<?>[]::new);
-//        } else if (type instanceof GenericArrayTypeImpl) {
-//            GenericArrayTypeImpl typeVariable = (GenericArrayTypeImpl) type;
-//            Type genericComponentType = typeVariable.getGenericComponentType();
-//            List<Class<?>> classes = new ArrayList<>();
-//            while ((genericComponentType instanceof GenericArrayTypeImpl)) {
-//                genericComponentType = ((GenericArrayTypeImpl) genericComponentType).getGenericComponentType();
-//                classes.add(JavaArrayClassTypeMark.class);
-//            }
-//            classes.add(JavaArrayClassTypeMark.class);
-//            classes.addAll(Arrays.asList(this.parseParameterType(genericComponentType)));
-//            return classes.toArray(new Class<?>[0]);
-//
-//        } else {
-//            throw new RuntimeException("未处理的类型参数类型:" + type.getTypeName());
-//        }
-//    }
 
     /**
      * 获取属性列表
@@ -374,19 +316,8 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             fields = clazz.getFields();
         } else {
             fields = clazz.getDeclaredFields();
-            Field.setAccessible(fields, true);
+            AccessibleObject.setAccessible(fields, true);
         }
-//        List<JavaFieldMeta> fieldMetas = new ArrayList<>();
-
-//        for (int i = 0; i < fields.length; i++) {
-//
-//            Field field = fields[i];
-//            JavaFieldMeta fieldMeta = getJavaFieldMeta(field, clazz);
-//            if (fieldMeta == null) continue;
-//            fieldMetas.add(fieldMeta);
-//        }
-        //                fieldMetas.stream().sorted(Comparator.comparing(CommonBaseMeta::getName))
-//                .toArray(JavaFieldMeta[]::new);
         return Arrays.stream(fields)
                 .map(field -> this.getJavaFieldMeta(field, clazz))
                 .filter(Objects::nonNull)
@@ -401,9 +332,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         if (owner.isEnum() && !field.isEnumConstant()) {
             //是枚举，且非枚举常量，忽略
             return null;
-//            if (fieldName.equals("$VALUES")) {
-//                return null;
-//            }
         }
 
         JavaFieldMeta fieldMeta = new JavaFieldMeta();
@@ -470,7 +398,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             //只获取public的方法
             methods = Arrays.stream(methods).filter(method -> Modifier.isPublic(method.getModifiers())).toArray(Method[]::new);
         } else {
-            Method.setAccessible(methods, true);
+            AccessibleObject.setAccessible(methods, true);
         }
 
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
@@ -550,9 +478,6 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         //来自属性的依赖
         for (JavaFieldMeta fieldMeta : fieldMetas) {
             //TODO 忽略静态属性的依赖
-//            if (fieldMeta.getIsStatic()) {
-//                continue;
-//            }
             classSet.addAll(Arrays.asList(fieldMeta.getTypes()));
         }
 

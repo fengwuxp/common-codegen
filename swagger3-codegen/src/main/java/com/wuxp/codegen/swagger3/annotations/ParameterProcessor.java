@@ -6,6 +6,7 @@ import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 
 import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor.getRequestAnnotationDesc;
@@ -29,7 +30,7 @@ public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, P
 
 
         @Override
-        public String toComment(Object annotationOwner) {
+        public String toComment(AnnotatedElement annotationOwner) {
             Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
             String defaultValue = "";
             if (requestParam.isPresent()) {

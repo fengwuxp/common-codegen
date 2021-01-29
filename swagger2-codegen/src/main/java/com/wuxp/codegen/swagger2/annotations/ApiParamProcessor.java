@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class ApiParamProcessor extends AbstractAnnotationProcessor<ApiParam, Api
 
 
         @Override
-        public String toComment(Object annotationOwner) {
+        public String toComment(AnnotatedElement annotationOwner) {
             String defaultValue = defaultValue();
             Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
             if (requestParam.isPresent() && !StringUtils.hasText(defaultValue)) {
