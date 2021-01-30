@@ -35,12 +35,12 @@ import java.util.stream.Collectors;
 public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
 
-    private final static Map<Class<?>, JavaClassMeta> PARSER_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, JavaClassMeta> PARSER_CACHE = new ConcurrentHashMap<>();
 
     /**
      * spring的方法参数发现者
      */
-    protected final static ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+    protected static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
 
     /**

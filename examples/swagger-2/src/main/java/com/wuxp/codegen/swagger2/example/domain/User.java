@@ -1,6 +1,7 @@
 package com.wuxp.codegen.swagger2.example.domain;
 
 
+import com.wuxp.codegen.swagger2.example.enums.ExampleEnum;
 import com.wuxp.codegen.swagger2.example.enums.Sex;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,6 +42,9 @@ public class User {
 
   @ApiModelProperty("myFriends")
   private String myFriends;
+
+  @ApiModelProperty("example enum")
+  private ExampleEnum exampleEnum;
 
 
   @ApiModelProperty("是否为男孩")

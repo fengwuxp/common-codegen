@@ -27,10 +27,10 @@ public class ApiImplicitParamProcessor extends AbstractAnnotationProcessor<ApiIm
     public abstract static class ApiImplicitParamMate implements AnnotationMate, ApiImplicitParam {
 
         @Override
-        public String toComment(AnnotatedElement annotationOwner) {
+        public String toComment(AnnotatedElement element) {
             String description = this.value();
             String defaultValue = defaultValue();
-            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
+            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(element);
             if (requestParam.isPresent() && !StringUtils.hasText(defaultValue)) {
                 defaultValue = requestParam.get().defaultValue();
             }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.util.StringUtils;
 
+import java.beans.Transient;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -212,5 +213,10 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
         result = 31 * result + Arrays.hashCode(methodMetas);
         result = 31 * result + Arrays.hashCode(fieldMetas);
         return result;
+    }
+
+    @Transient
+    public boolean isNeedImport(){
+        return Boolean.TRUE.equals(this.needImport);
     }
 }
