@@ -6,6 +6,7 @@ import com.wuxp.codegen.annotation.processors.javax.NotNullProcessor;
 import com.wuxp.codegen.annotation.processors.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processors.javax.SizeProcessor;
 import com.wuxp.codegen.annotation.processors.spring.*;
+import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.CodeGenCommentEnhancer;
 import com.wuxp.codegen.core.CodeGenImportMatcher;
@@ -125,7 +126,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
 
-    protected  EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer();
+    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
+
+    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
 
     {
 
@@ -527,10 +530,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
+        codeGenCommentEnhancers.add(sourceCodeCommentEnhancer);
         codeGenCommentEnhancers.add(enumCommentEnhancer);
         return codeGenCommentEnhancers.stream()
-                .map(codeGenCommentEnhancer -> codeGenCommentEnhancer.toComment(owner))
+                .map(codeGenCommentEnhancer -> codeGenCommentEnhancer.toComments(owner))
+                .flatMap(Collection::stream)
                 .filter(StringUtils::hasText)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -709,12 +715,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         Class<?>[] types = javaFieldMeta.getTypes();
         if (isEnum) {
             if (comments.isEmpty()) {
-                comments.add( enumCommentEnhancer.toComment(javaFieldMeta.getField()));
-                log.warn("枚举{}没有加上描述相关的注解", clazz.getName());
+                comments.addAll(enumCommentEnhancer.toComments(javaFieldMeta.getField()));
+            }
+            if (comments.isEmpty()) {
+                log.warn("枚举{}没有加上描述相关的注解或注释", clazz.getName());
             }
         } else {
             comments.addAll(this.generateComments(types, false));
-
         }
 
         //注解

@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -30,7 +32,7 @@ public class ParametersProcessor extends AbstractAnnotationProcessor<Parameters,
 
         private final ParameterProcessor parameterProcessor = new ParameterProcessor();
 
-        public ParametersMate(Parameters parameters) {
+        ParametersMate(Parameters parameters) {
             this.parameters = parameters;
         }
 
@@ -42,11 +44,16 @@ public class ParametersProcessor extends AbstractAnnotationProcessor<Parameters,
         @Override
         public String toComment(Method annotationOwner) {
             Parameter[] value = getApiImplicitParams();
-            return "<pre> \n 参数列表：\r\n" + Arrays.stream(value)
+            List<String> comments = new ArrayList<>();
+            comments.add("<pre>");
+            comments.add("参数列表：");
+            comments.addAll(Arrays.stream(value)
                     .map(item -> {
                         ParameterProcessor.ParameterMate mate = (ParameterProcessor.ParameterMate) item;
-                        return "参数名称：" + mate.name() + "，参数说明：" + mate.toComment(annotationOwner) + "\r\n";
-                    }).collect(Collectors.joining("")) + "</pre>";
+                        return String.format("参数名称：%s，参数说明：%s", mate.name(), mate.toComment(annotationOwner));
+                    }).collect(Collectors.toList()));
+            comments.add("</pre>");
+            return String.join(MULTILINE_COMMENT_TAG, comments);
         }
 
         private Parameter[] getApiImplicitParams() {

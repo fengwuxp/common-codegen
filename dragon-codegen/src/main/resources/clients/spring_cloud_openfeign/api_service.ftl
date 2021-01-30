@@ -8,13 +8,7 @@ import org.springframework.web.bind.annotation.*;
     </#list>
 </#if>
 
-<#if (comments?size>0)>
-  /**
-    <#list comments as cmment>
-      * ${cmment}
-    </#list>
-  **/
-</#if>
+<#include "../../commons/api_client_comments.ftl">
 
 <#list annotations as annotation>
     <#assign len=annotation.namedArguments?size />
@@ -29,13 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public interface ${name}{
 
 <#list methodMetas as method>
-    <#if (method.comments?size>0)>
-      /**
-        <#list method.comments as cmment>
-          * ${cmment_index+1}:${cmment}
-        </#list>
-      **/
-    </#if>
+    <#include "../../commons/api_method_comments.ftl">
     <#list method.annotations as annotation>
         <#assign len=annotation.namedArguments?size />
         <#assign currentIndex=0 />

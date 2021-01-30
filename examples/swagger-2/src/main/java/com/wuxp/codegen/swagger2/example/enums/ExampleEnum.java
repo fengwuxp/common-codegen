@@ -6,33 +6,31 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 这是一个性别的枚举
+ * 这是一个ExampleEnum
+ *
  * @author wuxp
  */
-@ApiModel("性别")
+@ApiModel("ExampleEnum")
 @AllArgsConstructor
 @Getter
-public enum Sex {
+public enum ExampleEnum {
 
     /**
      * 男的
      */
-    @ApiModelProperty("男")
-    MAN("男1"),
+    MAN(),
 
     /**
      * 女的
+     * @serialField 妹纸
      */
     @ApiModelProperty("女")
-    WOMAN("女1"),
+    WOMAN(),
 
     /**
      * ???
      */
-    @ApiModelProperty("未知")
-    NONE("未知1");
-
-    private String desc;
+    NONE();
 
 
 }

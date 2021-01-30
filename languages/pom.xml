@@ -24,14 +24,11 @@
        <artifactId>wuxp-codegen-annotation-meta</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <!--        <dependency>-->
-    <!--            <groupId>com.google.guava</groupId>-->
-    <!--            <artifactId>guava</artifactId>-->
-    <!--            <version>27.1-jre</version>-->
-    <!--        </dependency>-->
-
-
+      <dependency>
+          <groupId>com.wuxp.codegen</groupId>
+          <artifactId>wuxp-codegen-source-code-suppoert</artifactId>
+          <version>${project.version}</version>
+      </dependency>
   </dependencies>
 
 </project>

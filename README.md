@@ -36,6 +36,7 @@
 |--language-annotations      转换不同的请求工具库的注解（装饰器）
 |--languages                 不同语言的处理
 |--model                     数据模型
+|--source-code-support       加载解析java源代码的支持
 |--swagger-codegen           基于swagger注解规则的生成
 |--template                  模板的通用处理
 ```

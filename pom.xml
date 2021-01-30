@@ -32,6 +32,7 @@
         <module>annotation-meta</module>
         <module>annotation-processor</module>
         <module>dragon-codegen-starter</module>
+        <module>source-code-suppoert</module>
     </modules>
 
     <properties>
@@ -50,7 +51,23 @@
         <spring.version>5.2.4.RELEASE</spring.version>
         <swagger2.version>2.9.2</swagger2.version>
         <springdoc.version>1.2.21</springdoc.version>
+        <javaparser.version>3.18.0</javaparser.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.javaparser</groupId>
+                <artifactId>javaparser-symbol-solver-core</artifactId>
+                <version>${javaparser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.javaparser</groupId>
+                <artifactId>javaparser-core</artifactId>
+                <version>${javaparser.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 

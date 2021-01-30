@@ -2,14 +2,13 @@ package com.wuxp.codegen.swagger2.annotations;
 
 import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
-import com.wuxp.codegen.core.config.CodegenConfig;
-import com.wuxp.codegen.core.config.CodegenConfigHolder;
-import com.wuxp.codegen.model.LanguageDescription;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +31,7 @@ public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiI
 
         private final ApiImplicitParamProcessor apiImplicitParamProcessor = new ApiImplicitParamProcessor();
 
-        public ApiImplicitParamsMate(ApiImplicitParams apiImplicitParams) {
+         ApiImplicitParamsMate(ApiImplicitParams apiImplicitParams) {
             this.apiImplicitParams = apiImplicitParams;
         }
 
@@ -45,14 +44,17 @@ public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiI
         @Override
         public String toComment(Method annotationOwner) {
             ApiImplicitParam[] value = getApiImplicitParams();
-            CodegenConfig config = CodegenConfigHolder.getConfig();
-            LanguageDescription languageDescription = config.getLanguageDescription();
-            String commentSymbol = LanguageDescription.DART.equals(languageDescription) ? "///" : "*";
-            return "<pre> \n " + commentSymbol + "参数列表：\r\n" + Arrays.stream(value)
+
+            List<String> comments = new ArrayList<>();
+            comments.add("<pre>");
+            comments.add("参数列表：");
+            comments.addAll(Arrays.stream(value)
                     .map(item -> {
                         ApiImplicitParamProcessor.ApiImplicitParamMate mate = (ApiImplicitParamProcessor.ApiImplicitParamMate) item;
-                        return commentSymbol + "参数名称：" + mate.name() + "，参数说明：" + mate.toComment(annotationOwner) + "\r\n";
-                    }).collect(Collectors.joining("")) + commentSymbol + "</pre>";
+                        return String.format("参数名称：%s，参数说明：%s", mate.name(), mate.toComment(annotationOwner));
+                    }).collect(Collectors.toList()));
+            comments.add("</pre>");
+            return String.join(MULTILINE_COMMENT_TAG, comments);
         }
 
         private ApiImplicitParam[] getApiImplicitParams() {

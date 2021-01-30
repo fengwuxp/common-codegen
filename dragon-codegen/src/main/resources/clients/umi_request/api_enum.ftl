@@ -41,7 +41,7 @@
       <#if (field.comments?size>0)>
         /**
         <#list field.comments as cmment>
-          *${cmment}
+          *${(cmment)!}
         </#list>
         **/
       </#if>

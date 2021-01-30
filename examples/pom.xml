@@ -31,7 +31,6 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-symbol-solver-core</artifactId>
-            <version>3.18.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
