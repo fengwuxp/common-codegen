@@ -12,6 +12,7 @@ import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
@@ -23,59 +24,43 @@ import java.util.*;
  *
  * @author wuxp
  */
+@Slf4j
 public final class DragonSdkCodeGenerator implements CodeGenerator {
 
-
-    private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList("sdk", "dragon");
-
-    private static final List<String> OPEN_API__CLASSES = Arrays.asList(
-            "io.swagger.annotations.Api",
-            "io.swagger.v3.oas.annotations.OpenAPIDefinition"
-    );
-
-    private static final List<OpenApiType> OPEN_API_TYPES = Arrays.asList(
-            OpenApiType.SWAGGER_2,
-            OpenApiType.SWAGGER_3
-    );
-
-
-    private static OpenApiType OPEN_API_TYPE;
-
-
-    static {
-        for (int i = 0; i < OPEN_API__CLASSES.size(); i++) {
-            String className = OPEN_API__CLASSES.get(i);
-            try {
-                Class.forName(className);
-                OPEN_API_TYPE = OPEN_API_TYPES.get(i);
-            } catch (ClassNotFoundException ignored) {
-            }
-        }
-        if (OPEN_API_TYPE == null) {
-            OPEN_API_TYPE = OpenApiType.DEFAULT;
-        }
-    }
+    private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList("codegen-sdk", "dragon");
 
     private final String[] scanPackages;
 
+    private final OpenApiType openApiType;
+
     public DragonSdkCodeGenerator() {
-        scanPackages = new String[0];
+        this(OpenApiTypeExplorer.getDefaultOpenApiType(), new String[0]);
+    }
+
+    public DragonSdkCodeGenerator(OpenApiType openApiType) {
+        this(openApiType, new String[0]);
     }
 
     public DragonSdkCodeGenerator(String... scanPackages) {
+        this(OpenApiTypeExplorer.getDefaultOpenApiType(), scanPackages);
+    }
+
+    public DragonSdkCodeGenerator(OpenApiType openApiType, String... scanPackages) {
         this.scanPackages = scanPackages;
+        this.openApiType = openApiType;
+        if (log.isDebugEnabled()) {
+            log.info("sdk codegen args: openApiType={},scanPackages={}", openApiType, scanPackages);
+        }
     }
 
 
     @Override
     public void generate() {
-        getCodeGeneratorBuilders().forEach(codegenBuilder -> {
-            codegenBuilder.buildCodeGenerator().generate();
-        });
+        getCodeGeneratorBuilders().forEach(codegenBuilder -> codegenBuilder.buildCodeGenerator().generate());
     }
 
     public Collection<CodegenBuilder> getCodeGeneratorBuilders() {
-        switch (OPEN_API_TYPE) {
+        switch (openApiType) {
             case SWAGGER_2:
                 return getCodeSwagger2GeneratorBuilders();
             case SWAGGER_3:
@@ -187,7 +172,7 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
     private String getOuPath(ClientProviderType type) {
 
         List<String> outPaths = new ArrayList<>(DEFAULT_OUT_PATHS);
-        outPaths.add(OPEN_API_TYPE.name().toLowerCase());
+        outPaths.add(openApiType.name().toLowerCase());
         outPaths.add(type.name().toLowerCase());
         if (ClientProviderType.DART_FEIGN.equals(type)) {
             outPaths.add("lib");

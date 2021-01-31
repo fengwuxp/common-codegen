@@ -7,11 +7,11 @@ import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
-import com.wuxp.codegen.swagger3.example.controller.OrderController;
-import com.wuxp.codegen.swagger3.example.evt.BaseQueryEvt;
-import com.wuxp.codegen.swagger3.example.resp.PageInfo;
-import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
-import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.example.maven.controller.OrderController;
+import com.wuxp.codegen.swagger3.example.maven.evt.BaseQueryEvt;
+import com.wuxp.codegen.swagger3.example.maven.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.maven.resp.ServiceQueryResponse;
+import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

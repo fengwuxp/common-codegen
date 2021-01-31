@@ -1,30 +1,30 @@
 package com.wuxp.codegen.maven;
 
 
-import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.CodegenBuilder;
-import com.wuxp.codegen.dragon.AbstractCodeGenerator;
 import lombok.Setter;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
+import org.apache.maven.shared.transfer.repository.RepositoryManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.File;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 抽象的sdk生成，用于调用{@link  CodeGenerator#generate()}生成sdk代码
@@ -34,106 +34,99 @@ import java.util.List;
 @Setter
 public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
 
-    /**
-     * target folder for sources
-     *
-     * @parameter
-     */
-//    @Parameter(name = "target.folder")
-//    protected File targetFolder;
+    public final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * scan packages to be classpath
      * 如果没有设置扫描的包，则使用 {@link MavenProject#getGroupId()}
      *
-     * @parameter
      * @see #mavenProject
      */
     @Parameter()
     protected String[] scanPackages;
 
-    /**
-     * maven project
-     *
-     * @parameter default-value="${project}"
-     * @readonly
-     */
-    @Parameter(defaultValue = "${project}")
-    protected MavenProject mavenProject;
-
 
     /**
      * Whether to skip the exporting execution
-     *
-     * @parameter default-value=false property="maven.codegen.skip"
      */
     @Parameter(defaultValue = "false")
     private boolean skip;
 
     /**
      * test classpath usage switch
-     *
-     * @parameter default-value=false
      */
     @Parameter(defaultValue = "false")
     private boolean testClasspath;
 
     /**
+     * Replace the absolute path to the local repo with this property. This field is ignored it prefix is declared. The
+     * value will be forced to "${M2_REPO}" if no value is provided AND the attach flag is true.
+     */
+    @Parameter(defaultValue = "")
+    private String localRepoProperty;
+
+    /**
+     * maven project
+     */
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+    protected MavenProject mavenProject;
+
+    /**
+     * The Maven session
+     */
+    @Parameter(defaultValue = "${session}", readonly = true, required = true)
+    protected MavenSession session;
+
+    /**
      * build context
-     *
-     * @component
      */
     @Component
     private BuildContext buildContext;
 
+    /**
+     * Maven ProjectHelper
+     */
+    @Component
+    private MavenProjectHelper projectHelper;
+
+    @Component
+    private RepositoryManager repositoryManager;
+
+    /**
+     * 插件执行时的类加载器，用于加载项目空间的类
+     * <p>
+     * 由于插件执行时在独立的依赖空间中，无法获取项目的依赖，需要额外的处理
+     *
+     * @see #getProjectClassLoader()
+     * @see #getProjectDependencies()
+     * </p>
+     */
+    private ClassLoader pluginProjectClassLoader;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoFailureException {
+        getLog().info("开始执行dragon codegen maven 插件");
         if (skip || !hasSourceChanges()) {
             // Only run if something has changed in the source directories. This will
             // prevent m2e from entering an infinite build cycle.
             return;
         }
-        ClassLoader classLoader = null;
         try {
-            classLoader = getProjectClassLoader();
+            this.pluginProjectClassLoader = getProjectClassLoader();
         } catch (MalformedURLException | DependencyResolutionRequiredException e) {
+            getLog().error("初始化class loader failed：" + e.getMessage());
             throw new MojoFailureException(e.getMessage(), e);
         }
-
-        ResourceLoader resourceLoader = new PathMatchingResourcePatternResolver(classLoader);
-        String[] scanPackages = this.getScanPackages();
-        getLog().info("开始执行dragon maven 插件3，scanPackages：" + Arrays.toString(scanPackages));
-        Collection<CodegenBuilder> codeGeneratorBuilders = getCodeGeneratorBuilders();
-        codeGeneratorBuilders.stream()
-                .map(codegenBuilder -> {
-                    if (codegenBuilder instanceof AbstractDragonCodegenBuilder) {
-                        AbstractDragonCodegenBuilder dragonCodegenBuilder = (AbstractDragonCodegenBuilder) codegenBuilder;
-                        dragonCodegenBuilder.scanPackages(scanPackages).buildCodeGenerator();
-                    }
-                    return codegenBuilder.buildCodeGenerator();
-                })
-                .peek(codeGenerator -> {
-                    if (codeGenerator instanceof AbstractCodeGenerator) {
-                        AbstractCodeGenerator abstractCodeGenerator = (AbstractCodeGenerator) codeGenerator;
-                        abstractCodeGenerator.getClassPathScanningCandidateComponentProvider().setResourceLoader(resourceLoader);
-                    }
-                }).forEach(codeGenerator -> {
-            getLog().info("开始执行dragon maven 插件4，scanPackages：" + Arrays.toString(scanPackages));
-            codeGenerator.generate();
-        });
-
+        Thread.currentThread().setContextClassLoader(this.pluginProjectClassLoader);
+        this.generate();
     }
 
     /**
-     * 获取用于builder {@link CodeGenerator}的 {@link CodegenBuilder}
-     *
-     * @return
+     * invoke {@link CodeGenerator#generate()}
      */
-    protected abstract Collection<CodegenBuilder> getCodeGeneratorBuilders();
+    protected abstract void generate();
 
 
-    @SuppressWarnings("unchecked")
     protected ClassLoader getProjectClassLoader() throws DependencyResolutionRequiredException,
             MalformedURLException {
         List<String> classpathElements;
@@ -142,6 +135,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         } else {
             classpathElements = mavenProject.getCompileClasspathElements();
         }
+        // classpath的类路径
         List<URL> urls = new ArrayList<>(classpathElements.size());
         for (String element : classpathElements) {
             File file = new File(element);
@@ -149,9 +143,43 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
                 urls.add(file.toURI().toURL());
             }
         }
-        return new URLClassLoader(urls.toArray(new URL[0]), getClass().getClassLoader());
+        // 加入项目的依赖
+        urls.addAll(this.getProjectDependencies());
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        if (classLoader instanceof URLClassLoader) {
+            getLog().info("add class loader url");
+            urls.addAll(Arrays.asList(((URLClassLoader) classLoader).getURLs()));
+//            installDependeciesToClassLoader(urls, classLoader);
+        }
+        return new URLClassLoader(urls.toArray(new URL[0]), null);
     }
 
+    private void installDependeciesToClassLoader(List<URL> urls, ClassLoader classLoader) {
+        Method addURL = null;
+        try {
+            addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        if (addURL != null) {
+            AccessibleObject.setAccessible(new AccessibleObject[]{addURL}, true);
+            try {
+                for (URL url : urls) {
+                    addURL.invoke(classLoader, url);
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 判断源码是否发生改变
+     *
+     * @return if return<code>true</code> 表示代码已经改变
+     */
     @SuppressWarnings("rawtypes")
     private boolean hasSourceChanges() {
         if (buildContext != null) {
@@ -168,12 +196,46 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         }
     }
 
-    private String[] getScanPackages() {
-        String[] scanPackages = this.scanPackages;
-        if (scanPackages == null || scanPackages.length == 0) {
-            return new String[]{mavenProject.getGroupId()};
+    /**
+     * 获取项目的依赖，交由插件的{@link ClassLoader}使用
+     *
+     * @see #pluginProjectClassLoader
+     */
+    private List<URL> getProjectDependencies() {
+        List<URL> urls = new ArrayList<>(64);
+        Map<String, Artifact> artifacts = new LinkedHashMap<>();
+        for (Artifact artifact : mavenProject.getArtifacts()) {
+            String key = String.format("%s:%s%s", artifact.getGroupId(), artifact.getArtifactId(), artifact.hasClassifier() ? ":" + artifact.getClassifier() : "");
+            if (artifacts.containsKey(key)) {
+                logger.error(" ****  {} 的依赖中包含冲突的构件：{} {}", mavenProject.getArtifact(), artifact, artifacts.get(key));
+            } else {
+                artifacts.put(key, artifact);
+            }
+            if (artifact.isResolved() && artifact.getFile() != null) {
+                try {
+                    urls.add(artifact.getFile().toURI().toURL());
+                } catch (MalformedURLException e) {
+                    logger.error(" ****  {} 依赖包不可用,artifact={},path={}", mavenProject.getArtifact(), artifact, artifact.getFile().toPath());
+                }
+            } else {
+                logger.error(" ****  {} 依赖包不可用,artifact={},path={}", mavenProject.getArtifact(), artifact, artifact.getFile().toPath());
+            }
         }
-        return scanPackages;
+        return urls;
+    }
+
+
+    protected String[] getScanPackages() {
+        String[] packages = this.scanPackages;
+        if (packages == null || packages.length == 0) {
+            packages = new String[]{mavenProject.getGroupId()};
+            this.scanPackages = packages;
+        }
+        return packages;
+    }
+
+    public ClassLoader getPluginProjectClassLoader() {
+        return pluginProjectClassLoader;
     }
 
 }

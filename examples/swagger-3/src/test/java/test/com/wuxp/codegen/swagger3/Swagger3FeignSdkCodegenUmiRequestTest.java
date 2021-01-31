@@ -6,10 +6,10 @@ import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
-import com.wuxp.codegen.swagger3.example.controller.OrderController;
-import com.wuxp.codegen.swagger3.example.resp.PageInfo;
-import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
-import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.example.maven.controller.OrderController;
+import com.wuxp.codegen.swagger3.example.maven.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.maven.resp.ServiceQueryResponse;
+import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

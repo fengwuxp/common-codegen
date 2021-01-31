@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wuxp-dragon-maven-plugin</artifactId>
+    <artifactId>wuxp-codegen-dragon-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <description>用于生成Api Sdk的代码生成插件</description>
 
@@ -23,13 +23,18 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>3.4</version>
+                    <version>3.5.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>3.6.3</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -45,16 +50,13 @@
             <artifactId>maven-model</artifactId>
             <version>3.6.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-project</artifactId>
-            <version>3.0-alpha-2</version>
-        </dependency>
+
         <dependency>
             <groupId>org.sonatype.plexus</groupId>
             <artifactId>plexus-build-api</artifactId>
             <version>0.0.7</version>
         </dependency>
+
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
@@ -96,28 +98,22 @@
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-artifact-transfer</artifactId>
+            <version>0.13.1</version>
+        </dependency>
     </dependencies>
-
-    <!--    <profiles>-->
-    <!--        <profile>-->
-    <!--            &lt;!&ndash; See http://stackoverflow.com/a/22296107/14731 &ndash;&gt;-->
-    <!--            <id>doclint-java8-disable</id>-->
-    <!--            <activation>-->
-    <!--                <jdk>[1.8,)</jdk>-->
-    <!--            </activation>-->
-
-    <!--            <build>-->
-    <!--                <plugins>-->
-    <!--                    <plugin>-->
-    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
-    <!--                        <artifactId>maven-javadoc-plugin</artifactId>-->
-    <!--                        <configuration>-->
-    <!--                            <additionalparam>-Xdoclint:none</additionalparam>-->
-    <!--                        </configuration>-->
-    <!--                    </plugin>-->
-    <!--                </plugins>-->
-    <!--            </build>-->
-    <!--        </profile>-->
-    <!--    </profiles>-->
 
 </project>

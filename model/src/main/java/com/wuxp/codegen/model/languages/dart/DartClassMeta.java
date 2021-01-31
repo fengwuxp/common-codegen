@@ -2,6 +2,7 @@ package com.wuxp.codegen.model.languages.dart;
 
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
@@ -10,6 +11,7 @@ import lombok.experimental.Accessors;
  * @author wxup
  */
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
 public class DartClassMeta extends CommonCodeGenClassMeta {
 
   public final static String BUILT_COLLECTION_PATH = "package:built_collection/built_collection.dart";
