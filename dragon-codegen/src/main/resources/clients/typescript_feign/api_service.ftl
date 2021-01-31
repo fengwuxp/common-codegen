@@ -7,14 +7,7 @@
     </#list>
 </#if>
 
-<#if (comments?size>0)>
-  /**
-    <#list comments as cmment>
-      * ${cmment}
-    </#list>
-  **/
-</#if>
-
+<#include "../../commons/api_client_comments.ftl">
 <#list annotations as annotation>
   @${annotation.name}({
     <#list annotation.namedArguments as name,val>
@@ -25,13 +18,7 @@
 class ${name}{
 
 <#list methodMetas as method>
-    <#if (method.comments?size>0)>
-      /**
-        <#list method.comments as cmment>
-          * ${cmment_index+1}:${cmment}
-        </#list>
-      **/
-    </#if>
+    <#include "../../commons/api_method_comments.ftl">
     <#list method.annotations as annotation>
       @${annotation.name}({
         <#list annotation.namedArguments as name,val>

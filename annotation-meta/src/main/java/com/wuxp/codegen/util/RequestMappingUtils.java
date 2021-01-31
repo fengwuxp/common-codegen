@@ -18,10 +18,12 @@ import java.util.Optional;
  */
 public final class RequestMappingUtils {
 
-    private final static PathMatcher PATH_MATCHER = new AntPathMatcher();
+    private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
 
-    private final static RequestMappingProcessor REQUEST_MAPPING_PROCESSOR = new RequestMappingProcessor();
+    private static final RequestMappingProcessor REQUEST_MAPPING_PROCESSOR = new RequestMappingProcessor();
 
+    private RequestMappingUtils() {
+    }
 
     public static String combinePath(RequestMappingProcessor.RequestMappingMate annotationMate, Method annotationOwner) {
         Class<?> declaringClass = annotationOwner.getDeclaringClass();
@@ -50,20 +52,14 @@ public final class RequestMappingUtils {
         if (otherIsEmpty) {
             return patterns[0];
         }
-        for (String pattern1 : patterns) {
-            for (String pattern2 : otherPatterns) {
-                return PATH_MATCHER.combine(pattern1, pattern2);
-            }
-        }
-        return null;
+        return PATH_MATCHER.combine(patterns[0], otherPatterns[0]);
     }
 
     public static Optional<RequestMappingProcessor.RequestMappingMate> findRequestMappingAnnotation(Annotation[] annotations) {
         return Arrays.stream(annotations)
                 .map(annotation -> {
-                    try {
+                    if (RequestMappingProcessor.isSupportAnnotationType(annotation)) {
                         return REQUEST_MAPPING_PROCESSOR.process(annotation);
-                    } catch (Exception ignore) {
                     }
                     return null;
                 }).filter(Objects::nonNull)

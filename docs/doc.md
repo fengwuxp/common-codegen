@@ -60,6 +60,23 @@
 
 - [ant path匹配](https://blog.csdn.net/chenqipc/article/details/53289721)
 
+### 注释增强
+- 通过源代码增强 ，会尝试获取类的源代码文件，解析后将类上的javadoc注释生成到输出的代码上 
+- 枚举注释增强，会尝试匹配枚举类的成员变量，然后输出为注释，默认会匹配如下字段：
+```jaava
+    /**
+     * 可能是用于描述字段名称
+     */
+    private static final List<String> DESC_FILED_NAMES = Arrays.asList(
+            "desc",
+            "introduce",
+            "chineseName",
+            "englishName",
+            "description",
+            "name"
+    );
+```
+
 #### 注解处理
 
 ```
@@ -78,66 +95,66 @@
 @RequestMapping(value = "/order")
 public class OrderController extends BaseController<String> {
 
-  static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
+    static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
 
-  @Autowired
-  private UserService userService;
+    @Autowired
+    private UserService userService;
 
-  @ApiOperation(value = "获取订单列表", notes = "")
-  @GetMapping(value = {"get_order"})
-  public List<Order> getOrder(String[] names, List<Integer> ids, Set<Order> moneys) {
-    return Collections.EMPTY_LIST;
-  }
+    @ApiOperation(value = "获取订单列表", notes = "")
+    @GetMapping(value = {"get_order"})
+    public List<Order> getOrder(String[] names, List<Integer> ids, Set<Order> moneys) {
+        return Collections.EMPTY_LIST;
+    }
 
-  @ApiOperation(value = "获取订单列表", notes = "")
-  @RequestMapping(method = RequestMethod.GET)
-  public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
-    return new PageInfo<Order>();
-  }
-
-
-  @ApiOperation(value = "获取订单列表", notes = "")
-  @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-  public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
-  @RequestParam(name = "order_id", required = false) Long oderId,
-      @ApiParam(value = "订单号", required = false) String sn,
-      @ApiParam(value = "用户id", hidden = true) Long memberId) {
-
-    return new ServiceQueryResponse<>();
-  }
-
-  @ApiOperation(value = "查询分页", notes = "")
-  @PostMapping(value = {"queryPage"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-  @ApiImplicitParams(
-      {
-          @ApiImplicitParam(name = "id", value = "订单", required = true, dataType = "String"),
-      }
-  )
-  public ServiceResponse<PageInfo<Order>> queryPage(String id) {
-
-    return new ServiceResponse<>();
-  }
+    @ApiOperation(value = "获取订单列表", notes = "")
+    @RequestMapping(method = RequestMethod.GET)
+    public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
+        return new PageInfo<Order>();
+    }
 
 
-  @ApiOperation(value = "创建订单", notes = "")
-  @PostMapping(value = {"createOrder"})
-  @ApiImplicitParams(
-      {
-          @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
-      }
-  )
-  public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
+    @ApiOperation(value = "获取订单列表", notes = "")
+    @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
+                                                   @RequestParam(name = "order_id", required = false) Long oderId,
+                                                   @ApiParam(value = "订单号", required = false) String sn,
+                                                   @ApiParam(value = "用户id", hidden = true) Long memberId) {
 
-    return new ServiceResponse<>();
-  }
+        return new ServiceQueryResponse<>();
+    }
+
+    @ApiOperation(value = "查询分页", notes = "")
+    @PostMapping(value = {"queryPage"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "id", value = "订单", required = true, dataType = "String"),
+            }
+    )
+    public ServiceResponse<PageInfo<Order>> queryPage(String id) {
+
+        return new ServiceResponse<>();
+    }
 
 
-  @ApiOperation(value = "test hello", notes = "")
-  @PostMapping(value = {"hello"})
-  public ServiceResponse hello() {
+    @ApiOperation(value = "创建订单", notes = "")
+    @PostMapping(value = {"createOrder"})
+    @ApiImplicitParams(
+            {
+                    @ApiImplicitParam(name = "evt", value = "创建订单", required = true),
+            }
+    )
+    public ServiceResponse<Long> createOrder(@RequestBody CreateOrderEvt evt) {
 
-    return new ServiceResponse<>();
-  }
+        return new ServiceResponse<>();
+    }
+
+
+    @ApiOperation(value = "test hello", notes = "")
+    @PostMapping(value = {"hello"})
+    public ServiceResponse hello() {
+
+        return new ServiceResponse<>();
+    }
 
 }
 
@@ -147,13 +164,13 @@ public class OrderController extends BaseController<String> {
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CreateOrderEvt extends BaseEvt {
 
-  @ApiModelProperty(value = "订单ns", example = "test method", required = true)
-  @Size(max = 50)
-  private String sn;
+    @ApiModelProperty(value = "订单ns", example = "test method", required = true)
+    @Size(max = 50)
+    private String sn;
 
-  @ApiModelProperty("订单总价")
-  @NotNull
-  private Integer totalAmount;
+    @ApiModelProperty("订单总价")
+    @NotNull
+    private Integer totalAmount;
 
 }
 ```
@@ -168,9 +185,9 @@ public class CreateOrderEvt extends BaseEvt {
  * 接口：GET
  **/
 @Feign({
-    value:"/order",
+    value: "/order",
 })
-class OrderService{
+class OrderService {
 
     /**
      * 1:获取订单列表
@@ -179,10 +196,10 @@ class OrderService{
      * 4:返回值在java中的类型为：Order
      **/
     @GetMapping({
-        value:"get_order",
-        produces:[HttpMediaType.FORM_DATA],
+        value: "get_order",
+        produces: [HttpMediaType.FORM_DATA],
     })
-    getOrder!:(req: OrderServiceGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
+    getOrder!: (req: OrderServiceGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**
      * 1:获取订单列表
      * 2:接口方法：GET
@@ -190,9 +207,9 @@ class OrderService{
      * 4:返回值在java中的类型为：Order
      **/
     @GetMapping({
-        produces:[HttpMediaType.FORM_DATA],
+        produces: [HttpMediaType.FORM_DATA],
     })
-    queryOrder!:(req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryOrder!: (req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
      * 1:获取订单列表
      * 2:接口方法：POST
@@ -200,9 +217,9 @@ class OrderService{
      * 4:返回值在java中的类型为：Order
      **/
     @PostMapping({
-        produces:[HttpMediaType.MULTIPART_FORM_DATA],
+        produces: [HttpMediaType.MULTIPART_FORM_DATA],
     })
-    queryOrder2!:(req: OrderServiceQueryOrder2Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryOrder2!: (req: OrderServiceQueryOrder2Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
      * 1:查询分页
      * 2:接口方法：POST
@@ -215,9 +232,9 @@ class OrderService{
      * 6:返回值在java中的类型为：Order
      **/
     @PostMapping({
-        produces:[HttpMediaType.FORM_DATA],
+        produces: [HttpMediaType.FORM_DATA],
     })
-    queryPage!:(req: OrderServiceQueryPageReq, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryPage!: (req: OrderServiceQueryPageReq, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
      * 1:创建订单
      * 2:接口方法：POST
@@ -229,18 +246,18 @@ class OrderService{
      * 5:返回值在java中的类型为：Long
      **/
     @PostMapping({
-        produces:[HttpMediaType.APPLICATION_JSON_UTF8],
+        produces: [HttpMediaType.APPLICATION_JSON_UTF8],
     })
-    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<number>;
+    createOrder!: (req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<number>;
     /**
      * 1:test hello
      * 2:接口方法：POST
      * 3:返回值在java中的类型为：ServiceResponse
      **/
     @PostMapping({
-        produces:[HttpMediaType.FORM_DATA],
+        produces: [HttpMediaType.FORM_DATA],
     })
-    hello!:(req: OrderServiceHelloReq, option?: FeignRequestOptions) => Promise<any>;
+    hello!: (req: OrderServiceHelloReq, option?: FeignRequestOptions) => Promise<any>;
 }
 
 export default new OrderService();
@@ -353,19 +370,19 @@ import {BaseQueryEvt} from "./BaseQueryEvt";
 
 export interface QueryOrderEvt extends BaseQueryEvt {
 
-  /**
-   *属性说明：订单sn，示例输入：test method
-   *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
-   *在java中的类型为：String
-   **/
-  sn?: string;
+    /**
+     *属性说明：订单sn，示例输入：test method
+     *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
+     *在java中的类型为：String
+     **/
+    sn?: string;
 
-  /**
-   *属性说明：id列表，示例输入：
-   *在java中的类型为：数组
-   *在java中的类型为：int
-   **/
-  ids?: number[];
+    /**
+     *属性说明：id列表，示例输入：
+     *在java中的类型为：数组
+     *在java中的类型为：int
+     **/
+    ids?: number[];
 
 }
 
@@ -378,17 +395,17 @@ import {BaseQueryEvt} from "./BaseQueryEvt";
 
 export interface QueryOrderEvt extends BaseQueryEvt {
 
-  /**
-   *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
-   *在java中的类型为：String
-   **/
-  sn?: string;
+    /**
+     *属性：sn输入字符串的最小长度为：0，输入字符串的最大长度为：50
+     *在java中的类型为：String
+     **/
+    sn?: string;
 
-  /**
-   *在java中的类型为：数组
-   *在java中的类型为：int
-   **/
-  ids?: number[];
+    /**
+     *在java中的类型为：数组
+     *在java中的类型为：int
+     **/
+    ids?: number[];
 
 }
 

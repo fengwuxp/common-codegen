@@ -7,18 +7,18 @@ package com.wuxp.codegen.core.config;
  */
 public class CodegenConfigHolder {
 
-  private final static ThreadLocal<CodegenConfig> GLOBAL_CONFIG = new ThreadLocal<>();
+    private final static ThreadLocal<CodegenConfig> GLOBAL_CONFIG = new ThreadLocal<>();
 
-  public static CodegenConfig getConfig() {
+    public static CodegenConfig getConfig() {
 
-    return GLOBAL_CONFIG.get();
-  }
+        return GLOBAL_CONFIG.get();
+    }
 
-  public static void setConfig(CodegenConfig config) {
-    GLOBAL_CONFIG.set(config);
-  }
+    public static void setConfig(CodegenConfig config) {
+        GLOBAL_CONFIG.set(config);
+    }
 
-  public static void clear() {
-    GLOBAL_CONFIG.remove();
-  }
+    public static void clear() {
+        GLOBAL_CONFIG.remove();
+    }
 }

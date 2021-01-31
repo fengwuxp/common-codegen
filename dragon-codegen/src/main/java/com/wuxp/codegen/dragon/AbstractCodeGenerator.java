@@ -20,7 +20,9 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Setter
 public abstract class AbstractCodeGenerator implements CodeGenerator {
+
+    private static final int MAX_CODEGEN_LOOP_COUNT = 100;
 
     /**
      * spring 的包扫描组件
@@ -130,10 +134,6 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         this.languageParser = languageParser;
         this.templateStrategy = templateStrategy;
 
-        this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
-        this.codeGenPublisher = codeGenPublisher;
-        this.unifiedResponseExplorer = new DragonUnifiedResponseExplorer(languageParser);
-
         if (ignorePackages != null) {
             //排除的包
             this.ignorePackages = ignorePackages.stream()
@@ -145,27 +145,51 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                             return MessageFormat.format("{0}**", s);
                         }
                     }).collect(Collectors.toSet());
-        }
-        //排除的的类
-        this.ignoreClasses = ignoreClasses;
-        initClassPathScanner();
-    }
 
+            classPathScanningCandidateComponentProvider.addExcludeFilter((metadataReader, metadataReaderFactory) -> this.ignorePackages.stream()
+                    .map(s -> this.pathMatcher.match(s, metadataReader.getClassMetadata().getClassName()))
+                    .filter(b -> b)
+                    .findFirst()
+                    .orElse(false));
+        }
+
+        if (ignoreClasses != null) {
+            //排除的的类
+            this.ignoreClasses = ignoreClasses;
+
+            classPathScanningCandidateComponentProvider
+                    .addExcludeFilter((metadataReader, metadataReaderFactory) -> Arrays.stream(this.ignoreClasses)
+                            .filter(Objects::nonNull)
+                            .map(clazz -> metadataReader.getClassMetadata().getClassName().equals(clazz.getName()))
+                            .filter(b -> b)
+                            .findFirst()
+                            .orElse(false));
+
+        }
+
+        this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
+        this.codeGenPublisher = codeGenPublisher;
+        this.unifiedResponseExplorer = new DragonUnifiedResponseExplorer(languageParser);
+
+        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
+        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
+        classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(ControllerAdvice.class));
+        classPathScanningCandidateComponentProvider.addExcludeFilter(new AnnotationTypeFilter(RestControllerAdvice.class));
+    }
 
     @Override
     public void generate() {
         Set<Class<?>> classes = this.scanPackages();
         this.tryLoopGenerate(classes);
-        if (codeGenPublisher != null) {
-            codeGenPublisher.sendCodeGenEnd();
-            if (codeGenPublisher.supportPark()) {
-                // 最多等待10秒
-                LockSupport.parkNanos(10L * 1000 * 1000 * 1000);
-            }
-        }
+        // clear config
         CodegenConfigHolder.clear();
     }
 
+    /**
+     * 需要调用者执行 {@link CodegenConfigHolder#clear()}
+     *
+     * @param services 需要生成的接口
+     */
     public void dragonGenerate(Class<?>... services) {
         this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
     }
@@ -182,10 +206,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         for (; ; ) {
             log.warn("循环生成，第{}次", i);
             commonCodeGenClassMetas = onceGenerate(commonCodeGenClassMetas);
-            if (commonCodeGenClassMetas.size() == 0 || i > 100) {
+            if (commonCodeGenClassMetas.isEmpty() || i > MAX_CODEGEN_LOOP_COUNT) {
                 break;
             }
             i++;
+        }
+        if (codeGenPublisher != null) {
+            codeGenPublisher.sendCodeGenEnd();
+            if (codeGenPublisher.supportPark()) {
+                // 最多等待10秒
+                LockSupport.parkNanos(10L * 1000 * 1000 * 1000);
+            }
         }
     }
 
@@ -210,7 +241,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
                     //过滤掉不需要导入的依赖
                     dependencies.forEach((key, val) -> {
-                        if (val.getNeedImport() && this.hasExistMember(val)) {
+                        if (val.isNeedImport() && this.hasExistMember(val)) {
                             needImportDependencies.put(key, val);
                         }
                     });
@@ -370,10 +401,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
         dependencies.forEach((key, value) -> {
             Class<?> aClass = value.getSource();
-            if (aClass != null) {
-                if (!effectiveDependencies.contains(aClass)) {
-                    return;
-                }
+            // 排除掉无效的依赖
+            boolean isExclude = aClass != null && !effectiveDependencies.contains(aClass);
+            if (isExclude) {
+                return;
             }
             newDependencies.put(key, value);
         });
@@ -383,31 +414,5 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     public AbstractCodeGenerator otherCodegenClassMetas(Set<CommonCodeGenClassMeta> otherCodegenClassMetas) {
         this.otherCodegenClassMetas = otherCodegenClassMetas;
         return this;
-    }
-
-  public ClassPathScanningCandidateComponentProvider getClassPathScanningCandidateComponentProvider() {
-    return classPathScanningCandidateComponentProvider;
-  }
-
-  private void initClassPathScanner() {
-        if (ignoreClasses != null) {
-            classPathScanningCandidateComponentProvider
-                    .addExcludeFilter((metadataReader, metadataReaderFactory) -> Arrays.stream(this.ignoreClasses)
-                            .filter(Objects::nonNull)
-                            .map(clazz -> metadataReader.getClassMetadata().getClassName().equals(clazz.getName()))
-                            .filter(b -> b)
-                            .findFirst()
-                            .orElse(false));
-        }
-
-        if (ignorePackages != null) {
-            classPathScanningCandidateComponentProvider.addExcludeFilter((metadataReader, metadataReaderFactory) -> this.ignorePackages.stream()
-                    .map(s -> this.pathMatcher.match(s, metadataReader.getClassMetadata().getClassName()))
-                    .filter(b -> b)
-                    .findFirst()
-                    .orElse(false));
-        }
-        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
-        classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));
     }
 }

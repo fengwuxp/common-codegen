@@ -13,9 +13,14 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.util.*;
 
 
+/**
+ * 用户服务（源码注释）
+ * @author wuxp
+ */
 @Api("用户服务")
 @RestController
-@RequestMapping(value = "/users")     // 通过这里配置使下面的映射都在/users下，可去除
+// 通过这里配置使下面的映射都在/users下，可去除
+@RequestMapping(value = "/users")
 public class UserController {
 
   static Map<Long, User> users = Collections.synchronizedMap(new HashMap<Long, User>());
@@ -27,19 +32,27 @@ public class UserController {
   }
 
 
+  /**
+   * 获取用户列表信息
+   * @return 用户列表
+   */
   @ApiOperation(value = "获取用户列表", notes = "")
   @RequestMapping(value = {""}, method = RequestMethod.GET)
   public List<User> getUserList() {
-    List<User> r = new ArrayList<User>(users.values());
-    return r;
+    return new ArrayList<User>(users.values());
   }
 
+  /**
+   * 根据前端的提交内容创建用户
+   * @param user 需要保存的用户信息
+   * @return 用户Id
+   */
   @ApiOperation(value = "创建用户", notes = "根据User对象创建用户")
   @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
   @RequestMapping(value = "", method = RequestMethod.POST)
-  public String postUser(@RequestBody User user) {
+  public Long postUser(@RequestBody User user) {
     users.put(user.getId(), user);
-    return "success";
+    return user.getId();
   }
 
   @ApiOperation(value = "获取用户详细信息", notes = "根据url的id来获取用户详细信息")

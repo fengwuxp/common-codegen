@@ -7,6 +7,6 @@ package com.wuxp.codegen.model.mapping;
  */
 public final class JavaArrayClassTypeMark {
 
-  private JavaArrayClassTypeMark() {
-  }
+    private JavaArrayClassTypeMark() {
+    }
 }

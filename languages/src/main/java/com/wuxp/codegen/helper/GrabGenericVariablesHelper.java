@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 /**
  * 抓取字符串中的泛型变量
+ * @author wuxp
  */
 @Slf4j
 public final class GrabGenericVariablesHelper {

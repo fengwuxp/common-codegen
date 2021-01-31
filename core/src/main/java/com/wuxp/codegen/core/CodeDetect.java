@@ -8,10 +8,10 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 @FunctionalInterface
 public interface CodeDetect {
 
-  /**
-   * 检查一个类是否符合代码编写的规范
-   *
-   * @param meta
-   */
-  void detect(JavaClassMeta meta);
+    /**
+     * 检查一个类是否符合代码编写的规范
+     *
+     * @param meta
+     */
+    void detect(JavaClassMeta meta);
 }

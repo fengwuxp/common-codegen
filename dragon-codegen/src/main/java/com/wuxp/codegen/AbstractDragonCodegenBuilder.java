@@ -323,12 +323,17 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
             codeGenMatcher.addIgnorePackages(ignorePackages);
             codeGenMatchers.add(codeGenMatcher);
         }
-        this.languageEnhancedProcessors.add(IgnoreParamsByAnnotationLanguageEnhancedProcessor.of(this.ignoreParamByAnnotations));
-        if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
-            this.languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
-            if (!this.sharedVariables.containsKey("umiModel")) {
-                this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
-            }
+        List<LanguageEnhancedProcessor> languageEnhancedProcessors = this.languageEnhancedProcessors;
+        languageEnhancedProcessors.add(IgnoreParamsByAnnotationLanguageEnhancedProcessor.of(this.ignoreParamByAnnotations));
+        boolean needAddUmiRequestEnhancedProcessor = languageEnhancedProcessors.stream()
+                .noneMatch((languageEnhancedProcessor) -> UmiRequestEnhancedProcessor.class.isAssignableFrom(languageEnhancedProcessor.getClass()))
+                && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
+        if (needAddUmiRequestEnhancedProcessor) {
+            languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
+        }
+        boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
+        if (needSetUmiModel) {
+            this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
         }
     }
 

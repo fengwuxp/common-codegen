@@ -18,7 +18,9 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 
 <#if (comments?size>0)>
     <#list comments as cmment>
+      <#if cmment??>
       /// ${cmment}
+      </#if>
     </#list>
 </#if>
 @Feign
@@ -34,7 +36,9 @@ ${name}() : super() {
 <#list methodMetas as method>
 
     <#list method.comments as cmment>
-      /// ${cmment_index+1}:${cmment}
+      <#if cmment??>
+      /// <#if !(cmment?starts_with("@")||cmment?starts_with("<"))>${cmment_index+1}:</#if>${cmment}
+      </#if>
     </#list>
     <#list method.annotations as annotation>
         <#if annotation.name=='Signature'>

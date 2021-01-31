@@ -6,5 +6,5 @@ package com.wuxp.codegen.core.strategy;
 public interface ClassNameTransformer {
 
 
-  String transform(Class<?> clazz);
+    String transform(Class<?> clazz);
 }

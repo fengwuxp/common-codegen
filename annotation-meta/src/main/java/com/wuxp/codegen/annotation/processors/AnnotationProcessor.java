@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
  *
  * @author wuxp
  */
-public interface AnnotationProcessor<T extends AnnotationToString, A extends Annotation> {
+public interface AnnotationProcessor<T extends AnnotationToComment, A extends Annotation> {
 
     /**
      * 处理

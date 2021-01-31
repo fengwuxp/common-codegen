@@ -17,29 +17,29 @@ import java.util.stream.Collectors;
 public class CustomizeJavaTypeMapping implements TypeMapping<Class<?>, List<Class<?>>> {
 
 
-  private final Map<Class<?>, Class<?>[]> classMap;
+    private final Map<Class<?>, Class<?>[]> classMap;
 
-  public CustomizeJavaTypeMapping(Map<Class<?>, Class<?>[]> classMap) {
-    this.classMap = classMap;
-  }
-
-  @Override
-  public List<Class<?>> mapping(Class<?>... classes) {
-    if (classes == null || classes.length == 0) {
-      return null;
+    public CustomizeJavaTypeMapping(Map<Class<?>, Class<?>[]> classMap) {
+        this.classMap = classMap;
     }
 
-    return Arrays.stream(classes)
-        .map(clazz -> {
-          Class<?>[] list = this.classMap.get(clazz);
-          if (list == null) {
-            return new Class<?>[]{clazz};
-          }
-          return list;
-        })
-        .flatMap(Arrays::stream)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+    @Override
+    public List<Class<?>> mapping(Class<?>... classes) {
+        if (classes == null || classes.length == 0) {
+            return null;
+        }
 
-  }
+        return Arrays.stream(classes)
+                .map(clazz -> {
+                    Class<?>[] list = this.classMap.get(clazz);
+                    if (list == null) {
+                        return new Class<?>[]{clazz};
+                    }
+                    return list;
+                })
+                .flatMap(Arrays::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+    }
 }

@@ -18,10 +18,10 @@ import java.lang.reflect.Parameter;
 @Accessors(chain = true)
 public class JavaParameterMeta extends JavaFieldMeta {
 
-  /**
-   * parameter
-   */
-  private Parameter parameter;
+    /**
+     * parameter
+     */
+    private Parameter parameter;
 
 
 }

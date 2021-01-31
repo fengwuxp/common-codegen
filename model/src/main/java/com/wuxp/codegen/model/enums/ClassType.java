@@ -7,23 +7,23 @@ package com.wuxp.codegen.model.enums;
  */
 public enum ClassType {
 
-  /**
-   * 类
-   */
-  CLASS,
+    /**
+     * 类
+     */
+    CLASS,
 
-  /**
-   * 枚举
-   */
-  ENUM,
+    /**
+     * 枚举
+     */
+    ENUM,
 
-  /**
-   * 接口
-   */
-  INTERFACE,
+    /**
+     * 接口
+     */
+    INTERFACE,
 
-  /**
-   * 注解
-   */
-  ANNOTATION;
+    /**
+     * 注解
+     */
+    ANNOTATION;
 }

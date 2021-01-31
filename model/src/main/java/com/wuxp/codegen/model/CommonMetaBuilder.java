@@ -7,5 +7,5 @@ package com.wuxp.codegen.model;
  */
 public interface CommonMetaBuilder<T> {
 
-  T build();
+    T build();
 }

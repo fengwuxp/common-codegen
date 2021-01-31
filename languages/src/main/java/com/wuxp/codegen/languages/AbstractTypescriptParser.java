@@ -143,6 +143,19 @@ public abstract class AbstractTypescriptParser extends
     }
 
     @Override
+    protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
+        if (javaFieldMeta == null) {
+            return;
+        }
+        Class<?>[] types = javaFieldMeta.getTypes();
+        boolean isEnumField = types != null && types.length > 0 && types[0].isEnum();
+        if (isEnumField) {
+            // 设置为字符串
+            fieldMeta.setFiledTypes(new CommonCodeGenClassMeta[]{TypescriptClassMeta.STRING});
+        }
+    }
+
+    @Override
     protected void enhancedProcessingClass(TypescriptClassMeta methodMeta, JavaClassMeta classMeta) {
 
     }

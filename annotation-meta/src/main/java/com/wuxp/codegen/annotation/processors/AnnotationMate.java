@@ -15,7 +15,7 @@ import java.lang.reflect.Parameter;
  *
  * @author wuxp
  */
-public interface AnnotationMate extends AnnotationToString, Annotation {
+public interface AnnotationMate extends AnnotationToComment, Annotation {
 
 
     /**

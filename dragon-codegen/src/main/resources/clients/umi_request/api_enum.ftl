@@ -12,8 +12,14 @@
   export class ${name}{
 
   constructor() {}
-
     <#list fieldMetas as field>
+      <#if (field.comments?size>0)>
+        /**
+        <#list field.comments as cmment>
+          *${cmment}
+        </#list>
+        **/
+      </#if>
       public static readonly ${field.name}:Enum={
       name:"${field.name}",
       ordinal:${field_index},
@@ -32,6 +38,13 @@
   export enum ${name}{
     <#assign len=fieldMetas?size/>
     <#list fieldMetas as field>
+      <#if (field.comments?size>0)>
+        /**
+        <#list field.comments as cmment>
+          *${(cmment)!}
+        </#list>
+        **/
+      </#if>
         ${field.name}='${field.name}'<#if field_index<len-1>,</#if>
     </#list>
   }

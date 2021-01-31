@@ -12,36 +12,36 @@ import lombok.Getter;
 @Getter
 public enum LanguageDescription {
 
-  /**
-   * typescript
-   */
-  TYPESCRIPT("typescript", "ts"),
+    /**
+     * typescript
+     */
+    TYPESCRIPT("typescript", "ts"),
 
-  /**
-   * dart
-   */
-  DART("dart", "dart"),
+    /**
+     * dart
+     */
+    DART("dart", "dart"),
 
-  /**
-   * java
-   */
-  JAVA("java", "java"),
+    /**
+     * java
+     */
+    JAVA("java", "java"),
 
-  /**
-   * android
-   */
-  JAVA_ANDROID("java", "java"),
-  ;
+    /**
+     * android
+     */
+    JAVA_ANDROID("java", "java"),
+    ;
 
-  /**
-   * 名称
-   */
-  private final String name;
+    /**
+     * 名称
+     */
+    private final String name;
 
-  /**
-   * 文件后缀名称
-   */
-  private final String suffixName;
+    /**
+     * 文件后缀名称
+     */
+    private final String suffixName;
 
 
 }

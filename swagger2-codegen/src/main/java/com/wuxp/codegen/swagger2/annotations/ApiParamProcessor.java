@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
@@ -30,15 +31,15 @@ public class ApiParamProcessor extends AbstractAnnotationProcessor<ApiParam, Api
 
 
         @Override
-        public String toComment(Object annotationOwner) {
+        public String toComment(AnnotatedElement element) {
             String defaultValue = defaultValue();
-            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(annotationOwner);
+            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(element);
             if (requestParam.isPresent() && !StringUtils.hasText(defaultValue)) {
                 defaultValue = getRequestAnnotationDesc(defaultValue);
             }
             String name = name();
-            if (annotationOwner instanceof Parameter) {
-                name = getParameterName((Parameter) annotationOwner, name);
+            if (element instanceof Parameter) {
+                name = getParameterName((Parameter) element, name);
             }
             return String.format("属性名称：%s，属性说明：%s，默认值：%s，示例输入：%s", name, value(), defaultValue, this.example());
         }
