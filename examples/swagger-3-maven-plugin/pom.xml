@@ -31,7 +31,6 @@
         <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
-            <version>4.8.59</version>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
@@ -53,7 +52,7 @@
                 <artifactId>wuxp-codegen-dragon-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
             </plugin>
         </plugins>

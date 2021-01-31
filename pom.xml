@@ -37,7 +37,7 @@
     </modules>
 
     <properties>
-        <revision>1.1.0-SNAPSHOT</revision>
+        <revision>1.1.1-SNAPSHOT</revision>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jdk.version>${maven.compiler.target}</jdk.version>
@@ -50,8 +50,9 @@
         <maven-source-plugin.attach>false</maven-source-plugin.attach>
 
         <spring.version>5.2.4.RELEASE</spring.version>
-        <swagger2.version>2.9.2</swagger2.version>
-        <springdoc.version>1.2.21</springdoc.version>
+        <swagger2.version>3.0.0</swagger2.version>
+        <swagger3.version>2.1.6</swagger3.version>
+        <springdoc.version>1.5.3</springdoc.version>
         <javaparser.version>3.18.0</javaparser.version>
     </properties>
 
@@ -67,6 +68,23 @@
                 <artifactId>javaparser-core</artifactId>
                 <version>${javaparser.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>4.8.59</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.54</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger3.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -75,21 +93,18 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.28</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
             <scope>provided</scope>
         </dependency>
 
@@ -97,7 +112,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
             <scope>provided</scope>
         </dependency>
 
@@ -136,8 +150,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.54</version>
-            <scope>provided</scope>
         </dependency>
 
 
@@ -145,7 +157,6 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
             <scope>provided</scope>
         </dependency>
 

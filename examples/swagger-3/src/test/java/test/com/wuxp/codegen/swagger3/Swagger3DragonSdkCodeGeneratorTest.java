@@ -3,10 +3,10 @@ package test.com.wuxp.codegen.swagger3;
 import com.wuxp.codegen.starter.DragonSdkCodeGenerator;
 import org.junit.jupiter.api.Test;
 
-public class Swagger3DragonSdkCodeGeneratorTest {
+class Swagger3DragonSdkCodeGeneratorTest {
 
     @Test
-    public void testCodegen() {
+    void testCodegen() {
 
         DragonSdkCodeGenerator dragonSdkCodegenerator = new DragonSdkCodeGenerator("com.wuxp.codegen.swagger3.**.controller");
 

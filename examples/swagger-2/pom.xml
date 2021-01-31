@@ -10,6 +10,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>wuxp-codegen-examples-swagger-2</artifactId>
+    <properties>
+        <io.swagger2.models.version>1.6.2</io.swagger2.models.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -27,7 +30,7 @@
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-models</artifactId>
-            <version>1.5.21</version>
+            <version>${io.swagger2.models.version}</version>
         </dependency>
 
         <dependency>

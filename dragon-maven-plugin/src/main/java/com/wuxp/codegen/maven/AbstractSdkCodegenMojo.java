@@ -117,6 +117,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         if (skip || !hasSourceChanges()) {
             // Only run if something has changed in the source directories. This will
             // prevent m2e from entering an infinite build cycle.
+            getLog().info("skip 插件 or source code not changes");
             return;
         }
         if (onlyExecutionRoot
