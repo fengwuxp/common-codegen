@@ -2,6 +2,7 @@ package com.wuxp.codegen.annotation.processors;
 
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.dragon.AbstractCodeGenerator;
 import com.wuxp.codegen.starter.DragonSdkCodeGenerator;
 import com.wuxp.codegen.util.FileUtils;
@@ -53,7 +54,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
         for (TypeElement typeElement : annotations) {
             String className = typeElement.getQualifiedName().toString();
             try {
-                Class<? extends Annotation> entityAnnotationType = (Class<? extends Annotation>) Class.forName(className);
+                Class<? extends Annotation> entityAnnotationType = ClassLoaderUtils.loadClass(className);
                 processAnnotations(roundEnv.getElementsAnnotatedWith(entityAnnotationType), codeGenerators);
             } catch (ClassNotFoundException e) {
                 this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format("%s  can't found class %s", getClass().getSimpleName(), className));
@@ -81,7 +82,9 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
             return;
         }
         codeGenerators.forEach(codeGenerator -> {
-            ((AbstractCodeGenerator) codeGenerator).dragonGenerate(aClass);
+            if (codeGenerator instanceof AbstractCodeGenerator) {
+                ((AbstractCodeGenerator) codeGenerator).dragonGenerate(aClass);
+            }
         });
     }
 

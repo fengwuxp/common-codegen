@@ -19,6 +19,7 @@ import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.dragon.strategy.AgreedPackageMapStrategy;
+import com.wuxp.codegen.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
 import com.wuxp.codegen.languages.java.IgnoreParamsByAnnotationLanguageEnhancedProcessor;
 import com.wuxp.codegen.languages.typescript.UmiModel;
@@ -325,11 +326,13 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         }
         List<LanguageEnhancedProcessor> languageEnhancedProcessors = this.languageEnhancedProcessors;
         languageEnhancedProcessors.add(IgnoreParamsByAnnotationLanguageEnhancedProcessor.of(this.ignoreParamByAnnotations));
-        boolean needAddUmiRequestEnhancedProcessor = languageEnhancedProcessors.stream()
-                .noneMatch((languageEnhancedProcessor) -> UmiRequestEnhancedProcessor.class.isAssignableFrom(languageEnhancedProcessor.getClass()))
+        boolean needAddUmiRequestEnhancedProcessor = !this.containsLanguageEnhancedProcessorType(UmiRequestEnhancedProcessor.class)
                 && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
         if (needAddUmiRequestEnhancedProcessor) {
             languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
+        }
+        if (!this.containsLanguageEnhancedProcessorType(EnumCommentEnhancer.class)){
+            languageEnhancedProcessors.add(new EnumCommentEnhancer());
         }
         boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
         if (needSetUmiModel) {
@@ -368,5 +371,10 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
                     .factory();
             abstractLanguageParser.setLanguageTypeMapping(languageTypeMapping);
         }
+    }
+
+    private boolean containsLanguageEnhancedProcessorType(Class<? extends LanguageEnhancedProcessor> clazz){
+        return languageEnhancedProcessors.stream()
+                .anyMatch(languageEnhancedProcessor -> clazz.isAssignableFrom(languageEnhancedProcessor.getClass()));
     }
 }

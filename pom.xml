@@ -33,6 +33,7 @@
         <module>annotation-processor</module>
         <module>dragon-codegen-starter</module>
         <module>source-code-suppoert</module>
+        <module>dragon-maven-plugin</module>
     </modules>
 
     <properties>

@@ -1,0 +1,15 @@
+server:
+  port: 12345
+  servlet:
+    context-path: /example
+#spring:
+#  jackson:
+#    serialization:
+#      WRITE_DATES_AS_TIMESTAMPS: false
+#    default-property-inclusion: non_null
+#    property-naming-strategy: SNAKE_CASE
+
+#logging:
+#  level:
+#    org.springframework: debug
+#    com.wuxp: debug

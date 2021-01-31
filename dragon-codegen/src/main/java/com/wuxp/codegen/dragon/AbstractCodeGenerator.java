@@ -311,6 +311,9 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
     private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+        if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())){
+            return true;
+        }
 
         boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
 

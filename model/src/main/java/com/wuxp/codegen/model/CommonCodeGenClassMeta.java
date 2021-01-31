@@ -41,7 +41,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * type variable 类型变量
      */
-    public final static CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null, null, false,
+    public static final  CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null, null, false,
             false);
 
     /**
@@ -112,6 +112,15 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * 属性列表
      */
     protected CommonCodeGenFiledMeta[] fieldMetas;
+
+
+    /**
+     * 枚举常量列表
+     * @see #classType
+     * @see ClassType#ENUM
+     */
+    protected CommonCodeGenFiledMeta[] enumConstants;
+
 
     /**
      * 是否需要自动生成

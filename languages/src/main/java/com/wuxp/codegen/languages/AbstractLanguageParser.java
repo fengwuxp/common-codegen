@@ -704,7 +704,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         fieldInstance.setName(javaFieldMeta.getName());
         fieldInstance.setAccessPermission(javaFieldMeta.getAccessPermission());
-
+        fieldInstance.setEnumConstant(javaFieldMeta.getIsEnumConstant());
         //注释来源于注解和java的类类型
         List<String> comments;
         if (javaFieldMeta instanceof JavaParameterMeta) {
@@ -779,7 +779,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param javaFieldMeta java 字段元数据
      * @param classMeta     java类元数据
      */
-    protected abstract void enhancedProcessingField(F fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta);
+    protected  void enhancedProcessingField(F fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta){
+
+    }
 
 
     /**

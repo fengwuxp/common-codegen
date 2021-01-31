@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>swagger-3-maven-plugin</module>
         <module>swagger-2</module>
         <module>swagger-3</module>
     </modules>

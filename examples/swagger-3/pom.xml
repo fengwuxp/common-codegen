@@ -44,9 +44,6 @@
             <artifactId>wuxp-codegen-dragon-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-
     </dependencies>
-
 
 </project>

@@ -42,7 +42,7 @@ public class JavaFieldMeta extends JavaBaseMeta {
     /**
      * 是否为枚举的常量
      */
-    private Boolean isEnumConstant;
+    private Boolean isEnumConstant = false;
 
     @Override
     public boolean equals(Object o) {

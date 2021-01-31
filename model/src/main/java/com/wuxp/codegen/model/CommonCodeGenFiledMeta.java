@@ -32,6 +32,16 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
      */
     protected CommonCodeGenClassMeta[] typeVariables;
 
+    /**
+     * 是否为枚举常量
+     */
+    private boolean enumConstant = false;
+
+    /**
+     * 枚举的内部字段值
+     */
+    private String[] enumFiledValues;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -7,7 +7,9 @@ import com.wuxp.codegen.dragon.path.PathResolve;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 基于约定的包名映射策略
@@ -25,8 +27,45 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
             "model"
     );
 
+    private final Map<Class, String> CONVERT_CACHE = new HashMap<>();
+
+    private final Map<Class, String> CONVERT_CLASSNAME_CACHE = new HashMap<>();
+
     @Override
     public String convert(Class<?> clazz) {
+        return CONVERT_CACHE.computeIfAbsent(clazz, key -> innerConvert(clazz));
+    }
+
+
+    @Override
+    public String convertClassName(Class<?> clazz) {
+        return CONVERT_CLASSNAME_CACHE.computeIfAbsent(clazz, key -> {
+            boolean isServerClass = CodegenConfigHolder.getConfig().isServerClass(clazz);
+            String simpleName = clazz.getSimpleName();
+            if (isServerClass) {
+                return convertServiceClassName(simpleName, getSuffixName());
+            }
+            return simpleName;
+        });
+    }
+
+    @Override
+    public String genPackagePath(String[] uris) {
+        boolean isJava = CodegenConfigHolder.getConfig().isJava();
+        if (isJava) {
+            List<String> basePackages = CodegenConfigHolder.getConfig().getBasePackages();
+            String url = String.join(".", uris);
+            if (basePackages.size() == 1) {
+                // base package
+                String basePackage = basePackages.get(0);
+                return basePackage + "." + url;
+            }
+            return url;
+        }
+        return MessageFormat.format("/{0}", String.join("/", uris));
+    }
+
+    private String innerConvert(Class<?> clazz) {
         List<String> basePackages = CodegenConfigHolder.getConfig().getBasePackages();
         String groupId = basePackages.stream()
                 .filter(basePackage -> clazz.getName().startsWith(basePackage))
@@ -53,31 +92,6 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
         return String.format("%s%s%s%s", PathResolve.RIGHT_SLASH, path, PathResolve.RIGHT_SLASH, className);
     }
 
-    @Override
-    public String convertClassName(Class<?> clazz) {
-        boolean isServerClass = CodegenConfigHolder.getConfig().isServerClass(clazz);
-        String simpleName = clazz.getSimpleName();
-        if (isServerClass) {
-            return convertServiceClassName(simpleName, getSuffixName());
-        }
-        return simpleName;
-    }
-
-    @Override
-    public String genPackagePath(String[] uris) {
-        boolean isJava = CodegenConfigHolder.getConfig().isJava();
-        if (isJava) {
-            List<String> basePackages = CodegenConfigHolder.getConfig().getBasePackages();
-            String url = String.join(".", uris);
-            if (basePackages.size() == 1) {
-                // base package
-                String basePackage = basePackages.get(0);
-                return basePackage + "." + url;
-            }
-            return url;
-        }
-        return MessageFormat.format("/{0}", String.join("/", uris));
-    }
 
     protected String convertServiceClassName(String simpleName, String suffixName) {
         if (simpleName.endsWith("Controller")) {
