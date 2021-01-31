@@ -24,52 +24,52 @@ import java.util.Map;
 public class ExampleController {
 
 
-  @GetMapping("get_num")
-  public List<Integer> getNums(Integer num) {
+    @GetMapping("get_num")
+    public List<Integer> getNums(Integer num) {
 
-    return Arrays.asList(num, num + 1);
-  }
+        return Arrays.asList(num, num + 1);
+    }
 
-  @GetMapping("get_maps")
-  public List<Map<Integer, String>> getMaps(Integer num) {
+    @GetMapping("get_maps")
+    public List<Map<Integer, String>> getMaps(Integer num) {
 
-    Map<Integer, String> map = new HashMap<>();
-    map.put(num, "num");
-    return Arrays.asList(map);
-  }
+        Map<Integer, String> map = new HashMap<>();
+        map.put(num, "num");
+        return Arrays.asList(map);
+    }
 
-  @GetMapping("get_map")
-  public Map<String, Integer> getMap() {
-    Map<String, Integer> map = new HashMap<>();
-    map.put("num", 1);
-    return map;
-  }
+    @GetMapping("get_map")
+    public Map<String, Integer> getMap() {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("num", 1);
+        return map;
+    }
 
-  @GetMapping("get_map_2")
-  public Map<String, List<Boolean>> getMap2() {
-    Map<String, List<Boolean>> map = new HashMap<>();
-    map.put("num", Arrays.asList(false, true));
-    return map;
-  }
+    @GetMapping("get_map_2")
+    public Map<String, List<Boolean>> getMap2() {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
 
-  @GetMapping("get_map_3/{test_id}")
-  public Map<String, List<Boolean>> getMap3(@PathVariable("test_id") String id) {
-    Map<String, List<Boolean>> map = new HashMap<>();
-    map.put("num", Arrays.asList(false, true));
-    return map;
-  }
+    @GetMapping("get_map_3/{test_id}")
+    public Map<String, List<Boolean>> getMap3(@PathVariable("test_id") String id) {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
 
-  @GetMapping("get_map_4/{test_id}")
-  public Map<String, List<Boolean>> getMap4(ExampleDTO dto) {
-    Map<String, List<Boolean>> map = new HashMap<>();
-    map.put("num", Arrays.asList(false, true));
-    return map;
-  }
+    @GetMapping("get_map_4/{test_id}")
+    public Map<String, List<Boolean>> getMap4(ExampleDTO dto) {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
 
-  @GetMapping("get_map_5/{test_id}")
-  public Map<String, List<Boolean>> getMap5(ExampleDto dto) {
-    Map<String, List<Boolean>> map = new HashMap<>();
-    map.put("num", Arrays.asList(false, true));
-    return map;
-  }
+    @GetMapping("get_map_5/{test_id}")
+    public Map<String, List<Boolean>> getMap5(ExampleDto dto) {
+        Map<String, List<Boolean>> map = new HashMap<>();
+        map.put("num", Arrays.asList(false, true));
+        return map;
+    }
 }

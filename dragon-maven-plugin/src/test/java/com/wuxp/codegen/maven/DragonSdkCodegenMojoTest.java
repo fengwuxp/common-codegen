@@ -17,6 +17,7 @@ class DragonSdkCodegenMojoTest {
 
         mojo.setScanPackages(new String[]{"com.wuxp.codegen.maven"});
         mojo.setMavenProject(mavenProject);
+        mojo.setOnlyExecutionRoot(false);
         mojo.execute();
     }
 }

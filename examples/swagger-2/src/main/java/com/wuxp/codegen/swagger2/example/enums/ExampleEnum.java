@@ -22,6 +22,7 @@ public enum ExampleEnum {
 
     /**
      * 女的
+     *
      * @serialField 妹纸
      */
     @ApiModelProperty("女")

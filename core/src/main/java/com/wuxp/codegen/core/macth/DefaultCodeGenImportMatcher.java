@@ -11,6 +11,10 @@ import java.util.*;
  */
 public class DefaultCodeGenImportMatcher extends AbstractCodeGenMatcher implements CodeGenImportMatcher {
 
+    private DefaultCodeGenImportMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
+        super(matchPackages, matchClasses);
+    }
+
     public static DefaultCodeGenImportMatcher of(String... onlyImportPackages) {
         return new DefaultCodeGenImportMatcher(new HashSet<>(Arrays.asList(onlyImportPackages)), Collections.emptySet());
     }
@@ -21,9 +25,5 @@ public class DefaultCodeGenImportMatcher extends AbstractCodeGenMatcher implemen
 
     public static DefaultCodeGenImportMatcher of(Collection<String> onlyImportPackages, Collection<Class> onlyImportClasses) {
         return new DefaultCodeGenImportMatcher(new HashSet<>(onlyImportPackages), new HashSet<>(onlyImportClasses));
-    }
-
-    private DefaultCodeGenImportMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
-        super(matchPackages, matchClasses);
     }
 }

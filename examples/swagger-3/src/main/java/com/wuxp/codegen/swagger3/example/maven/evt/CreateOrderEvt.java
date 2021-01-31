@@ -14,18 +14,18 @@ import java.util.Map;
 @Data
 public class CreateOrderEvt extends BaseEvt {
 
-  private static DateFormat dateFormat = new SimpleDateFormat();
+    private static DateFormat dateFormat = new SimpleDateFormat();
 
-  @Size(max = 50)
-  private String sn;
+    @Size(max = 50)
+    private String sn;
 
-  @NotNull
-  private transient Integer totalAmount;
+    @NotNull
+    private transient Integer totalAmount;
 
-  private Map<Sex, String> test;
+    private Map<Sex, String> test;
 
-  @Transient
-  public Integer getTotalAmount() {
-    return totalAmount;
-  }
+    @Transient
+    public Integer getTotalAmount() {
+        return totalAmount;
+    }
 }

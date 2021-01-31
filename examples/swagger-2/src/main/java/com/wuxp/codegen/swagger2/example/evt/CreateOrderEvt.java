@@ -13,12 +13,12 @@ import javax.validation.constraints.Size;
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CreateOrderEvt extends BaseEvt {
 
-  @ApiModelProperty(value = "订单ns", example = "test method", required = true)
-  @Size(max = 50)
-  private String sn;
+    @ApiModelProperty(value = "订单ns", example = "test method", required = true)
+    @Size(max = 50)
+    private String sn;
 
-  @ApiModelProperty("订单总价")
-  @NotNull
-  private Integer totalAmount;
+    @ApiModelProperty("订单总价")
+    @NotNull
+    private Integer totalAmount;
 
 }

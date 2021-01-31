@@ -88,30 +88,6 @@ public final class ReflectUtils {
         return typeArgumentsAsClasses;
     }
 
-    private static class MethodOffset implements Comparable<MethodOffset> {
-
-        MethodOffset(Method _method, int _offset) {
-            method = _method;
-            offset = _offset;
-        }
-
-        @Override
-        public int compareTo(MethodOffset target) {
-            return offset - target.offset;
-        }
-
-        Method method;
-        int offset;
-    }
-
-    static class ByLength implements Comparator<Method> {
-
-        @Override
-        public int compare(Method a, Method b) {
-            return b.getName().length() - a.getName().length();
-        }
-    }
-
     /**
      * Grok the bytecode to get the declared order
      */
@@ -199,6 +175,30 @@ public final class ReflectUtils {
         }
 
         return methods;
+    }
+
+    private static class MethodOffset implements Comparable<MethodOffset> {
+
+        Method method;
+        int offset;
+
+        MethodOffset(Method _method, int _offset) {
+            method = _method;
+            offset = _offset;
+        }
+
+        @Override
+        public int compareTo(MethodOffset target) {
+            return offset - target.offset;
+        }
+    }
+
+    static class ByLength implements Comparator<Method> {
+
+        @Override
+        public int compare(Method a, Method b) {
+            return b.getName().length() - a.getName().length();
+        }
     }
 
 }

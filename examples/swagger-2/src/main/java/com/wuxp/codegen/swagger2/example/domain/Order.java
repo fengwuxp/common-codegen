@@ -14,15 +14,15 @@ import java.util.Date;
 public class Order extends BaseInfo<Long> {
 
 
-  @ApiModelProperty(value = "sn", example = "order_sn_199223")
-  private String sn;
+    @ApiModelProperty(value = "sn", example = "order_sn_199223")
+    private String sn;
 
-  @ApiModelProperty(value = "下单用户")
-  private User user;
+    @ApiModelProperty(value = "下单用户")
+    private User user;
 
 
-  @ApiModelProperty("添加时间")
-  public Date getAddTime() {
-    return new Date();
-  }
+    @ApiModelProperty("添加时间")
+    public Date getAddTime() {
+        return new Date();
+    }
 }

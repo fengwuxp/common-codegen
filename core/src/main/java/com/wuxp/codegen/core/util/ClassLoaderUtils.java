@@ -9,7 +9,7 @@ public class ClassLoaderUtils {
 
 
     public static <T> Class<T> loadClass(String name) throws ClassNotFoundException {
-        return (Class<T>)Class.forName(name);
+        return (Class<T>) Class.forName(name);
     }
 
 }

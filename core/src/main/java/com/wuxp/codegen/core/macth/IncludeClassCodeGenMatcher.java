@@ -13,6 +13,10 @@ import java.util.*;
 @Slf4j
 public class IncludeClassCodeGenMatcher extends AbstractCodeGenMatcher {
 
+    private IncludeClassCodeGenMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
+        super(matchPackages, matchClasses);
+    }
+
     public static IncludeClassCodeGenMatcher of(String... includePackages) {
         return new IncludeClassCodeGenMatcher(new HashSet<>(Arrays.asList(includePackages)), Collections.emptySet());
     }
@@ -23,9 +27,5 @@ public class IncludeClassCodeGenMatcher extends AbstractCodeGenMatcher {
 
     public static IncludeClassCodeGenMatcher of(Collection<String> includePackages, Collection<Class> includeClasses) {
         return new IncludeClassCodeGenMatcher(new HashSet<>(includePackages), new HashSet<>(includeClasses));
-    }
-
-    private IncludeClassCodeGenMatcher(Set<String> matchPackages, Set<Class> matchClasses) {
-        super(matchPackages, matchClasses);
     }
 }

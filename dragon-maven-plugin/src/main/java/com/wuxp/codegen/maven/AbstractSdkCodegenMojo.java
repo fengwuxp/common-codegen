@@ -57,13 +57,13 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     /**
      * test classpath usage switch
      */
-    @Parameter(property = "test.classpath",defaultValue = "false")
+    @Parameter(property = "test.classpath", defaultValue = "false")
     private boolean testClasspath;
 
     /**
      * 插件仅在构建命令启动的模块中执行
      */
-    @Parameter(property = "only.execution.root",defaultValue = "true")
+    @Parameter(property = "only.execution.root", defaultValue = "true")
     private boolean onlyExecutionRoot = true;
 
     /**
@@ -106,7 +106,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      * 由于插件执行时在独立的依赖空间中，无法获取项目的依赖，需要额外的处理
      *
      * @see #getProjectClassLoader()
-     * @see #getProjectDependencies()
+     * @see #getProjectArtifactUrls()
      * </p>
      */
     private ClassLoader pluginProjectClassLoader;
@@ -167,33 +167,42 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
             }
         }
         // 加入项目的依赖
-        urls.addAll(this.getProjectDependencies());
+        urls.addAll(this.getProjectArtifactUrls());
 
         ClassLoader classLoader = getClass().getClassLoader();
         if (classLoader instanceof URLClassLoader) {
             getLog().info("add class loader url");
             urls.addAll(Arrays.asList(((URLClassLoader) classLoader).getURLs()));
-//            installDependeciesToClassLoader(urls, classLoader);
+            if (false) {
+                // never enable，is only example usage
+                addProjectArtifactUrlToMainClassLoader(urls, classLoader);
+            }
         }
         return new URLClassLoader(urls.toArray(new URL[0]), null);
     }
 
-    private void installDependeciesToClassLoader(List<URL> urls, ClassLoader classLoader) {
-        Method addURL = null;
+    /**
+     * 将项目的依赖加入到插件的 classLoader中
+     *
+     * @param urls        依赖的jar路径
+     * @param classLoader 插件的classLoader
+     * @implNote 这个是一个危险的动作，肯能会引起jar版本冲突等问题 慎用！！！
+     */
+    private void addProjectArtifactUrlToMainClassLoader(List<URL> urls, ClassLoader classLoader) {
+        Method addUrlMethod;
         try {
-            addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            getLog().warn("get URLClassLoader addURL method fail");
+            return;
         }
-        if (addURL != null) {
-            AccessibleObject.setAccessible(new AccessibleObject[]{addURL}, true);
-            try {
-                for (URL url : urls) {
-                    addURL.invoke(classLoader, url);
-                }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+        AccessibleObject.setAccessible(new AccessibleObject[]{addUrlMethod}, true);
+        try {
+            for (URL url : urls) {
+                addUrlMethod.invoke(classLoader, url);
             }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            getLog().warn("add project artifact url to main classLoader fail,message:" + e.getMessage());
         }
     }
 
@@ -224,7 +233,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      *
      * @see #pluginProjectClassLoader
      */
-    private List<URL> getProjectDependencies() {
+    private List<URL> getProjectArtifactUrls() {
         List<URL> urls = new ArrayList<>(64);
         Map<String, Artifact> artifacts = new LinkedHashMap<>();
         for (Artifact artifact : mavenProject.getArtifacts()) {

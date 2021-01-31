@@ -10,9 +10,6 @@ import java.lang.annotation.Annotation;
  */
 public final class SpringAnnotationClassConstant {
 
-    private SpringAnnotationClassConstant() {
-    }
-
     public static final Class<? extends Annotation>[] SPRING_MAPPING_ANNOTATIONS = new Class[]{
             RequestMapping.class,
             PostMapping.class,
@@ -21,9 +18,11 @@ public final class SpringAnnotationClassConstant {
             PutMapping.class,
             PatchMapping.class,
     };
-
     public static final Class<? extends Annotation>[] SPRING_CONTROLLER_ANNOTATIONS = new Class[]{
             Controller.class,
             RestController.class
     };
+
+    private SpringAnnotationClassConstant() {
+    }
 }

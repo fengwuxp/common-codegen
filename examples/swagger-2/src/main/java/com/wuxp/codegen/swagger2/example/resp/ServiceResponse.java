@@ -8,12 +8,12 @@ import lombok.Data;
 @Data
 public class ServiceResponse<T> {
 
-  @ApiModelProperty("响应数据消息")
-  String message;
+    @ApiModelProperty("响应数据消息")
+    String message;
 
-  @ApiModelProperty("响应数据code")
-  Integer code;
+    @ApiModelProperty("响应数据code")
+    Integer code;
 
-  @ApiModelProperty("响应数据")
-  T data;
+    @ApiModelProperty("响应数据")
+    T data;
 }

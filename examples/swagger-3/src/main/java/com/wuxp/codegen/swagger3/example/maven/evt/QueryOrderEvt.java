@@ -12,13 +12,13 @@ import javax.validation.constraints.Size;
 @Data
 public class QueryOrderEvt extends BaseQueryEvt {
 
-  @Size(max = 50)
-  @Schema(hidden = true)
-  private String sn;
+    @Size(max = 50)
+    @Schema(hidden = true)
+    private String sn;
 
-  private int[] ids;
+    private int[] ids;
 
-  @Schema(description = "用户id", hidden = true)
-  private Long memberId;
+    @Schema(description = "用户id", hidden = true)
+    private Long memberId;
 
 }

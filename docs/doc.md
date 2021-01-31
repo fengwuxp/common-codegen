@@ -61,8 +61,10 @@
 - [ant path匹配](https://blog.csdn.net/chenqipc/article/details/53289721)
 
 ### 注释增强
-- 通过源代码增强 ，会尝试获取类的源代码文件，解析后将类上的javadoc注释生成到输出的代码上 
+
+- 通过源代码增强 ，会尝试获取类的源代码文件，解析后将类上的javadoc注释生成到输出的代码上
 - 枚举注释增强，会尝试匹配枚举类的成员变量，然后输出为注释，默认会匹配如下字段：
+
 ```jaava
     /**
      * 可能是用于描述字段名称
@@ -287,7 +289,26 @@ export interface CreateOrderEvt extends BaseEvt {
 
 可以看到程序将一部分(RequestMapping相关)java注解装换成了typescript的装饰器（注解），swagger和java.validation相关的注解转换成了对应的 注释，还有Controller这个注解就直接被忽略。
 
-##### api sdk 代码生成接入指南
+#### 使用maven插件生成
+
+- 在期望生成sdk的模块加上如下依赖，默认情况下为了不影响打包，请在idea的右侧 maven plugins找到该插件，双击手动执行
+
+```xml
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-dragon-maven-plugin</artifactId>
+            <version>${project.version}</version>
+        </plugin>
+    </plugins>
+</build>
+```
+
+- 例子请参考[swagger-3-maven-plugin](../examples/swagger-3-maven-plugin/)
+
+##### 使用代码接入指南
 
 - 引用依赖
 
@@ -411,17 +432,3 @@ export interface QueryOrderEvt extends BaseQueryEvt {
 
 ```
 
-#### 支持maven插件生成
-- 在期望生成sdk的模块加上如下依赖，默认情况下为了不影响打包，请在idea的右侧 maven plugins找到该插件，双击手动执行
-```xml
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.wuxp.codegen</groupId>
-                <artifactId>wuxp-codegen-dragon-maven-plugin</artifactId>
-                <version>${project.version}</version>
-            </plugin>
-        </plugins>
-    </build>
-```
-- 例子请参考[swagger-3-maven-plugin](../examples/swagger-3-maven-plugin/)

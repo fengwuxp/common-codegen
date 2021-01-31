@@ -1,6 +1,5 @@
 package test.com.wuxp.codegen.swagger2.core.parser;
 
-import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -11,7 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -97,7 +95,7 @@ public class JavaClassParserTest {
 
     @AllArgsConstructor
     @Getter
-     enum TestEnum{
+    enum TestEnum {
         A("test");
         private String desc;
 

@@ -41,7 +41,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * type variable 类型变量
      */
-    public static final  CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null, null, false,
+    public static final CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null, null, false,
             false);
 
     /**
@@ -53,84 +53,67 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * 类型参数, 泛型
      */
     protected CommonCodeGenClassMeta[] typeVariables;
-
+    /**
+     * 类类型
+     */
+    protected ClassType classType;
+    /**
+     * 是否为抽象的
+     */
+    protected Boolean isAbstract;
+    /**
+     * 超类
+     */
+    protected CommonCodeGenClassMeta superClass;
+    /**
+     * 实现的接口
+     */
+    protected CommonCodeGenClassMeta[] interfaces;
+    /**
+     * 注解
+     */
+    protected CommonCodeGenAnnotation[] annotations;
+    /**
+     * 包所在路径
+     */
+    protected String packagePath;
+    /**
+     * 依赖
+     */
+    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new LinkedHashMap<>();
+    /**
+     * 在有泛型时候的描述 例如 Set<T>,Map<K,V> 等
+     */
+    protected String genericDescription;
+    /**
+     * 方法列表
+     */
+    protected CommonCodeGenMethodMeta[] methodMetas;
+    /**
+     * 属性列表
+     */
+    protected CommonCodeGenFiledMeta[] fieldMetas;
+    /**
+     * 枚举常量列表
+     *
+     * @see #classType
+     * @see ClassType#ENUM
+     */
+    protected CommonCodeGenFiledMeta[] enumConstants;
+    /**
+     * 是否需要自动生成
+     */
+    protected Boolean needGenerate = true;
+    /**
+     * 是否需要导入的依赖
+     */
+    protected Boolean needImport = true;
     /**
      * 属性类型 如果有泛型则有多个
      *
      * @key 类型，父类，接口，本身
      */
     private Map<String, ? extends CommonCodeGenClassMeta[]> superTypeVariables;
-
-    /**
-     * 类类型
-     */
-    protected ClassType classType;
-
-    /**
-     * 是否为抽象的
-     */
-    protected Boolean isAbstract;
-
-    /**
-     * 超类
-     */
-    protected CommonCodeGenClassMeta superClass;
-
-    /**
-     * 实现的接口
-     */
-    protected CommonCodeGenClassMeta[] interfaces;
-
-    /**
-     * 注解
-     */
-    protected CommonCodeGenAnnotation[] annotations;
-
-    /**
-     * 包所在路径
-     */
-    protected String packagePath;
-
-    /**
-     * 依赖
-     */
-    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new LinkedHashMap<>();
-
-    /**
-     * 在有泛型时候的描述 例如 Set<T>,Map<K,V> 等
-     */
-    protected String genericDescription;
-
-
-    /**
-     * 方法列表
-     */
-    protected CommonCodeGenMethodMeta[] methodMetas;
-
-
-    /**
-     * 属性列表
-     */
-    protected CommonCodeGenFiledMeta[] fieldMetas;
-
-
-    /**
-     * 枚举常量列表
-     * @see #classType
-     * @see ClassType#ENUM
-     */
-    protected CommonCodeGenFiledMeta[] enumConstants;
-
-
-    /**
-     * 是否需要自动生成
-     */
-    protected Boolean needGenerate = true;
-
-    /**
-     * 是否需要导入的依赖
-     */
-    protected Boolean needImport = true;
 
     public CommonCodeGenClassMeta() {
     }
@@ -225,7 +208,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     }
 
     @Transient
-    public boolean isNeedImport(){
+    public boolean isNeedImport() {
         return Boolean.TRUE.equals(this.needImport);
     }
 }

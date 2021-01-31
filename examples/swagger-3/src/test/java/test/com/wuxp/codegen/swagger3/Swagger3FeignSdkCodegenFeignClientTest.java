@@ -25,47 +25,47 @@ import java.util.Map;
 public class Swagger3FeignSdkCodegenFeignClientTest {
 
 
-  @Test
-  public void testCodeGenFeignClientByStater() {
+    @Test
+    public void testCodeGenFeignClientByStater() {
 
-    //包名映射关系
-    Map<String, String> packageMap = new LinkedHashMap<>();
+        //包名映射关系
+        Map<String, String> packageMap = new LinkedHashMap<>();
 
-    //控制器的包所在
-    packageMap.put("com.wuxp.codegen.swagger3.example.controller", "com.wuxp.codegen.swagger3.clients");
-    //其他类（DTO、VO等）所在的包
-    String basePackageName = "com.wuxp.codegen.swagger3";
-    packageMap.put("com.wuxp.codegen.swagger3.example", basePackageName);
+        //控制器的包所在
+        packageMap.put("com.wuxp.codegen.swagger3.example.controller", "com.wuxp.codegen.swagger3.clients");
+        //其他类（DTO、VO等）所在的包
+        String basePackageName = "com.wuxp.codegen.swagger3";
+        packageMap.put("com.wuxp.codegen.swagger3.example", basePackageName);
 
-    String language = LanguageDescription.JAVA.getName();
-    String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.SPRING_CLOUD_OPENFEIGN.name().toLowerCase(),
-        "swagger3", "src"};
+        String language = LanguageDescription.JAVA.getName();
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.SPRING_CLOUD_OPENFEIGN.name().toLowerCase(),
+                "swagger3", "src"};
 
-    //要进行生成的源代码包名列表
-    String[] packagePaths = {"com.wuxp.codegen.swagger3.example.maven.controller"};
+        //要进行生成的源代码包名列表
+        String[] packagePaths = {"com.wuxp.codegen.swagger3.example.maven.controller"};
 
-    JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
-    packageMapStrategy.setFileNamSuffix("FeignClient");
-    CombineLanguageEnhancedProcessor languageEnhancedProcessor = CombineLanguageEnhancedProcessor.of(
-        SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
-    Swagger3FeignJavaCodegenBuilder.builder()
-        .useRxJava(true)
-        .build()
-        .languageDescription(LanguageDescription.JAVA)
-        .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-        //设置基础数据类型的映射关系
-        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-        //自定义的类型映射
-        .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
-        .packageMapStrategy(packageMapStrategy)
-        .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
-        .scanPackages(packagePaths)
-        .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
-        .isDeletedOutputDirectory(false)
-        .languageEnhancedProcessors(languageEnhancedProcessor)
-        .buildCodeGenerator()
-        .generate();
+        JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
+        packageMapStrategy.setFileNamSuffix("FeignClient");
+        CombineLanguageEnhancedProcessor languageEnhancedProcessor = CombineLanguageEnhancedProcessor.of(
+                SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
+        Swagger3FeignJavaCodegenBuilder.builder()
+                .useRxJava(true)
+                .build()
+                .languageDescription(LanguageDescription.JAVA)
+                .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
+                //设置基础数据类型的映射关系
+                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                //自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
+                .packageMapStrategy(packageMapStrategy)
+                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .scanPackages(packagePaths)
+                .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
+                .isDeletedOutputDirectory(false)
+                .languageEnhancedProcessors(languageEnhancedProcessor)
+                .buildCodeGenerator()
+                .generate();
 
-  }
+    }
 
 }

@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Swagger2ExampleApplication {
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    SpringApplication.run(Swagger2ExampleApplication.class, args);
+        SpringApplication.run(Swagger2ExampleApplication.class, args);
 
-  }
+    }
 
 }

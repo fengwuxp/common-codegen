@@ -7,9 +7,9 @@ import lombok.Data;
 public class BaseQueryEvt extends BaseEvt {
 
 
-  Integer querySize;
+    Integer querySize;
 
 
-  Integer queryPage;
+    Integer queryPage;
 
 }

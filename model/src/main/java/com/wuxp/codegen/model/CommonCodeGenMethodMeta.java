@@ -18,10 +18,13 @@ import java.util.Objects;
 public class CommonCodeGenMethodMeta extends CommonBaseMeta {
 
     /**
+     * 类型参数, 泛型
+     */
+    protected CommonCodeGenClassMeta[] typeVariables;
+    /**
      * 返回值类型 大于一个表示有泛型泛型
      */
     private CommonCodeGenClassMeta[] returnTypes;
-
     /**
      * 参数列表
      *
@@ -29,22 +32,14 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
      * @value 参数类型描述
      */
     private Map<String, CommonCodeGenClassMeta> params;
-
     /**
      * 参数上定义的注解
      */
     private Map<String, CommonCodeGenAnnotation[]> paramAnnotations;
-
     /**
      * 注解
      */
     private CommonCodeGenAnnotation[] annotations;
-
-    /**
-     * 类型参数, 泛型
-     */
-    protected CommonCodeGenClassMeta[] typeVariables;
-
 
     @Override
     public boolean equals(Object o) {

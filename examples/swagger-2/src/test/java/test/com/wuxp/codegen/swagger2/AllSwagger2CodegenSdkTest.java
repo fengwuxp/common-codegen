@@ -7,11 +7,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    Swagger2FeignSdkCodegenDartTest.class,
-    Swagger2FeignSdkCodegenFeignClientTest.class,
-    Swagger2FeignSdkCodegenRetrofitTest.class,
-    Swagger2FeignSdkCodegenTypescriptTest.class,
-    Swagger2FeignSdkCodegenUmiRequestTest.class
+        Swagger2FeignSdkCodegenDartTest.class,
+        Swagger2FeignSdkCodegenFeignClientTest.class,
+        Swagger2FeignSdkCodegenRetrofitTest.class,
+        Swagger2FeignSdkCodegenTypescriptTest.class,
+        Swagger2FeignSdkCodegenUmiRequestTest.class
 })
 public class AllSwagger2CodegenSdkTest {
 

@@ -31,83 +31,83 @@ import java.util.regex.Pattern;
 public class Swagger2FeignSdkCodegenTypescriptTest {
 
 
-  @Test
-  public void testCodeGenTypescriptApiByStater() {
+    protected PathMatcher pathMatcher = new AntPathMatcher();
 
-    //包名映射关系
-    Map<String, String> packageMap = new LinkedHashMap<>();
+    @Test
+    public void testCodeGenTypescriptApiByStater() {
 
-    //控制器的包所在
+        //包名映射关系
+        Map<String, String> packageMap = new LinkedHashMap<>();
+
+        //控制器的包所在
 //        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
-    packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");
-    packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
-    packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
-    packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
-    packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
-    //其他类（DTO、VO等）所在的包
+        packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");
+        packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
+        packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
+        packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
+        packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
+        //其他类（DTO、VO等）所在的包
 //        packageMap.put("com.wuxp.codegen.swagger2.example", "");
 
-    String language = LanguageDescription.TYPESCRIPT.getName();
-    String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.TYPESCRIPT_FEIGN.name().toLowerCase(), "swagger2",
-        "src", "api"};
+        String language = LanguageDescription.TYPESCRIPT.getName();
+        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.TYPESCRIPT_FEIGN.name().toLowerCase(), "swagger2",
+                "src", "api"};
 
-    //要进行生成的源代码包名列表
-    String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
+        //要进行生成的源代码包名列表
+        String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
 
-    Swagger2FeignTypescriptCodegenBuilder.builder()
-        .languageDescription(LanguageDescription.TYPESCRIPT)
-        .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
-        // 基础类型映射
-        .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
-        .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
-        // 自定义的类型映射
-        .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
-        .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
-        .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
-        .scanPackages(packagePaths)
-        .buildCodeGenerator()
-        .generate();
+        Swagger2FeignTypescriptCodegenBuilder.builder()
+                .languageDescription(LanguageDescription.TYPESCRIPT)
+                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                // 基础类型映射
+                .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
+                .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
+                // 自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
+                .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
+                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .scanPackages(packagePaths)
+                .buildCodeGenerator()
+                .generate();
 
-  }
+    }
 
-  protected PathMatcher pathMatcher = new AntPathMatcher();
+    @Test
+    public void testAntPathMatcher() {
+        String name = BaseController.class.getName();
+        String name1 = BaseEvt.class.getName();
 
-  @Test
-  public void testAntPathMatcher() {
-    String name = BaseController.class.getName();
-    String name1 = BaseEvt.class.getName();
+        boolean pattern = pathMatcher.isPattern("com.wuxp.codegen.swagger2.**");
+        boolean b = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name);
+        boolean b3 = pathMatcher.match("com.wuxp.codegen.swagger2.example.controller**", name);
+        String extractPathWithinPattern = pathMatcher.extractPathWithinPattern("com.wuxp.codegen.swagger2.**.controller**", name);
+        Map<String, String> map = pathMatcher.extractUriTemplateVariables("com.wuxp.codegen.swagger2.**.controller**", name);
+        Comparator<String> patternComparator = pathMatcher.getPatternComparator("com.wuxp.codegen.swagger2.**.controller**");
+        boolean b2 = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name1);
+        Assert.assertTrue(b);
+        Assert.assertFalse(b2);
 
-    boolean pattern = pathMatcher.isPattern("com.wuxp.codegen.swagger2.**");
-    boolean b = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name);
-    boolean b3 = pathMatcher.match("com.wuxp.codegen.swagger2.example.controller**", name);
-    String extractPathWithinPattern = pathMatcher.extractPathWithinPattern("com.wuxp.codegen.swagger2.**.controller**", name);
-    Map<String, String> map = pathMatcher.extractUriTemplateVariables("com.wuxp.codegen.swagger2.**.controller**", name);
-    Comparator<String> patternComparator = pathMatcher.getPatternComparator("com.wuxp.codegen.swagger2.**.controller**");
-    boolean b2 = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name1);
-    Assert.assertTrue(b);
-    Assert.assertFalse(b2);
-
-    //com.wuxp.codegen.swagger2\.+?(\w*)\.controller
-    System.out.println(name);
-    Pattern pattern1 = Pattern.compile("com.wuxp.codegen.swagger2\\.+?(.*)\\.controller");
+        //com.wuxp.codegen.swagger2\.+?(\w*)\.controller
+        System.out.println(name);
+        Pattern pattern1 = Pattern.compile("com.wuxp.codegen.swagger2\\.+?(.*)\\.controller");
 //        Pattern pattern1=Pattern.compile("com.wuxp.codegen.swagger2\\.+?(.*)\\.controller");
 //        Pattern pattern1=Pattern.compile("com.wuxp.codegen.swagger2\\.+?(\\w*)\\.controller\\w*");
 //        Pattern pattern1=Pattern.compile("com.wuxp.codegen.swagger2.(\\w*?).controller");
 
-    Matcher matcher = pattern1.matcher(name);
-    System.out.println(matcher.groupCount());
-    while (matcher.find()) {
-      String group = matcher.group();
-      System.out.println(group);
-    }
+        Matcher matcher = pattern1.matcher(name);
+        System.out.println(matcher.groupCount());
+        while (matcher.find()) {
+            String group = matcher.group();
+            System.out.println(group);
+        }
 //        String[] split = pattern1.split(name);
 //        System.out.println(split);
 
-    String[] strings = "com.wuxp.codegen.swagger2.**.controller**".split("\\*\\*");
+        String[] strings = "com.wuxp.codegen.swagger2.**.controller**".split("\\*\\*");
 
-    String s = name.replaceAll(strings[0], "");
-    s = s.substring(0, s.indexOf(strings[1]));
-    System.out.println(s);
+        String s = name.replaceAll(strings[0], "");
+        s = s.substring(0, s.indexOf(strings[1]));
+        System.out.println(s);
 
-  }
+    }
 }
