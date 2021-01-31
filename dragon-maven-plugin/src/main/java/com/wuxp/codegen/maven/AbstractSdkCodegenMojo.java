@@ -25,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 /**
  * 抽象的sdk生成，用于调用{@link  CodeGenerator#generate()}生成sdk代码
@@ -42,7 +44,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      *
      * @see #mavenProject
      */
-    @Parameter()
+    @Parameter(property = "scan.packages")
     protected String[] scanPackages;
 
 
@@ -55,8 +57,14 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     /**
      * test classpath usage switch
      */
-    @Parameter(defaultValue = "false")
+    @Parameter(property = "test.classpath",defaultValue = "false")
     private boolean testClasspath;
+
+    /**
+     * 插件仅在构建命令启动的模块中执行
+     */
+    @Parameter(property = "only.execution.root",defaultValue = "true")
+    private boolean onlyExecutionRoot = true;
 
     /**
      * Replace the absolute path to the local repo with this property. This field is ignored it prefix is declared. The
@@ -111,20 +119,34 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
             // prevent m2e from entering an infinite build cycle.
             return;
         }
+        if (onlyExecutionRoot
+                && !mavenProject.isExecutionRoot()) {
+            getLog().warn(" 插件仅仅在命令启动的模块中[" + new File("").getAbsolutePath() + "]启用 ，可以配置插件参数[onlyExecutionRoot = false]禁用.");
+            return;
+        }
         try {
             this.pluginProjectClassLoader = getProjectClassLoader();
         } catch (MalformedURLException | DependencyResolutionRequiredException e) {
             getLog().error("初始化class loader failed：" + e.getMessage());
             throw new MojoFailureException(e.getMessage(), e);
         }
-        Thread.currentThread().setContextClassLoader(this.pluginProjectClassLoader);
-        this.generate();
+
+        // 在新的线程中执行
+        Callable<Object> callable = Executors.callable(() -> {
+            Thread.currentThread().setContextClassLoader(pluginProjectClassLoader);
+            invokeCodegen();
+        });
+        try {
+            callable.call();
+        } catch (Exception e) {
+            this.getLog().error("代码生成执行失败：" + e.getMessage());
+        }
     }
 
     /**
      * invoke {@link CodeGenerator#generate()}
      */
-    protected abstract void generate();
+    protected abstract void invokeCodegen();
 
 
     protected ClassLoader getProjectClassLoader() throws DependencyResolutionRequiredException,

@@ -152,6 +152,7 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
     @Override
     protected void enhancedProcessingField(DartFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
 
+
     }
 
     @Override

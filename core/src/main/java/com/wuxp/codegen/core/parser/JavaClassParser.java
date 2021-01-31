@@ -329,14 +329,16 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     protected JavaFieldMeta getJavaFieldMeta(Field field, Class<?> owner) {
 
         String fieldName = field.getName();
-        if (owner.isEnum() && !field.isEnumConstant()) {
-            //是枚举，且非枚举常量，忽略
-            return null;
+        boolean enumConstant = field.isEnumConstant();
+        if (owner.isEnum()) {
+            // 枚举类型只保留枚举常量和枚举字段 过滤 $VALUES
+            if (!enumConstant && owner.equals(field.getType().getComponentType())) {
+                return null;
+            }
         }
 
         JavaFieldMeta fieldMeta = new JavaFieldMeta();
-        fieldMeta.setField(field)
-                .setIsEnumConstant(field.isEnumConstant());
+        fieldMeta.setField(field).setIsEnumConstant(enumConstant);
 
         int modifiers = field.getModifiers();
         //设置访问权限

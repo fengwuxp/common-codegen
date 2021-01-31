@@ -410,3 +410,18 @@ export interface QueryOrderEvt extends BaseQueryEvt {
 }
 
 ```
+
+#### 支持maven插件生成
+- 在期望生成sdk的模块加上如下依赖，默认情况下为了不影响打包，请在idea的右侧 maven plugins找到该插件，双击手动执行
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.wuxp.codegen</groupId>
+                <artifactId>wuxp-codegen-dragon-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+```
+- 例子请参考[swagger-3-maven-plugin](../examples/swagger-3-maven-plugin/)

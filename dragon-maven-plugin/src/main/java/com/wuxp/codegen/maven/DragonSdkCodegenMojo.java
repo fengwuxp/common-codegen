@@ -20,7 +20,7 @@ public class DragonSdkCodegenMojo extends AbstractSdkCodegenMojo {
     private static final String GENERATOR_CLASS_NAME = "com.wuxp.codegen.starter.DragonSdkCodeGenerator";
 
     @Override
-    protected void generate() {
+    protected void invokeCodegen() {
         Class<?> aClass = null;
 
         this.getLog().info("开始执行生成器");

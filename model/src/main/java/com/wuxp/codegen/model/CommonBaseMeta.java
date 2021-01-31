@@ -27,13 +27,19 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
     @NonNull
     protected String name;
 
-    //是否为静态
+    /**
+     * 是否为静态
+     */
     protected Boolean isStatic = false;
 
-    //是否为final
+    /**
+     * 是否为final
+     */
     protected Boolean isFinal = false;
 
-    //访问权限控制
+    /**
+     * 访问权限控制
+     */
     protected AccessPermission accessPermission = AccessPermission.PUBLIC;
 
     /**

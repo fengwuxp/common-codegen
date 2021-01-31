@@ -2,9 +2,20 @@ package com.wuxp.codegen.enums;
 
 import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
 import com.wuxp.codegen.core.CodeGenCommentEnhancer;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.LanguageDescription;
+import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.languages.java.JavaClassMeta;
+import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.ReflectUtils;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -14,7 +25,8 @@ import java.util.*;
  *
  * @author wuxp
  */
-public class EnumCommentEnhancer implements CodeGenCommentEnhancer {
+@Slf4j
+public class EnumCommentEnhancer implements CodeGenCommentEnhancer, LanguageEnhancedProcessor<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
 
     /**
      * 可能是用于描述字段名称
@@ -52,10 +64,7 @@ public class EnumCommentEnhancer implements CodeGenCommentEnhancer {
             return null;
         }
         Class<?> declaringClass = enumField.getDeclaringClass();
-        Optional<Enum> optionalEnum = Arrays.stream(declaringClass.getEnumConstants())
-                .map(enumConstant -> (Enum) enumConstant)
-                .filter(enumConstant -> enumField.getName().equals(enumConstant.name()))
-                .findFirst();
+        Optional<Enum> optionalEnum = this.getEnumConstant(enumField);
         if (!optionalEnum.isPresent()) {
             return null;
         }
@@ -78,6 +87,77 @@ public class EnumCommentEnhancer implements CodeGenCommentEnhancer {
                 .filter(comment -> !anEnum.name().equals(comment))
                 .map(Object::toString)
                 .findFirst()
-                .orElseGet(()-> sourceCodeCommentEnhancer.toComment(enumField));
+                .orElseGet(() -> sourceCodeCommentEnhancer.toComment(enumField));
+    }
+
+
+    @Override
+    public CommonCodeGenClassMeta enhancedProcessingClass(CommonCodeGenClassMeta classMeta, JavaClassMeta javaClassMeta) {
+        Class<?> clazz = javaClassMeta.getClazz();
+        if (!clazz.isEnum()) {
+            return classMeta;
+        }
+        CommonCodeGenFiledMeta[] enumConstants = Arrays.stream(classMeta.getFieldMetas())
+                .filter(CommonCodeGenFiledMeta::isEnumConstant)
+                .toArray(CommonCodeGenFiledMeta[]::new);
+        CommonCodeGenFiledMeta[] fieldMetas = Arrays.stream(classMeta.getFieldMetas())
+                .filter(commonCodeGenFiledMeta -> !commonCodeGenFiledMeta.isEnumConstant())
+                .toArray(CommonCodeGenFiledMeta[]::new);
+
+        classMeta.setEnumConstants(enumConstants);
+        classMeta.setFieldMetas(fieldMetas);
+        return classMeta;
+    }
+
+    @Override
+    public CommonCodeGenFiledMeta enhancedProcessingField(CommonCodeGenFiledMeta fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
+
+//        LanguageDescription languageDescription = CodegenConfigHolder.getConfig().getLanguageDescription();
+//        if (LanguageDescription.DART.equals(languageDescription) || LanguageDescription.TYPESCRIPT.equals(languageDescription)) {
+//            if (ClassType.ENUM.equals(classMeta.getClassType()) && !Boolean.TRUE.equals(javaFieldMeta.getIsEnumConstant())) {
+//                return null;
+//            }
+//        }
+        Class<?> clazz = classMeta.getClazz();
+        if (!clazz.isEnum()) {
+            return fieldMeta;
+        }
+        if (!javaFieldMeta.getField().isEnumConstant()) {
+            return fieldMeta;
+        }
+        Optional<Enum> optionalEnum = getEnumConstant(javaFieldMeta.getField());
+        if (!optionalEnum.isPresent()) {
+            return null;
+        }
+        Enum anEnum = optionalEnum.get();
+        String[] values = Arrays.stream(classMeta.getFieldMetas())
+                .filter(field -> !field.getIsEnumConstant())
+                .map(field -> {
+                    Field enumField = field.getField();
+                    AccessibleObject.setAccessible(new AccessibleObject[]{enumField}, true);
+                    try {
+                        Object value = enumField.get(anEnum);
+                        if (value instanceof String) {
+                            return String.format("\"%s\"", value);
+                        }
+                        return value.toString();
+                    } catch (IllegalAccessException e) {
+                        if (log.isInfoEnabled()) {
+                            log.info("获取枚举字段值失败：{}", enumField);
+                        }
+                    }
+                    return null;
+                })
+                .toArray(String[]::new);
+        fieldMeta.setEnumFiledValues(values);
+        return fieldMeta;
+    }
+
+    private Optional<Enum> getEnumConstant(Field enumField) {
+        Class<?> declaringClass = enumField.getDeclaringClass();
+        return Arrays.stream(declaringClass.getEnumConstants())
+                .map(enumConstant -> (Enum) enumConstant)
+                .filter(enumConstant -> enumField.getName().equals(enumConstant.name()))
+                .findFirst();
     }
 }

@@ -1,13 +1,17 @@
 package test.com.wuxp.codegen.swagger2.core.parser;
 
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -21,7 +25,7 @@ import java.util.List;
 public class JavaClassParserTest {
 
 
-    protected GenericParser<JavaClassMeta, Class<?>> genericParser = new JavaClassParser(true);
+    protected GenericParser<JavaClassMeta, Class<?>> genericParser = new JavaClassParser(false);
 
     @Before
     public void before() throws Exception {
@@ -36,8 +40,10 @@ public class JavaClassParserTest {
      */
     @Test
     public void testParse() throws Exception {
-        JavaClassMeta classMeta = genericParser.parse(TestJavaClassParserSimple.class);
-        System.out.println(classMeta);
+//        JavaClassMeta classMeta = genericParser.parse(TestJavaClassParserSimple.class);
+//        System.out.println(classMeta);
+        JavaClassMeta enumMeta = genericParser.parse(TestEnum.class);
+        System.out.println(enumMeta);
     }
 
     /**
@@ -89,6 +95,14 @@ public class JavaClassParserTest {
     }
 
 
+    @AllArgsConstructor
+    @Getter
+     enum TestEnum{
+        A("test");
+        private String desc;
+
+
+    }
 }
 
 class TestJavaClassParserSimple {

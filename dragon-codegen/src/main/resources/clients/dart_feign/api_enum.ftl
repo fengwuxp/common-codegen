@@ -14,13 +14,16 @@ class ${name} extends EnumClass  {
 
 
 static Serializer<${name}> get serializer => _${"$"}${name?uncap_first}Serializer;
-
-<#list fieldMetas as field>
-    <#list field.comments as cmment>
-      /// ${cmment}
-    </#list>
-  static const ${name} ${field.name} = _${"$"}${field.name};
+<#assign enumConstantsHasLength=(enumConstants?size>0)/>
+<#if enumConstantsHasLength>
+<#list enumConstants as field>
+<#list field.comments as cmment>
+/// ${cmment}
 </#list>
+static const ${name} ${field.name} = _${"$"}${field.name};
+</#list>
+</#if>
+
 
 const ${name}._(String name):super(name);
 
