@@ -7,10 +7,7 @@ import com.wuxp.codegen.annotation.processors.javax.PatternProcessor;
 import com.wuxp.codegen.annotation.processors.javax.SizeProcessor;
 import com.wuxp.codegen.annotation.processors.spring.*;
 import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
-import com.wuxp.codegen.core.CodeDetect;
-import com.wuxp.codegen.core.CodeGenCommentEnhancer;
-import com.wuxp.codegen.core.CodeGenImportMatcher;
-import com.wuxp.codegen.core.CodeGenMatcher;
+import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
@@ -67,7 +64,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         M extends CommonCodeGenMethodMeta,
-        F extends CommonCodeGenFiledMeta> implements LanguageParser<C>, MatchApiServiceClass {
+        F extends CommonCodeGenFiledMeta> implements LanguageParser<C>, ApiServiceClassMatcher {
 
     /**
      * annotationProcessorMap
@@ -257,7 +254,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         // 加入对spring的特别处理
         SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
-        boolean isApiServiceClass = this.isApiServiceClass(javaClassMeta);
+        boolean isApiServiceClass = this.matches(javaClassMeta);
         if (isApiServiceClass) {
             // 要生成的服务，判断是否需要生成
             if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
@@ -444,10 +441,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toList()));
     }
 
-    @Override
-    public boolean isApiServiceClass(JavaClassMeta javaClassMeta) {
-        return javaClassMeta.existAnnotation(CodegenConfigHolder.getConfig().getApiMarkedAnnotations().toArray(new Class[0]));
-    }
 
     /**
      * 是否匹配生成的规则
