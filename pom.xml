@@ -90,6 +90,7 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -238,6 +239,7 @@
         </developer>
     </developers>
 
+
     <build>
 
         <plugins>
@@ -307,6 +309,7 @@
                     <!--    是否更新pom文件 -->
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

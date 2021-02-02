@@ -1,8 +1,10 @@
 package com.wuxp.codegen.maven;
 
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -41,6 +43,16 @@ public class DragonSdkCodegenMojo extends AbstractSdkCodegenMojo {
                 Array.set(args, i, this.scanPackages[i]);
             }
             newInstance = classConstructor.newInstance(args);
+
+            //默认输出路径
+            if (!StringUtils.hasText(outPath) && mavenProject.getBuild() != null) {
+                outPath = mavenProject.getBuild().getOutputDirectory();
+            }
+
+            if (StringUtils.hasText(outPath)) {
+                newInstance.getClass().getMethod("setOutPath", String.class).invoke(newInstance, mavenProject.getBuild().getOutputDirectory());
+            }
+
         } catch (Exception exception) {
             this.getLog().error("获取生成方法失败 " + exception.getMessage() + " exception " + exception.getClass().getName());
             return;

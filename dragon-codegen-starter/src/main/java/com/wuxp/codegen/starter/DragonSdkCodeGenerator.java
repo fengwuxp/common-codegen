@@ -12,6 +12,7 @@ import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -32,6 +33,13 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
     private final String[] scanPackages;
 
     private final OpenApiType openApiType;
+
+    /**
+     * 默认输出路径为当前文件夹
+     */
+    @Setter
+    private String outPath = ".";
+
 
     public DragonSdkCodeGenerator() {
         this(OpenApiTypeExplorer.getDefaultOpenApiType(), new String[0]);
@@ -169,16 +177,24 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
         return codeGenerators;
     }
 
+
     private String getOuPath(ClientProviderType type) {
 
-        List<String> outPaths = new ArrayList<>(DEFAULT_OUT_PATHS);
+        List<String> outPaths = new LinkedList<>(DEFAULT_OUT_PATHS);
+
         outPaths.add(openApiType.name().toLowerCase());
+
         outPaths.add(type.name().toLowerCase());
         if (ClientProviderType.DART_FEIGN.equals(type)) {
             outPaths.add("lib");
         }
+
         outPaths.add("src");
-        return Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString();
+
+        //输出路径加入第一个
+        outPaths.add(0, outPath);
+
+        return String.join(File.separator, outPaths);
     }
 
     public static String getBaseOutPath() {

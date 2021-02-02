@@ -49,6 +49,13 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
 
 
     /**
+     * 代码生成输出路径
+     */
+    @Parameter(defaultValue = "${project.build.directory}")
+    protected String outPath;
+
+
+    /**
      * Whether to skip the exporting execution
      */
     @Parameter(defaultValue = "false")
@@ -258,12 +265,10 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
 
 
     protected String[] getScanPackages() {
-        String[] packages = this.scanPackages;
-        if (packages == null || packages.length == 0) {
-            packages = new String[]{mavenProject.getGroupId()};
-            this.scanPackages = packages;
+        if (scanPackages == null || scanPackages.length == 0) {
+            scanPackages = new String[]{mavenProject.getGroupId()};
         }
-        return packages;
+        return scanPackages;
     }
 
     public ClassLoader getPluginProjectClassLoader() {
