@@ -36,6 +36,7 @@ public class DragonSdkCodegenMojo extends AbstractSdkCodegenMojo {
         Object newInstance = null;
         try {
             generateMethod = aClass.getMethod("generate");
+
             String[] scanPackages = this.getScanPackages();
             Object args = Array.newInstance(String.class, scanPackages.length);
             Constructor<?> classConstructor = aClass.getConstructor(args.getClass());
@@ -50,17 +51,18 @@ public class DragonSdkCodegenMojo extends AbstractSdkCodegenMojo {
             }
 
             if (StringUtils.hasText(outPath)) {
-                newInstance.getClass().getMethod("setOutPath", String.class).invoke(newInstance, mavenProject.getBuild().getOutputDirectory());
+                newInstance.getClass().getMethod("setOutPath", String.class).invoke(newInstance, mavenProject.getBuild().getDirectory());
             }
 
         } catch (Exception exception) {
-            this.getLog().error("获取生成方法失败 " + exception.getMessage() + " exception " + exception.getClass().getName());
+            this.getLog().error("获取生成方法失败 " + exception.getMessage() + " exception " + exception.getClass().getName(),exception);
             return;
         }
+
         try {
             generateMethod.invoke(newInstance);
         } catch (Exception exception) {
-            this.getLog().error("代码生成生成执行失败 " + exception.getMessage());
+            this.getLog().error("代码生成生成执行失败 " + exception.getMessage(),exception);
         }
     }
 }
