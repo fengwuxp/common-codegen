@@ -57,10 +57,9 @@ public final class SpringControllerFilterUtils {
 
         classMeta.setMethodMetas(getStringJavaMethodMetaMap(methodMetas)
                 .stream()
-                .filter(javaMethodMeta -> {
-                    //过滤掉非mapping的方法
-                    return findSpringControllerMappingAnnotation(javaMethodMeta) != null;
-                }).toArray(JavaMethodMeta[]::new));
+                //过滤掉非mapping的方法
+                .filter(javaMethodMeta -> findSpringControllerMappingAnnotation(javaMethodMeta).isPresent())
+                .toArray(JavaMethodMeta[]::new));
     }
 
     /**
@@ -106,11 +105,11 @@ public final class SpringControllerFilterUtils {
      * @param javaMethodMeta java 方法元数据
      * @return 注解
      */
-    private static Annotation findSpringControllerMappingAnnotation(JavaMethodMeta javaMethodMeta) {
+    private static Optional<? extends Annotation> findSpringControllerMappingAnnotation(JavaMethodMeta javaMethodMeta) {
         return Arrays.stream(SPRING_MAPPING_ANNOTATIONS)
                 .map(javaMethodMeta::getAnnotation)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 }

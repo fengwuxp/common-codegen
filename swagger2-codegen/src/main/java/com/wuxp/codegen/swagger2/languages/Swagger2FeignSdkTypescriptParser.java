@@ -41,23 +41,20 @@ public class Swagger2FeignSdkTypescriptParser extends AbstractTypescriptParser {
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
         super.enhancedProcessingField(fieldMeta, javaFieldMeta, classMeta);
-        if (javaFieldMeta == null) {
+        if (javaFieldMeta == null || !Boolean.TRUE.equals(fieldMeta.getRequired())) {
             return;
         }
-        ApiModelProperty apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
-        ApiParam apiParam = javaFieldMeta.getAnnotation(ApiParam.class);
-        if (apiModelProperty == null && apiParam == null) {
-            log.warn("类{}上的属性{}没有ApiModelProperty注解", classMeta.getClassName(), javaFieldMeta.getName());
+        Optional<ApiModelProperty> apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
+        if (apiModelProperty.isPresent()) {
+            fieldMeta.setRequired(apiModelProperty.get().required());
             return;
         }
-
-        if (!Boolean.TRUE.equals(fieldMeta.getRequired())) {
-            if (apiModelProperty != null) {
-                fieldMeta.setRequired(apiModelProperty.required());
-            } else {
-                fieldMeta.setRequired(apiParam.required());
-            }
+        Optional<ApiParam> apiParam = javaFieldMeta.getAnnotation(ApiParam.class);
+        if (apiParam.isPresent()) {
+            fieldMeta.setRequired(apiParam.get().required());
+            return;
         }
+        log.warn("类{}上的属性{}没有ApiModelProperty注解", classMeta.getClassName(), javaFieldMeta.getName());
     }
 
 

@@ -11,6 +11,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 基于swagger2的生成 feign api sdk的匹配策略
@@ -40,11 +41,8 @@ public class Swagger2FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
         if (classMeta.existAnnotation(ApiIgnore.class)) {
             return false;
         }
-        Api api = classMeta.getAnnotation(Api.class);
-        if (api != null) {
-            return !api.hidden();
-        }
-        return true;
+        Optional<Api> api = classMeta.getAnnotation(Api.class);
+        return api.map(value -> !value.hidden()).orElse(true);
     }
 
     @Override
@@ -56,34 +54,27 @@ public class Swagger2FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
         if (methodMeta.existAnnotation(ApiIgnore.class)) {
             return false;
         }
-
-        ApiOperation annotation = methodMeta.getAnnotation(ApiOperation.class);
-        if (annotation != null) {
-            if (!annotation.hidden()) {
+        Optional<ApiOperation> annotation = methodMeta.getAnnotation(ApiOperation.class);
+        return annotation.map(value -> !value.hidden()).orElseGet(() -> {
+            if (this.ignoreMethods == null) {
                 return true;
             }
-        }
 
-        Map<Class<?>, String[]> ignoreMethods = this.ignoreMethods;
-        if (ignoreMethods == null) {
-            return true;
-        }
+            String[] strings = this.ignoreMethods.get(methodMeta.getOwner());
+            if (strings == null) {
+                return true;
+            }
 
-        String[] strings = this.ignoreMethods.get(methodMeta.getOwner());
-        if (strings == null) {
-            return true;
-        }
-
-        return !Arrays.asList(strings).contains(methodMeta.getName());
+            return !Arrays.asList(strings).contains(methodMeta.getName());
+        });
     }
 
     @Override
     public boolean isMatchField(JavaFieldMeta javaFieldMeta) {
-        ApiModelProperty apiModelProperty = javaFieldMeta.getAnnotation(ApiModelProperty.class);
-        if (apiModelProperty == null) {
-            return true;
-        }
-        return !apiModelProperty.hidden();
+
+        return javaFieldMeta.getAnnotation(ApiModelProperty.class)
+                .map(value -> !value.hidden())
+                .orElse(true);
     }
 
     @Override
@@ -92,22 +83,13 @@ public class Swagger2FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
         if (apiParam != null) {
             return !apiParam.hidden();
         }
-        ApiImplicitParams parameters = javaMethodMeta.getAnnotation(ApiImplicitParams.class);
-        ApiImplicitParam p = null;
-        if (parameters != null) {
-            ApiImplicitParam[] value = parameters.value();
-            if (value.length > 0) {
-                p = Arrays.stream(value)
-                        .filter(item -> item.name().equals(parameter.getName())).findFirst()
-                        .orElse(null);
-            }
-
-        } else {
-            p = javaMethodMeta.getAnnotation(ApiImplicitParam.class);
-        }
-        if (p == null) {
-            return true;
-        }
-        return !p.readOnly();
+        String parameterName = parameter.getName();
+        return javaMethodMeta.getAnnotation(ApiImplicitParams.class)
+                .map(apiImplicitParams -> Arrays.stream(apiImplicitParams.value())
+                        .filter(item -> item.name().equals(parameterName))
+                        .findFirst())
+                .orElseGet(() -> javaMethodMeta.getAnnotation(ApiImplicitParam.class))
+                .map(apiImplicitParam -> !apiImplicitParam.readOnly())
+                .orElse(true);
     }
 }

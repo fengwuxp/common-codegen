@@ -9,6 +9,7 @@ import com.wuxp.codegen.annotation.processors.spring.*;
 import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
@@ -1356,72 +1357,20 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .orElse(null);
     }
 
-//    /**
-//     * 移除无效的依赖
-//     *
-//     * @param meta
-//     */
-//    private void removeInvalidDependencies(C meta) {
-//        Set<Class<?>> effectiveDependencies = new HashSet<>();
-//        // 移除无效的依赖
-//        if (meta.getFieldMetas() != null) {
-//            CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
-//            effectiveDependencies.addAll(Arrays.stream(fieldMetas).map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getFiledTypes())
-//                    .filter(Objects::nonNull)
-//                    .map(Arrays::asList)
-//                    .flatMap(Collection::stream)
-//                    .map(CommonCodeGenClassMeta::getSource)
-//                    .filter(Objects::nonNull)
-//                    .collect(Collectors.toSet()));
-//        }
-//        if (meta.getMethodMetas() != null) {
-//            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-//                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getReturnTypes())
-//                    .filter(Objects::nonNull)
-//                    .map(Arrays::asList)
-//                    .flatMap(Collection::stream)
-//                    .map(CommonCodeGenClassMeta::getSource)
-//                    .filter(Objects::nonNull)
-//                    .collect(Collectors.toSet()));
-//            effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-//                    .map(commonCodeGenFiledMeta -> commonCodeGenFiledMeta.getParams())
-//                    .filter(Objects::nonNull)
-//                    .map(Arrays::asList)
-//                    .flatMap(Collection::stream)
-//                    .map(Map::values)
-//                    .flatMap(Collection::stream)
-//                    .map(CommonCodeGenClassMeta::getSource)
-//                    .filter(Objects::nonNull)
-//                    .collect(Collectors.toSet()));
-//        }
-//        Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
-//        Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
-//        dependencies.forEach((key, value) -> {
-//            if (value.getSource() != null) {
-//                if (!effectiveDependencies.contains(value)) {
-//                    return;
-//                }
-//            }
-//
-//            newDependencies.put(key, value);
-//        });
-//        meta.setDependencies(newDependencies);
-//    }
-
     /**
      * 检查spring mvc 控制器的方法
      *
-     * @param javaMethodMeta
-     * @param classMeta
+     * @param javaMethodMeta java方法元数据描述
+     * @param classMeta  java类元数据描述
      */
     private void checkSpringMvcMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
-        if (classMeta.getAnnotation(Controller.class) == null && classMeta.getAnnotation(RestController.class) == null) {
+        if (!classMeta.existAnnotation(Controller.class,RestController.class)) {
             return;
         }
         // 检查控制器方法是否合法
         if (!AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission())) {
             //
-            throw new RuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
+            throw new CodegenRuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
         }
         RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations())
                 .map(annotation -> {

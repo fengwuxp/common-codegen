@@ -7,11 +7,8 @@ import lombok.experimental.Accessors;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 
 /**
@@ -40,7 +37,7 @@ public class JavaBaseMeta extends CommonBaseMeta {
      * 是否有列表中的某个annotation
      *
      * @param classes 注解列表
-     * @return
+     * @return if return <code>true</code> 表示注解存在
      */
     @SafeVarargs
     public final boolean existAnnotation(Class<? extends Annotation>... classes) {
@@ -55,23 +52,23 @@ public class JavaBaseMeta extends CommonBaseMeta {
 
     private boolean existAnnotation(Class<? extends Annotation> clazz) {
 
-        return this.findAnnotation(clazz).collect(Collectors.toList()).size() > 0;
+        return this.findAnnotation(clazz).isPresent();
     }
 
-    private <T extends Annotation> Stream<T> findAnnotation(Class<T> clazz) {
+    private <T extends Annotation> Optional<T> findAnnotation(Class<T> clazz) {
 
         if (this.annotations == null) {
-            return Collections.EMPTY_LIST.stream();
+            return Optional.empty();
         }
 
         return Arrays.stream(this.annotations)
                 .filter(a -> a.annotationType().equals(clazz))
-                .map(c -> (T) c);
+                .map(c -> (T) c)
+                .findFirst();
     }
 
-    public <T extends Annotation> T getAnnotation(Class<T> clazz) {
-        List<T> collects = this.findAnnotation(clazz).collect(Collectors.toList());
-        return collects.size() > 0 ? collects.get(0) : null;
+    public <T extends Annotation> Optional<T> getAnnotation(Class<T> clazz) {
+        return this.findAnnotation(clazz);
     }
 
     @Override

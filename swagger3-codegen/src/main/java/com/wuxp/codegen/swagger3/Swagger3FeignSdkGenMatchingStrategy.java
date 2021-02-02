@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 基于swagger2的生成 feign api sdk的匹配策略
@@ -48,33 +49,27 @@ public class Swagger3FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
         if (!b) {
             return false;
         }
-        Operation operation = methodMeta.getAnnotation(Operation.class);
-        if (operation != null) {
-            if (!operation.hidden()) {
+        Optional<Operation> operation = methodMeta.getAnnotation(Operation.class);
+
+        return operation.map(value -> !value.hidden()).orElseGet(() -> {
+            if (this.ignoreMethods == null) {
                 return true;
             }
-        }
+            String[] strings = this.ignoreMethods.get(methodMeta.getOwner());
+            if (strings == null) {
+                return true;
+            }
 
-        Map<Class<?>, String[]> ignoreMethods = this.ignoreMethods;
-        if (ignoreMethods == null) {
-            return true;
-        }
+            return !Arrays.asList(strings).contains(methodMeta.getName());
+        });
 
-        String[] strings = this.ignoreMethods.get(methodMeta.getOwner());
-        if (strings == null) {
-            return true;
-        }
-
-        return !Arrays.asList(strings).contains(methodMeta.getName());
     }
 
     @Override
     public boolean isMatchField(JavaFieldMeta javaFieldMeta) {
-        Schema schema = javaFieldMeta.getAnnotation(Schema.class);
-        if (schema == null) {
-            return true;
-        }
-        return !schema.hidden();
+        return javaFieldMeta.getAnnotation(Schema.class)
+                .map(value -> !value.hidden())
+                .orElse(true);
     }
 
     @Override
@@ -83,21 +78,13 @@ public class Swagger3FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
         if (schema != null) {
             return !schema.hidden();
         }
-        Parameters parameters = javaMethodMeta.getAnnotation(Parameters.class);
-        io.swagger.v3.oas.annotations.Parameter p = null;
-        if (parameters != null) {
-            io.swagger.v3.oas.annotations.Parameter[] value = parameters.value();
-            if (value.length > 0) {
-                p = Arrays.stream(value)
-                        .filter(item -> item.name().equals(parameter.getName())).findFirst()
-                        .orElse(null);
-            }
-        } else {
-            p = javaMethodMeta.getAnnotation(io.swagger.v3.oas.annotations.Parameter.class);
-        }
-        if (p == null) {
-            return true;
-        }
-        return !p.hidden();
+        String parameterName = parameter.getName();
+        Optional<Parameters> parameters = javaMethodMeta.getAnnotation(Parameters.class);
+        return parameters.map(value -> Arrays.stream(value.value())
+                .filter(item -> item.name().equals(parameterName))
+                .findFirst())
+                .orElseGet(() -> javaMethodMeta.getAnnotation(io.swagger.v3.oas.annotations.Parameter.class))
+                .map(io.swagger.v3.oas.annotations.Parameter::hidden)
+                .orElse(true);
     }
 }

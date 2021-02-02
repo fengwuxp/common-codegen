@@ -87,7 +87,7 @@
                 </dependencies>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>process</goal>
                         </goals>

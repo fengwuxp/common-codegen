@@ -23,7 +23,7 @@ public final class FileUtils {
      */
     public static void createDirectory(String directoryName) {
         String[] filePaths = directoryName.split(String.format("\\%s", File.separator));
-        StringBuilder filePath = new StringBuilder("");
+        StringBuilder filePath = new StringBuilder();
         for (String path : filePaths) {
             filePath.append(File.separator).append(path);
             File directory = new File(filePath.toString());

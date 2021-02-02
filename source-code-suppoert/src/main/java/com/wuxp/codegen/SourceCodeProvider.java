@@ -34,7 +34,13 @@ import static com.github.javaparser.utils.CodeGenerationUtils.mavenModuleRoot;
 @Slf4j
 public class SourceCodeProvider {
 
+//    private static final Set<String> INVALID_SOURCE_PATHS=new HashSet<>(Arrays.asList(
+//       "/target"
+//    ));
 
+    /**
+     * 内部类的标识
+     */
     private static final String INNER_CLASS_FLAG = "$";
 
 
@@ -197,7 +203,6 @@ public class SourceCodeProvider {
         }
         String fieldName = field.getName();
         Class<?> declaringClass = field.getDeclaringClass();
-        boolean isEnumConstant = field.isEnumConstant();
         return getFieldDeclaration(declaringClass, fieldName);
     }
 
@@ -384,7 +389,15 @@ public class SourceCodeProvider {
                         return true;
                     }
                 })
-                .map(sourceRoot -> sourceRoot.parse(clazz.getPackage().getName(), sourceFilePath))
+                .map(sourceRoot -> {
+                    try {
+                        return sourceRoot.parse(clazz.getPackage().getName(), sourceFilePath);
+                    } catch (Exception e) {
+                        // 由于target目录下可能会有一些其他目录会被误识别为源码目录，此处的异常忽略
+                        log.warn("get source file error sourceRoot={},sourceFilePath={},clazz={}", sourceRoot.getRoot(), sourceFilePath, clazz.getName());
+                    }
+                    return null;
+                })
                 .filter(Objects::nonNull)
                 .findFirst();
     }
@@ -418,7 +431,7 @@ public class SourceCodeProvider {
         String name = clazz.getName();
         String simpleName = clazz.getSimpleName();
         if (name.contains(INNER_CLASS_FLAG)) {
-            //内部类
+            // TODO 内部类判断加强 Modifier.isStatic(clazz.getModifiers())
             name = name.split("\\$")[0];
             String[] values = name.split("\\.");
             simpleName = values[values.length - 1];

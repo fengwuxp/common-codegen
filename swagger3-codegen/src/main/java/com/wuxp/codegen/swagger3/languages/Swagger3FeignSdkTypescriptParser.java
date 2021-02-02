@@ -40,23 +40,20 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
     @Override
     protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
         super.enhancedProcessingField(fieldMeta, javaFieldMeta, classMeta);
-        if (javaFieldMeta == null) {
+        if (javaFieldMeta == null || !Boolean.TRUE.equals(fieldMeta.getRequired())) {
             return;
         }
-        Schema schema = javaFieldMeta.getAnnotation(Schema.class);
-        Parameter parameter = javaFieldMeta.getAnnotation(Parameter.class);
-        if (schema == null && parameter == null) {
-            log.warn("类{}上的属性{}没有Schema注解", classMeta.getClassName(), javaFieldMeta.getName());
+        Optional<Schema> schema = javaFieldMeta.getAnnotation(Schema.class);
+        if (schema.isPresent()) {
+            fieldMeta.setRequired(schema.get().required());
             return;
         }
-
-        if (fieldMeta.getRequired() == null) {
-            if (schema != null) {
-                fieldMeta.setRequired(schema.required());
-            } else {
-                fieldMeta.setRequired(parameter.required());
-            }
+        Optional<Parameter> parameter = javaFieldMeta.getAnnotation(Parameter.class);
+        if (parameter.isPresent()) {
+            fieldMeta.setRequired(parameter.get().required());
+            return;
         }
+        log.warn("类{}上的属性{}没有Schema注解", classMeta.getClassName(), javaFieldMeta.getName());
     }
 
 

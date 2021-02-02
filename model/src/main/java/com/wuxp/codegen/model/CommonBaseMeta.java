@@ -68,8 +68,10 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
 
 
     public <T> T getTag(String key) {
-        Map<String, Object> tags = this.tags;
-        Object o = tags.get(key);
+        if (this.tags == null) {
+            return null;
+        }
+        Object o = this.tags.get(key);
         if (o == null) {
             return null;
         }
