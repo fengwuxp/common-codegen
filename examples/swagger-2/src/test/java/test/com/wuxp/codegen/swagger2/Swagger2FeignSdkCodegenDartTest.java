@@ -47,11 +47,11 @@ public class Swagger2FeignSdkCodegenDartTest {
         classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
 
         Map<Class<?>, List<String>> ignoreFields = new HashMap<Class<?>, List<String>>() {{
-            put(BaseQueryEvt.class, Arrays.asList("queryPage"));
+            put(BaseQueryEvt.class, Collections.singletonList("queryPage"));
         }};
 
         Map<DartClassMeta, List<String>> typeAlias = new HashMap<DartClassMeta, List<String>>() {{
-            put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
+            put(DartClassMeta.BUILT_LIST, Collections.singletonList("PageInfo"));
         }};
 
         RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{

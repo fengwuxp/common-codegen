@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.dragon.path.PathResolve;
+import com.wuxp.codegen.util.FileUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -27,19 +28,19 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
             "model"
     );
 
-    private final Map<Class, String> CONVERT_CACHE = new HashMap<>();
+    private final Map<Class<?>, String> convertCache = new HashMap<>();
 
-    private final Map<Class, String> CONVERT_CLASSNAME_CACHE = new HashMap<>();
+    private final Map<Class<?>, String> convertClassnameCache = new HashMap<>();
 
     @Override
     public String convert(Class<?> clazz) {
-        return CONVERT_CACHE.computeIfAbsent(clazz, key -> innerConvert(clazz));
+        return convertCache.computeIfAbsent(clazz, key -> innerConvert(clazz));
     }
 
 
     @Override
     public String convertClassName(Class<?> clazz) {
-        return CONVERT_CLASSNAME_CACHE.computeIfAbsent(clazz, key -> {
+        return convertClassnameCache.computeIfAbsent(clazz, key -> {
             boolean isServerClass = CodegenConfigHolder.getConfig().isServerClass(clazz);
             String simpleName = clazz.getSimpleName();
             if (isServerClass) {
@@ -62,7 +63,7 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
             }
             return url;
         }
-        return MessageFormat.format("/{0}", String.join("/", uris));
+        return MessageFormat.format("/{0}", String.join(PathResolve.RIGHT_SLASH, uris));
     }
 
     private String innerConvert(Class<?> clazz) {
@@ -88,17 +89,17 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
         if (isJava) {
             return String.format("%s.%s", outPackage, className);
         }
-        String path = outPackage.replace(groupId, "").replaceAll("\\.", PathResolve.RIGHT_SLASH);
+        String path = FileUtils.packageNameToFilePath(outPackage.replace(groupId, ""));
         return String.format("%s%s%s%s", PathResolve.RIGHT_SLASH, path, PathResolve.RIGHT_SLASH, className);
     }
 
 
     protected String convertServiceClassName(String simpleName, String suffixName) {
         if (simpleName.endsWith("Controller")) {
-            return simpleName.replaceAll("Controller", suffixName);
+            return simpleName.replace("Controller", suffixName);
         }
         if (simpleName.endsWith("Action")) {
-            return simpleName.replaceAll("Action", suffixName);
+            return simpleName.replace("Action", suffixName);
         }
         return simpleName;
     }

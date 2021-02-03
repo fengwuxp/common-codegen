@@ -98,12 +98,7 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
             val = this.packageNameMap.get(key.substring(0, key.length() - 2));
         }
 
-//        if (!StringUtils.hasText(val)) {
-//            throw new RuntimeException(MessageFormat.format("包名：{0} 未找到装换映射关系", clazzName));
-//        }
-
         String value;
-
         if (this.pathMatcher.isPattern(key)) {
             //TODO 支持 {0}a{2}模式
             //转换为正则表达式

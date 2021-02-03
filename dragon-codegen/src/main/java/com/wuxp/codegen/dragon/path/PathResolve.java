@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * 路径解析
+ *
  * @author wuxp
  */
 @Slf4j
@@ -26,10 +27,22 @@ public class PathResolve {
      */
     public static final String RIGHT_SLASH = "/";
 
+    private static final String DOT = ".";
 
     /**
-     * 相对路径解析
-     *
+     * 是否为文件的一个正则表达式
+     */
+    private static final String FILE_PATH_REGEXP = "\\w*.[a-zA-Z]{2,5}$";
+
+
+    /**
+     * 计算2个路径的相对路径解析
+     * <p>
+     *     /api/models/b
+     *     /api/clients/a
+     *     ==>
+     *     ../models/b
+     * </p>
      * @param baseDir 基础路径
      * @param args    目前只支持2个参数
      * @return 解析后的路径
@@ -41,7 +54,6 @@ public class PathResolve {
         }
 
         Path basePath = Paths.get(baseDir);
-
         List<Path> paths = Arrays.stream(args)
                 .filter(StringUtils::hasText)
                 .map(path -> basePath.resolveSibling(Paths.get(path)))
@@ -51,7 +63,7 @@ public class PathResolve {
             return null;
         }
         String pathArgs2 = paths.get(1).toString();
-        if (!pathArgs2.startsWith(".") && !pathArgs2.startsWith(File.separator)) {
+        if (!pathArgs2.startsWith(DOT) && !pathArgs2.startsWith(File.separator)) {
             return args[1];
         }
         Path p = paths.get(0);
@@ -72,9 +84,9 @@ public class PathResolve {
         //转换导入的路径 将 \A\b-> /A/b
         result = result.replaceAll(String.format("\\%s", File.separator), RIGHT_SLASH);
 
-        if (!result.startsWith(".")) {
+        if (!result.startsWith(DOT)) {
             //转换为相对路径
-            result = String.join("", ".", RIGHT_SLASH, result);
+            result = String.join("", DOT, RIGHT_SLASH, result);
         }
         return result;
     }
@@ -86,10 +98,7 @@ public class PathResolve {
      * @return 是否为文件
      */
     private boolean isFile(String path) {
-
-        String regexp = "\\w*.[a-zA-Z]{2,5}$";
-
-        Pattern pattern = Pattern.compile(regexp);
+        Pattern pattern = Pattern.compile(FILE_PATH_REGEXP);
         Matcher matcher = pattern.matcher(path);
         return matcher.find();
 

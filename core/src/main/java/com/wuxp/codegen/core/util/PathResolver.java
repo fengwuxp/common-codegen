@@ -1,5 +1,6 @@
 package com.wuxp.codegen.core.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
  * @author https://github.com/anthonynsimon/jurl
  */
 public final class PathResolver {
+
+    private static final String separator = File.separator;
 
     /**
      * Disallow instantiation of class.
@@ -39,7 +42,7 @@ public final class PathResolver {
         if (merged.isEmpty()) {
             return "";
         }
-        String[] parts = merged.split("/", -1);
+        String[] parts = merged.split(String.format("\\%s", separator), -1);
         return resolve(parts);
     }
 
@@ -57,8 +60,8 @@ public final class PathResolver {
         String merged;
         if (ref == null || ref.isEmpty()) {
             merged = base;
-        } else if (ref.charAt(0) != '/' && base != null && !base.isEmpty()) {
-            int i = base.lastIndexOf("/");
+        } else if (ref.charAt(0) != separator.charAt(0) && base != null && !base.isEmpty()) {
+            int i = base.lastIndexOf(separator);
             merged = base.substring(0, i + 1) + ref;
         } else {
             merged = ref;
@@ -114,6 +117,6 @@ public final class PathResolver {
             default:
 
         }
-        return "/" + String.join("/", result);
+        return separator + String.join(separator, result);
     }
 }

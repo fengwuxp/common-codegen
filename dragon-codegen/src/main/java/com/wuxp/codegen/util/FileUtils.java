@@ -1,5 +1,6 @@
 package com.wuxp.codegen.util;
 
+import com.wuxp.codegen.dragon.path.PathResolve;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -93,5 +94,10 @@ public final class FileUtils {
             flag = file.delete();
         }
         return flag;
+    }
+
+    public static String packageNameToFilePath(String packagePath) {
+
+        return packagePath.replaceAll("\\.", PathResolve.RIGHT_SLASH);
     }
 }
