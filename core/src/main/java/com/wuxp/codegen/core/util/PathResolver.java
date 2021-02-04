@@ -1,19 +1,20 @@
 package com.wuxp.codegen.core.util;
 
+import org.springframework.util.StringUtils;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * <a href="https://github.com/anthonynsimon/jurl"></a>
- * <p>
+ * https://github.com/anthonynsimon/jurl/blob/master/src/main/java/com/anthonynsimon/url/PathResolver.java
  * PathResolver is a utility class that resolves a reference path against a base path.
  *
- * @author https://github.com/anthonynsimon/jurl
+ * @author wuxp
  */
 public final class PathResolver {
 
-    private static final String separator = File.separator;
+    private static final String FILE_SEPARATOR = File.separator;
 
     /**
      * Disallow instantiation of class.
@@ -21,102 +22,156 @@ public final class PathResolver {
     private PathResolver() {
     }
 
+
     /**
-     * Returns a resolved path.
+     * 计算2个路径的相对路径
      * <p>
-     * For example:
-     * <p>
-     * resolve("/some/path", "..") == "/some"
-     * resolve("/some/path", ".") == "/some/"
-     * resolve("/some/path", "./here") == "/some/here"
-     * resolve("/some/path", "../here") == "/here"
+     * calculatingRelativePath("/api/b/c","/api/b/c","/")  ==>"."
+     * calculatingRelativePath("/api/b/c","/api/b/d","/")  ==>"../c"
+     * calculatingRelativePath("/api/b/c/d","/api/b/d","/")  ==>"../c/d"
+     * calculatingRelativePath("/api/b/c/d","/api/b/d/e","/")  ==>"../../c/d"
+     * calculatingRelativePath("/api/b/c/","/api/b/d/e","/")  ==>"../../c"
+     * calculatingRelativePath("/api/b/","/api/b/d/e","/")  ==>"../.."
+     * calculatingRelativePath("/api/","/api/b/d/e","/")  ==>"../../.."
+     * calculatingRelativePath("/api/b/c/d","/api/b","/")  ==>"./c/d"
+     * calculatingRelativePath("/api/b/c/d","/cpi/b","/")  ==>"../../api/b/c/d"
+     * </p>
+     *
+     * @param target    被用于计算的路径
+     * @param path      期望计算的路径
+     * @param separator 路径分隔符
+     * @return 2个路径的相对路径
      */
-    public static String resolve(String base, String ref) {
-        if (base == null) {
+    public static String calculatingRelativePath(String target, String path, String separator) {
+        if (!StringUtils.hasText(target) || !StringUtils.hasText(path)) {
             return null;
         }
-        if (ref == null) {
-            return base;
+        if (path.equals(target)) {
+            return ".";
         }
-        String merged = merge(base, ref);
-        if (merged.isEmpty()) {
-            return "";
+
+        String[] targetPaths = target.split(separator);
+        String[] paths = path.split(separator);
+        List<String> results = new ArrayList<>(Arrays.asList(targetPaths));
+        int eqCount = 0;
+        for (int i = 0; i < paths.length; i++) {
+            if (targetPaths.length <= i) {
+                break;
+            }
+            if (paths[i].equals(targetPaths[i])) {
+                eqCount++;
+                results.set(i, null);
+            } else {
+                break;
+            }
         }
-        String[] parts = merged.split(String.format("\\%s", separator), -1);
-        return resolve(parts);
+        // 2个路径的相差值
+        int difference = paths.length - eqCount;
+        while (difference-- > 0) {
+            results.add(0, "..");
+        }
+        if (eqCount >= paths.length) {
+            // 相同的路径大于了期望被计算的路径，说明从被计算的当前路径开始
+            results.set(0, ".");
+        }
+        return results.stream().filter(Objects::nonNull).collect(Collectors.joining(separator));
+
     }
 
+
     /**
-     * Returns the two path strings merged into one.
-     * <p>
-     * For example:
-     * <qp>
-     * merge("/some/path", "./../hello") == "/some/./../hello"
-     * merge("/some/path/", "./../hello") == "/some/path/./../hello"
-     * merge("/some/path/", "") == "/some/path/"
-     * merge("", "/some/other/path") == "/some/other/path"
+     * 计算2个路径的相对路径
+     *
+     * @param path
+     * @param ref
+     * @param separator
+     * @return
      */
-    private static String merge(String base, String ref) {
-        String merged;
-        if (ref == null || ref.isEmpty()) {
-            merged = base;
-        } else if (ref.charAt(0) != separator.charAt(0) && base != null && !base.isEmpty()) {
-            int i = base.lastIndexOf(separator);
-            merged = base.substring(0, i + 1) + ref;
-        } else {
-            merged = ref;
+    public static String relative(String path, String ref, String separator) {
+
+        String[] paths = splitPaths(path, separator);
+        String[] refs = splitPaths(ref, separator);
+
+        Stack<String> results = new Stack<>();
+
+        int noEqIndex = 0;
+        for (int i = 0; i < refs.length; i++) {
+            if (paths.length <= i) {
+                break;
+            }
+            if (paths[i].equals(refs[i])) {
+                // ignore
+                noEqIndex++;
+            } else {
+                break;
+            }
+
+        }
+        // push paths in stack
+        for (int k = paths.length - 1; k >= noEqIndex; k--) {
+            pushLeftPaths(results, paths[k]);
         }
 
-        if (merged == null || merged.isEmpty()) {
-            return "";
+        // push refs in stack
+        for (int k = noEqIndex; k < refs.length; k++) {
+            pushRefs(results, refs[k]);
         }
 
-        return merged;
+        if (results.isEmpty()) {
+            return ".";
+        }
+
+        List<String> values = new ArrayList<>(results);
+        Collections.reverse(values);
+        return String.join(separator, values);
     }
 
-    /**
-     * Returns the resolved path parts.
-     * <p>
-     * Example:
-     * <p>
-     * resolve(String[]{"some", "path", "..", "hello"}) == "/some/hello"
-     */
-    private static String resolve(String[] parts) {
-        if (parts.length == 0) {
-            return "";
+    private static void pushLeftPaths(Stack<String> paths, String part) {
+        switch (part) {
+            case "":
+            case ".":
+                break;
+            case "..":
+                paths.pop();
+                break;
+            default:
+                paths.push(part);
+
         }
+    }
 
-        List<String> result = new ArrayList<>();
+    private static void pushRefs(Stack<String> paths, String part) {
+        switch (part) {
+            case "":
+            case ".":
+                break;
+            case "..":
+                paths.pop();
+                break;
+            default:
+                paths.push("..");
 
-        for (String part : parts) {
+        }
+    }
+
+    private static void popPaths(Stack<String> paths, List<String> values) {
+        for (String part : paths) {
             switch (part) {
                 case "":
                 case ".":
-                    // Ignore
                     break;
                 case "..":
-                    if (!result.isEmpty()) {
-                        result.remove(result.size() - 1);
-                    }
+                    values.add(part);
                     break;
                 default:
-                    result.add(part);
-                    break;
+                    paths.push("..");
+
             }
         }
+    }
 
-        // Get last element, if it was '.' or '..' we need
-        // to end in a slash.
-        switch (parts[parts.length - 1]) {
-            case ".":
-            case "..":
-                // Add an empty last string, it will be turned into
-                // a slash when joined together.
-                result.add("");
-                break;
-            default:
 
-        }
-        return separator + String.join(separator, result);
+    private static String[] splitPaths(String val, String separator) {
+        return val.split(String.format("\\%s", separator), -1);
     }
 }

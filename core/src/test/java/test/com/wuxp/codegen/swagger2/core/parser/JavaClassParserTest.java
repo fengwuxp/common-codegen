@@ -6,9 +6,7 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -25,11 +23,9 @@ public class JavaClassParserTest {
 
     protected GenericParser<JavaClassMeta, Class<?>> genericParser = new JavaClassParser(false);
 
-    @Before
     public void before() throws Exception {
     }
 
-    @After
     public void after() throws Exception {
     }
 
