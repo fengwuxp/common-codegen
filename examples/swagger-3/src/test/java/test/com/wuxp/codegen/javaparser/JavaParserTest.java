@@ -34,15 +34,12 @@ class JavaParserTest {
     @Test
     void testSourceRoot() {
         String userDir = System.getProperty("user.dir");
-        String path = PathResolver.resolve(userDir, "../");
+        String path = PathResolver.relative(userDir, "../");
         ParserCollectionStrategy parserCollectionStrategy = new ParserCollectionStrategy();
         ProjectRoot root = parserCollectionStrategy.collect(Paths.get(path));
         log.info("{}", root);
         List<SourceRoot> sourceRoots = root.getSourceRoots();
         Assertions.assertNotNull(sourceRoots);
-        SourceRoot sourceRoot = sourceRoots.get(0);
-        CompilationUnit compilationUnit = sourceRoot.parse(OpenApiType.class.getPackage().getName(), OpenApiType.class.getSimpleName() + ".java");
-        Assertions.assertNotNull(compilationUnit);
     }
 
     @Test

@@ -2,17 +2,16 @@ package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleCombineTypeDescStrategyTest {
+class SimpleCombineTypeDescStrategyTest {
 
     @Test
-    public void combine() {
+    void combine() {
 
         SimpleCombineTypeDescStrategy strategy = new SimpleCombineTypeDescStrategy();
         List<String> list0 = GrabGenericVariablesHelper.matchGenericDescriptors("Map<Promise<T>,String>");
@@ -27,14 +26,14 @@ public class SimpleCombineTypeDescStrategyTest {
         names.add("Promise<T>");
         names.add("String");
         names.add("User");
-        Assert.assertEquals("合并失败", "Map<Promise<String>,User>", strategy.combineTypes(names));
+        Assertions.assertEquals("Map<Promise<String>,User>", strategy.combineTypes(names), "合并失败");
         names.clear();
         names.add("Record<K,V>");
         names.add("string");
         names.add("Array<T>");
         names.add("Array<T>");
         names.add("string");
-        Assert.assertEquals("合并失败", "Record<string,Array<Array<string>>>", strategy.combineTypes(names));
+        Assertions.assertEquals("Record<string,Array<Array<string>>>", strategy.combineTypes(names), "合并失败");
         names.clear();
         names.add("Promise<K>");
         names.add("Map<K,V>");
@@ -44,11 +43,7 @@ public class SimpleCombineTypeDescStrategyTest {
         names.add("Page<T>");
         names.add("Member");
 
-
-        Assert.assertEquals("合并失败", "Promise<Map<PageInfo<User>,List<Page<Member>>>>", strategy.combineTypes(names));
+        Assertions.assertEquals("Promise<Map<PageInfo<User>,List<Page<Member>>>>", strategy.combineTypes(names), "合并失败");
     }
 
-    public static void main(String[] args) {
-        System.out.println(File.separator);
-    }
 }

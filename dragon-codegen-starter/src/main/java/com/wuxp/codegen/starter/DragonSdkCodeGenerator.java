@@ -15,6 +15,7 @@ import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -83,7 +84,6 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
 
 
     protected Collection<CodegenBuilder> getCodeSwagger2GeneratorBuilders() {
-
 
         List<CodegenBuilder> codeGenerators = new ArrayList<>();
         codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
@@ -181,26 +181,31 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
 
 
     private String getOuPath(ClientProviderType type) {
-
+        String baseDir;
+        if (outPath != null && outPath.startsWith(File.separator)) {
+            // 绝对路径
+            baseDir = FilenameUtils.normalizeNoEndSeparator(outPath);
+        } else {
+            baseDir = System.getProperty("user.dir");
+        }
         List<String> outPaths = new LinkedList<>(DEFAULT_OUT_PATHS);
         outPaths.add(openApiType.name().toLowerCase());
         outPaths.add(type.name().toLowerCase());
         if (ClientProviderType.DART_FEIGN.equals(type)) {
             outPaths.add("lib");
         }
-
         outPaths.add("src");
-        String baseDir = System.getProperty("user.dir");
         if (StringUtils.hasText(outPath)) {
-            //输出路径加入第一个
-            outPaths.add(0, outPath);
-            String resolve = PathResolver.resolve(baseDir, String.join(File.separator, outPaths));
-            return resolve;
+            if (outPath.startsWith(".")) {
+                // 相对路径
+                baseDir = baseDir + File.separator + outPath;
+            }
+            String ref = String.join(File.separator, outPaths);
+            return PathResolver.relative(baseDir, ref);
         } else {
-
+            // 默认
             return Paths.get(baseDir).resolveSibling(String.join(File.separator, outPaths)).toString();
         }
-
     }
 
     public static String getBaseOutPath() {

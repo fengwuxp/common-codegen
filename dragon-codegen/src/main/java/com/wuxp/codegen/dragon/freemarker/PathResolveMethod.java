@@ -22,7 +22,7 @@ public class PathResolveMethod implements TemplateMethodModelEx {
     private final PathResolve pathResolve = new PathResolve();
 
     @Override
-    public Object exec(List arguments) throws TemplateModelException {
+    public Object exec(List arguments) {
         if (arguments.isEmpty()) {
             throw new CodegenRuntimeException("arguments size is 0");
         }
