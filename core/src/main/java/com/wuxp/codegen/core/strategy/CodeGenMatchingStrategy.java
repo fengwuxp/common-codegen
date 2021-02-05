@@ -23,9 +23,9 @@ public interface CodeGenMatchingStrategy {
      * @param classMeta 类元数据
      * @return <code>return true</code> 需要生成
      */
-   default boolean isMatchClazz(JavaClassMeta classMeta){
-       return true;
-   }
+    default boolean isMatchClazz(JavaClassMeta classMeta) {
+        return true;
+    }
 
     /**
      * 方法是否匹配
@@ -33,9 +33,9 @@ public interface CodeGenMatchingStrategy {
      * @param methodMeta 方法元数据
      * @return <code>return true</code> 需要生成
      */
-  default   boolean isMatchMethod(JavaMethodMeta methodMeta){
-      return true;
-  }
+    default boolean isMatchMethod(JavaMethodMeta methodMeta) {
+        return true;
+    }
 
 
     /**
@@ -44,9 +44,9 @@ public interface CodeGenMatchingStrategy {
      * @param javaFieldMeta 字段元数据
      * @return <code>return true</code> 需要生成
      */
-   default boolean isMatchField(JavaFieldMeta javaFieldMeta){
-       return true;
-   }
+    default boolean isMatchField(JavaFieldMeta javaFieldMeta) {
+        return true;
+    }
 
     /**
      * 是否匹配方法参数
@@ -55,8 +55,8 @@ public interface CodeGenMatchingStrategy {
      * @param parameter      参数
      * @return <code>return true</code> 需要生成
      */
-   default boolean isMatchParameter(JavaMethodMeta javaMethodMeta, Parameter parameter){
-       return true;
-   }
+    default boolean isMatchParameter(JavaMethodMeta javaMethodMeta, Parameter parameter) {
+        return true;
+    }
 
 }

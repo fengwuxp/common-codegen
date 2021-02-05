@@ -31,17 +31,17 @@ public class IgnoreMethodParameterMatchingStrategy implements CodeGenMatchingStr
 
     private final Set<Class<? extends Annotation>> ignoreParameterAnnotations;
 
+    private IgnoreMethodParameterMatchingStrategy(Collection<Class<? extends Annotation>> ignoreParameterAnnotations) {
+        this.ignoreParameterAnnotations = new HashSet<>(ignoreParameterAnnotations);
+        this.ignoreParameterAnnotations.addAll(ATTRIBUTE_ANNOTATIONS);
+    }
+
     public static IgnoreMethodParameterMatchingStrategy of(Class<? extends Annotation>... ignoreParameterAnnotations) {
         return new IgnoreMethodParameterMatchingStrategy(Arrays.asList(ignoreParameterAnnotations));
     }
 
     public static IgnoreMethodParameterMatchingStrategy of(Collection<Class<? extends Annotation>> ignoreParameterAnnotations) {
         return new IgnoreMethodParameterMatchingStrategy(ignoreParameterAnnotations);
-    }
-
-    private IgnoreMethodParameterMatchingStrategy(Collection<Class<? extends Annotation>> ignoreParameterAnnotations) {
-        this.ignoreParameterAnnotations = new HashSet<>(ignoreParameterAnnotations);
-        this.ignoreParameterAnnotations.addAll(ATTRIBUTE_ANNOTATIONS);
     }
 
     @Override
