@@ -17,11 +17,11 @@ import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.core.strategy.ClassNameTransformer;
+import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.dragon.strategy.AgreedPackageMapStrategy;
 import com.wuxp.codegen.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
-import com.wuxp.codegen.languages.java.IgnoreParamsByAnnotationLanguageEnhancedProcessor;
 import com.wuxp.codegen.languages.typescript.UmiModel;
 import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
@@ -128,6 +128,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      * 代码匹配器
      */
     protected Collection<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+
+    /**
+     * 代码生成匹配策略
+     */
+    protected Collection<CodeGenMatchingStrategy> codeGenMatchingStrategies = new ArrayList<>();
 
     /**
      * 是否删除输出目录
@@ -247,6 +252,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+
+    public AbstractDragonCodegenBuilder codeGenMatchers(CodeGenMatchingStrategy... codeGenMatchingStrategies) {
+        this.codeGenMatchingStrategies.addAll(Arrays.asList(codeGenMatchingStrategies));
+        return this;
+    }
+
     public AbstractDragonCodegenBuilder isDeletedOutputDirectory(Boolean isDeletedOutputDirectory) {
         this.isDeletedOutputDirectory = isDeletedOutputDirectory;
         return this;
@@ -325,13 +336,12 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
             codeGenMatchers.add(codeGenMatcher);
         }
         List<LanguageEnhancedProcessor> languageEnhancedProcessors = this.languageEnhancedProcessors;
-        languageEnhancedProcessors.add(IgnoreParamsByAnnotationLanguageEnhancedProcessor.of(this.ignoreParamByAnnotations));
         boolean needAddUmiRequestEnhancedProcessor = !this.containsLanguageEnhancedProcessorType(UmiRequestEnhancedProcessor.class)
                 && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
         if (needAddUmiRequestEnhancedProcessor) {
             languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
         }
-        if (!this.containsLanguageEnhancedProcessorType(EnumCommentEnhancer.class)){
+        if (!this.containsLanguageEnhancedProcessorType(EnumCommentEnhancer.class)) {
             languageEnhancedProcessors.add(new EnumCommentEnhancer());
         }
         boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
@@ -371,10 +381,14 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
                     .factory();
             abstractLanguageParser.setLanguageTypeMapping(languageTypeMapping);
         }
+
     }
 
-    private boolean containsLanguageEnhancedProcessorType(Class<? extends LanguageEnhancedProcessor> clazz){
-        return languageEnhancedProcessors.stream()
-                .anyMatch(languageEnhancedProcessor -> clazz.isAssignableFrom(languageEnhancedProcessor.getClass()));
+    protected boolean containsCollectionByType(Collection<?> objects,Class<?> clazz) {
+        return objects.stream().anyMatch(ob -> clazz.isAssignableFrom(ob.getClass()));
+    }
+
+    private boolean containsLanguageEnhancedProcessorType(Class<? extends LanguageEnhancedProcessor> clazz) {
+        return this.containsCollectionByType(languageEnhancedProcessors,clazz);
     }
 }

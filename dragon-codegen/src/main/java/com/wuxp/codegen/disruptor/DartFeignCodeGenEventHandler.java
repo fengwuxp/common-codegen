@@ -113,7 +113,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
         String filename = "serializers";
         Template template = templateLoader.load(filename + ".ftl");
         // 生成路径
-        String filepath = this.normalizationFilePath(MessageFormat.format("{0}/{1}", this.outputPath, filename));
+        String filepath = FileUtils.packageNameToFilePath((MessageFormat.format("{0}/{1}", this.outputPath, filename)));
         String output = Paths.get(MessageFormat.format("{0}.{1}", filepath, LanguageDescription.DART.getSuffixName())).toString();
 
         Map<String, Object> data = new HashMap<>();
@@ -135,7 +135,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
         // 生成路径
         String outputPath = this.outputPath.substring(0, this.outputPath.lastIndexOf(File.separator));
         String filename = sdkIndexFileName;
-        String filepath = this.normalizationFilePath(MessageFormat.format("{0}/{1}", outputPath, filename));
+        String filepath = FileUtils.packageNameToFilePath(MessageFormat.format("{0}/{1}", outputPath, filename));
         String output = Paths.get(MessageFormat.format("{0}.{1}", filepath, LanguageDescription.DART.getSuffixName())).toString();
 
         Map<String, Object> data = new HashMap<>();
@@ -155,7 +155,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
         Template template = templateLoader.load(filename + ".ftl");
         // 生成路径
         String outputPath = this.outputPath.substring(0, this.outputPath.lastIndexOf(File.separator));
-        String filepath = this.normalizationFilePath(MessageFormat.format("{0}/{1}", outputPath, filename));
+        String filepath = FileUtils.packageNameToFilePath(MessageFormat.format("{0}/{1}", outputPath, filename));
         String output = Paths.get(MessageFormat.format("{0}.{1}", filepath, LanguageDescription.DART.getSuffixName())).toString();
 
         Map<String, Object> data = new HashMap<>();
@@ -292,7 +292,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
                 .findFirst();
         int first = originalGenericDesc.indexOf("<");
         String type = originalGenericDesc.substring(0, first);
-        if (isBuiltCollection.isPresent() && isBuiltCollection.get()) {
+        if (isBuiltCollection.isPresent() && Boolean.TRUE.equals(isBuiltCollection.get())) {
             // Built_Value 集合
             type = type.substring(5);
         }
@@ -300,9 +300,4 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
 
     }
 
-
-    private String normalizationFilePath(String packagePath) {
-
-        return packagePath.replaceAll("\\.", PathResolve.RIGHT_SLASH);
-    }
 }

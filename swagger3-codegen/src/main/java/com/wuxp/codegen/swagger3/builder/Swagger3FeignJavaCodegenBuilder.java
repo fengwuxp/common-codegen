@@ -3,8 +3,10 @@ package com.wuxp.codegen.swagger3.builder;
 import com.wuxp.codegen.AbstractDragonCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.dragon.CombinationCodeGenMatchingStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -37,11 +39,15 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         if (this.clientProviderType == null) {
             this.clientProviderType = ClientProviderType.SPRING_CLOUD_OPENFEIGN;
         }
+        this.codeGenMatchingStrategies.add(new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods));
+        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
+            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
+        }
         this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger3FeignSdkJavaParser(
                 packageMapStrategy,
-                new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
+                CombinationCodeGenMatchingStrategy.of(this.codeGenMatchingStrategies),
                 this.codeDetects,
                 languageDescription,
                 Boolean.TRUE.equals(useRxJava),

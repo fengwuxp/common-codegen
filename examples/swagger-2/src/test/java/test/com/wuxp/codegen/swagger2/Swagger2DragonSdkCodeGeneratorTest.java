@@ -8,6 +8,7 @@ class Swagger2DragonSdkCodeGeneratorTest {
     @Test
     void testCodegen() {
         DragonSdkCodeGenerator dragonSdkCodegenerator = new DragonSdkCodeGenerator("com.wuxp.codegen.swagger2.**.controller");
+        dragonSdkCodegenerator.setOutPath("../");
         dragonSdkCodegenerator.generate();
     }
 }

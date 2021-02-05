@@ -1,16 +1,21 @@
 package com.wuxp.codegen.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 
 /**
- * <a href="https://github.com/anthonynsimon/jurl"></a>
- * <p>
  * PathResolver is a utility class that resolves a reference path against a base path.
  *
- * @author https://github.com/anthonynsimon/jurl
+ * @author wuxp
  */
 public final class PathResolver {
+
 
     /**
      * Disallow instantiation of class.
@@ -19,101 +24,135 @@ public final class PathResolver {
     }
 
     /**
-     * Returns a resolved path.
-     * <p>
-     * For example:
-     * <p>
-     * resolve("/some/path", "..") == "/some"
-     * resolve("/some/path", ".") == "/some/"
-     * resolve("/some/path", "./here") == "/some/here"
-     * resolve("/some/path", "../here") == "/here"
+     * 获取文件的相对路径
+     *
+     * @param targetFilePath
+     * @param currentFilePath
+     * @return
      */
-    public static String resolve(String base, String ref) {
-        if (base == null) {
-            return null;
+    public static String getRelativePath(String targetFilePath, String currentFilePath) {
+
+        Object[] a1 = Arrays.stream(targetFilePath.split("/"))
+                .filter(t -> !".".equals(t))
+                .filter(StringUtils::hasText)
+                .toArray();
+
+        Object[] a2 = Arrays.stream(currentFilePath.split("/"))
+                .filter(t -> !".".equals(t))
+                .filter(StringUtils::hasText)
+                .toArray();
+
+        StringBuilder sb = new StringBuilder();
+
+        int idx = 0;
+        while (idx < a2.length
+                && idx < a1.length
+                && a1[idx].equals(a2[idx])) {
+            idx++;
         }
+
+        int temp = idx;
+        while (temp++ < a2.length) {
+            sb.append("../");
+        }
+
+        while (idx < a1.length) {
+            sb.append(a1[idx++]).append("/");
+        }
+
+        System.out.println("[" + targetFilePath + "] --> [" + currentFilePath + "] --> [" + sb + "]");
+
+        return sb.toString();
+    }
+
+    public static String relative(String path, String ref) {
+        return relative(path, ref, File.separator);
+    }
+
+
+    /**
+     * 计算2个路径的相对路径
+     * <p>
+     * relative("/api/b/c","/api/b/c","/")  ==>"."
+     * relative("/api/b/c","/api/b/d","/")  ==>"../c"
+     * relative("/api/b/c/d","/api/b/d","/")  ==>"../c/d"
+     * relative("/api/b/c/d","/api/b/d/e","/")  ==>"../../c/d"
+     * relative("/api/b/c/","/api/b/d/e","/")  ==>"../../c"
+     * relative("/api/b/","/api/b/d/e","/")  ==>"../.."
+     * relative("/api/","/api/b/d/e","/")  ==>"../../.."
+     * relative("/api/b/c/d","/api/b","/")  ==>"./c/d"
+     * relative("/api/b/c/d","/cpi/b","/")  ==>"../../api/b/c/d"
+     * </p>
+     *
+     * @param path      基础路径
+     * @param ref       模板路径
+     * @param separator 路径分隔符
+     * @return 2个路径的相对路径
+     */
+    public static String relative(String path, String ref, String separator) {
+        path = FilenameUtils.normalizeNoEndSeparator(path);
+        ref = FilenameUtils.normalizeNoEndSeparator(ref);
         if (ref == null) {
-            return base;
+            return path;
         }
-        String merged = merge(base, ref);
-        if (merged.isEmpty()) {
-            return "";
+        boolean isOther = ref.startsWith(".") || ref.startsWith(separator);
+        if (!isOther) {
+            return FilenameUtils.normalizeNoEndSeparator(path + separator + ref);
         }
-        String[] parts = merged.split("/", -1);
-        return resolve(parts);
-    }
-
-    /**
-     * Returns the two path strings merged into one.
-     * <p>
-     * For example:
-     * <qp>
-     * merge("/some/path", "./../hello") == "/some/./../hello"
-     * merge("/some/path/", "./../hello") == "/some/path/./../hello"
-     * merge("/some/path/", "") == "/some/path/"
-     * merge("", "/some/other/path") == "/some/other/path"
-     */
-    private static String merge(String base, String ref) {
-        String merged;
-        if (ref == null || ref.isEmpty()) {
-            merged = base;
-        } else if (ref.charAt(0) != '/' && base != null && !base.isEmpty()) {
-            int i = base.lastIndexOf("/");
-            merged = base.substring(0, i + 1) + ref;
-        } else {
-            merged = ref;
-        }
-
-        if (merged == null || merged.isEmpty()) {
-            return "";
-        }
-
-        return merged;
-    }
-
-    /**
-     * Returns the resolved path parts.
-     * <p>
-     * Example:
-     * <p>
-     * resolve(String[]{"some", "path", "..", "hello"}) == "/some/hello"
-     */
-    private static String resolve(String[] parts) {
-        if (parts.length == 0) {
-            return "";
-        }
-
-        List<String> result = new ArrayList<>();
-
-        for (String part : parts) {
-            switch (part) {
-                case "":
-                case ".":
-                    // Ignore
-                    break;
-                case "..":
-                    if (!result.isEmpty()) {
-                        result.remove(result.size() - 1);
-                    }
-                    break;
-                default:
-                    result.add(part);
-                    break;
+        String[] paths = splitPaths(path, separator);
+        String[] refs = splitPaths(ref, separator);
+        Deque<String> results = new ArrayDeque<>();
+        int noEqIndex = 0;
+        for (int i = 0; i < refs.length; i++) {
+            if (paths.length <= i || !paths[i].equals(refs[i])) {
+                break;
             }
+            noEqIndex++;
         }
 
-        // Get last element, if it was '.' or '..' we need
-        // to end in a slash.
-        switch (parts[parts.length - 1]) {
+        // push paths in stack
+        for (int k = paths.length - 1; k >= noEqIndex; k--) {
+            pushLeftPaths(results, paths[k]);
+        }
+
+        // push refs in stack
+        for (int k = noEqIndex; k < refs.length; k++) {
+            String part = refs[k];
+            pushRefs(results, part);
+        }
+        if (results.isEmpty()) {
+            return ".";
+        }
+        return String.join(separator, results);
+    }
+
+    private static void pushLeftPaths(Deque<String> paths, String part) {
+        switch (part) {
+            case "":
             case ".":
+                break;
             case "..":
-                // Add an empty last string, it will be turned into
-                // a slash when joined together.
-                result.add("");
+                paths.pop();
                 break;
             default:
-
+                paths.push(part);
         }
-        return "/" + String.join("/", result);
+    }
+
+    private static void pushRefs(Deque<String> paths, String part) {
+        switch (part) {
+            case "":
+            case ".":
+                break;
+            case "..":
+                paths.pop();
+                break;
+            default:
+                paths.push("..");
+        }
+    }
+
+    private static String[] splitPaths(String val, String separator) {
+        return val.split(String.format("\\%s", separator), -1);
     }
 }

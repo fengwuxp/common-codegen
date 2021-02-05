@@ -3,8 +3,6 @@ package com.wuxp.codegen.dragon;
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.core.util.PathResolver;
-import com.wuxp.codegen.dragon.path.PathResolve;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -13,7 +11,10 @@ import com.wuxp.codegen.util.FileUtils;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
@@ -102,7 +103,7 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
         packagePath = this.fileNameGenerateStrategy.generateName(packagePath);
 
         String extName = this.extName;
-        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, this.normalizationFilePath(packagePath), extName))
+        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, FileUtils.packageNameToFilePath(packagePath), extName))
                 .toString();
         //如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
         if (output.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
@@ -116,31 +117,14 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
                 return;
             }
         }
-
-        if (output.startsWith(".")) {
-            // 以.开头的路径使用项目根路径重新计算
-            output = PathResolver.resolve(System.getProperty("user.dir"), output);
-        }
-
         FileUtils.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
             log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
         }
-        Writer writer = null;
-        try {
-            //输出
-            writer = new OutputStreamWriter(new FileOutputStream(output),
-                    StandardCharsets.UTF_8);
+        //输出
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(output), StandardCharsets.UTF_8)) {
             //添加自定义方法
             template.process(data, writer);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -163,9 +147,5 @@ public class DragonSimpleTemplateStrategy implements TemplateStrategy<CommonCode
         return templateName;
     }
 
-    protected String normalizationFilePath(String packagePath) {
 
-        return packagePath.replaceAll("\\.", PathResolve.RIGHT_SLASH);
-
-    }
 }

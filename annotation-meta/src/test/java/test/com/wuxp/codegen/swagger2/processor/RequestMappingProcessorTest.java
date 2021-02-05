@@ -6,7 +6,7 @@ import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,13 +18,13 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 
-public class RequestMappingProcessorTest {
+class RequestMappingProcessorTest {
 
 
     AnnotationProcessor<RequestMappingProcessor.RequestMappingMate, Annotation> annotationProcessor = new RequestMappingProcessor();
 
     @Test
-    public void testProcess() {
+    void testProcess() {
 
         CodegenConfig codegenConfig = CodegenConfig.builder()
                 .providerType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
@@ -49,12 +49,11 @@ public class RequestMappingProcessorTest {
     }
 
     @Test
-    public void testNotNullProcess() throws Exception {
+    void testNotNullProcess() throws Exception {
         TestController controller = new TestController();
         Field field = controller.getClass().getField("name");
         NotNull annotation = field.getAnnotation(NotNull.class);
-        NotNullProcessor.NotNullMate notNullMate = new NotNullProcessor()
-                .process(annotation);
+        NotNullProcessor.NotNullMate notNullMate = new NotNullProcessor().process(annotation);
         String message = notNullMate.message();
         System.out.println("message: " + message);
         System.out.println("comment: " + notNullMate.toComment(field));
@@ -74,7 +73,6 @@ public class RequestMappingProcessorTest {
 
         @GetMapping("get_hello")
         public String getHello() {
-
             return "";
         }
     }

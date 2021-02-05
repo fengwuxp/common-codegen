@@ -34,9 +34,6 @@ import static com.github.javaparser.utils.CodeGenerationUtils.mavenModuleRoot;
 @Slf4j
 public class SourceCodeProvider {
 
-//    private static final Set<String> INVALID_SOURCE_PATHS=new HashSet<>(Arrays.asList(
-//       "/target"
-//    ));
 
     /**
      * 内部类的标识

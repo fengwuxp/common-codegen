@@ -5,11 +5,9 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.*;
 import com.wuxp.codegen.core.util.PathResolver;
-import com.wuxp.codegen.starter.enums.OpenApiType;
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 
@@ -27,22 +25,18 @@ import java.util.Optional;
 import static com.github.javaparser.utils.CodeGenerationUtils.mavenModuleRoot;
 
 @Slf4j
-@Disabled
 class JavaParserTest {
 
 
     @Test
     void testSourceRoot() {
         String userDir = System.getProperty("user.dir");
-        String path = PathResolver.resolve(userDir, "../");
+        String path = PathResolver.relative(userDir, "../");
         ParserCollectionStrategy parserCollectionStrategy = new ParserCollectionStrategy();
         ProjectRoot root = parserCollectionStrategy.collect(Paths.get(path));
         log.info("{}", root);
         List<SourceRoot> sourceRoots = root.getSourceRoots();
         Assertions.assertNotNull(sourceRoots);
-        SourceRoot sourceRoot = sourceRoots.get(0);
-        CompilationUnit compilationUnit = sourceRoot.parse(OpenApiType.class.getPackage().getName(), OpenApiType.class.getSimpleName() + ".java");
-        Assertions.assertNotNull(compilationUnit);
     }
 
     @Test
