@@ -5,9 +5,11 @@ import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
+import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.disruptor.DartFeignCodeGenEventHandler;
+import com.wuxp.codegen.dragon.CombinationCodeGenMatchingStrategy;
 import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
 import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -79,12 +81,15 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractDragonCodegenBuilde
         if (this.clientProviderType == null) {
             this.clientProviderType = ClientProviderType.DART_FEIGN;
         }
-
+        this.codeGenMatchingStrategies.add(new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods));
+        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
+            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
+        }
         this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger3FeignSdkDartParser(
                 packageMapStrategy,
-                new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods),
+                CombinationCodeGenMatchingStrategy.of(this.codeGenMatchingStrategies),
                 this.codeDetects,
                 this.ignoreFields);
         initLanguageParser(languageParser);
