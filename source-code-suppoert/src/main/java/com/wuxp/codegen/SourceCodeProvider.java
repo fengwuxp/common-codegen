@@ -350,6 +350,10 @@ public class SourceCodeProvider {
             return Optional.empty();
         }
         String sourceCodePath = codeSource.getLocation().getPath();
+        if (isSystemWindows()){
+            // 如果是windows 移除路径上的第一个斜杆
+            sourceCodePath=sourceCodePath.substring(1);
+        }
         if (this.isInSourcesJar(sourceCodePath)) {
             // sources.jar中
             return getSourceCodeBySourcesJar(clazz, sourceCodePath);
@@ -442,5 +446,9 @@ public class SourceCodeProvider {
 
     private boolean isInSourcesJar(String classSourcePath) {
         return classSourcePath.endsWith(JAR_SUFFIX);
+    }
+
+    private static  boolean isSystemWindows (){
+        return System.getProperty("os.name").toUpperCase().contains("WINDOWS");
     }
 }
