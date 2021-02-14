@@ -53,7 +53,7 @@ public class DragonSdkCodegenMojo extends AbstractSdkCodegenMojo {
                 newInstance.getClass().getMethod("setOutPath", String.class).invoke(newInstance, mavenProject.getBuild().getDirectory());
             }
         } catch (Exception exception) {
-            this.getLog().error("获取生成方法失败 " + exception.getMessage() + " exception " + exception.getClass().getName(),exception);
+            this.getLog().error("获取生成方法失败，" + exception.getMessage() + " exception " + exception.getClass().getName(),exception);
             return;
         }
 

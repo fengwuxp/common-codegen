@@ -28,7 +28,7 @@ import static com.github.javaparser.utils.CodeGenerationUtils.mavenModuleRoot;
 
 /**
  * 用于提供源代码的AST分析结果
- *
+ * 通过类对象{@link Class<?>}交换对应的编译结果
  * @author wuxp
  */
 @Slf4j
@@ -211,8 +211,7 @@ public class SourceCodeProvider {
      * @return Field编译描述对象
      */
     public Optional<FieldDeclaration> getFieldDeclaration(Class<?> clazz, String fieldName) {
-        Optional<TypeDeclaration> typeDeclaration = this.getTypeDeclaration(clazz);
-        return typeDeclaration.flatMap(declaration -> declaration
+        return this.getTypeDeclaration(clazz).flatMap(declaration -> declaration
                 .getMembers()
                 .stream()
                 .filter(item -> item instanceof FieldDeclaration)
@@ -279,8 +278,8 @@ public class SourceCodeProvider {
      */
     public Optional<MethodDeclaration> getMethodDeclaration(Class<?> clazz, String methodName, Class[] parameterTypes) {
         String[] parameterTypeNames = Arrays.stream(parameterTypes).map(Class::getName).toArray(String[]::new);
-        Optional<TypeDeclaration> typeDeclaration = this.getTypeDeclaration(clazz);
-        return typeDeclaration.flatMap(declaration -> declaration
+        return this.getTypeDeclaration(clazz)
+                .flatMap(declaration -> declaration
                 .getMembers()
                 .stream()
                 .filter(item -> item instanceof MethodDeclaration)
