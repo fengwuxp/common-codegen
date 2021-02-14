@@ -8,6 +8,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 /**
+ * java的包名映射策略
  * @author wuxp
  */
 @Slf4j

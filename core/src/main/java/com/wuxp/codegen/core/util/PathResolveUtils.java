@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.util;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
@@ -10,26 +11,28 @@ import java.util.Arrays;
 import java.util.Deque;
 
 /**
- * PathResolver is a utility class that resolves a reference path against a base path.
+ * PathResolveUtils is a utility class that resolves a reference path against a base path.
  *
  * @author wuxp
  */
-public final class PathResolver {
+@Slf4j
+public final class PathResolveUtils {
 
 
     /**
      * Disallow instantiation of class.
      */
-    private PathResolver() {
+    private PathResolveUtils() {
     }
 
     /**
      * 获取文件的相对路径
      *
-     * @param targetFilePath
-     * @param currentFilePath
-     * @return
+     * @param targetFilePath  目标路径
+     * @param currentFilePath 当前路径
+     * @return 计算得到的路径
      */
+    @Deprecated
     public static String getRelativePath(String targetFilePath, String currentFilePath) {
 
         Object[] a1 = Arrays.stream(targetFilePath.split("/"))
@@ -60,8 +63,9 @@ public final class PathResolver {
             sb.append(a1[idx++]).append("/");
         }
 
-        System.out.println("[" + targetFilePath + "] --> [" + currentFilePath + "] --> [" + sb + "]");
-
+        if (log.isDebugEnabled()) {
+            log.debug("[" + targetFilePath + "] --> [" + currentFilePath + "] --> [" + sb + "]");
+        }
         return sb.toString();
     }
 
@@ -85,7 +89,7 @@ public final class PathResolver {
      * </p>
      *
      * @param path      基础路径
-     * @param ref       模板路径
+     * @param ref       目标路径
      * @param separator 路径分隔符
      * @return 2个路径的相对路径
      */

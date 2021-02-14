@@ -13,8 +13,8 @@ public final class ToggleCaseUtils {
     /**
      * 将字符串的第一个字符大小写取反
      *
-     * @param str
-     * @return
+     * @param str 文本
+     * @return 转换后的文本
      */
     public static String toggleFirstChart(String str) {
         if (str == null) {

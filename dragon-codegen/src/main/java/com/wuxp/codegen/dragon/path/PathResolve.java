@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  * 路径解析
  *
  * @author wuxp
+ * @see com.wuxp.codegen.core.util.PathResolveUtils
  */
 @Slf4j
 public class PathResolve {
@@ -30,7 +31,7 @@ public class PathResolve {
     private static final String DOT = ".";
 
     /**
-     * 是否为文件的一个正则表达式
+     * 用于判断是否为文件的一个正则表达式
      */
     private static final String FILE_PATH_REGEXP = "\\w*.[a-zA-Z]{2,5}$";
 
@@ -38,11 +39,12 @@ public class PathResolve {
     /**
      * 计算2个路径的相对路径解析
      * <p>
-     *     /api/models/b
-     *     /api/clients/a
-     *     ==>
-     *     ../models/b
+     * /api/models/b
+     * /api/clients/a
+     * ==>
+     * ../models/b
      * </p>
+     *
      * @param baseDir 基础路径
      * @param args    目前只支持2个参数
      * @return 解析后的路径

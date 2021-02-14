@@ -15,8 +15,6 @@ import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
-import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
-import com.wuxp.codegen.core.strategy.ClassNameTransformer;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.dragon.strategy.AgreedPackageMapStrategy;
@@ -29,6 +27,7 @@ import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
+import org.springframework.util.Assert;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -105,14 +104,6 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
      * @value 方法名称
      */
     protected Map<Class<?>, String[]> ignoreMethods;
-
-    /**
-     * 类名映射策略
-     *
-     * @key 类名或ant匹配
-     * @value 字符串或 ClassNameTransformer
-     */
-    private Map<String, Object> classNameTransformers;
 
     /**
      * 包名映射策略
@@ -223,21 +214,9 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    /**
-     * @param classNameTransformers
-     * @return
-     * @see ClassNameTransformer
-     */
-    public AbstractDragonCodegenBuilder classNameTransformers(
-            Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers) {
-        this.classNameTransformers = classNameTransformers;
-        if (this.packageMapStrategy != null && this.packageMapStrategy instanceof AbstractPackageMapStrategy) {
-            ((AbstractPackageMapStrategy) this.packageMapStrategy).setClassNameTransformers(classNameTransformers);
-        }
-        return this;
-    }
 
     public AbstractDragonCodegenBuilder packageMapStrategy(PackageMapStrategy packageMapStrategy) {
+        Assert.notNull(packageMapStrategy, "package map strategy not null");
         this.packageMapStrategy = packageMapStrategy;
         return this;
     }
@@ -384,11 +363,11 @@ public abstract class AbstractDragonCodegenBuilder implements CodegenBuilder {
 
     }
 
-    protected boolean containsCollectionByType(Collection<?> objects,Class<?> clazz) {
+    protected boolean containsCollectionByType(Collection<?> objects, Class<?> clazz) {
         return objects.stream().anyMatch(ob -> clazz.isAssignableFrom(ob.getClass()));
     }
 
     private boolean containsLanguageEnhancedProcessorType(Class<? extends LanguageEnhancedProcessor> clazz) {
-        return this.containsCollectionByType(languageEnhancedProcessors,clazz);
+        return this.containsCollectionByType(languageEnhancedProcessors, clazz);
     }
 }

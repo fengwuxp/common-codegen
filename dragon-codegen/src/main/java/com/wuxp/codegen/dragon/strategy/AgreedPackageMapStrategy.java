@@ -14,6 +14,13 @@ import java.util.Map;
 
 /**
  * 基于约定的包名映射策略
+ * <p>
+ * 以下的输出目录都基于sdk生成的根目录进行计算
+ * 1：接口生成在clients目录下
+ * 2：枚举生成在enums目录下
+ * 3：数据传输对象生成在model
+ * {@link #innerConvert}
+ * </p>
  *
  * @author wuxp
  */
@@ -84,10 +91,11 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
             }
         }
         boolean isJava = CodegenConfigHolder.getConfig().isJava();
-        String outPackage = getOutPackage(clazz, String.format("%s.%s", groupId, base), groupId);
+        String packageFormat = "%s.%s";
+        String outPackage = getOutPackage(clazz, String.format(packageFormat, groupId, base), groupId);
         String className = convertClassName(clazz);
         if (isJava) {
-            return String.format("%s.%s", outPackage, className);
+            return String.format(packageFormat, outPackage, className);
         }
         String path = FileUtils.packageNameToFilePath(outPackage.replace(groupId, ""));
         return String.format("%s%s%s%s", PathResolve.RIGHT_SLASH, path, PathResolve.RIGHT_SLASH, className);

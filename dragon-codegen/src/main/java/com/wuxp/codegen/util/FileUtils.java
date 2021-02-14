@@ -62,21 +62,18 @@ public final class FileUtils {
             //删除子文件
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
-                if (!flag) {
-                    break;
-                }
             } //删除子目录
             else {
                 flag = deleteDirectory(files[i].getAbsolutePath());
-                if (!flag) {
-                    break;
-                }
+            }
+            if (!flag) {
+                break;
             }
         }
         if (!flag) {
             return false;
         }
-        //删除当前目录
+        //v删除当前目录
         return dirFile.delete();
     }
 
@@ -97,7 +94,7 @@ public final class FileUtils {
     }
 
     public static String packageNameToFilePath(String packagePath) {
-
+        // 此处必须使用replaceAll
         return packagePath.replaceAll("\\.", PathResolve.RIGHT_SLASH);
     }
 }

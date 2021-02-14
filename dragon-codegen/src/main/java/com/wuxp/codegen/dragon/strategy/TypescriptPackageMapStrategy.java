@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 /**
- * typeScript 映射策略
+ * typescript包名(路径) 映射策略
  *
  * @author wuxp
  */

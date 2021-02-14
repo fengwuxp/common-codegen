@@ -3,7 +3,7 @@ package com.wuxp.codegen.starter;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.CodegenBuilder;
-import com.wuxp.codegen.core.util.PathResolver;
+import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.starter.enums.OpenApiType;
@@ -201,7 +201,7 @@ public final class DragonSdkCodeGenerator implements CodeGenerator {
                 baseDir = baseDir + File.separator + outPath;
             }
             String ref = String.join(File.separator, outPaths);
-            return PathResolver.relative(baseDir, ref);
+            return PathResolveUtils.relative(baseDir, ref);
         } else {
             // 默认
             return Paths.get(baseDir).resolveSibling(String.join(File.separator, outPaths)).toString();

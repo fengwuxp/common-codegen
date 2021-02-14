@@ -4,7 +4,7 @@ package test.com.wuxp.codegen.javaparser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.utils.*;
-import com.wuxp.codegen.core.util.PathResolver;
+import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +31,7 @@ class JavaParserTest {
     @Test
     void testSourceRoot() {
         String userDir = System.getProperty("user.dir");
-        String path = PathResolver.relative(userDir, "../");
+        String path = PathResolveUtils.relative(userDir, "../");
         ParserCollectionStrategy parserCollectionStrategy = new ParserCollectionStrategy();
         ProjectRoot root = parserCollectionStrategy.collect(Paths.get(path));
         log.info("{}", root);

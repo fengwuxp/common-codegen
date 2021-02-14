@@ -12,7 +12,9 @@ import java.util.Optional;
 
 
 /**
- * 抽象的包名映射策略
+ * 抽象的包名映射策略，该策略基于配置，默认建议使用基于策略的配置{@link com.wuxp.codegen.dragon.strategy.AgreedPackageMapStrategy}
+ * 工作量较小。
+ * 基于配置的策略，可以用于高度的定制化，自定义输出的sd目录k结构
  *
  * @author wuxp
  */
@@ -31,23 +33,23 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
     /**
      * 用于替换文件名称的后缀
      */
-    protected String fileNamSuffix = "Service";
+    protected String fileNamSuffix;
 
     /**
      * 类名转换器
      *
-     * @see ClassNameTransformer
+     * @key 类名或ant匹配
+     * @value 字符串 or {@link ClassNameTransformer}
      */
-    protected Map<String/*类名或ant匹配*/, Object/*字符串或 ClassNameTransformer*/> classNameTransformers;
+    protected Map<String, Object> classNameTransformers;
 
 
     public AbstractPackageMapStrategy(Map<String, String> packageNameMap) {
-        this.packageNameMap = packageNameMap;
+        this(packageNameMap, null);
     }
 
     public AbstractPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers) {
-        this.packageNameMap = packageNameMap;
-        this.classNameTransformers = classNameTransformers;
+        this(packageNameMap, classNameTransformers, "Service");
     }
 
     public AbstractPackageMapStrategy(Map<String, String> packageNameMap, Map<String, Object> classNameTransformers, String fileNamSuffix) {
@@ -147,9 +149,9 @@ public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
         String name = clazz.getName();
         // ant 匹配
         for (Map.Entry<String, Object> entry : classNameTransformers.entrySet()) {
-            String s = entry.getKey();
+            String key = entry.getKey();
             Object transformer = entry.getValue();
-            if (pathMatcher.match(s, name)) {
+            if (pathMatcher.match(key, name)) {
                 if (transformer instanceof ClassNameTransformer) {
                     return ((ClassNameTransformer) transformer).transform(clazz);
                 }
