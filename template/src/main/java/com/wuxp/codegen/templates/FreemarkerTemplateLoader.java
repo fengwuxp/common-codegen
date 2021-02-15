@@ -102,9 +102,9 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     private static Map<Object, Object> initCustomizeMethods() {
         Map<Object, Object> templateMethods = new HashMap<>();
         try {
-            templateMethods.put("combineType",  ClassLoaderUtils.loadClass("com.wuxp.codegen.dragon.freemarker.CombineTypeMethod").newInstance());
-            templateMethods.put("pathResolve",  ClassLoaderUtils.loadClass("com.wuxp.codegen.dragon.freemarker.PathResolveMethod").newInstance());
-            templateMethods.put("combineDartFullType", ClassLoaderUtils.loadClass("com.wuxp.codegen.dragon.freemarker.DartFullTypeCombineMethod").newInstance());
+            templateMethods.put("combineType",  ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.CombineTypeMethod").newInstance());
+            templateMethods.put("pathResolve",  ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.PathResolveMethod").newInstance());
+            templateMethods.put("combineDartFullType", ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.DartFullTypeCombineMethod").newInstance());
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }

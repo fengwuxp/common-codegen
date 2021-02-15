@@ -1,13 +1,13 @@
 package com.wuxp.codegen.swagger3.builder;
 
-import com.wuxp.codegen.AbstractDragonCodegenBuilder;
+import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.dragon.CombinationCodeGenMatchingStrategy;
-import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
+import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
+import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Builder
 @Slf4j
-public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilder {
+public class Swagger3FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder {
 
     private final Boolean enabledAndroidSqliteSupport;
 
@@ -56,7 +56,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractDragonCodegenBuilde
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(clientProviderType, this.templateFileVersion, this.getSharedVariables());
 
-        TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
+        TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new LoongSimpleTemplateStrategy(
                 templateLoader,
                 this.outPath,
                 languageDescription.getSuffixName(),

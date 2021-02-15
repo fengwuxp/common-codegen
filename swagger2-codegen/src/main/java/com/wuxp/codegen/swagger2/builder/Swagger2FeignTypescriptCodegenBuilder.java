@@ -1,14 +1,14 @@
 package com.wuxp.codegen.swagger2.builder;
 
-import com.wuxp.codegen.AbstractDragonCodegenBuilder;
+import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.dragon.CombinationCodeGenMatchingStrategy;
-import com.wuxp.codegen.dragon.DragonSimpleTemplateStrategy;
+import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
+import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author wuxp
  */
 @Slf4j
-public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegenBuilder {
+public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenBuilder {
 
 
     private Swagger2FeignTypescriptCodegenBuilder() {
@@ -56,7 +56,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractDragonCodegen
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
 
-        TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new DragonSimpleTemplateStrategy(
+        TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new LoongSimpleTemplateStrategy(
                 templateLoader,
                 this.outPath,
                 LanguageDescription.TYPESCRIPT.getSuffixName(),

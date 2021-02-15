@@ -24,20 +24,21 @@
         <module>model</module>
         <module>template</module>
         <module>languages</module>
-        <module>dragon-codegen</module>
+        <module>loong-codegen</module>
         <module>swagger2-codegen</module>
         <module>examples</module>
         <module>swagger3-codegen</module>
         <module>language-annotations</module>
         <module>annotation-meta</module>
         <module>annotation-processor</module>
-        <module>dragon-codegen-starter</module>
-        <module>source-code-suppoert</module>
-        <module>dragon-maven-plugin</module>
+        <module>loong-codegen-starter</module>
+        <module>source-code-support</module>
+        <module>loong-maven-plugin</module>
+        <module>loong-quick</module>
     </modules>
 
     <properties>
-        <revision>1.1.1-SNAPSHOT</revision>
+        <revision>1.1.2-SNAPSHOT</revision>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jdk.version>${maven.compiler.target}</jdk.version>

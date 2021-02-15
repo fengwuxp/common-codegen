@@ -3,8 +3,8 @@ package com.wuxp.codegen.annotation.processors;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
-import com.wuxp.codegen.dragon.AbstractCodeGenerator;
-import com.wuxp.codegen.starter.DragonSdkCodeGenerator;
+import com.wuxp.codegen.loong.AbstractCodeGenerator;
+import com.wuxp.codegen.starter.LoongSdkCodeGenerator;
 import com.wuxp.codegen.util.FileUtils;
 
 import javax.annotation.processing.*;
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 })
 public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
 
-    private final DragonSdkCodeGenerator dragonSdkCodegenerator = new DragonSdkCodeGenerator();
+    private final LoongSdkCodeGenerator loongSdkCodeGenerator = new LoongSdkCodeGenerator();
 
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         // 删除原本的输出目录
-        String baseOutPath = DragonSdkCodeGenerator.getBaseOutPath();
+        String baseOutPath = LoongSdkCodeGenerator.getBaseOutPath();
         File file = new File(baseOutPath);
         if (file.exists() && file.isDirectory()) {
             FileUtils.deleteDirectory(baseOutPath);
@@ -47,7 +47,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Messager messager = this.processingEnv.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE, "开始执行" + SpringApiSdkCodegenProcessor.class.getSimpleName());
-        Collection<CodeGenerator> codeGenerators = dragonSdkCodegenerator.getCodeGeneratorBuilders()
+        Collection<CodeGenerator> codeGenerators = loongSdkCodeGenerator.getCodeGeneratorBuilders()
                 .stream()
                 .map(CodegenBuilder::buildCodeGenerator)
                 .collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
         }
         codeGenerators.forEach(codeGenerator -> {
             if (codeGenerator instanceof AbstractCodeGenerator) {
-                ((AbstractCodeGenerator) codeGenerator).dragonGenerate(aClass);
+                ((AbstractCodeGenerator) codeGenerator).generateByClasses(aClass);
             }
         });
     }
