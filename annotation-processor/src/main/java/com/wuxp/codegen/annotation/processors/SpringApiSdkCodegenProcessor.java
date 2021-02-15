@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 })
 public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
 
-    private final LoongSdkCodeGenerator LoongSdkCodeGenerator = new LoongSdkCodeGenerator();
+    private final LoongSdkCodeGenerator loongSdkCodeGenerator = new LoongSdkCodeGenerator();
 
 
     @Override
@@ -47,7 +47,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Messager messager = this.processingEnv.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE, "开始执行" + SpringApiSdkCodegenProcessor.class.getSimpleName());
-        Collection<CodeGenerator> codeGenerators = LoongSdkCodeGenerator.getCodeGeneratorBuilders()
+        Collection<CodeGenerator> codeGenerators = loongSdkCodeGenerator.getCodeGeneratorBuilders()
                 .stream()
                 .map(CodegenBuilder::buildCodeGenerator)
                 .collect(Collectors.toList());
