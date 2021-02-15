@@ -66,7 +66,7 @@
 在面对没有swagger注解或者注解不够全面的的项目，通过源码上的注释输出sdk的注释说明增强
 ```
 
-### codegen-server
+### codegen-quick-support 快速接入支持
 
 ```text
     为了更方便使用codegen，提供vcs server模块从代码版本控制平台（git/svn）将代码拉取到本地，自动调用
@@ -75,7 +75,7 @@
     npm-codegen-cli
     java-codegen-client-plugin
 ```
-
+- [loong-quick](./loong-quick)
 - codegen-server
 
 ```text
