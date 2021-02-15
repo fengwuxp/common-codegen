@@ -26,7 +26,7 @@
     </dependency>
       <dependency>
           <groupId>com.wuxp.codegen</groupId>
-          <artifactId>wuxp-codegen-source-code-suppoert</artifactId>
+          <artifactId>wuxp-codegen-source-code-support</artifactId>
           <version>${project.version}</version>
       </dependency>
   </dependencies>

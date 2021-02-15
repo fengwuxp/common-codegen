@@ -28,8 +28,8 @@
 |--annotation-processor      maven注解处理
 |--core                      核心模块，定义了顶层的接口
 |--docs                      说明文档
-|--dragon-codegen            dragon codegen 通用的代码生成，这里会聚合其他的代码生成器
-|--dragon-codegen-starter    基于约定和探测，提供更简易的Api
+|--loong-codegen             loong codegen 通用的代码生成，这里会聚合其他的代码生成器
+|--loong-codegen-starter     基于约定和探测，提供更简易的Api
 |--examples                  生成例子集合
 |-----codegen-result         生成结果目录,不同的语言会生成到不同的目录下
 |-----swagger-2              基于swagger-2的生成例子
@@ -65,3 +65,30 @@
 ```text
 在面对没有swagger注解或者注解不够全面的的项目，通过源码上的注释输出sdk的注释说明增强
 ```
+
+### codegen-server
+
+```text
+    为了更方便使用codegen，提供vcs server模块从代码版本控制平台（git/svn）将代码拉取到本地，自动调用
+ mvn插件进行代码生成。这个的前提是，被拉取的代码库需要集成codegen-maven-plugin
+    提供client端通过restful接口调用代码生成，在生成完成后下载到本地。
+    npm-codegen-cli
+    java-codegen-client-plugin
+```
+
+- codegen-server
+
+```text
+  1：支持通过代码库名称+分支名称 从git/svn中拉取代码
+  2：支持调用mvn命令支持代码库的codegen-maven-plugin
+  3：支持代码生成状态轮询和代码生成结果下载接口
+```
+- codegen-client
+```text
+  1：通过设置codegen-server地址和服务端代码的代码库和分支名称进行sdk生成下载
+```
+
+#### features
+- gradle项目的支持
+- 支持输出文档（openapi文档或自定义格式的文档）
+- 支持通过oepnapi文档生成

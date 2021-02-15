@@ -3,7 +3,7 @@ package com.wuxp.codegen.swagger2;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.dragon.AbstractCodeGenerator;
+import com.wuxp.codegen.loong.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.swagger2.annotations.*;
 import io.swagger.annotations.*;

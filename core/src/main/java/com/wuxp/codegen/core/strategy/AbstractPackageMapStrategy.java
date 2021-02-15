@@ -12,7 +12,7 @@ import java.util.Optional;
 
 
 /**
- * 抽象的包名映射策略，该策略基于配置，默认建议使用基于策略的配置{@link com.wuxp.codegen.dragon.strategy.AgreedPackageMapStrategy}
+ * 抽象的包名映射策略，该策略基于配置，默认建议使用基于策略的配置{@link com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy}
  * 工作量较小。
  * 基于配置的策略，可以用于高度的定制化，自定义输出的sd目录k结构
  *

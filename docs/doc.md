@@ -299,7 +299,7 @@ export interface CreateOrderEvt extends BaseEvt {
     <plugins>
         <plugin>
             <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-dragon-maven-plugin</artifactId>
+            <artifactId>wuxp-codegen-loong-maven-plugin</artifactId>
             <version>${project.version}</version>
         </plugin>
     </plugins>

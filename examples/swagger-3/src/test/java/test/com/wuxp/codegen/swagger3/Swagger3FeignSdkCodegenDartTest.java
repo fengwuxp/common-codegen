@@ -2,7 +2,7 @@ package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.dragon.strategy.TypescriptPackageMapStrategy;
+import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;

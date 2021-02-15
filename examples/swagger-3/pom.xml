@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-dragon-starter</artifactId>
+            <artifactId>wuxp-codegen-loong-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
