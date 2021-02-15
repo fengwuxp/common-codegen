@@ -1,5 +1,7 @@
 package com.wuxp.codegen.core.config;
 
+import com.wuxp.codegen.model.LanguageDescription;
+
 /**
  * 使用 {@link ThreadLocal} 保存配置
  *
@@ -20,5 +22,13 @@ public class CodegenConfigHolder {
 
     public static void clear() {
         GLOBAL_CONFIG.remove();
+    }
+
+    public static LanguageDescription getCurrentLanguageDescription() {
+        CodegenConfig config = getConfig();
+        if (config == null) {
+            return null;
+        }
+        return config.getLanguageDescription();
     }
 }

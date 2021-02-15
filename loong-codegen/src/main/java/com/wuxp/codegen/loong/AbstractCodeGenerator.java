@@ -211,11 +211,16 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             }
             i++;
         }
-        if (codeGenPublisher != null) {
-            codeGenPublisher.sendCodeGenEnd();
-            if (codeGenPublisher.supportPark()) {
-                // 最多等待10秒
-                LockSupport.parkNanos(10L * 1000 * 1000 * 1000);
+        if (codeGenPublisher == null) {
+            return;
+        }
+        codeGenPublisher.sendCodeGenEnd();
+        if (codeGenPublisher.supportPark()) {
+            long maxParkNanos = codeGenPublisher.getMaxParkNanos();
+            if (maxParkNanos > 0) {
+                LockSupport.parkNanos(maxParkNanos);
+            } else {
+                LockSupport.park();
             }
         }
     }
@@ -311,7 +316,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
     private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
-        if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())){
+        if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())) {
             return true;
         }
 

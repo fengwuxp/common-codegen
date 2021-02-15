@@ -60,14 +60,12 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 templateLoader,
                 this.outPath,
                 this.languageDescription.getSuffixName(),
-                this.isDeletedOutputDirectory);
+                this.isDeletedOutputDirectory, this.codeFormatter);
 
 
         return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle)
                 .otherCodegenClassMetas(otherCodegenClassMetas);
     }
-
-
 
 
 }

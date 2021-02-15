@@ -61,7 +61,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
                 templateLoader,
                 this.outPath,
                 LanguageDescription.TYPESCRIPT.getSuffixName(),
-                this.isDeletedOutputDirectory);
+                this.isDeletedOutputDirectory,this.codeFormatter);
         RequestMappingProcessor.setSupportAuthenticationType(true);
         return new Swagger3CodeGenerator(
                 this.scanPackages,

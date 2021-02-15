@@ -1,8 +1,11 @@
 package com.wuxp.codegen.disruptor;
 
 import com.lmax.disruptor.EventHandler;
+import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
+import com.wuxp.codegen.format.AbstractCommandCodeFormatter;
+import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.loong.path.PathResolve;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -13,6 +16,7 @@ import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.util.FileUtils;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,11 +75,16 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
 
     private CombineTypeDescStrategy dartFullTypeCombineTypeDescStrategy = new DartFullTypeCombineTypeDescStrategy();
 
+    /**
+     * code formatter
+     */
+    private CodeFormatter codeFormatter;
 
-    public DartFeignCodeGenEventHandler(TemplateLoader<Template> templateLoader, String outputPath, Thread mainThread) {
+    public DartFeignCodeGenEventHandler(TemplateLoader<Template> templateLoader, CodeFormatter codeFormatter, String outputPath, Thread mainThread) {
         this.templateLoader = templateLoader;
         this.outputPath = outputPath;
         this.mainThread = mainThread;
+        this.codeFormatter = codeFormatter;
     }
 
     @Override
@@ -88,7 +97,10 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
                 this.buildSkdReflectFile();
                 this.buildSdkIndexFile();
             }
-            log.info("===生成完成，释放主线程===>");
+            this.waitCodeFormatter();
+            if (log.isInfoEnabled()) {
+                log.info("===生成完成，释放主线程===>");
+            }
             LockSupport.unpark(this.mainThread);
         } else if (event.isCodegenEvent()) {
             DartClassMeta genData = event.getGenData();
@@ -173,22 +185,15 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
     }
 
     private void buildFile(Template template, String output, Map<String, Object> data) {
-        Writer writer = null;
         try {
             //输出
-            writer = new OutputStreamWriter(new FileOutputStream(output),
-                    StandardCharsets.UTF_8);
-            template.process(data, writer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(output), StandardCharsets.UTF_8)) {
+                //添加自定义方法
+                template.process(data, writer);
             }
+            this.codeFormatter.format(output);
+        } catch (IOException | TemplateException e) {
+            e.printStackTrace();
         }
     }
 
@@ -298,6 +303,19 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
         }
         return MessageFormat.format("{0}Builder{1}", type, originalGenericDesc.substring(first));
 
+    }
+
+    private void waitCodeFormatter() {
+        if (codeFormatter instanceof LanguageCodeFormatter) {
+            Optional<CodeFormatter> optional = ((LanguageCodeFormatter) codeFormatter).getDelegateCodeFormatter();
+            if (!optional.isPresent()) {
+                return;
+            }
+            CodeFormatter delegateCodeFormatter = optional.get();
+            if (delegateCodeFormatter instanceof AbstractCommandCodeFormatter) {
+                ((AbstractCommandCodeFormatter) delegateCodeFormatter).park();
+            }
+        }
     }
 
 }

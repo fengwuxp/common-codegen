@@ -60,7 +60,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 templateLoader,
                 this.outPath,
                 languageDescription.getSuffixName(),
-                this.isDeletedOutputDirectory);
+                this.isDeletedOutputDirectory, this.codeFormatter);
 
         return new Swagger3CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle, null)
                 .otherCodegenClassMetas(otherCodegenClassMetas);

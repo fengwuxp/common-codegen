@@ -1,8 +1,10 @@
 package com.wuxp.codegen.loong;
 
+import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -32,7 +34,9 @@ import java.text.MessageFormat;
 public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeGenClassMeta> {
 
     /**
-     * 在LAST_MODIFIED_MINUTE内生成的文件不在生成
+     * 在LAST_MODIFIED_MINUTE分钟内生成的文件不在生成，为了打断递归和循环
+     *
+     * @see #ONE_MINUTE_MILLIS
      */
     public static final float LAST_MODIFIED_MINUTE = 0.1f;
 
@@ -62,11 +66,17 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
      */
     protected FileNameGenerateStrategy fileNameGenerateStrategy;
 
+    /**
+     * 代码格式化
+     */
+    private final CodeFormatter codeFormatter;
+
     public LoongSimpleTemplateStrategy(TemplateLoader<Template> templateLoader,
                                        String outputPath,
                                        String extName,
                                        boolean isDeletedOutputDirectory,
-                                       FileNameGenerateStrategy fileNameGenerateStrategy) {
+                                       FileNameGenerateStrategy fileNameGenerateStrategy,
+                                       CodeFormatter codeFormatter) {
         this.templateLoader = templateLoader;
         this.outputPath = outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator;
         this.extName = extName;
@@ -79,13 +89,17 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
                 log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
             }
         }
+        if (codeFormatter == null) {
+            codeFormatter = new LanguageCodeFormatter();
+        }
+        this.codeFormatter = codeFormatter;
     }
 
     public LoongSimpleTemplateStrategy(TemplateLoader<Template> templateLoader,
                                        String outputPath,
                                        String extName,
-                                       boolean isDeletedOutputDirectory) {
-        this(templateLoader, outputPath, extName, isDeletedOutputDirectory, FileNameGenerateStrategy.DEFAULT);
+                                       boolean isDeletedOutputDirectory, CodeFormatter codeFormatter) {
+        this(templateLoader, outputPath, extName, isDeletedOutputDirectory, FileNameGenerateStrategy.DEFAULT, codeFormatter);
     }
 
     @Override
@@ -126,10 +140,12 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
             //添加自定义方法
             template.process(data, writer);
         }
+        // 格式化代码
+        codeFormatter.format(output);
     }
 
     protected String getTemplate(CommonCodeGenClassMeta data) {
-        String templateName = null;
+        String templateName;
         CommonCodeGenMethodMeta[] methodMetas = data.getMethodMetas();
         if (methodMetas == null || methodMetas.length == 0) {
             //DTO or enum
