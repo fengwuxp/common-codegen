@@ -18,6 +18,8 @@ import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
+
 
 /**
  * @author wuxp
@@ -60,14 +62,13 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 templateLoader,
                 this.outPath,
                 this.languageDescription.getSuffixName(),
-                this.isDeletedOutputDirectory);
+                this.isDeletedOutputDirectory, this.codeFormatter);
 
 
         return new Swagger2CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle)
-                .otherCodegenClassMetas(otherCodegenClassMetas);
+                .otherCodegenClassMetas(otherCodegenClassMetas)
+                .taskWaiters(Collections.singletonList(codeFormatter));
     }
-
-
 
 
 }

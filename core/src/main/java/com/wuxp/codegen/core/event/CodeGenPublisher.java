@@ -13,6 +13,10 @@ import java.util.concurrent.locks.LockSupport;
  */
 public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {
 
+    /**
+     * 默认的最大的part nanos
+     */
+    long DEFAULT_MAX_PARK_NANOS = 10L * 1000 * 1000 * 100;
 
     CodeGenPublisher NONE = new CodeGenPublisher() {
         @Override
@@ -64,5 +68,14 @@ public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {
      */
     default boolean supportPark() {
         return true;
+    }
+
+    /**
+     * 默认最多等待10秒
+     *
+     * @return 获取最大的等待纳秒数 if return code>-1</code> 则一直等待
+     */
+    default long getMaxParkNanos() {
+        return DEFAULT_MAX_PARK_NANOS;
     }
 }

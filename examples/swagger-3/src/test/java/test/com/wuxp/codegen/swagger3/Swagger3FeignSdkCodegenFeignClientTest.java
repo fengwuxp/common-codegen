@@ -2,8 +2,8 @@ package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
-import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
+import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;

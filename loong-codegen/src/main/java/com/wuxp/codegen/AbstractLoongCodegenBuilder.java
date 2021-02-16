@@ -3,10 +3,7 @@ package com.wuxp.codegen;
 
 import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
 import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
-import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.CodeDetect;
-import com.wuxp.codegen.core.CodeGenMatcher;
-import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.macth.ExcludeClassCodeGenMatcher;
@@ -17,11 +14,12 @@ import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy;
 import com.wuxp.codegen.enums.EnumCommentEnhancer;
+import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
 import com.wuxp.codegen.languages.typescript.UmiModel;
 import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
+import com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -124,6 +122,11 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      * 代码生成匹配策略
      */
     protected Collection<CodeGenMatchingStrategy> codeGenMatchingStrategies = new ArrayList<>();
+
+    /**
+     * 代码格式化
+     */
+    protected CodeFormatter codeFormatter = new LanguageCodeFormatter();
 
     /**
      * 是否删除输出目录
@@ -237,6 +240,11 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractLoongCodegenBuilder codeFormatter(CodeFormatter codeFormatter) {
+        this.codeFormatter = codeFormatter;
+        return this;
+    }
+
     public AbstractLoongCodegenBuilder isDeletedOutputDirectory(Boolean isDeletedOutputDirectory) {
         this.isDeletedOutputDirectory = isDeletedOutputDirectory;
         return this;
@@ -326,6 +334,9 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
         if (needSetUmiModel) {
             this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
+        }
+        if (this.codeFormatter instanceof LanguageCodeFormatter){
+            ((LanguageCodeFormatter) this.codeFormatter).setLanguageDescription(languageDescription);
         }
     }
 

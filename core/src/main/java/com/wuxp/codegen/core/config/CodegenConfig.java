@@ -69,6 +69,12 @@ public final class CodegenConfig {
      */
     private List<String> basePackages;
 
+    /**
+     * 是否启用代码格式化
+     * 默认不启用
+     */
+    private boolean enabledCodeFormatter;
+
 
     public boolean isJava() {
         return LanguageDescription.JAVA.equals(languageDescription) || LanguageDescription.JAVA_ANDROID.equals(languageDescription);
