@@ -85,6 +85,7 @@
   1：支持通过代码库名称+分支名称 从git/svn中拉取代码
   2：支持调用mvn命令支持代码库的codegen-maven-plugin
   3：支持代码生成状态轮询和代码生成结果下载接口
+  4：提供代码仓库的管理
 ```
 - codegen-client
 ```text

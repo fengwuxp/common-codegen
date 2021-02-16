@@ -3,11 +3,18 @@ package com.wuxp.codegen.server.vcs;
 /**
  * 源代码仓库
  * 用于从源代码管理平台拉取代码
+ * <p>
+ * 按照{project}/{branch}进行目录分隔
+ * </p>
  *
  * @author wuxp
  */
 public interface SourcecodeRepository {
 
+
+    default String download(String projectName) {
+        return download(projectName, this.getMasterBranchName());
+    }
 
     /**
      * 下载项目
@@ -32,4 +39,12 @@ public interface SourcecodeRepository {
      * @param filepath 本地源代码路径
      */
     void deleteLocalRepository(String filepath);
+
+    /**
+     * 获取默认分支的名称
+     * @return
+     */
+    default String getMasterBranchName() {
+        return "master";
+    }
 }

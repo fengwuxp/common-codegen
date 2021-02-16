@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author wuxp
  */
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.wuxp.codegen.server"})
 public class LoongCodegenApplication {
 
     public static void main(String[] args) {
