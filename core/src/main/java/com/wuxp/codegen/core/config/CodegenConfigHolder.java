@@ -7,9 +7,12 @@ import com.wuxp.codegen.model.LanguageDescription;
  *
  * @author wuxp
  */
-public class CodegenConfigHolder {
+public final class CodegenConfigHolder {
 
-    private final static ThreadLocal<CodegenConfig> GLOBAL_CONFIG = new ThreadLocal<>();
+    private static final ThreadLocal<CodegenConfig> GLOBAL_CONFIG = new ThreadLocal<>();
+
+    private CodegenConfigHolder() {
+    }
 
     public static CodegenConfig getConfig() {
 
@@ -30,5 +33,13 @@ public class CodegenConfigHolder {
             return null;
         }
         return config.getLanguageDescription();
+    }
+
+    public static boolean isEnabledCodeFormatter() {
+        CodegenConfig config = getConfig();
+        if (config == null) {
+            return false;
+        }
+        return config.isEnabledCodeFormatter();
     }
 }

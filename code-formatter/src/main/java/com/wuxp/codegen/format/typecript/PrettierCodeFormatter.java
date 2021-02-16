@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PrettierCodeFormatter extends AbstractCommandCodeFormatter {
 
     /**
-     * 用于格式化代码的脚步地址
+     * 用于格式化代码的脚本文件
      */
     private static final String FORMAT_SHELL_FILEPATH = PrettierCodeFormatter.class.getResource("/prettier-formatter.js").getFile();
 
@@ -35,10 +35,11 @@ public class PrettierCodeFormatter extends AbstractCommandCodeFormatter {
 
         // check prettier
         if (!runCommand("prettier --version")) {
-            // check prettier
+             // check prettier
             log.warn("prettier not installed,please install");
             return false;
         }
         return true;
     }
+
 }

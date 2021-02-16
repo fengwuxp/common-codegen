@@ -62,11 +62,13 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
         return sourcecode;
     }
 
+
     /**
      * 等待所有的异步任务结束
      */
-    public void park() {
-        if (futures == null) {
+    @Override
+    public void waitTaskCompleted() {
+        if (futures == null || futures.isEmpty()) {
             return;
         }
         int count = 0;
@@ -84,6 +86,7 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
         if (log.isInfoEnabled()) {
             log.info("共执行的异步任务数量：{}", count);
         }
+        futures.clear();
 
     }
 

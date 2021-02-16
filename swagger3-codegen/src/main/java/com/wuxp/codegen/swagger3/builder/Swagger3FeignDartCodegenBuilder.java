@@ -124,7 +124,8 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
                 templateStrategy,
                 this.enableFieldUnderlineStyle,
                 new DisruptorCodeGenPublisher<>(dartFeignCodeGenEventHandler, -1))
-                .otherCodegenClassMetas(otherCodegenClassMetas);
+                .otherCodegenClassMetas(otherCodegenClassMetas)
+                .taskWaiters(Collections.singletonList(codeFormatter));
     }
 
 

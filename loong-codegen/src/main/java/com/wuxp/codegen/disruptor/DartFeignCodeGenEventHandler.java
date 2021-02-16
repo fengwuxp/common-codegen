@@ -2,9 +2,9 @@ package com.wuxp.codegen.disruptor;
 
 import com.lmax.disruptor.EventHandler;
 import com.wuxp.codegen.core.CodeFormatter;
+import com.wuxp.codegen.core.TaskWaiter;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
-import com.wuxp.codegen.format.AbstractCommandCodeFormatter;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.loong.path.PathResolve;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -97,7 +97,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
                 this.buildSkdReflectFile();
                 this.buildSdkIndexFile();
             }
-            this.waitCodeFormatter();
+            codeFormatter.waitTaskCompleted();
             if (log.isInfoEnabled()) {
                 log.info("===生成完成，释放主线程===>");
             }
@@ -305,17 +305,5 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
 
     }
 
-    private void waitCodeFormatter() {
-        if (codeFormatter instanceof LanguageCodeFormatter) {
-            Optional<CodeFormatter> optional = ((LanguageCodeFormatter) codeFormatter).getDelegateCodeFormatter();
-            if (!optional.isPresent()) {
-                return;
-            }
-            CodeFormatter delegateCodeFormatter = optional.get();
-            if (delegateCodeFormatter instanceof AbstractCommandCodeFormatter) {
-                ((AbstractCommandCodeFormatter) delegateCodeFormatter).park();
-            }
-        }
-    }
 
 }

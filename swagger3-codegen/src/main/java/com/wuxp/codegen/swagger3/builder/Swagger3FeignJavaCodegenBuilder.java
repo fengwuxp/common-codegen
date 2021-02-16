@@ -18,6 +18,9 @@ import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 
 /**
  * @author wuxp
@@ -63,6 +66,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 this.isDeletedOutputDirectory, this.codeFormatter);
 
         return new Swagger3CodeGenerator(this.scanPackages, languageParser, templateStrategy, this.enableFieldUnderlineStyle, null)
-                .otherCodegenClassMetas(otherCodegenClassMetas);
+                .otherCodegenClassMetas(otherCodegenClassMetas)
+                .taskWaiters(Collections.singletonList(codeFormatter));
     }
 }

@@ -1,12 +1,15 @@
 package com.wuxp.codegen.loong;
 
 
+import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.TaskWaiter;
 import com.wuxp.codegen.core.UnifiedResponseExplorer;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
@@ -19,6 +22,7 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
@@ -93,6 +97,12 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * 生成事件发送者
      */
     protected CodeGenPublisher codeGenPublisher;
+
+
+    /**
+     * 在结束前需要等待的任务
+     */
+    protected Collection<TaskWaiter> taskWaiters;
 
     /**
      * 统一响应对象的探测
@@ -211,18 +221,28 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             }
             i++;
         }
-        if (codeGenPublisher == null) {
-            return;
-        }
-        codeGenPublisher.sendCodeGenEnd();
-        if (codeGenPublisher.supportPark()) {
-            long maxParkNanos = codeGenPublisher.getMaxParkNanos();
-            if (maxParkNanos > 0) {
-                LockSupport.parkNanos(maxParkNanos);
-            } else {
-                LockSupport.park();
+        if (codeGenPublisher != null) {
+            codeGenPublisher.sendCodeGenEnd();
+            if (codeGenPublisher.supportPark()) {
+                long maxParkNanos = codeGenPublisher.getMaxParkNanos();
+                if (maxParkNanos > 0) {
+                    LockSupport.parkNanos(maxParkNanos);
+                } else {
+                    LockSupport.park();
+                }
             }
         }
+
+       if (CollectionUtils.isEmpty(taskWaiters)){
+           return;
+       }
+       // 等待所有的任务完成
+       for (TaskWaiter taskWaiter:taskWaiters){
+           if (taskWaiter==null){
+               continue;
+           }
+           taskWaiter.waitTaskCompleted();
+       }
     }
 
 
@@ -421,6 +441,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     public AbstractCodeGenerator otherCodegenClassMetas(Set<CommonCodeGenClassMeta> otherCodegenClassMetas) {
         this.otherCodegenClassMetas = otherCodegenClassMetas;
+        return this;
+    }
+
+    public AbstractCodeGenerator taskWaiters(Collection<TaskWaiter> taskWaiters) {
+        this.taskWaiters = taskWaiters;
         return this;
     }
 }

@@ -36,7 +36,6 @@
         <module>loong-maven-plugin</module>
         <module>loong-quick</module>
         <module>code-formatter</module>
-        <module>idea-code-style</module>
     </modules>
 
     <properties>

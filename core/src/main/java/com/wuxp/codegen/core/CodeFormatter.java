@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author wuxp
  */
-public interface CodeFormatter {
+public interface CodeFormatter extends TaskWaiter {
 
     /**
      * 格式化代码
@@ -36,9 +36,15 @@ public interface CodeFormatter {
 
     /**
      * 格式化代码
+     *
      * @param sourcecode  源代码
      * @param charsetName 字符集
      * @return 格式化成功后的代码
      */
     String format(String sourcecode, final Charset charsetName);
+
+    @Override
+    default void waitTaskCompleted() {
+        // 默认不需要等待
+    }
 }

@@ -67,6 +67,8 @@
 ```
 
 ### codegen-server
+- [unibeautify](https://github.com/Unibeautify/unibeautify)
+- [awesome-code-formatters](https://github.com/rishirdua/awesome-code-formatters)
 
 ```text
     为了更方便使用codegen，提供vcs server模块从代码版本控制平台（git/svn）将代码拉取到本地，自动调用

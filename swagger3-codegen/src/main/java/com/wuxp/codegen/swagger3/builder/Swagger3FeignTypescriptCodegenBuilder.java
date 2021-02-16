@@ -18,6 +18,8 @@ import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
+
 /**
  * @author wuxp
  */
@@ -71,6 +73,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
                 languageParser,
                 templateStrategy,
                 this.enableFieldUnderlineStyle, null)
-                .otherCodegenClassMetas(otherCodegenClassMetas);
+                .otherCodegenClassMetas(otherCodegenClassMetas)
+                .taskWaiters(Collections.singletonList(codeFormatter));
     }
 }

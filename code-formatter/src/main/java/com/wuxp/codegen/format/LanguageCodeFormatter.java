@@ -1,6 +1,7 @@
 package com.wuxp.codegen.format;
 
 import com.wuxp.codegen.core.CodeFormatter;
+import com.wuxp.codegen.core.TaskWaiter;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.format.dart.FlutterCodeFormatter;
 import com.wuxp.codegen.format.java.GoogleCodeFormatter;
@@ -36,14 +37,21 @@ public class LanguageCodeFormatter implements CodeFormatter {
 
     @Override
     public void format(String filepath) {
-        Optional<CodeFormatter> optional = getFormatter();
-        optional.ifPresent(codeFormatter -> codeFormatter.format(filepath));
+        if (CodegenConfigHolder.isEnabledCodeFormatter()) {
+            Optional<CodeFormatter> optional = getFormatter();
+            optional.ifPresent(codeFormatter -> codeFormatter.format(filepath));
+        }
+
     }
 
     @Override
     public String format(String sourcecode, Charset charsetName) {
-        Optional<CodeFormatter> optional = getFormatter();
-        return optional.map(codeFormatter -> codeFormatter.format(sourcecode, charsetName)).orElse(sourcecode);
+        if (CodegenConfigHolder.isEnabledCodeFormatter()) {
+            Optional<CodeFormatter> optional = getFormatter();
+            return optional.map(codeFormatter -> codeFormatter.format(sourcecode, charsetName)).orElse(sourcecode);
+        } else {
+            return sourcecode;
+        }
     }
 
     private Optional<CodeFormatter> getFormatter() {
@@ -81,7 +89,9 @@ public class LanguageCodeFormatter implements CodeFormatter {
         this.languageDescription = languageDescription;
     }
 
-    public Optional<CodeFormatter> getDelegateCodeFormatter() {
-        return this.getFormatter();
+    @Override
+    public void waitTaskCompleted() {
+        Optional<CodeFormatter> optional = getFormatter();
+        optional.ifPresent(TaskWaiter::waitTaskCompleted);
     }
 }
