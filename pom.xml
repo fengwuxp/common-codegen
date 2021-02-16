@@ -35,6 +35,7 @@
         <module>source-code-support</module>
         <module>loong-maven-plugin</module>
         <module>loong-quick</module>
+        <module>code-formatter</module>
     </modules>
 
     <properties>

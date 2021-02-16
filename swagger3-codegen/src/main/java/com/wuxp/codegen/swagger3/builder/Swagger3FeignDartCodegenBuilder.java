@@ -9,9 +9,9 @@ import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.disruptor.DartFeignCodeGenEventHandler;
+import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
-import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -107,10 +107,10 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
                         return AbstractDartParser.dartFileNameConverter(filepath);
                     }
                     return filepath;
-                });
+                }, this.codeFormatter);
 
         Thread currentThread = Thread.currentThread();
-        DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.outPath, currentThread);
+        DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.codeFormatter, this.outPath, currentThread);
         dartFeignCodeGenEventHandler.setSdkIndexFileName(this.sdkIndexFileName);
         dartFeignCodeGenEventHandler.setTypeAlias(this.typeAlias);
         RequestMappingProcessor.setSupportAuthenticationType(true);
@@ -123,8 +123,9 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
                 languageParser,
                 templateStrategy,
                 this.enableFieldUnderlineStyle,
-                new DisruptorCodeGenPublisher<>(dartFeignCodeGenEventHandler))
-                .otherCodegenClassMetas(otherCodegenClassMetas);
+                new DisruptorCodeGenPublisher<>(dartFeignCodeGenEventHandler, -1))
+                .otherCodegenClassMetas(otherCodegenClassMetas)
+                .taskWaiters(Collections.singletonList(codeFormatter));
     }
 
 

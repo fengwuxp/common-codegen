@@ -17,19 +17,22 @@ import java.util.concurrent.Executors;
 public class DisruptorCodeGenPublisher<T extends CommonCodeGenClassMeta> implements CodeGenPublisher<T> {
 
 
-    private Disruptor<CodegenEvent<T>> disruptor;
-    private RingBuffer<CodegenEvent<T>> ringBuffer;
+    private final Disruptor<CodegenEvent<T>> disruptor;
+
+    private final RingBuffer<CodegenEvent<T>> ringBuffer;
+
+    private final long maxParkNanos;
 
     public DisruptorCodeGenPublisher() {
-        this(null);
+        this(null, DEFAULT_MAX_PARK_NANOS);
     }
 
-    public DisruptorCodeGenPublisher(EventHandler<CodegenEvent<T>> defaultHandler) {
-        this(new Disruptor<CodegenEvent<T>>(new CodegenEventFactory<T>(), 1024, Executors.defaultThreadFactory()), defaultHandler);
+    public DisruptorCodeGenPublisher(EventHandler<CodegenEvent<T>> defaultHandler, long maxParkNanos) {
+        this(new Disruptor<>(new CodegenEventFactory<T>(), 1024, Executors.defaultThreadFactory()), defaultHandler, maxParkNanos);
     }
 
 
-    public DisruptorCodeGenPublisher(Disruptor<CodegenEvent<T>> disruptor, EventHandler<CodegenEvent<T>> defaultHandler) {
+    public DisruptorCodeGenPublisher(Disruptor<CodegenEvent<T>> disruptor, EventHandler<CodegenEvent<T>> defaultHandler, long maxParkNanos) {
         this.disruptor = disruptor;
         if (defaultHandler != null) {
             disruptor.handleEventsWith(defaultHandler);
@@ -38,6 +41,7 @@ public class DisruptorCodeGenPublisher<T extends CommonCodeGenClassMeta> impleme
         disruptor.start();
         // Get the ring buffer from the Disruptor to be used for publishing.
         this.ringBuffer = disruptor.getRingBuffer();
+        this.maxParkNanos = maxParkNanos;
     }
 
 
@@ -67,9 +71,10 @@ public class DisruptorCodeGenPublisher<T extends CommonCodeGenClassMeta> impleme
         this.sendCodeGenError(null, null);
     }
 
-//    public final EventHandlerGroup<CodegenEvent<T>> handleEventsWith(final EventHandler<? super CodegenEvent<T>>... handlers) {
-//        return disruptor.handleEventsWith(handlers);
-//    }
+    @Override
+    public long getMaxParkNanos() {
+        return maxParkNanos;
+    }
 
     /**
      * code gen event load
