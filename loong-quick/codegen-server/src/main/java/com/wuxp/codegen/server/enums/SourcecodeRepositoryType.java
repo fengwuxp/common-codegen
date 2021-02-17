@@ -16,7 +16,7 @@ public enum SourcecodeRepositoryType {
     /**
      * svn
      */
-    SVN("");
+    SVN("main");
 
     private final String mainBranchName;
 

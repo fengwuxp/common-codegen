@@ -87,7 +87,7 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 
-	protected AbstractScmAccessor(AbstractScmAccessorProperties properties) {
+    protected AbstractScmAccessor(AbstractScmAccessorProperties properties) {
         this.setBasedir(properties.getBasedir() == null ? createBaseDir()
                 : properties.getBasedir());
         this.passphrase = properties.getPassphrase();
@@ -187,17 +187,17 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
     }
 
 
-    protected File getWorkingDirectory(String projectName,String branch) {
+    protected File getWorkingDirectory(String projectName, String branch) {
         if (this.uri.startsWith("file:")) {
             try {
                 String path = StringUtils.cleanPath(this.uri);
-                return new UrlResource(this.getLocalRepositoryUrl(path,projectName,branch)).getFile();
+                return new UrlResource(this.getLocalRepositoryUrl(path, projectName, branch)).getFile();
             } catch (Exception e) {
                 throw new IllegalStateException(
                         "Cannot convert uri to file: " + this.uri);
             }
         }
-        return new File(this.getLocalRepositoryUrl(this.basedir,projectName,branch));
+        return new File(this.getLocalRepositoryUrl(this.basedir, projectName, branch));
     }
 
 
@@ -254,11 +254,11 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
         return output;
     }
 
-	private String getLocalRepositoryUrl(String basedir,String projectName,String branch){
-		return  LOCAL_REPOSITORY_TEMPLATE_URL
-				.replace("{basedir}", basedir)
-				.replace("{projectName}", projectName)
-				.replace("{branch}", branch);
-	}
+    private String getLocalRepositoryUrl(String basedir, String projectName, String branch) {
+        return LOCAL_REPOSITORY_TEMPLATE_URL
+                .replace("{basedir}", basedir)
+                .replace("{projectName}", projectName)
+                .replace("{branch}", branch);
+    }
 
 }

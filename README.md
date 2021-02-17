@@ -95,4 +95,4 @@
 #### features
 - gradle项目的支持
 - 支持输出文档（openapi文档或自定义格式的文档）
-- 支持通过oepnapi文档生成
+- 支持通过openApi文档生成

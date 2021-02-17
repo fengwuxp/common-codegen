@@ -28,17 +28,21 @@ public class JGitSourcecodeRepository extends AbstractSourcecodeRepository {
 
     @Override
     public String download(String projectName, String branch) {
+        File workingDirectory = this.getWorkingDirectory(projectName, branch);
+        String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
+        if (log.isDebugEnabled()) {
+            log.debug("Checking out {} to: {}", remoteRepositoryUrl, workingDirectory.getAbsolutePath());
+        }
         try {
             CloneCommand cloneCommand = gitFactory.getCloneCommandByCloneRepository();
-            File workingDirectory = this.getWorkingDirectory(projectName, branch);
-            cloneCommand.setURI(this.getRemoteRepositoryDir(projectName))
+            cloneCommand.setURI(remoteRepositoryUrl)
                     .setBranch(branch)
                     .setDirectory(workingDirectory)
                     .setCredentialsProvider(credentialsProvider())
                     .call();
             return workingDirectory.getAbsolutePath();
         } catch (GitAPIException exception) {
-            log.error("从git仓库拉取代码失败：{}", exception.getMessage(), exception);
+            log.error("从git仓库拉取代码失败，项目名称：{}，分支：{}，message：{}", projectName, branch, exception.getMessage(), exception);
             throw new VcsException(exception);
         }
     }

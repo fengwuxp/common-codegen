@@ -1,6 +1,7 @@
 package com.wuxp.codegen.server.vcs;
 
 import com.wuxp.codegen.server.config.SourcecodeRepositoryProperties;
+
 import com.wuxp.codegen.server.vcs.support.AbstractScmAccessor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +49,7 @@ public abstract class AbstractSourcecodeRepository extends AbstractScmAccessor i
      * @param projectName 项目名称
      * @return 远程仓库地址
      */
-    protected String getRemoteRepositoryDir(String projectName) {
+    protected String getRemoteRepositoryUrl(String projectName) {
         return String.format("%s/%s", this.getUri(), projectName);
     }
 

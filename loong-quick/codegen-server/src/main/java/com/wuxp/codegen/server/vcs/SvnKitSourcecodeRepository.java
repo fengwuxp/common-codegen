@@ -2,9 +2,16 @@ package com.wuxp.codegen.server.vcs;
 
 import com.wuxp.codegen.server.config.SourcecodeRepositoryProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.wc2.SvnCheckout;
+import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
+import org.tmatesoft.svn.core.wc2.SvnTarget;
+
+import java.io.File;
 
 /**
- * svn
+ * 从svn拉取代码
  *
  * @author wuxp
  */
@@ -17,7 +24,32 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
 
     @Override
     public String download(String projectName, String branch) {
-        // TODO
-        return null;
+        SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
+        File workingDirectory = this.getWorkingDirectory(projectName, branch);
+        try {
+            String id = this.checkout(svnOperationFactory, workingDirectory, projectName);
+            if (log.isDebugEnabled()) {
+                log.debug("svn checkout id：{}", id);
+            }
+        } catch (SVNException exception) {
+            log.error("从svn仓库拉取代码失败，项目名称：{}，分支：{}，message：{}", projectName, branch, exception.getMessage(), exception);
+            throw new VcsException(exception);
+        }
+        return workingDirectory.getAbsolutePath();
+    }
+
+    private String checkout(SvnOperationFactory svnOperationFactory, File workDir, String projectName) throws SVNException {
+        String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
+        if (log.isDebugEnabled()) {
+            log.debug("Checking out {} to: {}", remoteRepositoryUrl, workDir.getAbsolutePath());
+        }
+        final SvnCheckout checkout = svnOperationFactory.createCheckout();
+        checkout.setSource(SvnTarget.fromURL(SVNURL.parseURIEncoded(remoteRepositoryUrl)));
+        checkout.setSingleTarget(SvnTarget.fromFile(workDir));
+        Long id = checkout.run();
+        if (id == null) {
+            return null;
+        }
+        return id.toString();
     }
 }
