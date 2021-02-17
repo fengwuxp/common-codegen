@@ -13,7 +13,7 @@ class LoongSdkCodegenMojoTest {
         MavenProject mavenProject = new MavenProject();
         mavenProject.getBuild().setOutputDirectory("target/classes");
         LoongSdkCodegenMojo mojo = new LoongSdkCodegenMojo();
-        mojo.setTestClasspath(true);
+        mojo.setIncludeTestClasspath(true);
 
         mojo.setScanPackages(new String[]{"com.wuxp.codegen.maven"});
         mojo.setMavenProject(mavenProject);
