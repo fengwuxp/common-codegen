@@ -1,7 +1,8 @@
 package com.wuxp.codegen.maven;
 
 
-import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.ClientProviderType;
+import lombok.Getter;
 import lombok.Setter;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -16,6 +17,7 @@ import org.apache.maven.shared.transfer.repository.RepositoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.lang.reflect.AccessibleObject;
@@ -29,11 +31,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 /**
- * 抽象的sdk生成，用于调用{@link  CodeGenerator#generate()}生成sdk代码
+ * 抽象的sdk生成，用于调用{@link  com.wuxp.codegen.core.CodeGenerator#generate()}生成sdk代码
  *
  * @author wuxp
  */
 @Setter
+@Getter
 public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
 
     public final Logger logger = LoggerFactory.getLogger(getClass());
@@ -51,8 +54,8 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     /**
      * 代码生成输出路径
      */
-    @Parameter(defaultValue = "${project.build.directory}")
-    protected String outPath;
+    @Parameter(property = "output.path", defaultValue = "${project.build.directory}")
+    protected String outputPath;
 
 
     /**
@@ -62,16 +65,35 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     private boolean skip;
 
     /**
-     * test classpath usage switch
+     * 是否导入test classpath下的代码
      */
-    @Parameter(property = "test.classpath", defaultValue = "false")
-    private boolean testClasspath;
+    @Parameter(property = "include.test.classpath", defaultValue = "true")
+    private boolean includeTestClasspath = true;
 
     /**
      * 插件仅在构建命令启动的模块中执行
      */
     @Parameter(property = "only.execution.root", defaultValue = "true")
     private boolean onlyExecutionRoot = true;
+
+    /**
+     * 生成 sdk 的client lib type，如果为null或空，生成所有的
+     */
+    @Parameter(property = "client.provider.types")
+    protected List<ClientProviderType> clientProviderTypes;
+
+    /**
+     * 执行的{@link com.wuxp.codegen.core.CodeGenerator} 实现类
+     */
+    @Parameter(property = "code.generator.class")
+    protected String codeGeneratorClass;
+
+    /**
+     * 执行的{@link com.wuxp.codegen.core.MavenPluginInvokeCodeGenerator} 实现类
+     * 该配置的优先级高于{@link #codeGeneratorClass}
+     */
+    @Parameter(property = "plugin.code.generator.class")
+    protected String pluginCodeGeneratorClass;
 
     /**
      * Replace the absolute path to the local repo with this property. This field is ignored it prefix is declared. The
@@ -152,25 +174,29 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     }
 
     /**
-     * invoke {@link CodeGenerator#generate()}
+     * invoke {@link com.wuxp.codegen.core.CodeGenerator#generate()}
      */
     protected abstract void invokeCodegen();
 
 
     protected ClassLoader getProjectClassLoader() throws DependencyResolutionRequiredException,
             MalformedURLException {
-        List<String> classpathElements;
-        if (testClasspath) {
-            classpathElements = mavenProject.getTestClasspathElements();
-        } else {
-            classpathElements = mavenProject.getCompileClasspathElements();
-        }
         // classpath的类路径
-        List<URL> urls = new ArrayList<>(classpathElements.size());
-        for (String element : classpathElements) {
+        List<String> compileClasspathElements = mavenProject.getCompileClasspathElements();
+        List<URL> urls = new ArrayList<>(compileClasspathElements.size());
+        for (String element : compileClasspathElements) {
             File file = new File(element);
             if (file.exists()) {
                 urls.add(file.toURI().toURL());
+            }
+        }
+        if (includeTestClasspath) {
+            // include test classpath
+            for (String element : mavenProject.getTestClasspathElements()) {
+                File file = new File(element);
+                if (file.exists()) {
+                    urls.add(file.toURI().toURL());
+                }
             }
         }
         // 加入项目的依赖
@@ -222,7 +248,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     @SuppressWarnings("rawtypes")
     private boolean hasSourceChanges() {
         if (buildContext != null) {
-            List sourceRoots = testClasspath ? mavenProject.getTestCompileSourceRoots() :
+            List sourceRoots = includeTestClasspath ? mavenProject.getTestCompileSourceRoots() :
                     mavenProject.getCompileSourceRoots();
             for (Object path : sourceRoots) {
                 if (buildContext.hasDelta(new File(path.toString()))) {
@@ -271,8 +297,23 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         return scanPackages;
     }
 
+    protected String getFinallyOutputPath() {
+        if (!StringUtils.hasText(outputPath) && mavenProject.getBuild() != null) {
+            outputPath = mavenProject.getBuild().getOutputDirectory();
+        }
+        return outputPath;
+    }
+
+    protected List<ClientProviderType> getFinallyClientProviderTypes() {
+        if (clientProviderTypes == null || clientProviderTypes.isEmpty()) {
+            clientProviderTypes = Arrays.asList(ClientProviderType.values());
+        }
+        return clientProviderTypes;
+    }
+
     public ClassLoader getPluginProjectClassLoader() {
         return pluginProjectClassLoader;
     }
+
 
 }

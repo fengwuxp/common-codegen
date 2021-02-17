@@ -41,7 +41,13 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
      * 默认输出路径为当前文件夹
      */
     @Setter
-    private String outPath = null;
+    private String outputPath = null;
+
+    /**
+     * 支持生成的{@link ClientProviderType}
+     */
+    @Setter
+    private List<ClientProviderType> clientProviderTypes;
 
 
     public LoongSdkCodeGenerator() {
@@ -59,7 +65,7 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
     public LoongSdkCodeGenerator(OpenApiType openApiType, String... scanPackages) {
         this.scanPackages = scanPackages;
         this.openApiType = openApiType;
-        if (log.isDebugEnabled()) {
+        if (log.isInfoEnabled()) {
             log.info("sdk codegen args: openApiType={},scanPackages={}", openApiType, scanPackages);
         }
     }
@@ -67,10 +73,18 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
 
     @Override
     public void generate() {
-        getCodeGeneratorBuilders().forEach(codegenBuilder -> codegenBuilder.buildCodeGenerator().generate());
+        Collection<CodegenBuilder> codeGeneratorBuilders = getCodeGeneratorBuilders();
+        if (log.isInfoEnabled()) {
+            log.info("codeGeneratorBuilders：{}", codeGeneratorBuilders);
+        }
+        codeGeneratorBuilders.forEach(codegenBuilder -> codegenBuilder.buildCodeGenerator().generate());
     }
 
     public Collection<CodegenBuilder> getCodeGeneratorBuilders() {
+        Collection<ClientProviderType> finallyClientProviderTypes = getFinallyClientProviderTypes();
+        if (log.isInfoEnabled()) {
+            log.info("finallyClientProviderTypes：{}", finallyClientProviderTypes);
+        }
         switch (openApiType) {
             case SWAGGER_2:
                 return getCodeSwagger2GeneratorBuilders();
@@ -84,108 +98,128 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
 
 
     protected Collection<CodegenBuilder> getCodeSwagger2GeneratorBuilders() {
-
-        List<CodegenBuilder> codeGenerators = new ArrayList<>();
-        codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
-                .scanPackages(scanPackages)
-                .isDeletedOutputDirectory(false)
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
-                .outPath(this.getOuPath(ClientProviderType.TYPESCRIPT_FEIGN)));
-        codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
-                .scanPackages(scanPackages)
-                .isDeletedOutputDirectory(false)
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.UMI_REQUEST)
-                .outPath(this.getOuPath(ClientProviderType.UMI_REQUEST)));
-        codeGenerators.add(
-                Swagger2FeignDartCodegenBuilder.builder()
-                        .scanPackages(scanPackages)
-                        .isDeletedOutputDirectory(false)
-                        .outPath(this.getOuPath(ClientProviderType.DART_FEIGN))
-        );
-        codeGenerators.add(
-                Swagger2FeignJavaCodegenBuilder.builder()
-                        .build()
-                        .scanPackages(scanPackages)
-                        .isDeletedOutputDirectory(false)
-                        //设置基础数据类型的映射关系
-                        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-                        //自定义的类型映射
-                        .languageDescription(LanguageDescription.JAVA)
-                        .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-                        .outPath(this.getOuPath(ClientProviderType.SPRING_CLOUD_OPENFEIGN)));
-        codeGenerators.add(
-                Swagger2FeignJavaCodegenBuilder.builder()
-                        .useRxJava(true)
-                        .build()
-                        .scanPackages(scanPackages)
-                        .isDeletedOutputDirectory(false)
-                        // 基础类型映射
-                        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-                        //自定义的类型映射
-                        .languageDescription(LanguageDescription.JAVA_ANDROID)
-                        .clientProviderType(ClientProviderType.RETROFIT)
-                        .outPath(this.getOuPath(ClientProviderType.RETROFIT)));
+        Collection<ClientProviderType> finallyClientProviderTypes = getFinallyClientProviderTypes();
+        List<CodegenBuilder> codeGenerators = new ArrayList<>(8);
+        if (finallyClientProviderTypes.contains(ClientProviderType.TYPESCRIPT_FEIGN)) {
+            codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
+                    .scanPackages(scanPackages)
+                    .isDeletedOutputDirectory(false)
+                    .languageDescription(LanguageDescription.TYPESCRIPT)
+                    .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                    .outPath(this.getCodegenOutputPath(ClientProviderType.TYPESCRIPT_FEIGN)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.UMI_REQUEST)) {
+            codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
+                    .scanPackages(scanPackages)
+                    .isDeletedOutputDirectory(false)
+                    .languageDescription(LanguageDescription.TYPESCRIPT)
+                    .clientProviderType(ClientProviderType.UMI_REQUEST)
+                    .outPath(this.getCodegenOutputPath(ClientProviderType.UMI_REQUEST)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.DART_FEIGN)) {
+            codeGenerators.add(
+                    Swagger2FeignDartCodegenBuilder.builder()
+                            .scanPackages(scanPackages)
+                            .isDeletedOutputDirectory(false)
+                            .outPath(this.getCodegenOutputPath(ClientProviderType.DART_FEIGN))
+            );
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.SPRING_CLOUD_OPENFEIGN)) {
+            codeGenerators.add(
+                    Swagger2FeignJavaCodegenBuilder.builder()
+                            .build()
+                            .scanPackages(scanPackages)
+                            .isDeletedOutputDirectory(false)
+                            //设置基础数据类型的映射关系
+                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            //自定义的类型映射
+                            .languageDescription(LanguageDescription.JAVA)
+                            .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
+                            .outPath(this.getCodegenOutputPath(ClientProviderType.SPRING_CLOUD_OPENFEIGN)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.RETROFIT)) {
+            codeGenerators.add(
+                    Swagger2FeignJavaCodegenBuilder.builder()
+                            .useRxJava(true)
+                            .build()
+                            .scanPackages(scanPackages)
+                            .isDeletedOutputDirectory(false)
+                            // 基础类型映射
+                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            //自定义的类型映射
+                            .languageDescription(LanguageDescription.JAVA_ANDROID)
+                            .clientProviderType(ClientProviderType.RETROFIT)
+                            .outPath(this.getCodegenOutputPath(ClientProviderType.RETROFIT)));
+        }
 
         return codeGenerators;
     }
 
     protected Collection<CodegenBuilder> getCodeSwagger3GeneratorBuilders() {
-
-
-        List<CodegenBuilder> codeGenerators = new ArrayList<>();
-        codeGenerators.add(Swagger3FeignTypescriptCodegenBuilder.builder()
-                .scanPackages(scanPackages)
-                .isDeletedOutputDirectory(false)
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
-                .outPath(this.getOuPath(ClientProviderType.TYPESCRIPT_FEIGN)));
-        codeGenerators.add(Swagger3FeignTypescriptCodegenBuilder.builder()
-                .scanPackages(scanPackages)
-                .isDeletedOutputDirectory(false)
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.UMI_REQUEST)
-                .outPath(this.getOuPath(ClientProviderType.UMI_REQUEST)));
-        codeGenerators.add(
-                Swagger3FeignDartCodegenBuilder.builder()
-                        .scanPackages(scanPackages)
-                        .isDeletedOutputDirectory(false)
-                        .outPath(this.getOuPath(ClientProviderType.DART_FEIGN)));
-        codeGenerators.add(
-                Swagger3FeignJavaCodegenBuilder.builder()
-                        .build()
-                        .scanPackages(scanPackages)
-                        .isDeletedOutputDirectory(false)
-                        //设置基础数据类型的映射关系
-                        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-                        //自定义的类型映射
-                        .languageDescription(LanguageDescription.JAVA)
-                        .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-                        .outPath(this.getOuPath(ClientProviderType.SPRING_CLOUD_OPENFEIGN)));
-        codeGenerators.add(
-                Swagger3FeignJavaCodegenBuilder.builder()
-                        .useRxJava(true)
-                        .build()
-                        .scanPackages(scanPackages)
-                        .isDeletedOutputDirectory(false)
-                        // 基础类型映射
-                        .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
-                        //自定义的类型映射
-                        .languageDescription(LanguageDescription.JAVA_ANDROID)
-                        .clientProviderType(ClientProviderType.RETROFIT)
-                        .outPath(this.getOuPath(ClientProviderType.RETROFIT)));
+        Collection<ClientProviderType> finallyClientProviderTypes = getFinallyClientProviderTypes();
+        List<CodegenBuilder> codeGenerators = new ArrayList<>(8);
+        if (finallyClientProviderTypes.contains(ClientProviderType.TYPESCRIPT_FEIGN)) {
+            codeGenerators.add(Swagger3FeignTypescriptCodegenBuilder.builder()
+                    .scanPackages(scanPackages)
+                    .isDeletedOutputDirectory(false)
+                    .languageDescription(LanguageDescription.TYPESCRIPT)
+                    .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                    .outPath(this.getCodegenOutputPath(ClientProviderType.TYPESCRIPT_FEIGN)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.UMI_REQUEST)) {
+            codeGenerators.add(Swagger3FeignTypescriptCodegenBuilder.builder()
+                    .scanPackages(scanPackages)
+                    .isDeletedOutputDirectory(false)
+                    .languageDescription(LanguageDescription.TYPESCRIPT)
+                    .clientProviderType(ClientProviderType.UMI_REQUEST)
+                    .outPath(this.getCodegenOutputPath(ClientProviderType.UMI_REQUEST)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.DART_FEIGN)) {
+            codeGenerators.add(
+                    Swagger3FeignDartCodegenBuilder.builder()
+                            .scanPackages(scanPackages)
+                            .isDeletedOutputDirectory(false)
+                            .outPath(this.getCodegenOutputPath(ClientProviderType.DART_FEIGN)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.SPRING_CLOUD_OPENFEIGN)) {
+            codeGenerators.add(
+                    Swagger3FeignJavaCodegenBuilder.builder()
+                            .build()
+                            .scanPackages(scanPackages)
+                            .isDeletedOutputDirectory(false)
+                            //设置基础数据类型的映射关系
+                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            //自定义的类型映射
+                            .languageDescription(LanguageDescription.JAVA)
+                            .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
+                            .outPath(this.getCodegenOutputPath(ClientProviderType.SPRING_CLOUD_OPENFEIGN)));
+        }
+        if (finallyClientProviderTypes.contains(ClientProviderType.RETROFIT)) {
+            codeGenerators.add(
+                    Swagger3FeignJavaCodegenBuilder.builder()
+                            .useRxJava(true)
+                            .build()
+                            .scanPackages(scanPackages)
+                            .isDeletedOutputDirectory(false)
+                            // 基础类型映射
+                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            //自定义的类型映射
+                            .languageDescription(LanguageDescription.JAVA_ANDROID)
+                            .clientProviderType(ClientProviderType.RETROFIT)
+                            .outPath(this.getCodegenOutputPath(ClientProviderType.RETROFIT)));
+        }
 
         return codeGenerators;
     }
 
 
-    private String getOuPath(ClientProviderType type) {
+    private String getCodegenOutputPath(ClientProviderType type) {
         String baseDir;
-        if (outPath != null && outPath.startsWith(File.separator)) {
+        if (outputPath != null && outputPath.startsWith(File.separator)) {
             // 绝对路径
-            baseDir = FilenameUtils.normalizeNoEndSeparator(outPath);
+            baseDir = FilenameUtils.normalizeNoEndSeparator(outputPath);
         } else {
+            // 默认输出到用户目录下
             baseDir = System.getProperty("user.dir");
         }
         List<String> outPaths = new LinkedList<>(DEFAULT_OUT_PATHS);
@@ -195,10 +229,10 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
             outPaths.add("lib");
         }
         outPaths.add("src");
-        if (StringUtils.hasText(outPath)) {
-            if (outPath.startsWith(".")) {
+        if (StringUtils.hasText(outputPath)) {
+            if (outputPath.startsWith(".")) {
                 // 相对路径
-                baseDir = baseDir + File.separator + outPath;
+                baseDir = baseDir + File.separator + outputPath;
             }
             String ref = String.join(File.separator, outPaths);
             return PathResolveUtils.relative(baseDir, ref);
@@ -208,7 +242,14 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
         }
     }
 
-    public static String getBaseOutPath() {
+    private Collection<ClientProviderType> getFinallyClientProviderTypes() {
+        if (clientProviderTypes == null || clientProviderTypes.isEmpty()) {
+            clientProviderTypes = Arrays.asList(ClientProviderType.values());
+        }
+        return clientProviderTypes;
+    }
+
+    public static String getBaseOutputPath() {
         return Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, DEFAULT_OUT_PATHS)).toString();
     }
 
