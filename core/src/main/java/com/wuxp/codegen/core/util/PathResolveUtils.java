@@ -94,14 +94,15 @@ public final class PathResolveUtils {
      * @return 2个路径的相对路径
      */
     public static String relative(String path, String ref, String separator) {
-        path = FilenameUtils.normalizeNoEndSeparator(path);
-        ref = FilenameUtils.normalizeNoEndSeparator(ref);
+        boolean unixSeparator = "/".equals(separator);
+        path = FilenameUtils.normalizeNoEndSeparator(path, unixSeparator);
+        ref = FilenameUtils.normalizeNoEndSeparator(ref, unixSeparator);
         if (ref == null) {
             return path;
         }
         boolean isOther = ref.startsWith(".") || ref.startsWith(separator);
         if (!isOther) {
-            return FilenameUtils.normalizeNoEndSeparator(path + separator + ref);
+            return FilenameUtils.normalizeNoEndSeparator(path + separator + ref, unixSeparator);
         }
         String[] paths = splitPaths(path, separator);
         String[] refs = splitPaths(ref, separator);

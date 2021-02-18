@@ -91,7 +91,9 @@ public class LanguageCodeFormatter implements CodeFormatter {
 
     @Override
     public void waitTaskCompleted() {
-        Optional<CodeFormatter> optional = getFormatter();
-        optional.ifPresent(TaskWaiter::waitTaskCompleted);
+        if (CodegenConfigHolder.isEnabledCodeFormatter()) {
+            Optional<CodeFormatter> optional = getFormatter();
+            optional.ifPresent(TaskWaiter::waitTaskCompleted);
+        }
     }
 }

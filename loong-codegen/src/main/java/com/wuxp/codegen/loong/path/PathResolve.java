@@ -58,6 +58,8 @@ public class PathResolve {
         Path basePath = Paths.get(baseDir);
         List<Path> paths = Arrays.stream(args)
                 .filter(StringUtils::hasText)
+                // 移除路径中的双斜杆
+                .map(val-> val.replace("//","/"))
                 .map(path -> basePath.resolveSibling(Paths.get(path)))
                 .collect(Collectors.toList());
         if (paths.isEmpty()) {
