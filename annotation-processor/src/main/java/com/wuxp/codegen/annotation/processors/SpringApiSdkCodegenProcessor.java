@@ -36,7 +36,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         // 删除原本的输出目录
-        String baseOutPath = LoongSdkCodeGenerator.getBaseOutPath();
+        String baseOutPath = LoongSdkCodeGenerator.getBaseOutputPath();
         File file = new File(baseOutPath);
         if (file.exists() && file.isDirectory()) {
             FileUtils.deleteDirectory(baseOutPath);

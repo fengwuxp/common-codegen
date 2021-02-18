@@ -21,6 +21,11 @@ import java.util.concurrent.*;
 public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
 
     /**
+     * 执行命令的最大超时时间，单位毫秒
+     */
+    private static final int MAX_EXECUTE_COMMAND_TIMEOUT_MILLISECONDS = 3500;
+
+    /**
      * 是否支持 prettier命令行工具
      */
     protected final boolean support;
@@ -110,9 +115,10 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
         Process exec;
         try {
             exec = Runtime.getRuntime().exec(command);
-            int i = exec.waitFor();
+            // 最多等待5秒钟
+            boolean success = exec.waitFor(MAX_EXECUTE_COMMAND_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS);
             if (log.isTraceEnabled()) {
-                log.trace("调用命令行格式代码：{}", i);
+                log.trace("调用命令行格式代码：{}", success);
             }
             exec.destroy();
             return true;

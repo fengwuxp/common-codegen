@@ -66,6 +66,12 @@
 在面对没有swagger注解或者注解不够全面的的项目，通过源码上的注释输出sdk的注释说明增强
 ```
 
+### maven-plugin
+- 通过插件生成sdk
+- 支持指定生成的sdk lib(生成 ts、dart、oepnFeign等)
+- 支持调用指定的[CodeGenerator](./core/src/main/java/com/wuxp/codegen/core/CodeGenerator.java)的子类进行生成
+- 支持调用指定的测试用例生成（用于需要定制化时使用）
+
 ### codegen-quick-support 快速接入支持
 ### codegen-server
 - [unibeautify](https://github.com/Unibeautify/unibeautify)

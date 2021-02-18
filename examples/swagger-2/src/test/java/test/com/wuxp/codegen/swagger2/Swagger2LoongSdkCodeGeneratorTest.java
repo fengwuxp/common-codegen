@@ -8,7 +8,7 @@ class Swagger2LoongSdkCodeGeneratorTest {
     @Test
     void testCodegen() {
         LoongSdkCodeGenerator LoongSdkCodeGenerator = new LoongSdkCodeGenerator("com.wuxp.codegen.swagger2.**.controller");
-        LoongSdkCodeGenerator.setOutPath("../");
+        LoongSdkCodeGenerator.setOutputPath("../");
         LoongSdkCodeGenerator.generate();
     }
 }
