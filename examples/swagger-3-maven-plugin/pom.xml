@@ -54,7 +54,8 @@
                 <configuration>
                     <skip>false</skip>
                     <clientProviderTypes>SPRING_CLOUD_OPENFEIGN,TYPESCRIPT_FEIGN</clientProviderTypes>
-                    <pluginCodeGeneratorClass>com.wuxp.codegen.swagger3.example.Swagger3MavenPluginInvokeCodeGenerator</pluginCodeGeneratorClass>
+                    <pluginCodeGeneratorClass>com.wuxp.codegen.swagger3.example.Swagger3MavenPluginInvokeCodeGenerator
+                    </pluginCodeGeneratorClass>
                 </configuration>
             </plugin>
         </plugins>

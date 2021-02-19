@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc2.SvnCheckout;
+import org.tmatesoft.svn.core.wc2.SvnList;
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 import org.tmatesoft.svn.core.wc2.SvnTarget;
 
@@ -36,6 +37,20 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
             throw new VcsException(exception);
         }
         return workingDirectory.getAbsolutePath();
+    }
+
+    @Override
+    public boolean exist(String projectName, String branch) {
+        SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
+        SvnList list = svnOperationFactory.createList();
+        String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
+        try {
+            list.setSingleTarget(SvnTarget.fromURL(SVNURL.parseURIEncoded(remoteRepositoryUrl)));
+            return list.isFetchLocks();
+        } catch (SVNException exception) {
+            log.error("svn仓库{}不存在，项目名称：{}，分支：{}的代码，message：{}", getUri(), projectName, branch, exception.getMessage(), exception);
+        }
+        return false;
     }
 
     private String checkout(SvnOperationFactory svnOperationFactory, File workDir, String projectName) throws SVNException {

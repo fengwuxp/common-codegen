@@ -26,6 +26,15 @@ public interface SourcecodeRepository {
     String download(String projectName, String branch);
 
     /**
+     * 判断当前项目是否存在
+     *
+     * @param projectName 项目名称
+     * @param branch      分支名称
+     * @return return <code>true</code> 表示存在
+     */
+    boolean exist(String projectName, String branch);
+
+    /**
      * 删除本地的已经下载的源代码路径
      *
      * @param projectName 项目名称
@@ -41,8 +50,7 @@ public interface SourcecodeRepository {
     void deleteLocalRepository(String filepath);
 
     /**
-     * 获取默认分支的名称
-     * @return
+     * @return 默认分支的名称
      */
     default String getMasterBranchName() {
         return "master";

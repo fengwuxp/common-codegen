@@ -96,7 +96,9 @@ public final class PathResolveUtils {
     public static String relative(String path, String ref, String separator) {
         boolean unixSeparator = "/".equals(separator);
         path = FilenameUtils.normalizeNoEndSeparator(path, unixSeparator);
-        ref = FilenameUtils.normalizeNoEndSeparator(ref, unixSeparator);
+        if (!ref.startsWith(".")) {
+            ref = FilenameUtils.normalizeNoEndSeparator(ref, unixSeparator);
+        }
         if (ref == null) {
             return path;
         }
@@ -121,9 +123,16 @@ public final class PathResolveUtils {
         }
 
         // push refs in stack
-        for (int k = noEqIndex; k < refs.length; k++) {
-            String part = refs[k];
-            pushRefs(results, part);
+        if (noEqIndex > 0) {
+            for (int k = noEqIndex; k < refs.length; k++) {
+                String part = refs[k];
+                pushRefsOnEq(results, part);
+            }
+        } else {
+            for (int k = noEqIndex; k < refs.length; k++) {
+                String part = refs[k];
+                pushRefsNotEq(results, part);
+            }
         }
         if (results.isEmpty()) {
             return ".";
@@ -131,6 +140,12 @@ public final class PathResolveUtils {
         return String.join(separator, results);
     }
 
+    /**
+     * 计算路径的值
+     *
+     * @param paths 保存路径内容的Stack
+     * @param part  大于相同路径的每个路径组成部分
+     */
     private static void pushLeftPaths(Deque<String> paths, String part) {
         switch (part) {
             case "":
@@ -144,7 +159,13 @@ public final class PathResolveUtils {
         }
     }
 
-    private static void pushRefs(Deque<String> paths, String part) {
+    /**
+     * 目标路径和当前路径存在相同的路径
+     *
+     * @param paths 保存路径内容的Stack
+     * @param part 大于相同路径的每个路径组成部分
+     */
+    private static void pushRefsOnEq(Deque<String> paths, String part) {
         switch (part) {
             case "":
             case ".":
@@ -154,6 +175,25 @@ public final class PathResolveUtils {
                 break;
             default:
                 paths.push("..");
+        }
+    }
+
+    /**
+     * 目标路径和当前路径不存在相同的路径
+     *
+     * @param paths 保存路径内容的Stack
+     * @param part 大于相同路径的每个路径组成部分
+     */
+    private static void pushRefsNotEq(Deque<String> paths, String part) {
+        switch (part) {
+            case "":
+            case ".":
+                break;
+            case "..":
+                paths.removeLast();
+                break;
+            default:
+                paths.addLast(part);
         }
     }
 

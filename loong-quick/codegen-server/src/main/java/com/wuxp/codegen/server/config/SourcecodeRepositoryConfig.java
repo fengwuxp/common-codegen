@@ -2,8 +2,11 @@ package com.wuxp.codegen.server.config;
 
 import com.wuxp.codegen.server.enums.SourcecodeRepositoryType;
 import com.wuxp.codegen.server.vcs.JGitSourcecodeRepository;
+import com.wuxp.codegen.server.vcs.ScmAccessorPropertiesProvider;
 import com.wuxp.codegen.server.vcs.SourcecodeRepository;
 import com.wuxp.codegen.server.vcs.SvnKitSourcecodeRepository;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
@@ -25,10 +28,10 @@ public class SourcecodeRepositoryConfig {
 
     static final String REPOSITORY_HEADER_NAME = "X-Repository-Code";
 
-    private final SourcecodeRepositoryPropertiesConfig repositoryPropertiesConfig;
+    private final ScmAccessorPropertiesProvider scmAccessorPropertiesProvider;
 
-    public SourcecodeRepositoryConfig(SourcecodeRepositoryPropertiesConfig repositoryPropertiesConfig) {
-        this.repositoryPropertiesConfig = repositoryPropertiesConfig;
+    public SourcecodeRepositoryConfig(ScmAccessorPropertiesProvider scmAccessorPropertiesProvider) {
+        this.scmAccessorPropertiesProvider = scmAccessorPropertiesProvider;
     }
 
     @RequestScope
@@ -42,10 +45,15 @@ public class SourcecodeRepositoryConfig {
         return new SvnKitSourcecodeRepository(properties);
     }
 
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager();
+    }
+
 
     private SourcecodeRepositoryProperties getCurrentSourcecodeRepositoryProperties() {
         HttpServletRequest request = getHttpServletRequest();
-        List<SourcecodeRepositoryProperties> repositories = repositoryPropertiesConfig.getRepositories();
+        List<SourcecodeRepositoryProperties> repositories = scmAccessorPropertiesProvider.getRepositoryProperties();
         if (request == null) {
             return repositories.get(0);
         }

@@ -12,7 +12,7 @@ import lombok.ToString;
  * @author wuxp
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true,of = "code")
 @ToString(callSuper = true)
 public class SourcecodeRepositoryProperties extends AbstractScmAccessorProperties {
 

@@ -11,13 +11,5 @@
 
     <artifactId>wuxp-codegen-model</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
-
 
 </project>
