@@ -148,12 +148,14 @@ public final class PathResolveUtils {
      */
     private static void pushLeftPaths(Deque<String> paths, String part) {
         switch (part) {
-            case "":
+
             case ".":
                 break;
             case "..":
                 paths.pop();
                 break;
+            // 防止第一个斜杆丢失
+            case "":
             default:
                 paths.push(part);
         }

@@ -21,6 +21,9 @@ class PathResolverTest {
         Assertions.assertEquals("../../api/b/c/d", PathResolveUtils.relative("/api/b/c/d", "/cpi/b", "/"));
         Assertions.assertEquals(".", PathResolveUtils.relative("/api/b/c/d", "/api/b/c/../c/d", "/"));
         Assertions.assertEquals("../../b/c/d", PathResolveUtils.relative("/api/b/c/d", "/api/b/../d/./../c/d", "/"));
+
+        Assertions.assertEquals("/api/b/h", PathResolveUtils.relative("/api/b/c/d", "./../../h", "/"));
+        Assertions.assertEquals("/api/b/h", PathResolveUtils.relative("/api/b/c/d", "../../h", "/"));
     }
 
 }

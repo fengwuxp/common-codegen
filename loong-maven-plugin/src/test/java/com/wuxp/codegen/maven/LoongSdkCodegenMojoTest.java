@@ -1,10 +1,8 @@
 package com.wuxp.codegen.maven;
 
 import org.apache.maven.project.MavenProject;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 class LoongSdkCodegenMojoTest {
 
 
