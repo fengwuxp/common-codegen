@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 
+import java.util.Collections;
+
 
 /**
  * @author wxup
@@ -28,7 +30,11 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configure(auth);
-        auth.inMemoryAuthentication().withUser(User.withUsername("").password("").build());
+        auth.inMemoryAuthentication().withUser(
+                User.withUsername("test")
+                .password("test")
+                .authorities(Collections.emptyList())
+                .build());
     }
 
     @Override

@@ -12,3 +12,9 @@ spring:
     url: jdbc:h2:file:${user.dir}/h2_data:loong_codegen;MODE=MySQL
     platform: h2
     driver-class-name: org.h2.Driver
+
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update

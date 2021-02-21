@@ -4,10 +4,8 @@ import com.wuxp.codegen.server.config.SourcecodeRepositoryProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.wc2.SvnCheckout;
-import org.tmatesoft.svn.core.wc2.SvnList;
-import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
-import org.tmatesoft.svn.core.wc2.SvnTarget;
+import org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager;
+import org.tmatesoft.svn.core.wc2.*;
 
 import java.io.File;
 
@@ -23,21 +21,6 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
         super(properties);
     }
 
-    @Override
-    public String download(String projectName, String branch) {
-        SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
-        File workingDirectory = this.getWorkingDirectory(projectName, branch);
-        try {
-            String id = this.checkout(svnOperationFactory, workingDirectory, projectName);
-            if (log.isDebugEnabled()) {
-                log.debug("svn checkout id：{}", id);
-            }
-        } catch (SVNException exception) {
-            log.error("从svn仓库拉取代码失败，项目名称：{}，分支：{}，message：{}", projectName, branch, exception.getMessage(), exception);
-            throw new VcsException(exception);
-        }
-        return workingDirectory.getAbsolutePath();
-    }
 
     @Override
     public boolean exist(String projectName, String branch) {
@@ -53,7 +36,25 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
         return false;
     }
 
-    private String checkout(SvnOperationFactory svnOperationFactory, File workDir, String projectName) throws SVNException {
+    @Override
+    protected void downloadByScm(String projectName, String branch, File workingDirectory) throws SVNException {
+        String id = this.checkout(workingDirectory, projectName);
+        if (log.isDebugEnabled()) {
+            log.debug("svn checkout id：{}", id);
+        }
+    }
+
+    @Override
+    protected void updateProject(String projectName, String branch, File workingDirectory) throws SVNException {
+        SvnOperationFactory svnOperationFactory = getSvnOperationFactory();
+        SvnUpdate update = svnOperationFactory.createUpdate();
+        update.setSingleTarget(SvnTarget.fromFile(workingDirectory));
+        update.run();
+    }
+
+
+    private String checkout(File workDir, String projectName) throws SVNException {
+        SvnOperationFactory svnOperationFactory = getSvnOperationFactory();
         String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
         if (log.isDebugEnabled()) {
             log.debug("Checking out {} to: {}", remoteRepositoryUrl, workDir.getAbsolutePath());
@@ -67,4 +68,12 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
         }
         return id.toString();
     }
+
+    private SvnOperationFactory getSvnOperationFactory() {
+        SvnOperationFactory svnOperationFactory = new SvnOperationFactory();
+        svnOperationFactory.setAuthenticationManager(new DefaultSVNAuthenticationManager(null,
+                false, getUsername(), getPassword()));
+        return svnOperationFactory;
+    }
+
 }

@@ -1,8 +1,6 @@
-package test.com.wuxp.codegen.server.plugins;
+package com.wuxp.codegen.server.plugins;
 
 import com.wuxp.codegen.core.util.PathResolveUtils;
-import com.wuxp.codegen.server.plugins.MavenCodegenPluginExecuteStrategy;
-import com.wuxp.codegen.server.plugins.CodegenPluginExecuteStrategy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

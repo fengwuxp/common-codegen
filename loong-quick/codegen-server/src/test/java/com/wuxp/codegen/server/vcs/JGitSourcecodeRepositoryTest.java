@@ -1,8 +1,6 @@
-package test.com.wuxp.codegen.server.vcs;
+package com.wuxp.codegen.server.vcs;
 
 import com.wuxp.codegen.server.config.SourcecodeRepositoryPropertiesConfig;
-import com.wuxp.codegen.server.vcs.JGitSourcecodeRepository;
-import com.wuxp.codegen.server.vcs.SourcecodeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;

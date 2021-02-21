@@ -1,12 +1,14 @@
 package com.wuxp.codegen.server.controller;
 
+import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.server.task.CodegenTaskProgressInfo;
+import com.wuxp.codegen.server.task.CodegenTaskProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author wuxp
@@ -16,6 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/loong")
 public class LoongCodegenController {
+
+
+    private final CodegenTaskProvider codegenTaskProvider;
+
+    public LoongCodegenController(CodegenTaskProvider codegenTaskProvider) {
+        this.codegenTaskProvider = codegenTaskProvider;
+    }
 
     /**
      * 创建一个代码生成的任务
@@ -31,6 +40,22 @@ public class LoongCodegenController {
     @PostMapping("/{project}/{branch}")
     public String codegenTask(@PathVariable("project") String project, @PathVariable("branch") String branch) {
 
-        return null;
+        return codegenTaskProvider.create(project, branch);
+    }
+
+    /**
+     * @param taskId 代码生成的任务的任务id
+     * @return 任务状态
+     */
+    @Operation(description = "通过代码任务id获取任务状态")
+    @PostMapping("/codegen/task")
+    public HttpEntity<CodegenTaskProgressInfo> getCodegenTaskStatusInfo(@RequestParam("taskId") String taskId) {
+        return ResponseEntity.of(codegenTaskProvider.getTaskProgress(taskId));
+    }
+
+    @Operation(description = "通过代码任务id和ClientProviderType下载代码生成结果")
+    @PostMapping("/codegen/download")
+    public void downloadTaskResult(@RequestParam("taskId") String taskId, @RequestParam("type") ClientProviderType type) {
+
     }
 }

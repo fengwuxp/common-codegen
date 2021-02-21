@@ -7,7 +7,6 @@ import com.wuxp.codegen.server.mapstruct.LoongCodegenStructMapper;
 import com.wuxp.codegen.server.repositories.ScmInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
  * @author wuxp
  */
 @Slf4j
-@Component
+//@Component
 public class ScmAccessorPropertiesProvider {
 
     private static final String SCM_ACCESSOR_PROPERTIES_CACHE_NAME = "repository_info_cache";

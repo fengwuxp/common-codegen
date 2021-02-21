@@ -1,8 +1,7 @@
-package test.com.wuxp.codegen.server.util;
+package com.wuxp.codegen.server.util;
 
 import com.wuxp.codegen.core.CodegenVersion;
 import com.wuxp.codegen.core.util.PathResolveUtils;
-import com.wuxp.codegen.server.util.MavenCommandInvokeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

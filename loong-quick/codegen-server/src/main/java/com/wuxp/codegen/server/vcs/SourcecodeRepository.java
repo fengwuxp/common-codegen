@@ -12,6 +12,11 @@ package com.wuxp.codegen.server.vcs;
 public interface SourcecodeRepository {
 
 
+    /**
+     * 使用默认分支，下载项目
+     * @param projectName 项目名称
+     * @return 下载项目的本地目录
+     */
     default String download(String projectName) {
         return download(projectName, this.getMasterBranchName());
     }

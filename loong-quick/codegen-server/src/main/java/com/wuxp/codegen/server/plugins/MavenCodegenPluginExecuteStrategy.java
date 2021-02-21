@@ -2,6 +2,7 @@ package com.wuxp.codegen.server.plugins;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodegenVersion;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.server.util.MavenCommandInvokeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -38,12 +39,24 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
      */
     private static final String CODEGEN_MAVEN_PLUGIN_ARTIFACT_ID = "wuxp-codegen-loong-maven-plugin";
 
+    /**
+     * maven home 地址
+     */
+    private static final String MAVEN_HOME = System.getenv("MAVEN_HOME");
+
     private static final String MODULE_FILE_NAME = "pom.xml";
 
     private final String profiles;
 
     private final IOFileFilter pomFileFilter;
 
+    public MavenCodegenPluginExecuteStrategy() {
+        this(null);
+    }
+
+    /**
+     * @param profiles maven命令执行的 profiles 如果有多个使用","分隔
+     */
     public MavenCodegenPluginExecuteStrategy(String profiles) {
         this.profiles = profiles;
         this.pomFileFilter = new NameFileFilter(MODULE_FILE_NAME);
@@ -51,7 +64,15 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
 
     @Override
     public void executeCodegenPlugin(String projectBaseDir, String modelName, ClientProviderType type) {
-        this.findModuleFiles(projectBaseDir, modelName).forEach(this::invokeCodegenPlugin);
+        String rootPom = String.format("%s%s%s", projectBaseDir, File.separator, MODULE_FILE_NAME);
+        try {
+            this.invokeCompile(rootPom);
+            this.findModuleFiles(projectBaseDir, modelName).forEach(this::invokeCodegenPlugin);
+        } catch (Exception exception) {
+            log.error("执行maven命令异常：{}", exception.getMessage(), exception);
+            this.invokeClean(rootPom);
+            throw new CodegenRuntimeException(exception);
+        }
     }
 
     @Override
@@ -103,14 +124,39 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
     }
 
     /**
+     * 编译项目
+     *
+     * @param pom pom 文件路径
+     */
+    private void invokeCompile(String pom) {
+        if (log.isInfoEnabled()){
+            log.info("执行maven编译命令，pom：{}",pom);
+        }
+        MavenCommandInvokeUtils.execute("compile", MAVEN_HOME, pom, profiles);
+        MavenCommandInvokeUtils.execute("compile test -Dmaven.test.skip=true", MAVEN_HOME, pom, profiles);
+    }
+
+    /**
      * 执行maven代码生成插件
      *
      * @param pom pom 文件路径
      */
     private void invokeCodegenPlugin(String pom) {
-        String mavenHome = System.getenv("MAVEN_HOME");
-        MavenCommandInvokeUtils.execute("compile", mavenHome, pom, profiles);
-        MavenCommandInvokeUtils.execute("compile test -Dmaven.test.skip=true", mavenHome, pom, profiles);
-        MavenCommandInvokeUtils.execute(String.format("com.wuxp.codegen:wuxp-codegen-loong-maven-plugin:%s:api-sdk-codegen", CodegenVersion.VERSION), mavenHome, pom, profiles);
+        if (log.isInfoEnabled()){
+            log.info("执行codegen插件，pom：{}",pom);
+        }
+        MavenCommandInvokeUtils.execute(String.format("com.wuxp.codegen:wuxp-codegen-loong-maven-plugin:%s:api-sdk-codegen", CodegenVersion.VERSION), MAVEN_HOME, pom, profiles);
+    }
+
+    /**
+     * 编译项目
+     *
+     * @param pom pom 文件路径
+     */
+    private void invokeClean(String pom) {
+        if (log.isInfoEnabled()){
+            log.info("执行maven clean命令，pom：{}",pom);
+        }
+        MavenCommandInvokeUtils.execute("clean", MAVEN_HOME, pom, profiles);
     }
 }
