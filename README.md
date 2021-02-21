@@ -55,25 +55,31 @@
   1：可以支持java代码或open Api规范进行生成 (java =>any => any => any)
   2：可以支持自定义的规则
 
-- 新的思路（通过文档生成） 
+- 新的思路（通过文档生成）
+
 ```text
  1：增加通过解析swagger open api的json格式文档，构建统一的描述元数据 
  2：默认提供统一解析，通过提供不同语言的解析器进行自定义的处理 
  3：在模板层面进行抽象，可以实现根据不同的数据分发不同的模板（灵活的模板加载策略）
 ```
+
 - 通过源码增强
+
 ```text
 在面对没有swagger注解或者注解不够全面的的项目，通过源码上的注释输出sdk的注释说明增强
 ```
 
 ### maven-plugin
+
 - 通过插件生成sdk
 - 支持指定生成的sdk lib(生成 ts、dart、oepnFeign等)
 - 支持调用指定的[CodeGenerator](./core/src/main/java/com/wuxp/codegen/core/CodeGenerator.java)的子类进行生成
 - 支持调用指定的测试用例生成（用于需要定制化时使用）
 
 ### codegen-quick-support 快速接入支持
+
 ### codegen-server
+
 - [unibeautify](https://github.com/Unibeautify/unibeautify)
 - [awesome-code-formatters](https://github.com/rishirdua/awesome-code-formatters)
 
@@ -84,6 +90,7 @@
     npm-codegen-cli
     java-codegen-client-plugin
 ```
+
 - [loong-quick](./loong-quick)
 - codegen-server
 
@@ -93,12 +100,16 @@
   3：支持代码生成状态轮询和代码生成结果下载接口
   4：提供代码仓库的管理
 ```
+
 - codegen-client
+
 ```text
   1：通过设置codegen-server地址和服务端代码的代码库和分支名称进行sdk生成下载
 ```
 
 #### features
+
+- 代码生成插件增加将生成结果上传到codegen-server，codegen-client通过接口下载
 - gradle项目的支持
 - 支持输出文档（openapi文档或自定义格式的文档）
 - 支持通过openApi文档生成
