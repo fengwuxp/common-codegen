@@ -5,6 +5,7 @@ import com.wuxp.codegen.server.config.CodegenConfig;
 import com.wuxp.codegen.server.config.SourcecodeRepositoryPropertiesConfig;
 import com.wuxp.codegen.server.scope.CodegenTaskContextHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+import java.io.*;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,8 +38,14 @@ class ScmCodegenTaskProviderTest {
     @Autowired
     private CodegenTaskProvider scmCodegenTaskProvider;
 
+    /**
+     * 该测试用例仅支持手动调用
+     * @throws Exception
+     */
     @Test
+    @Disabled
     void testCreate()throws Exception {
+
         CodegenTaskContextHolder.setScmCode("default");
         String mainBranchName ="feature/codegen-restful-support"; //SourcecodeRepositoryType.GIT.getMainBranchName();
         String taskId = scmCodegenTaskProvider.create("common-codegen", mainBranchName);
@@ -66,5 +74,32 @@ class ScmCodegenTaskProviderTest {
     public static class TaskConfig {
 
 
+    }
+
+    private static void runCmd(String cmd) {
+        java.lang.Process process = null;
+        try {
+            process = Runtime.getRuntime().exec(cmd, null, new File(System.getProperty("user.dir")));
+            ByteArrayOutputStream resultOutStream = new ByteArrayOutputStream();
+            InputStream errorInStream = new BufferedInputStream(process.getErrorStream());
+            InputStream processInStream = new BufferedInputStream(process.getInputStream());
+            int num = 0;
+            byte[] bs = new byte[1024];
+            while ((num = errorInStream.read(bs)) != -1) {
+                resultOutStream.write(bs, 0, num);
+            }
+            while ((num = processInStream.read(bs)) != -1) {
+                resultOutStream.write(bs, 0, num);
+            }
+            String result = resultOutStream.toString();
+            log.info("命令执行结果：{}",result);
+            errorInStream.close();
+            processInStream.close();
+            resultOutStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (process != null) process.destroy();
+        }
     }
 }

@@ -39,10 +39,6 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
      */
     private static final String CODEGEN_MAVEN_PLUGIN_ARTIFACT_ID = "wuxp-codegen-loong-maven-plugin";
 
-    /**
-     * maven home 地址
-     */
-    private static final String MAVEN_HOME = System.getenv("MAVEN_HOME");
 
     private static final String MODULE_FILE_NAME = "pom.xml";
 
@@ -129,11 +125,10 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
      * @param pom pom 文件路径
      */
     private void invokeCompile(String pom) {
-        if (log.isInfoEnabled()){
-            log.info("执行maven编译命令，pom：{}",pom);
+        if (log.isInfoEnabled()) {
+            log.info("执行maven编译命令，pom：{}", pom);
         }
-        MavenCommandInvokeUtils.execute("compile", MAVEN_HOME, pom, profiles);
-        MavenCommandInvokeUtils.execute("compile test -Dmaven.test.skip=true", MAVEN_HOME, pom, profiles);
+        MavenCommandInvokeUtils.execute("compile", pom, profiles);
     }
 
     /**
@@ -142,10 +137,12 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
      * @param pom pom 文件路径
      */
     private void invokeCodegenPlugin(String pom) {
-        if (log.isInfoEnabled()){
-            log.info("执行codegen插件，pom：{}",pom);
+        if (log.isInfoEnabled()) {
+            log.info("执行codegen插件，pom：{}", pom);
         }
-        MavenCommandInvokeUtils.execute(String.format("com.wuxp.codegen:wuxp-codegen-loong-maven-plugin:%s:api-sdk-codegen", CodegenVersion.VERSION), MAVEN_HOME, pom, profiles);
+        // 编译测试目录  -Dmaven.test.skip=true
+        MavenCommandInvokeUtils.execute("compile test", pom, profiles);
+        MavenCommandInvokeUtils.execute(String.format("com.wuxp.codegen:wuxp-codegen-loong-maven-plugin:%s:api-sdk-codegen", CodegenVersion.VERSION), pom, profiles);
     }
 
     /**
@@ -154,9 +151,9 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
      * @param pom pom 文件路径
      */
     private void invokeClean(String pom) {
-        if (log.isInfoEnabled()){
-            log.info("执行maven clean命令，pom：{}",pom);
+        if (log.isInfoEnabled()) {
+            log.info("执行maven clean命令，pom：{}", pom);
         }
-        MavenCommandInvokeUtils.execute("clean", MAVEN_HOME, pom, profiles);
+        MavenCommandInvokeUtils.execute("clean", pom, profiles);
     }
 }

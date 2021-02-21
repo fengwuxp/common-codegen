@@ -24,7 +24,7 @@ public abstract class AbstractSourcecodeRepository extends AbstractScmAccessor i
         File workingDirectory = this.getWorkingDirectory(projectName, branch);
         synchronized (this) {
             if (workingDirectory.exists()) {
-                // TODO 更新代码
+                // TODO 做更新？
                 // 如果存在则直接返回
                 return workingDirectory.getAbsolutePath();
             } else {
