@@ -60,6 +60,11 @@ public abstract class AbstractSourcecodeRepository extends AbstractScmAccessor i
         return this.masterBranchName;
     }
 
+    @Override
+    public String getLocalDirectory(String projectName, String branch) {
+        return this.getWorkingDirectory(projectName, branch).getAbsolutePath();
+    }
+
     /**
      * 从源代码平台下载代码
      *

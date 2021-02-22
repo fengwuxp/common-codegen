@@ -56,10 +56,16 @@
         <springdoc.version>1.5.3</springdoc.version>
         <javaparser.version>3.18.0</javaparser.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <zip4j.version>2.7.0</zip4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.github.javaparser</groupId>
                 <artifactId>javaparser-symbol-solver-core</artifactId>

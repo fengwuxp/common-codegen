@@ -8,6 +8,8 @@ import org.tmatesoft.svn.core.internal.wc.DefaultSVNAuthenticationManager;
 import org.tmatesoft.svn.core.wc2.*;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 从svn拉取代码
@@ -21,6 +23,12 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
         super(properties);
     }
 
+
+    @Override
+    public List<String> getBranchList(String projectName) {
+        // TODO 待实现
+        return Collections.emptyList();
+    }
 
     @Override
     public boolean exist(String projectName, String branch) {

@@ -7,14 +7,17 @@ import com.wuxp.codegen.server.plugins.CodegenPluginExecuteStrategy;
 import com.wuxp.codegen.server.plugins.MavenCodegenPluginExecuteStrategy;
 import com.wuxp.codegen.server.repositories.ScmInfoRepository;
 import com.wuxp.codegen.server.scope.CodegenTaskContextHolder;
+import com.wuxp.codegen.server.task.CodegenFileManageStrategy;
 import com.wuxp.codegen.server.task.CodegenTaskProvider;
 import com.wuxp.codegen.server.task.ScmCodegenTaskProvider;
+import com.wuxp.codegen.server.task.ZipCodegenFileManageStrategy;
 import com.wuxp.codegen.server.vcs.JGitSourcecodeRepository;
 import com.wuxp.codegen.server.vcs.ScmAccessorPropertiesProvider;
 import com.wuxp.codegen.server.vcs.SourcecodeRepository;
 import com.wuxp.codegen.server.vcs.SvnKitSourcecodeRepository;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -134,6 +137,13 @@ public class CodegenConfig implements DisposableBean {
     @Bean
     public CodegenPluginExecuteStrategy codegenPluginExecuteStrategy() {
         return new MavenCodegenPluginExecuteStrategy();
+    }
+
+    @Bean
+    public CodegenFileManageStrategy zipCodegenFileManageStrategy(SourcecodeRepository sourcecodeRepository,
+                                                                  CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
+                                                                  @Value("loong.codegen.sdk.tempdir:") String uploadTempDir) {
+        return new ZipCodegenFileManageStrategy(sourcecodeRepository, codegenPluginExecuteStrategy, uploadTempDir);
     }
 
     @Bean

@@ -1,5 +1,7 @@
 package com.wuxp.codegen.server.vcs;
 
+import java.util.List;
+
 /**
  * 源代码仓库
  * 用于从源代码管理平台拉取代码
@@ -31,6 +33,13 @@ public interface SourcecodeRepository {
     String download(String projectName, String branch);
 
     /**
+     * 获取项目的分支列表
+     * @param projectName 项目名称
+     * @return 分支列表
+     */
+    List<String> getBranchList(String projectName);
+
+    /**
      * 判断当前项目是否存在
      *
      * @param projectName 项目名称
@@ -60,4 +69,12 @@ public interface SourcecodeRepository {
     default String getMasterBranchName() {
         return "master";
     }
+
+    /**
+     * 获取本地的工作路径
+     * @param projectName 项目名称
+     * @param branch      分支名称
+     * @return 本地仓库的工作路径
+     */
+    String getLocalDirectory(String projectName, String branch);
 }

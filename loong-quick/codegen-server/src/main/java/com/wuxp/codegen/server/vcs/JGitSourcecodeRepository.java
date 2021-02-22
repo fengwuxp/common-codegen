@@ -17,6 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 从git拉取代码
@@ -25,6 +28,8 @@ import java.util.Collection;
  */
 @Slf4j
 public class JGitSourcecodeRepository extends AbstractSourcecodeRepository {
+
+    private static final String BRANCH_REF_PREFIX = "refs/heads/";
 
     private final JGitFactory gitFactory;
 
@@ -36,9 +41,26 @@ public class JGitSourcecodeRepository extends AbstractSourcecodeRepository {
         progressMonitor = new TextProgressMonitor(new PrintWriter(System.out));
     }
 
+    @Override
+    public List<String> getBranchList(String projectName) {
+        String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
+        try {
+            Collection<Ref> refs = Git.lsRemoteRepository()
+                    .setRemote(remoteRepositoryUrl)
+                    .call();
+            return refs.stream().map(Ref::getName)
+                    .filter(name -> name.startsWith(BRANCH_REF_PREFIX))
+                    .map(name -> name.replace(BRANCH_REF_PREFIX, ""))
+                    .collect(Collectors.toList());
+        } catch (GitAPIException exception) {
+            log.error("获取git仓库{}的分支列表失败，项目名称：{}，message：{}", getUri(), projectName, exception.getMessage(), exception);
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     public boolean exist(String projectName, String branch) {
+
         String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
         try {
             Collection<Ref> refCollection = Git.lsRemoteRepository().setRemote(remoteRepositoryUrl).call();

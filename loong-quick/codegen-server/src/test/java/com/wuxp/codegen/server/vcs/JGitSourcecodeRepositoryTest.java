@@ -4,11 +4,13 @@ import com.wuxp.codegen.server.config.SourcecodeRepositoryPropertiesConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ConfigurationPropertiesScan("com.wuxp.codegen")
 class JGitSourcecodeRepositoryTest {
 
-    @MockBean
+    @SpyBean
     private SourcecodeRepository sourcecodeRepository;
 
     @Test
@@ -29,6 +31,12 @@ class JGitSourcecodeRepositoryTest {
         when(sourcecodeRepository.download(anyString())).thenReturn("mock");
         String filepath = sourcecodeRepository.download("common-codegen");
         Assertions.assertEquals("mock", filepath);
+    }
+
+    @Test
+    void testGetBranchList() {
+        List<String> branchList = sourcecodeRepository.getBranchList("common-codegen");
+        Assertions.assertFalse(branchList.isEmpty());
     }
 
 

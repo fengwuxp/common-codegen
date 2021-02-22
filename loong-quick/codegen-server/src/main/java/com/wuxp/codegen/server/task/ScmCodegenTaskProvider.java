@@ -100,6 +100,7 @@ public class ScmCodegenTaskProvider implements CodegenTaskProvider {
         }
     }
 
+
     private void submitTask(String projectName, String branch, CodegenTaskProgressInfo taskProgressInfo) {
         if (taskProgressInfo.getRetries() >= 5) {
             log.warn("项目：{}，分支：{}任务：{}已达到最大重试次数", projectName, branch, taskProgressInfo);
