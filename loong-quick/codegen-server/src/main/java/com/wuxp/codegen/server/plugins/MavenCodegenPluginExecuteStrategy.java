@@ -141,7 +141,8 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
             log.info("执行codegen插件，pom：{}", pom);
         }
         // 编译测试目录  -Dmaven.test.skip=true
-        MavenCommandInvokeUtils.execute("compile test", pom, profiles);
+        MavenCommandInvokeUtils.execute("compile test-compile", pom, profiles);
+        // 执行代码生插件
         MavenCommandInvokeUtils.execute(String.format("com.wuxp.codegen:wuxp-codegen-loong-maven-plugin:%s:api-sdk-codegen", CodegenVersion.VERSION), pom, profiles);
     }
 
