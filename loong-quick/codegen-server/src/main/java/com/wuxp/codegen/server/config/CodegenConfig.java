@@ -142,7 +142,7 @@ public class CodegenConfig implements DisposableBean {
     @Bean
     public CodegenFileManageStrategy zipCodegenFileManageStrategy(SourcecodeRepository sourcecodeRepository,
                                                                   CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
-                                                                  @Value("loong.codegen.sdk.tempdir:") String uploadTempDir) {
+                                                                  @Value("${loong.codegen.sdk.tempdir:${java.io.tmpdir}codegen/sdk/temp}") String uploadTempDir) {
         return new ZipCodegenFileManageStrategy(sourcecodeRepository, codegenPluginExecuteStrategy, uploadTempDir);
     }
 
@@ -152,7 +152,7 @@ public class CodegenConfig implements DisposableBean {
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         sourcecodeRepositoryCaches.clear();
     }
 
@@ -160,7 +160,7 @@ public class CodegenConfig implements DisposableBean {
         Optional<String> optional = CodegenTaskContextHolder.getScmCode();
         List<SourcecodeRepositoryProperties> repositories = scmAccessorPropertiesProvider.getRepositoryProperties();
         if (!optional.isPresent()) {
-            return repositories.get(0);
+            return repositories.isEmpty() ? new SourcecodeRepositoryProperties() : repositories.get(0);
         }
         String repositoryCode = optional.get();
         return repositories.stream()

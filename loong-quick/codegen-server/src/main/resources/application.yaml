@@ -1,7 +1,7 @@
 server:
   port: 9001
   servlet:
-    context-path: /codgen
+    context-path: /codegen
 spring:
   profiles:
     active: local
@@ -9,7 +9,7 @@ spring:
   datasource:
     username: sa
     password: sa
-    url: jdbc:h2:file:${user.dir}/h2_data:loong_codegen;MODE=MySQL
+    url: jdbc:h2:file:${java.io.tmpdir}/h2_data:loong_codegen;MODE=MySQL
     platform: h2
     driver-class-name: org.h2.Driver
 

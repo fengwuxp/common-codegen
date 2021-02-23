@@ -41,6 +41,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     public void configure(WebSecurity web) throws Exception {
         //静态资源不拦截
         web.ignoring().antMatchers(
+                "/**",
                 "/js/**",
                 "/css/**",
                 "/images/**",

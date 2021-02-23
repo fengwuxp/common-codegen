@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.util.PathResolveUtils;
+import com.wuxp.codegen.loong.CodegenSdkUploader;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.starter.enums.OpenApiType;
@@ -78,6 +79,8 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
             log.info("codeGeneratorBuilders：{}", codeGeneratorBuilders);
         }
         codeGeneratorBuilders.forEach(codegenBuilder -> codegenBuilder.buildCodeGenerator().generate());
+        // 上传sdk生成结果到服务端
+        new CodegenSdkUploader(this.getCodegenBaseOutputPath()).upload();
     }
 
     public Collection<CodegenBuilder> getCodeGeneratorBuilders() {
@@ -212,6 +215,10 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
         return codeGenerators;
     }
 
+    private String getCodegenBaseOutputPath(){
+        String codegenOutputPath = this.getCodegenOutputPath(ClientProviderType.RETROFIT);
+        return codegenOutputPath.split(String.join("",File.separator,ClientProviderType.RETROFIT.name().toLowerCase(),File.separator))[0];
+    }
 
     private String getCodegenOutputPath(ClientProviderType type) {
         String baseDir;

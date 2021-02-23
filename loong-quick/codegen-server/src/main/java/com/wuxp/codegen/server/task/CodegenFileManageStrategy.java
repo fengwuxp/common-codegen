@@ -1,8 +1,10 @@
 package com.wuxp.codegen.server.task;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * 代码生成的文件管理策略
@@ -21,9 +23,9 @@ public interface CodegenFileManageStrategy {
      * @param branch      分支名称
      * @param moduleName  模块名称
      * @param type        client type
-     * @param sdkFile     上传的sdk代码文件
+     * @param file     上传的sdk代码文件liu
      */
-    void upload(String projectName, String branch, String moduleName, ClientProviderType type, File sdkFile);
+    void upload(String projectName, String branch, String moduleName, ClientProviderType type, MultipartFile file);
 
     /**
      * 下载生成好的sdk文件

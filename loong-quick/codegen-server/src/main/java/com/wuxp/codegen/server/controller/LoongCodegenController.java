@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @Tag(name = "loong codegen", description = "代码生成restful接口")
 @Slf4j
 @RestController
-@RequestMapping("/loong/codegen")
+@RequestMapping("/loong")
 public class LoongCodegenController {
 
 
@@ -69,14 +69,13 @@ public class LoongCodegenController {
     }
 
     @Operation(description = "上传已经生成的sdk代码")
-    @PostMapping(value = "/sdk_code",consumes = {MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/sdk_code", consumes = {MULTIPART_FORM_DATA_VALUE})
     public void uploadCodegenSdk(@RequestParam(value = "projectName") String projectName,
                                  @RequestParam(value = "branch") String branch,
                                  @RequestParam("type") ClientProviderType type,
                                  @RequestParam(value = "moduleName", required = false, defaultValue = DEFAULT_MODULE_NAME) String moduleName,
-                                 @RequestParam(value = "file") MultipartFile file) throws Exception {
-        File sdk = file.getResource().getFile();
-        codegenFileManageStrategy.upload(projectName, branch, moduleName, type, sdk);
+                                 @RequestParam(value = "file") MultipartFile file) {
+        codegenFileManageStrategy.upload(projectName, branch, moduleName, type, file);
     }
 
     @Operation(description = "下载生成的sdk,1：通过代码任务id和ClientProviderType下载代码生成结果，2：通过项目和分支名称下载")
@@ -102,10 +101,7 @@ public class LoongCodegenController {
         }
         FileSystemResource downloadResource = new FileSystemResource(file);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", downloadResource.getFilename()));
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
         return ResponseEntity
                 .ok()
                 .headers(headers)

@@ -202,6 +202,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
     }
 
+
+    /**
+     * 尝试做循环生成
+     * @param classes 需要生成的类列表
+     */
     protected void tryLoopGenerate(Collection<Class<?>> classes) {
         if (unifiedResponseExplorer != null) {
             unifiedResponseExplorer.probe(classes);

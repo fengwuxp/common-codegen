@@ -9,6 +9,7 @@ import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,11 +44,17 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
         if (uploadTempDir.endsWith(File.separator)) {
             uploadTempDir = uploadTempDir.substring(0, uploadTempDir.length() - 1);
         }
+        File file = new File(uploadTempDir);
+        if (!file.exists()) {
+            file.mkdir();
+        }
         this.uploadTempDir = uploadTempDir;
     }
 
     @Override
-    public void upload(String projectName, String branch, String moduleName, ClientProviderType type, File sdkFile) {
+    public void upload(String projectName, String branch, String moduleName, ClientProviderType type, MultipartFile sdkFile) {
+        moduleName = getModuleNameOrDefault(moduleName);
+        branch = getBranchOrDefault(branch);
         String tempSdkFilepath = this.getTempSdkFilepath(projectName, branch, moduleName, type);
         File file = new File(tempSdkFilepath);
         file.deleteOnExit();
@@ -62,6 +69,8 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
 
     @Override
     public File download(String projectName, String branch, String moduleName, ClientProviderType type) {
+        moduleName = getModuleNameOrDefault(moduleName);
+        branch = getBranchOrDefault(branch);
         String tempSdkFilepath = this.getTempSdkFilepath(projectName, branch, moduleName, type);
         File tempSdkFile = new File(tempSdkFilepath);
         // 存在已上传的sdk文件
@@ -118,21 +127,34 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
      * @return sdk zip文件地址
      */
     private String getTempSdkFilepath(String projectName, String branch, String moduleName, ClientProviderType type) {
-        if (!StringUtils.hasText(moduleName)) {
-            moduleName = DEFAULT_MODULE_NAME;
-        }
-        String filepath = String.join(File.separator, this.uploadTempDir, projectName, branch, moduleName, type.name().toLowerCase());
+        String directoryPath = String.join(File.separator, this.uploadTempDir, projectName, branch, moduleName);
+        createDirectoryRecursively(directoryPath);
+        String filepath = String.join(File.separator, directoryPath, type.name().toLowerCase());
         return String.join(".", filepath, "zip");
     }
 
-    private static void nioTransferCopy(File source, File target) throws IOException {
+    private String getModuleNameOrDefault(String moduleName) {
+        if (moduleName == null) {
+            return DEFAULT_MODULE_NAME;
+        }
+        return moduleName;
+    }
+
+    private String getBranchOrDefault(String branch) {
+        if (branch == null) {
+            return sourcecodeRepository.getMasterBranchName();
+        }
+        return branch;
+    }
+
+    private static void nioTransferCopy(MultipartFile source, File target) throws IOException {
 
         FileChannel in = null;
         FileChannel out = null;
         FileInputStream inStream = null;
         FileOutputStream outStream = null;
         try {
-            inStream = new FileInputStream(source);
+            inStream = (FileInputStream) source.getInputStream();
             outStream = new FileOutputStream(target);
             in = inStream.getChannel();
             out = outStream.getChannel();
@@ -143,7 +165,24 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
             IOUtils.close(outStream);
             IOUtils.close(out);
         }
+    }
 
 
+    /**
+     * 递归创建目录
+     *
+     * @param directoryPath 目录路径
+     */
+    public static void createDirectoryRecursively(String directoryPath) {
+        String[] filepathParts = directoryPath.split(String.format("\\%s", File.separator));
+        StringBuilder path = new StringBuilder();
+        for (String part : filepathParts) {
+            path.append(File.separator).append(part);
+            File directory = new File(path.toString());
+            if (!directory.exists()) {
+                boolean r = directory.mkdir();
+                log.debug("创建目录：{}，结果：{}", directory.getPath(), r ? "成功" : "失败");
+            }
+        }
     }
 }
