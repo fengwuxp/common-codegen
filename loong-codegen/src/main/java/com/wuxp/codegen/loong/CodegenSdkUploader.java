@@ -1,7 +1,6 @@
 package com.wuxp.codegen.loong;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.lingala.zip4j.ZipFile;
@@ -70,6 +69,10 @@ public class CodegenSdkUploader {
     }
 
     public void upload(String branch, String moduleName) {
+        if (projectName == null) {
+            log.error("projectName must not null");
+            return;
+        }
         if (quickServerAddress == null) {
             log.error("未获取到上传文件的服务端地址，请先设置quickServerAddress");
             return;
@@ -140,12 +143,12 @@ public class CodegenSdkUploader {
         if (name != null) {
             return name;
         }
-        String file = getSystemEnv("user.dir");
+        String file = getSystemEnv("project.basedir");
         if (file == null) {
-            throw new CodegenRuntimeException("获取 user.dir失败");
+            return null;
         }
         String[] values = file.split(File.separator);
-        return values[values.length - 2];
+        return values[values.length - 1];
     }
 
     private String getProjectBranch(String branch) {

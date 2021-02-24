@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wuxp-codegen-examples</artifactId>
+        <groupId>com.wuxp.codegen</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wuxp-codegen-examples-swagger-3-client-maven-plugin</artifactId>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.wuxp.codegen</groupId>
+                <artifactId>wuxp-codegen-loong-client-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <projectName>swagger-3-example-maven-plugin</projectName>
+                    <clientType>SPRING_CLOUD_OPENFEIGN</clientType>
+                    <loongCodegenServer>http://localhost:9001</loongCodegenServer>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

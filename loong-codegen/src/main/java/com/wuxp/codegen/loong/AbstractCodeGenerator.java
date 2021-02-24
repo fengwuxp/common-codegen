@@ -12,6 +12,8 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.languages.java.JavaClassMeta;
+import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -339,6 +341,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
     private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+        if (commonCodeGenClassMeta instanceof JavaCodeGenClassMeta){
+            // 属于java的代码生成，一定要导入
+            return true;
+        }
         if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())) {
             return true;
         }

@@ -330,6 +330,22 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         if (loongCodegenServer != null) {
             System.setProperty(CodegenSdkUploader.QUERY_SERVER_ADDRESS, loongCodegenServer);
         }
+        if (mavenProject == null) {
+            return;
+        }
+        MavenProject parent = mavenProject;
+        while (parent != null) {
+            if (parent.getParent() == null) {
+                break;
+            }
+            if (parent.getParent().getBasedir() == null) {
+                break;
+            }
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            System.setProperty("project.basedir", parent.getBasedir().getAbsolutePath());
+        }
     }
 
     protected String[] getScanPackages() {

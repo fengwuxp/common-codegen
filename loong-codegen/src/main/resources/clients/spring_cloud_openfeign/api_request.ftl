@@ -39,8 +39,8 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
             <#list field.comments as cmment>
               *${cmment}
             </#list>
+            **/
         </#if>
-      **/
         ${field.accessPermissionName} ${customizeMethod.combineType(field.filedTypes)} ${field.name};
     </#list>
 </#if>

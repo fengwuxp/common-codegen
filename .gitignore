@@ -7,6 +7,7 @@
 /examples/sdk
 /sdk
 /examples/codegen-sdk
+/examples/swagger-3-client-maven-plugin/src/main/java
 /codegen-sdk
 *.flattened-pom.xml
 */classpath

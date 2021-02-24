@@ -69,78 +69,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         F extends CommonCodeGenFiledMeta> implements LanguageParser<C>, ApiServiceClassMatcher {
 
     /**
+     * 默认合并后的参数名称
+     */
+    public static final String DEFAULT_MARGE_PARAMS_NAME = "req";
+
+    /**
      * annotationProcessorMap
      */
     public static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
-
-    /**
-     * 类被处理的次数
-     */
-    protected final Map<Class<?>, Integer> handleCountMap = new HashMap<>(128);
-
-    /**
-     * 处理结果缓存
-     */
-    protected final Map<Class<?>, Object> handleResultCacheMap = new HashMap<>(128);
-
-
-    /**
-     * java类的解析器 默认解析所有的属性 方法
-     */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
-
-    /**
-     * 语言元数据对象的工厂
-     */
-    protected LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory;
-
-
-    /**
-     * 映射java类型和其他语言类型之间的关系
-     */
-    protected AbstractLanguageTypeMapping<C> languageTypeMapping;
-
-    /**
-     * 包名映射策略
-     */
-    protected PackageMapStrategy packageMapStrategy;
-
-    /**
-     * 代码检查者
-     */
-    protected Collection<CodeDetect> codeDetects;
-
-
-    /**
-     * 生成匹配策略
-     */
-    protected CodeGenMatchingStrategy genMatchingStrategy;
-
-    /**
-     * 匹配需要生成的类匹配器链
-     */
-    protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
-
-    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
-
-    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
-
-    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
-
-    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
-
-    {
-
-        // 根据是否为spring的组件进行匹配
-        codeGenMatchers.add(clazz -> {
-            Annotation service = clazz.getAnnotation(Service.class);
-            Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
-            // 不是spring的组件
-            return service == null && clazzAnnotation == null;
-        });
-    }
-
-    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
 
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
@@ -161,6 +97,59 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(RequestParam.class, new RequestParamProcessor());
         ANNOTATION_PROCESSOR_MAP.put(RequestPart.class, new RequestPartProcessor());
         ANNOTATION_PROCESSOR_MAP.put(PathVariable.class, new PathVariableProcessor());
+    }
+
+    /**
+     * 类被处理的次数
+     */
+    protected final Map<Class<?>, Integer> handleCountMap = new HashMap<>(128);
+    /**
+     * 处理结果缓存
+     */
+    protected final Map<Class<?>, Object> handleResultCacheMap = new HashMap<>(128);
+    /**
+     * java类的解析器 默认解析所有的属性 方法
+     */
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+    /**
+     * 语言元数据对象的工厂
+     */
+    protected LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory;
+    /**
+     * 映射java类型和其他语言类型之间的关系
+     */
+    protected AbstractLanguageTypeMapping<C> languageTypeMapping;
+    /**
+     * 包名映射策略
+     */
+    protected PackageMapStrategy packageMapStrategy;
+    /**
+     * 代码检查者
+     */
+    protected Collection<CodeDetect> codeDetects;
+    /**
+     * 生成匹配策略
+     */
+    protected CodeGenMatchingStrategy genMatchingStrategy;
+    /**
+     * 匹配需要生成的类匹配器链
+     */
+    protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
+    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
+    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
+    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
+    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
+
+    {
+
+        // 根据是否为spring的组件进行匹配
+        codeGenMatchers.add(clazz -> {
+            Annotation service = clazz.getAnnotation(Service.class);
+            Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
+            // 不是spring的组件
+            return service == null && clazzAnnotation == null;
+        });
     }
 
     public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
@@ -912,6 +901,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .setIsFinal(false)
                     .setIsStatic(false)
                     .setName(paramType.getSimpleName());
+            C result = this.parse(paramType);
+            if (result == null || result.getFieldMetas() == null) {
+                genClassInstance.setFieldMetas(new CommonCodeGenFiledMeta[0]);
+            } else {
+                genClassInstance.setDependencies(result.getDependencies());
+                genClassInstance.setFieldMetas(result.getFieldMetas());
+            }
             codeGenParams.put(key, genClassInstance);
             codeGenParamAnnotations.put(key, commonCodeGenAnnotations);
         });
@@ -976,8 +972,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         int effectiveParamsSize = effectiveParams.size();
         // 合并复杂参数
         boolean hasComplexParams = margeComplexParamsFiled(commonCodeGenFiledMetas, effectiveParams);
+
         if (hasComplexParams && effectiveParamsSize == 1) {
-            return converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
+            M methodHandle = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
+            Map<String, CommonCodeGenClassMeta> params = methodHandle.getParams();
+            String name = params.keySet().toArray(new String[0])[0];
+            CommonCodeGenClassMeta genClassMeta = params.remove(name);
+            params.put(DEFAULT_MARGE_PARAMS_NAME, genClassMeta);
+            return methodHandle;
         }
         // 合并简单参数
         margeSimpleParams(javaMethodMeta, classMeta, effectiveParams, commonCodeGenFiledMetas, codeGenParamAnnotations, parameters);
@@ -988,7 +990,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 this.packageMapStrategy.convertClassName(classMeta.getClazz()),
                 ToggleCaseUtils.toggleFirstChart(genMethodMeta.getName()));
         argsClassMeta.setName(name);
-        argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req", name}));
+        argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{DEFAULT_MARGE_PARAMS_NAME, name}));
         argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
         argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
 
@@ -1038,7 +1040,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             argsClassMeta.setName(combineName);
         }
         //请求参数名称，固定为req
-        params.put("req", argsClassMeta);
+        params.put(DEFAULT_MARGE_PARAMS_NAME, argsClassMeta);
         genMethodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);
 
         return genMethodMeta;
@@ -1391,11 +1393,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return this.codeGenMatchers;
     }
 
-    public void setLanguageTypeMapping(AbstractLanguageTypeMapping<C> languageTypeMapping) {
-        this.languageTypeMapping = languageTypeMapping;
-    }
-
     public AbstractLanguageTypeMapping<C> getLanguageTypeMapping() {
         return languageTypeMapping;
+    }
+
+    public void setLanguageTypeMapping(AbstractLanguageTypeMapping<C> languageTypeMapping) {
+        this.languageTypeMapping = languageTypeMapping;
     }
 }

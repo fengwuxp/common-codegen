@@ -87,7 +87,7 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
         if (!javaMethodMeta.existAnnotation(Parameters.class)) {
             return;
         }
-        CommonCodeGenClassMeta commonCodeGenClassMeta = methodMeta.getParams().get("req");
+        CommonCodeGenClassMeta commonCodeGenClassMeta = methodMeta.getParams().get(DEFAULT_MARGE_PARAMS_NAME);
         if (commonCodeGenClassMeta == null) {
             return;
         }

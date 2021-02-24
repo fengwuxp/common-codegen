@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>codegen-server</module>
+        <module>codegen-client-maven-plugin</module>
     </modules>
 
 

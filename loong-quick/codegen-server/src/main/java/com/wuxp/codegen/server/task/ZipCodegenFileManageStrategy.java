@@ -56,6 +56,9 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
         moduleName = getModuleNameOrDefault(moduleName);
         branch = getBranchOrDefault(branch);
         String tempSdkFilepath = this.getTempSdkFilepath(projectName, branch, moduleName, type);
+        if (log.isInfoEnabled()) {
+            log.info("上传项目：{}，分支：{}，的{}sdk到：{}", projectName, branch, type, tempSdkFilepath);
+        }
         File file = new File(tempSdkFilepath);
         file.deleteOnExit();
         try {
