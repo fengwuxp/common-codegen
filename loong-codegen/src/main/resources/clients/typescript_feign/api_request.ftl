@@ -15,7 +15,7 @@
   **/
 </#if>
 
-<#if fieldMetas??>
+<#if annotations??>
     <#list annotations as annotation>
       @${annotation.name}({
         <#list annotation.namedArguments as name,val>
