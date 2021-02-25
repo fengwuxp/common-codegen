@@ -113,6 +113,8 @@ public class CodegenSdkUploader {
             response.close();
         } catch (IOException exception) {
             log.error("上传sdk文件失败：{}，message：{}", sdkDir, exception.getMessage(), exception);
+        } finally {
+            zipFile.getFile().deleteOnExit();
         }
     }
 
