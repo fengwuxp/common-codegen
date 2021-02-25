@@ -35,6 +35,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
      */
     public final static TypescriptClassMeta NUMBER = new TypescriptClassMeta("number", null, ClassType.CLASS, false, OBJECT);
 
+    public final static TypescriptClassMeta BIGINT = new TypescriptClassMeta("BigInt", null, ClassType.CLASS, false, OBJECT);
+
     /**
      * boolean
      */

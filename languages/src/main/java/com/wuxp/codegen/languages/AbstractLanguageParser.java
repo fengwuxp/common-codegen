@@ -778,7 +778,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected List<M> converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, C codeGenClassMeta) {
         if (javaMethodMetas == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<M> codegenMethods = Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
@@ -789,12 +789,19 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .distinct()
                 .collect(Collectors.toList());
 
-        //判断是否存在方法名称是否相同
-        codegenMethods.forEach(m -> codegenMethods.stream()
-                .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
-                .findFirst()
-                .ifPresent(m2 -> m2.setName(MessageFormat.format("override_{0}", m2.getName()))));
-
+        if (!CodegenConfigHolder.getConfig().isServerClass(classMeta.getClazz())){
+            return codegenMethods;
+        }
+        // 判断是否存在方法名称是否相同
+        for (M m : codegenMethods) {
+            Optional<M> optional = codegenMethods.stream()
+                    .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
+                    .findFirst();
+            if (optional.isPresent()){
+                // 不允许方法重载
+                throw new CodegenRuntimeException(MessageFormat.format("类{0}下的的方法{1}出现重载", classMeta.getClassName(), m.getName()));
+            }
+        }
         return codegenMethods;
 
 

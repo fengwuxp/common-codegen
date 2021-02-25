@@ -14,9 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 基于umi request的增强配置
@@ -63,11 +61,17 @@ public class UmiRequestEnhancedProcessor implements
         }
         tags.put("supportBody", supportRequestBody);
         tags.put("responseType", this.getResponseType(requestMappingMate, javaMethodMeta, classMeta));
-        tags.put("url", getRequestUrl(javaMethodMeta, requestMappingMate).replace(prefix, ""));
+        List<String> needDeleteParams = new ArrayList<>();
+        tags.put("url", getRequestUrl(javaMethodMeta, requestMappingMate, needDeleteParams).replace(prefix, ""));
+        tags.put("hasPathVariable", !needDeleteParams.isEmpty());
+        List<String> requestHeaderNames = getRequestHeaderNames(javaMethodMeta);
+        tags.put("requestHeaderNames", requestHeaderNames);
+        needDeleteParams.addAll(requestHeaderNames);
+        tags.put("needDeleteParams", needDeleteParams);
         return methodMeta;
     }
 
-    private String getRequestUrl(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate) {
+    private String getRequestUrl(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate, List<String> needDeleteParams) {
         String url = RequestMappingUtils.combinePath(requestMappingMate, javaMethodMeta.getMethod());
         Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
         for (Map.Entry<String, Annotation[]> entry : paramAnnotations.entrySet()) {
@@ -91,11 +95,19 @@ public class UmiRequestEnhancedProcessor implements
                     param = param + "==null?" + "'':'/'+" + param;
                     url = url.replace("/{" + pathVariableName + "}", "${" + param + "}");
                 }
+                needDeleteParams.add(pathVariableName);
             }
         }
         return url;
     }
 
+    /**
+     * 获取umi-request的请求类型
+     *
+     * @param javaMethodMeta     方法元数据
+     * @param requestMappingMate RequestMappingMate
+     * @return umi-request的请求类型
+     */
     private String getRequestType(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate) {
         boolean hasRequestBody = hasRequestBody(javaMethodMeta);
         String[] consumes = requestMappingMate.consumes();
@@ -111,6 +123,35 @@ public class UmiRequestEnhancedProcessor implements
             }
         }
         return getContentTypeAlisName(consumes[0]);
+    }
+
+    /**
+     * 获取请求头参数名称列表
+     *
+     * @param javaMethodMeta 方法元数据
+     * @return 请求头参数名称列表
+     */
+    private List<String> getRequestHeaderNames(JavaMethodMeta javaMethodMeta) {
+        List<String> requestHeaderNames = new ArrayList<>();
+        Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
+        for (Map.Entry<String, Annotation[]> entry : paramAnnotations.entrySet()) {
+            Annotation[] annotations = entry.getValue();
+            Optional<RequestHeader> optional = RequestMappingUtils.findRequestHeader(annotations);
+            if (!optional.isPresent()) {
+                continue;
+            }
+            RequestHeader requestHeader = optional.get();
+            String name = requestHeader.value();
+            if (!StringUtils.hasText(name)) {
+                name = requestHeader.name();
+            }
+            if (!StringUtils.hasText(name)) {
+                name = entry.getKey();
+            }
+            requestHeaderNames.add(name);
+
+        }
+        return requestHeaderNames;
     }
 
     private String getResponseType(RequestMappingProcessor.RequestMappingMate requestMappingMate, JavaMethodMeta javaMethodMeta,

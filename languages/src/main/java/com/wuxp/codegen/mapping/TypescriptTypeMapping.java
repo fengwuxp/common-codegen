@@ -27,10 +27,11 @@ public class TypescriptTypeMapping extends AbstractLanguageTypeMapping<Typescrip
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Date.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Boolean.class, TypescriptClassMeta.BOOLEAN);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(String.class, TypescriptClassMeta.STRING);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Long.class, TypescriptClassMeta.STRING);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Number.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(double.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(float.class, TypescriptClassMeta.NUMBER);
-    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(long.class, TypescriptClassMeta.NUMBER);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(long.class, TypescriptClassMeta.STRING);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(short.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(byte.class, TypescriptClassMeta.NUMBER);
 

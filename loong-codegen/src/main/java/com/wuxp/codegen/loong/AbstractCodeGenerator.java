@@ -348,9 +348,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())) {
             return true;
         }
-
+        if (Boolean.TRUE.equals(commonCodeGenClassMeta.getNeedGenerate())){
+            return true;
+        }
         boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-
         if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType()) && notMethod) {
             return false;
         }

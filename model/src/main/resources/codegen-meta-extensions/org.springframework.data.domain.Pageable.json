@@ -1,0 +1,38 @@
+{
+  "order": 1,
+  "name": "Pageable",
+  "packagePath": "/model/paging",
+  "classType": "INTERFACE",
+  "fieldMetas": [
+    {
+      "name": "paged",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "unpaged",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "offset",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "pageSize",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "pageNumber",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "sort",
+      "type": "$org.springframework.data.domain.Sort",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "order": 2,
+  "name": "Sort",
+  "packagePath": "/model/paging",
+  "classType": "CLASS",
+  "fieldMetas": [
+    {
+      "name": "unsorted",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "sorted",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "empty",
+      "type": "boolean",
+      "required": true
+    }
+  ]
+}
