@@ -36,6 +36,13 @@ public class OrderController extends BaseController<String> {
     }
 
     @ApiOperation(value = "获取订单列表", notes = "")
+    @GetMapping(value = {"get_order_32"})
+    public List<Order> getOrder32(@RequestParam(name = "names") String[] names) {
+        return Collections.EMPTY_LIST;
+    }
+
+
+    @ApiOperation(value = "获取订单列表", notes = "")
     @RequestMapping(method = RequestMethod.GET)
     public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
         return new PageInfo<Order>();

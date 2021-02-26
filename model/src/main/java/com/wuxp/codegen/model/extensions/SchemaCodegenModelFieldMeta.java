@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 字段描述
+ *
  * @author wuxp
  */
 @Data
@@ -22,5 +23,19 @@ public class SchemaCodegenModelFieldMeta implements Serializable {
 
     private String[] enumFiledValues;
 
+    /**
+     * 是否为数组类型
+     * @return
+     */
+    public boolean isArray() {
+        return type.endsWith("[]");
+    }
 
+    /**
+     * 是否为引用其他的类型
+     * @return
+     */
+    public boolean isRef() {
+        return type.startsWith("$");
+    }
 }

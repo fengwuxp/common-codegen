@@ -1000,33 +1000,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{DEFAULT_MARGE_PARAMS_NAME, name}));
         argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
         argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
-
-        // 判断当前参数是否为数组或集合类型 当前仅当只有一个复杂对象作为参数 且为数组或集合类的情况
-        if (effectiveParamsSize == 1) {
-            effectiveParams.values()
-                    .forEach(paramClasses -> {
-                        Class<?> paramClass = paramClasses[0];
-                        CommonCodeGenClassMeta[] commonCodeGenClassMetas = languageTypeMapping.mapping(paramClasses)
-                                .stream().map(c -> (CommonCodeGenClassMeta) c)
-                                .toArray(CommonCodeGenClassMeta[]::new);
-                        if (JavaArrayClassTypeMark.class.equals(paramClass)) {
-                            //数组
-                            argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else if (JavaTypeUtils.isCollection(paramClass)) {
-                            //集合
-                            argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else if (JavaTypeUtils.isMap(paramClass)) {
-                            //map
-                            argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else {
-                            log.warn("未处理的类型{}", paramClass.getName());
-                        }
-                    });
-        }
-
         //加入依赖列表
         final Map<String, C> dependencies = (Map<String, C>) codeGenClassMeta.getDependencies();
-
         // 合并依赖
         Set<Class<?>> otherDependencies = effectiveParams.values()
                 .stream()
@@ -1040,12 +1015,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         dependencies.put(argsClassMeta.getName(), argsClassMeta);
         codeGenClassMeta.setDependencies(dependencies);
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
-        if (argsClassMeta.getTypeVariables() != null && effectiveParamsSize == 1
-                && argsClassMeta.getTypeVariables().length > 0) {
-            // 存在泛型合并名称
-            String combineName = combineTypeDescStrategy.combine(argsClassMeta.getTypeVariables());
-            argsClassMeta.setName(combineName);
-        }
         //请求参数名称，固定为req
         params.put(DEFAULT_MARGE_PARAMS_NAME, argsClassMeta);
         genMethodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);

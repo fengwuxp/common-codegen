@@ -105,12 +105,16 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
                 .filter(Objects::nonNull)
                 .sorted((o1, o2) -> o2.getOrder() - o1.getOrder())
                 .map(this::converterCodegenClassMeta)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
 
     private CommonCodeGenClassMeta converterCodegenClassMeta(SchemaCodegenModel model) {
         CommonCodeGenClassMeta classMeta = newCodegenClassInstance();
+        if (classMeta == null) {
+            return null;
+        }
         classMeta.setSource(model.getSource());
         classMeta.setNeedImport(model.getNeedImport());
         classMeta.setNeedGenerate(model.getNeedGenerate());
@@ -160,16 +164,19 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
 
     private CommonCodeGenClassMeta[] getFiledTypes(SchemaCodegenModelFieldMeta meta, CommonCodeGenClassMeta classMeta) {
         String type = meta.getType();
-        boolean isArray = type.endsWith("[]");
+        boolean isArray = meta.isArray();
         if (isArray) {
             type = type.replace("[]", "");
         }
         List<CommonCodeGenClassMeta> results = new ArrayList<>();
-        if (type.startsWith("$")) {
+        if (meta.isRef()) {
             // 引用
             type = type.substring(1);
             CommonCodeGenClassMeta cacheMeta = CACHE_CODEGEN_CLASSES.get(type);
             CommonCodeGenClassMeta commonCodeGenClassMeta = newCodegenClassInstance();
+            if (commonCodeGenClassMeta == null) {
+                return new CommonCodeGenClassMeta[0];
+            }
             BeanUtils.copyProperties(cacheMeta, commonCodeGenClassMeta);
             results.add(commonCodeGenClassMeta);
             Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) classMeta.getDependencies();
@@ -197,7 +204,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
             case JAVA_ANDROID:
                 return JAVA_TYPE_MAP.get(type);
             default:
-                throw new RuntimeException("not support language：" + language);
+                return null;
         }
 
     }
@@ -213,7 +220,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
             case JAVA_ANDROID:
                 return new JavaCodeGenClassMeta();
             default:
-                throw new RuntimeException("not support language：" + language);
+                return null;
         }
     }
 
@@ -244,7 +251,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
             if (log.isDebugEnabled()) {
                 log.debug("加载codegen class meta 失败，{}", exception.getMessage(), exception);
             }
-        }catch (ClassNotFoundException exception){
+        } catch (ClassNotFoundException exception) {
             if (log.isTraceEnabled()) {
                 log.trace("加载codegen class meta 失败，{}", exception.getMessage(), exception);
             }

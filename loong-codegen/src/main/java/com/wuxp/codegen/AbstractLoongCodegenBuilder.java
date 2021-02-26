@@ -425,18 +425,14 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     private List<File> getJsonSchemaFiles() {
         PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
-
         try {
             Resource[] resources = pathMatchingResourcePatternResolver.getResources(CLASSPATH_ALL_URL_PREFIX + CODEGEN_JSON_SCHEMA_CLASS_META_EXTENSIONS);
             List<File> jsonFiles = new ArrayList<>();
             for (Resource resource : resources) {
                 String path = resource.getURL().getPath();
                 if (path.startsWith(FILE_URL_PREFIX)) {
-                    String[] values = path.split("!");
-                    String filepath = values[1];
-                    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
-                    File file = new File(String.join(File.separator, CODEGEN_TEMP_EXTENSIONS_DIR, filepath));
-                    FileUtils.copyInputStreamToFile(inputStream, file);
+                    File file = new File(String.join(File.separator, CODEGEN_TEMP_EXTENSIONS_DIR, resource.getFilename()));
+                    FileUtils.copyInputStreamToFile(resource.getInputStream(), file);
                     jsonFiles.add(file);
                 } else {
                     jsonFiles.add(resource.getFile());
