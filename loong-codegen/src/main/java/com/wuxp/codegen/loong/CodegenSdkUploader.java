@@ -33,7 +33,7 @@ public class CodegenSdkUploader {
 
     public static final String PROJECT_MODULE_NAME = "loong.codegen.project.module";
 
-    private static final String CODEGEN_UPLOAD_URI = "/codegen/loong/sdk_code";
+    private static final String CODEGEN_UPLOAD_URI = "/loong/sdk_code";
 
     /**
      * 用于上传sdk的uri
@@ -109,7 +109,9 @@ public class CodegenSdkUploader {
         try {
             Response response = client.newCall(fileRequest).execute();
             boolean successful = response.isSuccessful();
-            log.info("上传sdk:{}，本地文件路径：{}", successful ? "成功" : "失败", sdkDir);
+            if (log.isDebugEnabled()) {
+                log.info("上传sdk:{}，本地文件路径：{}，server message：{}", successful ? "成功" : "失败", sdkDir,response.message());
+            }
             response.close();
         } catch (IOException exception) {
             log.error("上传sdk文件失败：{}，message：{}", sdkDir, exception.getMessage(), exception);

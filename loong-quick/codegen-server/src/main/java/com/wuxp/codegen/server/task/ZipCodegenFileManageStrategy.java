@@ -46,7 +46,7 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
         }
         File file = new File(uploadTempDir);
         if (!file.exists()) {
-            file.mkdir();
+            createDirectoryRecursively(uploadTempDir);
         }
         this.uploadTempDir = uploadTempDir;
     }

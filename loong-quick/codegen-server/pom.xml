@@ -14,9 +14,35 @@
     <properties>
         <jgit.version>5.10.0.202012080955-r</jgit.version>
         <svnkit.version>1.10.1</svnkit.version>
+        <jib-maven-plugin.version>2.8.0</jib-maven-plugin.version>
+        <docker.image.name>registry.cn-hangzhou.aliyuncs.com/fengwuxp/codegen-server</docker.image.name>
+        <docker.image.version>${project.version}</docker.image.version>
+        <docker.start.args>-Dspring.profiles.active=docker</docker.start.args>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.github.javaparser</groupId>
@@ -25,6 +51,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
         <dependency>
@@ -164,6 +200,35 @@
                 <configuration>
                     <!--deploy 时忽略此model-->
                     <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- Jib -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>java:8</image>
+                    </from>
+                    <to>
+                        <image>${docker.image.name}</image>
+                        <tags>
+                            <tag>${docker.image.version}</tag>
+                        </tags>
+                    </to>
+                    <allowInsecureRegistries>true</allowInsecureRegistries>
+                    <container>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <entrypoint>
+                            <arg>/bin/sh</arg>
+                            <arg>-c</arg>
+                            <arg>java ${docker.start.args} -cp /app/resources/:/app/classes/:/app/libs/* com.wuxp.codegen.server.LoongCodegenApplication</arg>
+                        </entrypoint>
+                        <volumes>/home/codegen/</volumes>
+                    </container>
                 </configuration>
             </plugin>
         </plugins>

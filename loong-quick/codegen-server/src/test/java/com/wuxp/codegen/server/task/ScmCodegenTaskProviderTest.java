@@ -25,7 +25,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
-@DataJpaTest
+@DataJpaTest(properties = {"spring.profiles.active=test"})
 @ContextConfiguration(classes = {ScmCodegenTaskProviderTest.TaskConfig.class, SourcecodeRepositoryPropertiesConfig.class, CodegenConfig.class})
 @EnableJpaRepositories(basePackages = {"com.wuxp.codegen.server.repositories"})
 @EntityScan("com.wuxp.codegen.server.entities")

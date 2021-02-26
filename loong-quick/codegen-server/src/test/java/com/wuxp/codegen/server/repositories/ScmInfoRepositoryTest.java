@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 
 @Import(CodegenJpaAuditorAwareConfig.class)
-@DataJpaTest
+@DataJpaTest(properties = {"spring.profiles.active=test"})
 class ScmInfoRepositoryTest {
 
     @Autowired

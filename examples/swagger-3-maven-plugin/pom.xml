@@ -56,7 +56,7 @@
                     <projectName>swagger-3-example-maven-plugin</projectName>
                     <clientProviderTypes>SPRING_CLOUD_OPENFEIGN,TYPESCRIPT_FEIGN</clientProviderTypes>
                     <pluginCodeGeneratorClass>com.wuxp.codegen.swagger3.example.Swagger3MavenPluginInvokeCodeGenerator</pluginCodeGeneratorClass>
-                    <loongCodegenServer>http://localhost:9001</loongCodegenServer>
+                    <loongCodegenServer>http://localhost:8080</loongCodegenServer>
                 </configuration>
             </plugin>
         </plugins>

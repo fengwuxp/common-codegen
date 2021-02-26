@@ -11,3 +11,6 @@
 /codegen-sdk
 *.flattened-pom.xml
 */classpath
+node_modules
+package-lock.json
+yarn.lock

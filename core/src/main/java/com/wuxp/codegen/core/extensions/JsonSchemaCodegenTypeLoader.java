@@ -255,6 +255,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
             if (log.isTraceEnabled()) {
                 log.trace("加载codegen class meta 失败，{}", exception.getMessage(), exception);
             }
+            return null;
         }
         return model;
     }
