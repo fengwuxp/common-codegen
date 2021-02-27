@@ -3,6 +3,7 @@ package com.wuxp.codegen.server.task;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.beans.Transient;
 import java.io.Serializable;
 
 /**
@@ -49,7 +50,7 @@ public class CodegenTaskProgressInfo implements Serializable {
     /**
      * 最后抛出的异常
      */
-    private Exception lastException;
+    private transient Exception lastException;
 
     /**
      * 任务被复用的次数
@@ -72,6 +73,11 @@ public class CodegenTaskProgressInfo implements Serializable {
 
     public synchronized void release() {
         this.taskReferenceCount--;
+    }
+
+    @Transient
+    public Exception getLastException() {
+        return lastException;
     }
 }
 

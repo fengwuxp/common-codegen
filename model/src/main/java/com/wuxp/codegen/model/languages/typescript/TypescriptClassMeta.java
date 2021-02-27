@@ -21,89 +21,89 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     /**
      * object
      */
-    public final static TypescriptClassMeta OBJECT = new TypescriptClassMeta("object", null, ClassType.CLASS, false, null);
+    public static final TypescriptClassMeta OBJECT = new TypescriptClassMeta("object", null, ClassType.CLASS, false, null);
 
-    public final static TypescriptClassMeta ANY = new TypescriptClassMeta("any", "any", ClassType.CLASS, false, null);
+    public static final TypescriptClassMeta ANY = new TypescriptClassMeta("any", "any", ClassType.CLASS, false, null);
 
     /**
      * string
      */
-    public final static TypescriptClassMeta STRING = new TypescriptClassMeta("string", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta STRING = new TypescriptClassMeta("string", null, ClassType.CLASS, false, OBJECT);
 
     /**
      * number
      */
-    public final static TypescriptClassMeta NUMBER = new TypescriptClassMeta("number", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta NUMBER = new TypescriptClassMeta("number", null, ClassType.CLASS, false, OBJECT);
 
-    public final static TypescriptClassMeta BIGINT = new TypescriptClassMeta("BigInt", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta BIGINT = new TypescriptClassMeta("BigInt", null, ClassType.CLASS, false, OBJECT);
 
     /**
      * boolean
      */
-    public final static TypescriptClassMeta BOOLEAN = new TypescriptClassMeta("boolean", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta BOOLEAN = new TypescriptClassMeta("boolean", null, ClassType.CLASS, false, OBJECT);
 
     /**
      * array
      */
-    public final static TypescriptClassMeta ARRAY = new TypescriptClassMeta("Array", "Array<T>", ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta ARRAY = new TypescriptClassMeta("Array", "Array<T>", ClassType.CLASS, false, OBJECT);
 
     /**
      * map
      */
-    public final static TypescriptClassMeta MAP = new TypescriptClassMeta("Map", "Map<K,V>", ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta MAP = new TypescriptClassMeta("Map", "Map<K,V>", ClassType.CLASS, false, OBJECT);
 
     /**
      * set
      */
-    public final static TypescriptClassMeta SET = new TypescriptClassMeta("Set", "Set<V>", ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta SET = new TypescriptClassMeta("Set", "Set<V>", ClassType.CLASS, false, OBJECT);
 
     /**
      * promise
      */
-    public final static TypescriptClassMeta PROMISE = new TypescriptClassMeta("Promise", "Promise<V>", ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta PROMISE = new TypescriptClassMeta("Promise", "Promise<V>", ClassType.CLASS, false, OBJECT);
 
     /**
      * regExp
      */
-    public final static TypescriptClassMeta REGEXP = new TypescriptClassMeta("RegExp", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta REGEXP = new TypescriptClassMeta("RegExp", null, ClassType.CLASS, false, OBJECT);
 
     /**
      * Date
      */
-    public final static TypescriptClassMeta DATE = new TypescriptClassMeta("Date", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta DATE = new TypescriptClassMeta("Date", null, ClassType.CLASS, false, OBJECT);
 
 
     /**
      * void
      */
-    public final static TypescriptClassMeta VOID = new TypescriptClassMeta("void", null, ClassType.CLASS, false, null);
+    public static final TypescriptClassMeta VOID = new TypescriptClassMeta("void", null, ClassType.CLASS, false, null);
 
     /**
      * record
      */
-    public final static TypescriptClassMeta RECORD = new TypescriptClassMeta("Record", "Record<K,V>", ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta RECORD = new TypescriptClassMeta("Record", "Record<K,V>", ClassType.CLASS, false, OBJECT);
 
     /**
      * 枚举key的 record
      */
-    public final static TypescriptClassMeta ENUM_KEY_RECORD = new TypescriptClassMeta("Enum_Key_Record", "Enum_Key_Record<K,V>",
+    public static final TypescriptClassMeta ENUM_KEY_RECORD = new TypescriptClassMeta("Enum_Key_Record", "Enum_Key_Record<K,V>",
             ClassType.CLASS, false, OBJECT);
 
     /**
      * 枚举类型
      */
-    public final static TypescriptClassMeta ENUM = new TypescriptClassMeta("Enum", null, ClassType.INTERFACE, false, null, "Enum");
+    public static final TypescriptClassMeta ENUM = new TypescriptClassMeta("Enum", null, ClassType.INTERFACE, false, null, "Enum");
 
 
     /**
      * web file
      */
-    public final static TypescriptClassMeta BROWSER_FILE = new TypescriptClassMeta("File", null, ClassType.CLASS, false, OBJECT);
+    public static final TypescriptClassMeta BROWSER_FILE = new TypescriptClassMeta("File", null, ClassType.CLASS, false, OBJECT);
 
     /**
      * java数组类型标记
      */
-    public final static TypescriptClassMeta JAVA_ARRAY_CLASS_TYPE_MARK = new TypescriptClassMeta("JavaArrayClassTypeMark", null,
+    public static final TypescriptClassMeta JAVA_ARRAY_CLASS_TYPE_MARK = new TypescriptClassMeta("JavaArrayClassTypeMark", null,
             ClassType.CLASS, false, OBJECT);
 
     static {

@@ -1,5 +1,6 @@
 package com.wuxp.codegen.starter;
 
+import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.CodegenBuilder;
@@ -37,6 +38,18 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
     private final String[] scanPackages;
 
     private final OpenApiType openApiType;
+
+    /**
+     * 忽略的包
+     */
+    @Setter
+    protected List<String> ignorePackages = new ArrayList<>();
+
+    /**
+     * 需要忽略的类
+     */
+    @Setter
+    protected List<Class> ignoreClasses = new ArrayList<>();
 
     /**
      * 默认输出路径为当前文件夹
@@ -78,7 +91,13 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
         if (log.isInfoEnabled()) {
             log.info("codeGeneratorBuilders：{}", codeGeneratorBuilders);
         }
-        codeGeneratorBuilders.forEach(codegenBuilder -> codegenBuilder.buildCodeGenerator().generate());
+        codeGeneratorBuilders.stream().map(codegenBuilder -> (AbstractLoongCodegenBuilder) codegenBuilder)
+                .forEach(codegenBuilder -> {
+            codegenBuilder
+                    .ignoreClasses(ignoreClasses.toArray(new Class[0]))
+                    .includePackages(ignorePackages.toArray(new String[0]))
+                    .buildCodeGenerator().generate();
+        });
         // 上传sdk生成结果到服务端
         new CodegenSdkUploader(this.getCodegenBaseOutputPath()).upload();
     }

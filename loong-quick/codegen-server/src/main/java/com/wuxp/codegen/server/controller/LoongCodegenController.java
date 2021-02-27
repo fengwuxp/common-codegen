@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.server.task.CodegenFileManageStrategy;
 import com.wuxp.codegen.server.task.CodegenTaskProgressInfo;
 import com.wuxp.codegen.server.task.CodegenTaskProvider;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,7 @@ public class LoongCodegenController {
 
     @Operation(description = "下载生成的sdk,1：通过代码任务id和ClientProviderType下载代码生成结果，2：通过项目和分支名称下载")
     @GetMapping(value = "/sdk_code", produces = {APPLICATION_OCTET_STREAM_VALUE})
+    @Hidden
     public HttpEntity<InputStreamResource> downloadTaskResult(@RequestParam(value = "taskId", required = false) String taskId,
                                                               @RequestParam("type") ClientProviderType type,
                                                               @RequestParam(value = "projectName", required = false) String projectName,

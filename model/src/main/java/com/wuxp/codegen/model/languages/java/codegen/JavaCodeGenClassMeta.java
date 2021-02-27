@@ -88,8 +88,9 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     /**
      * Date
      */
-    public static final JavaCodeGenClassMeta DATE = new JavaCodeGenClassMeta("Date", null, ClassType.CLASS, false, null, "java.util.Date",
-            true);
+    public static final JavaCodeGenClassMeta DATE = new JavaCodeGenClassMeta("Date", null, ClassType.CLASS, false, null, "java.util.Date",true);
+    public static final JavaCodeGenClassMeta LOCAL_DATE = new JavaCodeGenClassMeta("LocalDate", null, ClassType.CLASS, false, null, "java.time.LocalDate",true);
+    public static final JavaCodeGenClassMeta LOCAL_DATE_TIME = new JavaCodeGenClassMeta("LocalDateTime", null, ClassType.CLASS, false, null, "java.time.LocalDateTime", true);
 
     /**
      * Map

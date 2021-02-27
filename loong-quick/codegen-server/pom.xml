@@ -172,6 +172,12 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wuxp.codegen</groupId>
+            <artifactId>wuxp-codegen-loong-starter</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -220,6 +226,17 @@
                         </entrypoint>
                         <volumes>/home/codegen/</volumes>
                     </container>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.wuxp.codegen</groupId>
+                <artifactId>wuxp-codegen-loong-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <projectName>codegen-server</projectName>
+                    <clientProviderTypes>typescript_feign</clientProviderTypes>
+                    <scanPackages>com.wuxp.codegen.server.controller</scanPackages>
+                    <loongCodegenServer>http://localhost:8080</loongCodegenServer>
                 </configuration>
             </plugin>
         </plugins>
