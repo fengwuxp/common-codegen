@@ -33,7 +33,7 @@ public class CodegenSdkUploader {
 
     public static final String PROJECT_MODULE_NAME = "loong.codegen.project.module";
 
-    private static final String CODEGEN_UPLOAD_URI = "/loong/sdk_code";
+    private static final String CODEGEN_UPLOAD_URI = "/codegen/loong/sdk_code";
 
     /**
      * 用于上传sdk的uri
