@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 
 /**
  * Java 代码生成的类型常量
+ * @author wuxp
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

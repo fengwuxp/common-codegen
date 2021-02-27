@@ -152,11 +152,11 @@
                 <artifactId>plexus-utils</artifactId>
                 <version>3.2.1</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -268,13 +268,20 @@
             <id>${dist-repo}</id>
             <url>${dist-repo.snapshots.url}</url>
         </snapshotRepository>
-
     </distributionManagement>
 
     <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>apache-public</id>
+            <url>https://repository.apache.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>apache-snapshots</id>
+            <url>https://repository.apache.org/snapshots</url>
         </repository>
     </repositories>
 

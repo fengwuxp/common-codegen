@@ -16,3 +16,7 @@ loong:
   codegen:
     sdk:
       tempdir: /home/codegen/sdk
+
+logging:
+  level:
+    com.wuxp: info

@@ -789,7 +789,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .distinct()
                 .collect(Collectors.toList());
 
-        if (!CodegenConfigHolder.getConfig().isServerClass(classMeta.getClazz())){
+        if (!CodegenConfigHolder.getConfig().isServerClass(classMeta.getClazz())) {
             return codegenMethods;
         }
         // 判断是否存在方法名称是否相同
@@ -797,7 +797,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             Optional<M> optional = codegenMethods.stream()
                     .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
                     .findFirst();
-            if (optional.isPresent()){
+            if (optional.isPresent()) {
                 // 不允许方法重载
                 throw new CodegenRuntimeException(MessageFormat.format("类{0}下的的方法{1}出现重载", classMeta.getClassName(), m.getName()));
             }
@@ -820,30 +820,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
         checkSpringMvcMethod(javaMethodMeta, classMeta);
-        M methodCodeMeta;
-        if (this.needMargeMethodParams()) {
-            // 需要合并参数
-            methodCodeMeta = converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
-        } else {
-            methodCodeMeta = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
-        }
-        methodCodeMeta = this.languageEnhancedProcessor.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
-        //增强处理
-        this.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
-        return methodCodeMeta;
-    }
-
-
-    /**
-     * 转换方法处理
-     *
-     * @param javaMethodMeta   java 方法元数据信息
-     * @param classMeta        类元数据信息
-     * @param codeGenClassMeta 生成元数据系信息
-     * @return
-     */
-    protected M converterMethodHandle(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
-
         M genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
         //method转换
         genMethodMeta.setAccessPermission(classMeta.getAccessPermission());
@@ -859,9 +835,31 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
         List<C> returnTypes = this.languageTypeMapping.mapping(methodMetaReturnType);
         genMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[0]));
-
+        // 增加依赖
         Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies();
         returnTypes.forEach(item -> dependencies.put(item.getName(), item));
+        if (this.needMargeMethodParams()) {
+            // 需要合并参数
+            converterMethodAndMargeParams(genMethodMeta, javaMethodMeta, classMeta, codeGenClassMeta);
+        } else {
+            converterMethodHandle(genMethodMeta, javaMethodMeta, classMeta, codeGenClassMeta);
+        }
+        this.languageEnhancedProcessor.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
+        //增强处理
+        this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
+        return genMethodMeta;
+    }
+
+
+    /**
+     * 转换方法处理
+     *
+     * @param javaMethodMeta   java 方法元数据信息
+     * @param classMeta        类元数据信息
+     * @param codeGenClassMeta 生成元数据系信息
+     * @return
+     */
+    protected M converterMethodHandle(M genMethodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
 
         /**
          * 方法参数处理流程
@@ -886,7 +884,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         final Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
         Map<String, Parameter> parameters = javaMethodMeta.getParameters();
-
+        // 增加依赖
+        Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies();
         // 遍历参数列表进行转换
         effectiveParams.forEach((key, classes) -> {
             Parameter parameter = parameters.get(key);
@@ -894,7 +893,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return;
             }
             C genClassInstance = this.languageMetaInstanceFactory.newClassInstance();
+            // 参数类型
             List<C> paramTypes = this.languageTypeMapping.mapping(classes);
+            paramTypes.forEach(item -> dependencies.put(item.getName(), item));
             Class<?> paramType = classes[0];
             genClassInstance.setTypeVariables(paramTypes.toArray(new CommonCodeGenClassMeta[0]));
             // 注解
@@ -921,7 +922,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         genMethodMeta.setParams(codeGenParams)
                 .setParamAnnotations(codeGenParamAnnotations);
-
         return genMethodMeta;
     }
 
@@ -933,23 +933,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 3：二者皆有
      * </p>
      *
+     * @param methodMeta       用于生成的方法元数据
      * @param javaMethodMeta   java 方法元数据信息
      * @param classMeta        java 类元数据信息
      * @param codeGenClassMeta 用于生成的类元数据信息
      * @return 用于生成的方法元数据信息
      */
-    protected M converterMethodAndMargeParams(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
-        M genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
-        //method转换
-        genMethodMeta.setAccessPermission(classMeta.getAccessPermission());
-        //注解转注释
-        List<String> comments = this.generateComments(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod());
-        comments.addAll(this.generateComments(javaMethodMeta.getReturnType(), true));
-        genMethodMeta.setComments(comments.toArray(new String[]{}));
-        genMethodMeta.setName(javaMethodMeta.getName());
-
-        //处理方法上的相关注解
-        genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod()));
+    protected M converterMethodAndMargeParams(M methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
 
         // 用于缓存合并的参数filedList
         final Set<F> commonCodeGenFiledMetas = new LinkedHashSet<>();
@@ -981,7 +971,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         boolean hasComplexParams = margeComplexParamsFiled(commonCodeGenFiledMetas, effectiveParams);
 
         if (hasComplexParams && effectiveParamsSize == 1) {
-            M methodHandle = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
+            M methodHandle = converterMethodHandle(methodMeta, javaMethodMeta, classMeta, codeGenClassMeta);
             Map<String, CommonCodeGenClassMeta> params = methodHandle.getParams();
             String name = params.keySet().toArray(new String[0])[0];
             CommonCodeGenClassMeta genClassMeta = params.remove(name);
@@ -995,7 +985,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         // 没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
         String name = MessageFormat.format("{0}{1}Req",
                 this.packageMapStrategy.convertClassName(classMeta.getClazz()),
-                ToggleCaseUtils.toggleFirstChart(genMethodMeta.getName()));
+                ToggleCaseUtils.toggleFirstChart(methodMeta.getName()));
         argsClassMeta.setName(name);
         argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{DEFAULT_MARGE_PARAMS_NAME, name}));
         argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
@@ -1017,9 +1007,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
         //请求参数名称，固定为req
         params.put(DEFAULT_MARGE_PARAMS_NAME, argsClassMeta);
-        genMethodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);
+        methodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);
 
-        return genMethodMeta;
+        return methodMeta;
     }
 
     // 合并简单参数

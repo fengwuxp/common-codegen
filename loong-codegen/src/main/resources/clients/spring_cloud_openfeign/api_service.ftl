@@ -1,5 +1,6 @@
-import org.springframework.cloud.openfeign.*;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
 
 <#if dependencies??>
 <#--依赖导入处理-->

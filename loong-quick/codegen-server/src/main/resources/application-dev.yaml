@@ -11,3 +11,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+logging:
+  level:
+    org.springframework: info
+    org.hibernate: info
+    com.wuxp: info
