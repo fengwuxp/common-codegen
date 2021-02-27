@@ -2,7 +2,7 @@
 
 #### 快速接入
 
--- 搭建codegen-server，拉取镜像、启动
+- 搭建codegen-server，拉取镜像、启动
 
 ```cmd
  拉取镜像命令：docker pull registry.cn-hangzhou.aliyuncs.com/fengwuxp/codegen-server
