@@ -16,7 +16,6 @@ import java.util.List;
  * @author wuxp
  */
 @Slf4j
-//@Component
 public class ScmAccessorPropertiesProvider {
 
     private static final String SCM_ACCESSOR_PROPERTIES_CACHE_NAME = "repository_info_cache";
@@ -46,5 +45,6 @@ public class ScmAccessorPropertiesProvider {
         }
         return sourcecodeRepositoryProperties;
     }
+
 
 }

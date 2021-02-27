@@ -30,6 +30,7 @@ import java.net.URLClassLoader;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * 抽象的sdk生成，用于调用{@link  com.wuxp.codegen.core.CodeGenerator#generate()}生成sdk代码
@@ -81,7 +82,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      * 生成 sdk 的client lib type，如果为null或空，生成所有的
      */
     @Parameter(property = "client.provider.types")
-    protected List<ClientProviderType> clientProviderTypes;
+    protected List<String> clientProviderTypes;
 
     /**
      * 执行的{@link com.wuxp.codegen.core.CodeGenerator} 实现类
@@ -364,9 +365,9 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
 
     protected List<ClientProviderType> getFinallyClientProviderTypes() {
         if (clientProviderTypes == null || clientProviderTypes.isEmpty()) {
-            clientProviderTypes = Arrays.asList(ClientProviderType.values());
+            return Arrays.asList(ClientProviderType.values());
         }
-        return clientProviderTypes;
+        return clientProviderTypes.stream().map(String::toUpperCase).map(ClientProviderType::valueOf).collect(Collectors.toList());
     }
 
     public ClassLoader getPluginProjectClassLoader() {

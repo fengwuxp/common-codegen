@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import static com.wuxp.codegen.server.task.CodegenFileManageStrategy.DEFAULT_MODULE_NAME;
@@ -84,22 +85,24 @@ public class LoongCodegenController {
                                                               @RequestParam("type") ClientProviderType type,
                                                               @RequestParam(value = "projectName", required = false) String projectName,
                                                               @RequestParam(value = "branch", required = false) String branch,
-                                                              @RequestParam(value = "moduleName", required = false) String moduleName) throws Exception {
-        File file = null;
+                                                              @RequestParam(value = "moduleName", required = false) String moduleName) throws IOException {
         if (StringUtils.hasText(taskId)) {
-            Optional<CodegenTaskProgressInfo> optional = codegenTaskProvider.getTaskProgress(taskId);
-            if (optional.isPresent()) {
-                CodegenTaskProgressInfo progressInfo = optional.get();
-                file = codegenFileManageStrategy.download(progressInfo.getProjectName(), progressInfo.getBranch(), moduleName, type);
-            }
+            Optional<File> optionalFile = codegenTaskProvider.getTaskProgress(taskId)
+                    .map(progressInfo -> codegenFileManageStrategy.download(progressInfo.getProjectName(), progressInfo.getBranch(), moduleName, type))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get);
+            return downloadResult(optionalFile);
         }
-        if (file == null) {
-            file = codegenFileManageStrategy.download(projectName, branch, moduleName, type);
-        }
-        if (file == null) {
+        Optional<File> optionalFile = codegenFileManageStrategy.download(projectName, branch, moduleName, type);
+        return downloadResult(optionalFile);
+
+    }
+
+    private HttpEntity<InputStreamResource> downloadResult(Optional<File> optional) throws IOException {
+        if (!optional.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        FileSystemResource downloadResource = new FileSystemResource(file);
+        FileSystemResource downloadResource = new FileSystemResource(optional.get());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", downloadResource.getFilename()));
         return ResponseEntity

@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Optional;
 
 /**
  * 代码生成的文件管理策略
@@ -36,5 +37,5 @@ public interface CodegenFileManageStrategy {
      * @param type        client type
      * @return sdk代码文件
      */
-    File download(String projectName, String branch, String moduleName, ClientProviderType type);
+    Optional<File> download(String projectName, String branch, String moduleName, ClientProviderType type);
 }

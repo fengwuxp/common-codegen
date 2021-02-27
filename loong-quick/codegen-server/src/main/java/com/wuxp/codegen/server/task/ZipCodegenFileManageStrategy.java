@@ -2,6 +2,7 @@ package com.wuxp.codegen.server.task;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.server.plugins.CodegenPluginExecuteStrategy;
+import com.wuxp.codegen.server.vcs.ScmAccessorPropertiesProvider;
 import com.wuxp.codegen.server.vcs.SourcecodeRepository;
 import lombok.extern.slf4j.Slf4j;
 import net.lingala.zip4j.ZipFile;
@@ -16,7 +17,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 基于zip的文件管理
@@ -31,6 +34,8 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
     private final SourcecodeRepository sourcecodeRepository;
 
     private final CodegenPluginExecuteStrategy codegenPluginExecuteStrategy;
+
+    private ScmAccessorPropertiesProvider scmAccessorPropertiesProvider;
 
     private final String uploadTempDir;
 
@@ -71,25 +76,31 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
     }
 
     @Override
-    public File download(String projectName, String branch, String moduleName, ClientProviderType type) {
+    public Optional<File> download(String projectName, String branch, String moduleName, ClientProviderType type) {
         moduleName = getModuleNameOrDefault(moduleName);
         branch = getBranchOrDefault(branch);
         String tempSdkFilepath = this.getTempSdkFilepath(projectName, branch, moduleName, type);
         File tempSdkFile = new File(tempSdkFilepath);
         // 存在已上传的sdk文件
         if (tempSdkFile.exists()) {
-            return tempSdkFile;
+            return Optional.of(tempSdkFile);
         }
-        // 不存在，从本地仓库中获取
-        File sdk = getSdkCodegenFile(projectName, branch, type, moduleName);
+        // 不存在，尝试从本地仓库中获取
+        File sdk = null;
+        try {
+            sdk = getSdkCodegenFile(projectName, branch, type, moduleName);
+        } catch (Exception exception) {
+            log.error("从 sourcecodeRepository获取 sdk失败{}，message：{}", exception.getMessage(), exception);
+            return Optional.empty();
+        }
         try {
             ZipFile zipFile = new ZipFile(String.format("%s.zip", type.name().toLowerCase()));
             zipFile.addFolder(sdk);
-            return zipFile.getFile();
+            return Optional.of(zipFile.getFile());
         } catch (ZipException exception) {
             log.error("zip压缩sdk文件失败，sdk文件路径：{}，message：{}", sdk.getAbsolutePath(), exception.getMessage(), exception);
-            throw new CodegenTaskException(exception);
         }
+        return Optional.empty();
     }
 
     private File getSdkCodegenFile(String projectName, String branch, ClientProviderType type, String moduleName) {
@@ -133,7 +144,7 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
         String directoryPath = String.join(File.separator, this.uploadTempDir, projectName, branch, moduleName);
         createDirectoryRecursively(directoryPath);
         String filepath = String.join(File.separator, directoryPath, type.name().toLowerCase());
-        return String.join(".", filepath, "zip");
+        return Paths.get(String.join(".", filepath, "zip")).normalize().toString();
     }
 
     private String getModuleNameOrDefault(String moduleName) {
@@ -188,4 +199,14 @@ public class ZipCodegenFileManageStrategy implements CodegenFileManageStrategy {
             }
         }
     }
+
+    /**
+     * 是否启用scm support
+     *
+     * @return
+     */
+    private boolean enableScmSupport() {
+        return !scmAccessorPropertiesProvider.getRepositoryProperties().isEmpty();
+    }
+
 }

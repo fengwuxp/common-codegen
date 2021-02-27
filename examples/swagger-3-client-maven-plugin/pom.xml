@@ -26,7 +26,7 @@
                 <version>${project.version}</version>
                 <configuration>
                     <projectName>swagger-3-example-maven-plugin</projectName>
-                    <clientType>SPRING_CLOUD_OPENFEIGN</clientType>
+                    <clientType>spring_cloud_openfeign</clientType>
                     <loongCodegenServer>http://localhost:8080</loongCodegenServer>
                 </configuration>
             </plugin>

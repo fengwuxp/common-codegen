@@ -106,6 +106,7 @@
 ```text
   1：通过设置codegen-server地址和服务端代码的代码库和分支名称进行sdk生成下载
 ```
+- codegen-server docker support
 
 #### features
 

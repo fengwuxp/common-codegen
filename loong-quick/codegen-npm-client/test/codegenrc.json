@@ -1,5 +1,4 @@
 {
   "projectName": "swagger-3-example-maven-plugin",
-  "clientType": "TYPESCRIPT_FEIGN",
   "loongCodegenServer": "http://localhost:8080"
 }

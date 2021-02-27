@@ -50,6 +50,8 @@ public class CodegenConfig implements DisposableBean {
 
     private static final String THREAD_SCOPE_BEAN_NAME = "thread";
 
+    private static final String CODEGEN_TASK_EXECUTOR_BEAN_NAME = "codegenTaskExecutor";
+
     private final Map<String, SourcecodeRepository> sourcecodeRepositoryCaches = new ConcurrentReferenceHashMap<>(8);
 
     private ScmAccessorPropertiesProvider scmAccessorPropertiesProvider;
@@ -104,7 +106,7 @@ public class CodegenConfig implements DisposableBean {
      *
      * @return ThreadPoolTaskExecutor
      */
-    @Bean(name = "codegenTaskExecutor")
+    @Bean(name = CODEGEN_TASK_EXECUTOR_BEAN_NAME)
     public ThreadPoolTaskExecutor codegenTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(2);
@@ -130,7 +132,7 @@ public class CodegenConfig implements DisposableBean {
     @Bean
     public CodegenTaskProvider codegenTaskProvider(SourcecodeRepository sourcecodeRepository,
                                                    CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
-                                                   @Qualifier(value = "codegenTaskExecutor") AsyncTaskExecutor taskExecutor) {
+                                                   @Qualifier(value = CODEGEN_TASK_EXECUTOR_BEAN_NAME) AsyncTaskExecutor taskExecutor) {
         return new ScmCodegenTaskProvider(sourcecodeRepository, codegenPluginExecuteStrategy, taskExecutor);
     }
 

@@ -117,12 +117,18 @@ public class CodegenDownloader {
         //储存下载文件的目录
         File dir = new File(destFileDir);
         if (!dir.exists()) {
-            dir.mkdirs();
+            boolean mkdirs = dir.mkdirs();
+            if (log.isDebugEnabled()) {
+                log.debug("目录创建{}{}", dir.getAbsolutePath(), mkdirs ? "成功" : "失败");
+            }
         }
         File file = new File(dir, destFileName);
         file.deleteOnExit();
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            if (log.isDebugEnabled()) {
+                log.debug("文件创建{}{}", dir.getAbsolutePath(), newFile ? "成功" : "失败");
+            }
         } catch (IOException exception) {
             log.error("创建文件失败，filepath={}", file.getAbsolutePath(), exception);
             return null;
@@ -146,7 +152,6 @@ public class CodegenDownloader {
                 FileOutputStream fos = null;
 
                 try {
-
                     is = body.byteStream();
                     long total = body.contentLength();
                     fos = new FileOutputStream(file);
@@ -183,6 +188,7 @@ public class CodegenDownloader {
             countDownLatch.await();
         } catch (InterruptedException exception) {
             log.error("下载被中断", exception);
+            Thread.currentThread().interrupt();
             return null;
         }
         log.error("下载已完成");

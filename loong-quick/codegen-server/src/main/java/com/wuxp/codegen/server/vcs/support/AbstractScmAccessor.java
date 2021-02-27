@@ -23,6 +23,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.util.Assert;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import static org.springframework.util.ResourceUtils.FILE_URL_PREFIX;
 
 /**
  * copy to spring-cloud-config
@@ -188,13 +191,15 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
 
 
     protected File getWorkingDirectory(String projectName, String branch) {
-        if (this.uri.startsWith("file:")) {
+        String uri = this.uri;
+        Assert.notNull(uri, "source repository uri must not null");
+        if (uri.startsWith(FILE_URL_PREFIX)) {
             try {
-                String path = StringUtils.cleanPath(this.uri);
+                String path = StringUtils.cleanPath(uri);
                 return new UrlResource(this.getLocalRepositoryUrl(path, projectName, branch)).getFile();
             } catch (Exception e) {
                 throw new IllegalStateException(
-                        "Cannot convert uri to file: " + this.uri);
+                        "Cannot convert uri to file: " + uri);
             }
         }
         return new File(this.getLocalRepositoryUrl(this.basedir, projectName, branch));

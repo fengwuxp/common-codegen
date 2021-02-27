@@ -48,7 +48,7 @@ public class DownloadCodegenSkdMojo extends AbstractMojo {
      * ClientProviderType
      */
     @Parameter(defaultValue = "SPRING_CLOUD_OPENFEIGN")
-    private ClientProviderType clientType;
+    private String clientType;
 
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject mavenProject;
@@ -56,6 +56,6 @@ public class DownloadCodegenSkdMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         String projectBasedir = mavenProject.getBasedir().getAbsolutePath();
-        new CodegenDownloader(loongCodegenServer, projectName, projectBranch).download(moduleName, clientType, projectBasedir);
+        new CodegenDownloader(loongCodegenServer, projectName, projectBranch).download(moduleName, ClientProviderType.valueOf(clientType.toUpperCase()), projectBasedir);
     }
 }
