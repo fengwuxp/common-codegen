@@ -1,5 +1,4 @@
 import download from "download";
-import extract from "extract-zip";
 import {stringify} from "querystring";
 import * as path from "path";
 import * as log4js from "log4js";
@@ -37,9 +36,13 @@ const DEFAULT_OPTIONS: Partial<DownloadCodegenSdkOptions> = {
 }
 
 const downloadSdk = async (loongCodegenServer: string, projectName: string, type: string, moduleName: string, downloadPath: string): Promise<void> => {
-    const url = `${loongCodegenServer}/codegen/loong/sdk_code?${stringify({projectName, type, moduleName})}`;
-    logger.info(`下载${projectName}的sdk${url}`)
-    await download(url, downloadPath);
+    const url = `${loongCodegenServer}/codegen/loong/sdk_code?${stringify({
+        projectName,
+        type: (type ?? "typescript_feign").toUpperCase(),
+        moduleName
+    })}`;
+    logger.info(`下载${projectName}的sdk，下载地址：${url}`)
+    await download(url, downloadPath, {extract: true});
 }
 
 /**
@@ -53,14 +56,16 @@ export const downloadCodegenSdk = async (options: DownloadCodegenSdkOptions): Pr
     await downloadSdk(loongCodegenServer, projectName, type, moduleName, downloadPath);
 
     // unzip
-    const sdkFilepath = path.normalize([downloadPath, type.toLowerCase()].join("/")) + ".zip"
+    const filename = type.toLowerCase();
+    const sdkFilepath = path.normalize([downloadPath, filename].join("/"));
     const targetDir = output ?? downloadPath;
-    await extract(sdkFilepath, {dir: targetDir});
-    const srcDir = path.normalize([targetDir, type.toLowerCase(), "src"].join("/"))
+    logger.info("移除旧的sdk代码：", targetDir);
+    fsExtra.removeSync(targetDir);
+    const srcDir = path.normalize([downloadPath, filename, "src"].join("/"))
     // 复制到期望的目录下
     fsExtra.copySync(srcDir, targetDir);
     // 删除下载的zip文件
     fsExtra.removeSync(sdkFilepath);
     // 删除解压后的文件
-    fsExtra.removeSync(path.normalize([targetDir, type.toLowerCase()].join("/")));
+    fsExtra.removeSync(path.normalize([targetDir, filename].join("/")));
 }

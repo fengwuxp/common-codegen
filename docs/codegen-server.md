@@ -41,9 +41,10 @@
 
 #### client 端
 
-- java client
+##### java client maven plugin
 
 ```xml
+
 <plugin>
     <groupId>com.wuxp.codegen</groupId>
     <artifactId>wuxp-codegen-loong-client-maven-plugin</artifactId>
@@ -56,4 +57,23 @@
 </plugin>
 
 ```
-- npm client（未完成）
+
+##### npm client
+
+```text
+ 安装依赖： yarn add fengwuxp-codegen-client
+ npm run codegen gen 或者 npm run codegen gen -config configfile
+
+```
+- 默认配置文件名称为：codegenrc.json
+- 配置文件格式
+
+```json
+{
+  "projectName": "项目名称",
+  "loongCodegenServer": "codegen server地址 例如：http://locahost:8080",
+  "branch": "分支名称，非必填",
+  "moduleName": "模块名称，非填",
+  "type": "client lib type，例如：typescript_feign "
+}
+```
