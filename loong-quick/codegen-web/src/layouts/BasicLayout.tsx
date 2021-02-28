@@ -90,7 +90,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
             </Link>
           );
         }}
-        // menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent layout={settings.layout} />}
         footerRender={() => <DefaultFooter />}
         collapsed={collapsed}

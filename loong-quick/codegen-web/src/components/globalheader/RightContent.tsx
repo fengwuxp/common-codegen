@@ -11,14 +11,14 @@ export type SiderTheme = 'light' | 'dark';
 
 export interface GlobalHeaderRightProps {
   theme?: SiderTheme;
-  layout: 'sidemenu' | 'topmenu';
+  layout: 'side' | 'top' | 'mix';
 }
 
 const GlobalHeaderRight: React.FC<GlobalHeaderRightProps> = (props) => {
   const { theme, layout } = props;
   let className = styles.right;
 
-  if (theme === 'dark' && layout === 'topmenu') {
+  if (theme === 'dark' && layout === 'top') {
     className = `${styles.right}  ${styles.dark}`;
   }
 

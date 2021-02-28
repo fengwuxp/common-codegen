@@ -1,10 +1,10 @@
 // https://umijs.org/config/
 // import routes from "../.spring/routes";
-import { defineConfig } from 'umi';
+import {defineConfig} from 'umi';
 import defaultSettings from './defaultSettings';
 import routes from './routes';
 
-const { REACT_APP_ENV } = process.env;
+const {REACT_APP_ENV} = process.env;
 
 export default defineConfig({
   hash: false,
@@ -17,7 +17,7 @@ export default defineConfig({
     baseNavigator: true,
   },
   dynamicImport: {
-    // loading: '@/components/pageloading/index',
+    loading: '@/components/pageloading/index',
   },
   targets: {
     ie: 11,
@@ -38,9 +38,8 @@ export default defineConfig({
               redirect: '/user/login',
             },
             {
-              name: 'login',
+              name: '登录',
               icon: 'crown',
-              // icon: require(`@ant-design/icons-svg/lib/asn/AimOutlined`).default,
               path: '/user/login',
               component: './user/LoginView',
             },

@@ -12,7 +12,7 @@ const settings: PureSettings = {
   menu: {
     locale: true,
   },
-  title: 'codegen support',
+  title: 'Codegen',
   iconfontUrl: '',
 };
 
