@@ -64,8 +64,8 @@ public class OrderController extends BaseController<String> {
     }
 
 
-    @PostMapping(value = {"queryOrder2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ServiceQueryResponse<Order> queryOrder2(@RequestParam(name = "order_id", required = false) Long oderId, String sn) {
+    @PostMapping(value = {"queryOrder_2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ServiceQueryResponse<Order> queryOrder_2(@RequestParam(name = "order_id", required = false) Long oderId, String sn) {
 
         return new ServiceQueryResponse<>();
     }

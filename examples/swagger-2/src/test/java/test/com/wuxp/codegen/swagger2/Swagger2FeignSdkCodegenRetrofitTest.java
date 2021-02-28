@@ -1,6 +1,8 @@
 package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.config.CodegenConfig;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -17,6 +19,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,7 +45,8 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
-
+        CodegenConfig codegenConfig = CodegenConfig.builder().basePackages(Collections.singletonList("com.wuxp.codegen.swagger2")).build();
+        CodegenConfigHolder.setConfig(codegenConfig);
         Swagger2FeignJavaCodegenBuilder.builder()
                 .useRxJava(true)
                 .build()

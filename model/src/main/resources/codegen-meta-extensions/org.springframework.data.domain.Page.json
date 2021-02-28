@@ -1,0 +1,69 @@
+{
+  "order": -1,
+  "name": "Page",
+  "genericDescription": "Page<T>",
+  "packagePath": "/model/paging",
+  "typeVariables": [
+    {
+      "name": "T"
+    }
+  ],
+  "classType": "INTERFACE",
+  "fieldMetas": [
+    {
+      "name": "content",
+      "type": "array",
+      "required": true
+    },
+    {
+      "name": "empty",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "first",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "last",
+      "type": "boolean",
+      "required": true
+    },
+    {
+      "name": "number",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "numberOfElements",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "size",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "totalElements",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "totalPages",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "pageable",
+      "type": "$org.springframework.data.domain.Pageable",
+      "required": true
+    },
+    {
+      "name": "sort",
+      "type": "$org.springframework.data.domain.Sort",
+      "required": true
+    }
+  ]
+}

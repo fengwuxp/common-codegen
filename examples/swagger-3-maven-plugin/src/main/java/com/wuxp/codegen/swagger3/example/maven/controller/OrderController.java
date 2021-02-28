@@ -34,7 +34,7 @@ public class OrderController extends BaseController<String> {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public PageInfo<Order> queryOrder2(QueryOrderEvt evt) {
+  public PageInfo<Order> queryOrder_2(QueryOrderEvt evt) {
     return new PageInfo<Order>();
   }
 

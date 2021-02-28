@@ -1,5 +1,6 @@
 package test.com.wuxp.codegen.swagger2;
 
+import com.wuxp.codegen.loong.CodegenSdkUploader;
 import com.wuxp.codegen.starter.LoongSdkCodeGenerator;
 import org.junit.jupiter.api.Test;
 

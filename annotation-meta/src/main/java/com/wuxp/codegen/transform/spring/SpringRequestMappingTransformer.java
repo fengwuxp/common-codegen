@@ -1,6 +1,7 @@
 package com.wuxp.codegen.transform.spring;
 
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
@@ -24,7 +25,7 @@ public class SpringRequestMappingTransformer implements
     /**
      * 请求方法和Mapping名称的对应
      */
-    protected static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new HashMap<>();
+    protected static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new EnumMap<RequestMethod, String>(RequestMethod.class);
 
 
     /**
@@ -54,7 +55,10 @@ public class SpringRequestMappingTransformer implements
         CommonCodeGenAnnotation codeGenAnnotation = this.innerTransform(annotationMate, annotationOwner.getSimpleName());
         codeGenAnnotation.setName(SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME);
         Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
-        namedArguments.put("path", namedArguments.remove("value"));
+        String value = namedArguments.remove("value");
+        if (value != null) {
+            namedArguments.put("path", value);
+        }
         return codeGenAnnotation;
     }
 
@@ -83,7 +87,6 @@ public class SpringRequestMappingTransformer implements
         if (paths.length > 0) {
             val = paths[0];
         }
-
         //如果val不存在或者ownerName和value中的一致，则不生成value
         if (StringUtils.hasText(val) && !ownerName.equals(val)) {
             namedArguments.put(MappingAnnotationPropNameConstant.VALUE, "\"" + val + "\"");
@@ -98,7 +101,6 @@ public class SpringRequestMappingTransformer implements
             String name = METHOD_MAPPING_NAME_MAP.get(requestMethod);
             codeGenAnnotation.setName(name);
         }
-
 
         Map<String, String[]> mediaTypes = new HashMap<>();
         //在注解中属性名称
@@ -125,7 +127,7 @@ public class SpringRequestMappingTransformer implements
 
             String targetMediaType = mediaTypeMapping.get(mediaType);
             if (targetMediaType == null) {
-                throw new RuntimeException("unsupported media type：" + mediaType);
+                throw new CodegenRuntimeException("unsupported media type：" + mediaType);
             }
             String[] arraySymbol = getArraySymbol();
             //是否已经包装了数组符号

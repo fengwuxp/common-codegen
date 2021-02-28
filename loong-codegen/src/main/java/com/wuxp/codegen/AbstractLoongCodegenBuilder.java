@@ -6,6 +6,7 @@ import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
 import com.wuxp.codegen.core.macth.ExcludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.IncludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
@@ -25,10 +26,20 @@ import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
+import org.apache.commons.io.FileUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
+import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.*;
+
+import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
+import static org.springframework.util.ResourceUtils.FILE_URL_PREFIX;
 
 /**
  * 代码生成配置
@@ -37,10 +48,16 @@ import java.util.*;
  */
 public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
+    /**
+     * 用于扩展加载第三方的类定义json文件
+     */
+    private static final String CODEGEN_JSON_SCHEMA_CLASS_META_EXTENSIONS = "/codegen-meta-extensions/**.json";
+
+    private static final String CODEGEN_TEMP_EXTENSIONS_DIR = String.join(File.separator, System.getProperty("user.dir"), "codegen", "extensions");
+
     static {
         AbstractAnnotationProcessor.registerAnnotationProvider(ClientProviderType.RETROFIT, new Retrofit2AnnotationProvider());
     }
-
 
     protected LanguageDescription languageDescription;
 
@@ -303,12 +320,18 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     }
 
     protected void initTypeMapping() {
-        CodegenConfig codegenConfig = CodegenConfig.builder()
-                .providerType(this.clientProviderType)
-                .languageDescription(this.languageDescription)
-                .build();
+        CodegenConfig codegenConfig = CodegenConfigHolder.getConfig();
+        if (codegenConfig == null) {
+            codegenConfig = CodegenConfig.builder()
+                    .providerType(this.clientProviderType)
+                    .languageDescription(this.languageDescription)
+                    .build();
+        } else {
+            codegenConfig.setProviderType(this.clientProviderType);
+            codegenConfig.setLanguageDescription(this.languageDescription);
+        }
         CodegenConfigHolder.setConfig(codegenConfig);
-
+        initJsonSchemaExtensions();
         Collection<CodeGenMatcher> codeGenMatchers = this.codeGenMatchers;
         Optional<PackageNameCodeGenMatcher> optionalCodeGenMatcher = codeGenMatchers.stream()
                 .filter(codeGenMatcher -> codeGenMatcher instanceof PackageNameCodeGenMatcher)
@@ -335,7 +358,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         if (needSetUmiModel) {
             this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
         }
-        if (this.codeFormatter instanceof LanguageCodeFormatter){
+        if (this.codeFormatter instanceof LanguageCodeFormatter) {
             ((LanguageCodeFormatter) this.codeFormatter).setLanguageDescription(languageDescription);
         }
     }
@@ -380,5 +403,45 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     private boolean containsLanguageEnhancedProcessorType(Class<? extends LanguageEnhancedProcessor> clazz) {
         return this.containsCollectionByType(languageEnhancedProcessors, clazz);
+    }
+
+    private void initJsonSchemaExtensions() {
+        JsonSchemaCodegenTypeLoader loader = new JsonSchemaCodegenTypeLoader(getJsonSchemaFiles(), languageDescription, packageMapStrategy);
+        File file = new File(CODEGEN_TEMP_EXTENSIONS_DIR);
+        if (file.exists()){
+            file.mkdir();
+        }
+        try {
+            loader.load().forEach(classMeta -> customTypeMapping(classMeta.getSource(), classMeta));
+        } finally {
+            File tempdir = file.getParentFile();
+            boolean deleteRecursively = FileSystemUtils.deleteRecursively(tempdir);
+            if (deleteRecursively) {
+                tempdir.deleteOnExit();
+            }
+        }
+
+    }
+
+    private List<File> getJsonSchemaFiles() {
+        PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = pathMatchingResourcePatternResolver.getResources(CLASSPATH_ALL_URL_PREFIX + CODEGEN_JSON_SCHEMA_CLASS_META_EXTENSIONS);
+            List<File> jsonFiles = new ArrayList<>();
+            for (Resource resource : resources) {
+                String path = resource.getURL().getPath();
+                if (path.startsWith(FILE_URL_PREFIX)) {
+                    File file = new File(String.join(File.separator, CODEGEN_TEMP_EXTENSIONS_DIR, resource.getFilename()));
+                    FileUtils.copyInputStreamToFile(resource.getInputStream(), file);
+                    jsonFiles.add(file);
+                } else {
+                    jsonFiles.add(resource.getFile());
+                }
+            }
+            return jsonFiles;
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 }

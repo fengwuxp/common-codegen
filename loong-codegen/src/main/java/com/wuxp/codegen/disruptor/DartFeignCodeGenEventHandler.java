@@ -2,10 +2,8 @@ package com.wuxp.codegen.disruptor;
 
 import com.lmax.disruptor.EventHandler;
 import com.wuxp.codegen.core.CodeFormatter;
-import com.wuxp.codegen.core.TaskWaiter;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
-import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.loong.path.PathResolve;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -180,7 +178,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
         data.put("dependencies", dependencies);
         data.put("sdkLibName", sdkIndexFileName);
         // 遍历控制器所有的方法得到泛型的组合
-        FileUtils.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
+        FileUtils.createDirectoryRecursively(output.substring(0, output.lastIndexOf(File.separator)));
         buildFile(template, output, data);
     }
 

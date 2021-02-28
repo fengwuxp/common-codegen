@@ -1,6 +1,7 @@
 package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.loong.CodegenSdkUploader;
 import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;

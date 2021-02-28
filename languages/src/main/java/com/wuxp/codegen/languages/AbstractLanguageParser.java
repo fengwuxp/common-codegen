@@ -52,6 +52,7 @@ import java.lang.reflect.*;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -68,78 +69,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         F extends CommonCodeGenFiledMeta> implements LanguageParser<C>, ApiServiceClassMatcher {
 
     /**
+     * 默认合并后的参数名称
+     */
+    public static final String DEFAULT_MARGE_PARAMS_NAME = "req";
+
+    /**
      * annotationProcessorMap
      */
     public static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
-
-    /**
-     * 类被处理的次数
-     */
-    protected final Map<Class<?>, Integer> handleCountMap = new HashMap<>(128);
-
-    /**
-     * 处理结果缓存
-     */
-    protected final Map<Class<?>, Object> handleResultCacheMap = new HashMap<>(128);
-
-
-    /**
-     * java类的解析器 默认解析所有的属性 方法
-     */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
-
-    /**
-     * 语言元数据对象的工厂
-     */
-    protected LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory;
-
-
-    /**
-     * 映射java类型和其他语言类型之间的关系
-     */
-    protected AbstractLanguageTypeMapping<C> languageTypeMapping;
-
-    /**
-     * 包名映射策略
-     */
-    protected PackageMapStrategy packageMapStrategy;
-
-    /**
-     * 代码检查者
-     */
-    protected Collection<CodeDetect> codeDetects;
-
-
-    /**
-     * 生成匹配策略
-     */
-    protected CodeGenMatchingStrategy genMatchingStrategy;
-
-    /**
-     * 匹配需要生成的类匹配器链
-     */
-    protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
-
-    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
-
-    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
-
-    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
-
-    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
-
-    {
-
-        // 根据是否为spring的组件进行匹配
-        codeGenMatchers.add(clazz -> {
-            Annotation service = clazz.getAnnotation(Service.class);
-            Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
-            // 不是spring的组件
-            return service == null && clazzAnnotation == null;
-        });
-    }
-
-    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
 
     static {
         ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
@@ -160,6 +97,59 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         ANNOTATION_PROCESSOR_MAP.put(RequestParam.class, new RequestParamProcessor());
         ANNOTATION_PROCESSOR_MAP.put(RequestPart.class, new RequestPartProcessor());
         ANNOTATION_PROCESSOR_MAP.put(PathVariable.class, new PathVariableProcessor());
+    }
+
+    /**
+     * 类被处理的次数
+     */
+    protected final Map<Class<?>, Integer> handleCountMap = new HashMap<>(128);
+    /**
+     * 处理结果缓存
+     */
+    protected final Map<Class<?>, Object> handleResultCacheMap = new HashMap<>(128);
+    /**
+     * java类的解析器 默认解析所有的属性 方法
+     */
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+    /**
+     * 语言元数据对象的工厂
+     */
+    protected LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory;
+    /**
+     * 映射java类型和其他语言类型之间的关系
+     */
+    protected AbstractLanguageTypeMapping<C> languageTypeMapping;
+    /**
+     * 包名映射策略
+     */
+    protected PackageMapStrategy packageMapStrategy;
+    /**
+     * 代码检查者
+     */
+    protected Collection<CodeDetect> codeDetects;
+    /**
+     * 生成匹配策略
+     */
+    protected CodeGenMatchingStrategy genMatchingStrategy;
+    /**
+     * 匹配需要生成的类匹配器链
+     */
+    protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
+    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
+    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
+    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
+    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
+
+    {
+
+        // 根据是否为spring的组件进行匹配
+        codeGenMatchers.add(clazz -> {
+            Annotation service = clazz.getAnnotation(Service.class);
+            Annotation clazzAnnotation = clazz.getAnnotation(Component.class);
+            // 不是spring的组件
+            return service == null && clazzAnnotation == null;
+        });
     }
 
     public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
@@ -773,7 +763,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param javaFieldMeta java 字段元数据
      * @param classMeta     java类元数据
      */
-    protected  void enhancedProcessingField(F fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta){
+    protected void enhancedProcessingField(F fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
 
     }
 
@@ -788,7 +778,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected List<M> converterMethodMetas(JavaMethodMeta[] javaMethodMetas, JavaClassMeta classMeta, C codeGenClassMeta) {
         if (javaMethodMetas == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<M> codegenMethods = Arrays.stream(javaMethodMetas)
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
@@ -799,12 +789,19 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .distinct()
                 .collect(Collectors.toList());
 
-        //判断是否存在方法名称是否相同
-        codegenMethods.forEach(m -> codegenMethods.stream()
-                .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
-                .findFirst()
-                .ifPresent(m2 -> m2.setName(MessageFormat.format("override_{0}", m2.getName()))));
-
+        if (!CodegenConfigHolder.getConfig().isServerClass(classMeta.getClazz())) {
+            return codegenMethods;
+        }
+        // 判断是否存在方法名称是否相同
+        for (M m : codegenMethods) {
+            Optional<M> optional = codegenMethods.stream()
+                    .filter(m1 -> m1.getName().equals(m.getName()) && !m1.equals(m))
+                    .findFirst();
+            if (optional.isPresent()) {
+                // 不允许方法重载
+                throw new CodegenRuntimeException(MessageFormat.format("类{0}下的的方法{1}出现重载", classMeta.getClassName(), m.getName()));
+            }
+        }
         return codegenMethods;
 
 
@@ -823,30 +820,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
         checkSpringMvcMethod(javaMethodMeta, classMeta);
-        M methodCodeMeta;
-        if (this.needMargeMethodParams()) {
-            // 需要合并参数
-            methodCodeMeta = converterMethodAndMargeParams(javaMethodMeta, classMeta, codeGenClassMeta);
-        } else {
-            methodCodeMeta = converterMethodHandle(javaMethodMeta, classMeta, codeGenClassMeta);
-        }
-        methodCodeMeta = this.languageEnhancedProcessor.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
-        //增强处理
-        this.enhancedProcessingMethod(methodCodeMeta, javaMethodMeta, classMeta);
-        return methodCodeMeta;
-    }
-
-
-    /**
-     * 转换方法处理
-     *
-     * @param javaMethodMeta   java 方法元数据信息
-     * @param classMeta        类元数据信息
-     * @param codeGenClassMeta 生成元数据系信息
-     * @return
-     */
-    protected M converterMethodHandle(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
-
         M genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
         //method转换
         genMethodMeta.setAccessPermission(classMeta.getAccessPermission());
@@ -862,9 +835,31 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
         List<C> returnTypes = this.languageTypeMapping.mapping(methodMetaReturnType);
         genMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[0]));
-
+        // 增加依赖
         Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies();
         returnTypes.forEach(item -> dependencies.put(item.getName(), item));
+        if (this.needMargeMethodParams()) {
+            // 需要合并参数
+            converterMethodAndMargeParams(genMethodMeta, javaMethodMeta, classMeta, codeGenClassMeta);
+        } else {
+            converterMethodHandle(genMethodMeta, javaMethodMeta, classMeta, codeGenClassMeta);
+        }
+        this.languageEnhancedProcessor.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
+        //增强处理
+        this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
+        return genMethodMeta;
+    }
+
+
+    /**
+     * 转换方法处理
+     *
+     * @param javaMethodMeta   java 方法元数据信息
+     * @param classMeta        类元数据信息
+     * @param codeGenClassMeta 生成元数据系信息
+     * @return
+     */
+    protected M converterMethodHandle(M genMethodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
 
         /**
          * 方法参数处理流程
@@ -889,7 +884,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         final Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
         Map<String, Parameter> parameters = javaMethodMeta.getParameters();
-
+        // 增加依赖
+        Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) codeGenClassMeta.getDependencies();
         // 遍历参数列表进行转换
         effectiveParams.forEach((key, classes) -> {
             Parameter parameter = parameters.get(key);
@@ -897,7 +893,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return;
             }
             C genClassInstance = this.languageMetaInstanceFactory.newClassInstance();
+            // 参数类型
             List<C> paramTypes = this.languageTypeMapping.mapping(classes);
+            paramTypes.forEach(item -> dependencies.put(item.getName(), item));
             Class<?> paramType = classes[0];
             genClassInstance.setTypeVariables(paramTypes.toArray(new CommonCodeGenClassMeta[0]));
             // 注解
@@ -911,44 +909,52 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .setIsFinal(false)
                     .setIsStatic(false)
                     .setName(paramType.getSimpleName());
+            C result = this.parse(paramType);
+            if (result == null || result.getFieldMetas() == null) {
+                genClassInstance.setFieldMetas(new CommonCodeGenFiledMeta[0]);
+            } else {
+                genClassInstance.setDependencies(result.getDependencies());
+                genClassInstance.setFieldMetas(result.getFieldMetas());
+            }
             codeGenParams.put(key, genClassInstance);
             codeGenParamAnnotations.put(key, commonCodeGenAnnotations);
         });
 
         genMethodMeta.setParams(codeGenParams)
                 .setParamAnnotations(codeGenParamAnnotations);
-
         return genMethodMeta;
     }
 
     /**
      * 方法转换 并且将多个参数合并为一个对象参数
+     * <p>
+     * 1：所有的参数都是简单对象
+     * 2：所有的参数都是复杂对象
+     * 3：二者皆有
+     * </p>
      *
+     * @param methodMeta       用于生成的方法元数据
      * @param javaMethodMeta   java 方法元数据信息
      * @param classMeta        java 类元数据信息
      * @param codeGenClassMeta 用于生成的类元数据信息
      * @return 用于生成的方法元数据信息
      */
-    protected M converterMethodAndMargeParams(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
-        M genMethodMeta = this.languageMetaInstanceFactory.newMethodInstance();
-        //method转换
-        genMethodMeta.setAccessPermission(classMeta.getAccessPermission());
-        //注解转注释
-        List<String> comments = this.generateComments(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod());
-        comments.addAll(this.generateComments(javaMethodMeta.getReturnType(), true));
-        genMethodMeta.setComments(comments.toArray(new String[]{}));
-        genMethodMeta.setName(javaMethodMeta.getName());
+    protected M converterMethodAndMargeParams(M methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, C codeGenClassMeta) {
 
-        //处理方法上的相关注解
-        genMethodMeta.setAnnotations(this.converterAnnotations(javaMethodMeta.getAnnotations(), javaMethodMeta.getMethod()));
+        // 用于缓存合并的参数filedList
+        final Set<F> commonCodeGenFiledMetas = new LinkedHashSet<>();
+        final Map<String/*参数名称*/, CommonCodeGenAnnotation[]> codeGenParamAnnotations = new LinkedHashMap<>();
+        // 参数的元数据类型信息
+        final C argsClassMeta = this.languageMetaInstanceFactory.newClassInstance();
 
-        //处理方法的参数
-        //1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
-        Map<String, Class<?>[]> methodMetaParams = javaMethodMeta.getParams();
-        Map<String, Parameter> parameters = javaMethodMeta.getParameters();
-        //有效的参数
+        /**
+         * 有效的参数
+         * @key 参数名称
+         * @value 类型列表
+         */
         final Map<String, Class<?>[]> effectiveParams = new LinkedHashMap<>();
-        methodMetaParams.forEach((key, classes) -> {
+        Map<String, Parameter> parameters = javaMethodMeta.getParameters();
+        javaMethodMeta.getParams().forEach((key, classes) -> {
             Class<?>[] array = Arrays.stream(classes)
                     .filter(this.getPackageNameCodeGenMatcher()::match)
                     .toArray(Class<?>[]::new);
@@ -960,77 +966,86 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
             effectiveParams.put(key, array);
         });
-
-        //2: 合并参数列表，将参数列表中的简单类型参数和复杂的类型参数合并到一个列表中
-        //2.1：遍历展开参数列表
-
-        final Set<F> commonCodeGenFiledMetas = new LinkedHashSet<>();
-        final Map<String/*参数名称*/, CommonCodeGenAnnotation[]> codeGenParamAnnotations = new LinkedHashMap<>();
-        // 参数的元数据类型信息
-        final C argsClassMeta = this.languageMetaInstanceFactory.newClassInstance();
         int effectiveParamsSize = effectiveParams.size();
+        // 合并复杂参数
+        boolean hasComplexParams = margeComplexParamsFiled(commonCodeGenFiledMetas, effectiveParams);
+
+        if (hasComplexParams && effectiveParamsSize == 1) {
+            M methodHandle = converterMethodHandle(methodMeta, javaMethodMeta, classMeta, codeGenClassMeta);
+            Map<String, CommonCodeGenClassMeta> params = methodHandle.getParams();
+            String name = params.keySet().toArray(new String[0])[0];
+            CommonCodeGenClassMeta genClassMeta = params.remove(name);
+            params.put(DEFAULT_MARGE_PARAMS_NAME, genClassMeta);
+            return methodHandle;
+        }
+        // 合并简单参数
+        margeSimpleParams(javaMethodMeta, classMeta, effectiveParams, commonCodeGenFiledMetas, codeGenParamAnnotations, parameters);
+
+        argsClassMeta.setFieldMetas(commonCodeGenFiledMetas.toArray(new CommonCodeGenFiledMeta[]{}));
+        // 没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
+        String name = MessageFormat.format("{0}{1}Req",
+                this.packageMapStrategy.convertClassName(classMeta.getClazz()),
+                ToggleCaseUtils.toggleFirstChart(methodMeta.getName()));
+        argsClassMeta.setName(name);
+        argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{DEFAULT_MARGE_PARAMS_NAME, name}));
+        argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
+        argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
+        //加入依赖列表
+        final Map<String, C> dependencies = (Map<String, C>) codeGenClassMeta.getDependencies();
+        // 合并依赖
+        Set<Class<?>> otherDependencies = effectiveParams.values()
+                .stream()
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
+                .collect(Collectors.toSet());
+        Map<String, C> argsClassMetaDependencies = this.fetchDependencies(otherDependencies);
+        argsClassMeta.setDependencies(argsClassMetaDependencies);
+        dependencies.putAll(argsClassMetaDependencies);
+        dependencies.put(argsClassMeta.getName(), argsClassMeta);
+        codeGenClassMeta.setDependencies(dependencies);
+        LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
+        //请求参数名称，固定为req
+        params.put(DEFAULT_MARGE_PARAMS_NAME, argsClassMeta);
+        methodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);
+
+        return methodMeta;
+    }
+
+    // 合并简单参数
+    private void margeSimpleParams(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta, Map<String, Class<?>[]> effectiveParams, Set<F> commonCodeGenFiledMetas, Map<String, CommonCodeGenAnnotation[]> codeGenParamAnnotations, Map<String, Parameter> parameters) {
+
         effectiveParams.forEach((key, classes) -> {
-            Optional<Boolean> isNext = Arrays.stream(classes)
-                    .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
-                    .filter(clazz -> !clazz.isEnum())
-                    .map(clazz -> {
-                        if (!JavaTypeUtils.isNoneJdkComplex(clazz)) {
-                            return false;
-                        }
-                        //非jdk中的复杂对象
-                        C commonCodeGenClassMeta = this.parse(clazz);
-                        if (commonCodeGenClassMeta == null) {
-                            return false;
-                        }
-                        if (argsClassMeta.getFieldMetas() == null && effectiveParamsSize == 1) {
-                            // 当只有一个有效的复杂参数依赖
-                            BeanUtils.copyProperties(commonCodeGenClassMeta, argsClassMeta);
-                            // 清空依赖 防止递归生成
-                            argsClassMeta.setDependencies(new HashMap<>());
-                            return true;
-                        } else {
-                            //TODO 有多个复杂类型的参数
-//                            CommonCodeGenFiledMeta[] filedMetas = argsClassMeta.getFieldMetas();
-//                            List<CommonCodeGenFiledMeta> collect = Arrays.stream(filedMetas)
-//                                    .collect(Collectors.toList());
-//                            collect.addAll(Arrays.asList(commonCodeGenClassMeta.getFieldMetas()));
-//                            argsClassMeta.setFieldMetas(collect.toArray(new CommonCodeGenFiledMeta[0]));
-
-                        }
-                        return false;
-                    }).filter(flag -> flag)
-                    .findFirst();
-
-            if (isNext.isPresent() && Boolean.TRUE.equals(isNext.get())) {
-                return;
-            }
-
             // 注解
             Annotation[] paramAnnotations = javaMethodMeta.getParamAnnotations().get(key);
-
-            JavaParameterMeta javaFieldMeta = new JavaParameterMeta();
-            javaFieldMeta.setTypes(classes)
+            // mock一个Java参数对象
+            JavaParameterMeta javaParameterMeta = new JavaParameterMeta();
+            javaParameterMeta.setTypes(classes)
                     .setIsTransient(false)
                     .setIsVolatile(false);
-            javaFieldMeta.setAccessPermission(AccessPermission.PUBLIC);
-            javaFieldMeta.setAnnotations(paramAnnotations);
-            javaFieldMeta.setName(key);
-            javaFieldMeta.setParameter(parameters.get(key));
+            javaParameterMeta.setAccessPermission(AccessPermission.PUBLIC);
+            javaParameterMeta.setAnnotations(paramAnnotations);
+            javaParameterMeta.setName(key);
+            javaParameterMeta.setParameter(parameters.get(key));
 
-            F commonCodeGenFiledMeta = this.converterField(javaFieldMeta, classMeta);
+            F commonCodeGenFiledMeta = this.converterField(javaParameterMeta, classMeta);
             if (commonCodeGenFiledMeta == null) {
                 return;
             }
             if (commonCodeGenFiledMeta.getAnnotations() != null) {
                 codeGenParamAnnotations.put(key, commonCodeGenFiledMeta.getAnnotations());
             }
-            this.enhancedProcessingField(commonCodeGenFiledMeta, javaFieldMeta, classMeta);
-            commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
+            this.enhancedProcessingField(commonCodeGenFiledMeta, javaParameterMeta, classMeta);
+            Class<?> clazz = classes[0];
+            boolean isSimpleType = clazz == JavaArrayClassTypeMark.class || JavaTypeUtils.isAnArray(clazz) || JavaTypeUtils.isJavaBaseType(clazz) || clazz.isEnum();
+            if (isSimpleType) {
+                // 增加非复杂对象的参数
+                commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
+            }
             if (paramAnnotations == null || paramAnnotations.length == 0) {
                 return;
             }
             String name = "";
-            //TODO 参数是否必须 是否为控制器  是否存在javax的验证注解、或者spring mvc相关注解 required=true 或者是swagger注解
             RequestParam requestParam = findSpringParamAnnotation(paramAnnotations, RequestParam.class);
             if (requestParam != null && StringUtils.hasText(requestParam.name())) {
                 name = requestParam.name();
@@ -1061,121 +1076,43 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     }
                 }
             }
-
         });
-        //3: 重组，使用第二步得到的列表构建一个信息的 GeneCodeClassMeta对象
-//        argsClassMeta.setClassType(ClassType.INTERFACE);
-        if (argsClassMeta.getFieldMetas() != null) {
-            Arrays.asList(argsClassMeta.getFieldMetas()).forEach(genFiledMeta -> {
-                F commonCodeGenFiledMeta = this.languageMetaInstanceFactory.newFieldInstance();
-                BeanUtils.copyProperties(genFiledMeta, commonCodeGenFiledMeta);
-                boolean isExist = commonCodeGenFiledMetas.stream()
-                        .filter(c -> c.getName().equals(genFiledMeta.getName()))
-                        .toArray().length > 0;
-                if (isExist) {
-                    log.error("{}方法中的参数{}在类{}中已经存在", javaMethodMeta.getName(), genFiledMeta.getName(),
-                            argsClassMeta.getPackagePath() + argsClassMeta.getName());
-                } else {
-                    if (commonCodeGenFiledMeta.getAnnotations() != null) {
-                        codeGenParamAnnotations.put(codeGenClassMeta.getName(), commonCodeGenFiledMeta.getAnnotations());
-                    }
-                    commonCodeGenFiledMetas.add(commonCodeGenFiledMeta);
-                }
+    }
 
-            });
-        }
-        argsClassMeta.setFieldMetas(commonCodeGenFiledMetas.toArray(new CommonCodeGenFiledMeta[]{}));
-        if (!StringUtils.hasText(argsClassMeta.getName())) {
-            //没有复杂对象的参数，为了防止重复名称，使用类名加方法名称
-            String name = MessageFormat.format("{0}{1}Req",
-                    this.packageMapStrategy.convertClassName(classMeta.getClazz()),
-                    ToggleCaseUtils.toggleFirstChart(genMethodMeta.getName()));
-            argsClassMeta.setName(name);
-            argsClassMeta.setPackagePath(this.packageMapStrategy.genPackagePath(new String[]{"req", name}));
-            //这个时候没有依赖
-            argsClassMeta.setAnnotations(new CommonCodeGenAnnotation[]{});
-            argsClassMeta.setComments(new String[]{"合并方法参数生成的类"});
-        } else {
-            boolean hasComplex = false, hasSimple = false;
-            for (Class<?>[] classes : effectiveParams.values()) {
-                Optional<Class<?>> classOptional = Arrays.stream(classes).filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
+
+    /**
+     * 合并复杂参数的字段
+     *
+     * @param commonCodeGenFiledMetas 参数Filed List
+     * @param effectiveParams         有效的参数列表
+     * @return 是否存在复杂类型的参数
+     */
+    private boolean margeComplexParamsFiled(Set<F> commonCodeGenFiledMetas, Map<String, Class<?>[]> effectiveParams) {
+        return effectiveParams.values().stream()
+                .map(classes -> Arrays.stream(classes)
+                        .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
                         .filter(clazz -> !clazz.isEnum())
+                        //非jdk中的复杂对象
                         .filter(JavaTypeUtils::isNoneJdkComplex)
-                        .findFirst();
-                if (classOptional.isPresent()) {
-                    hasComplex = true;
-                } else {
-                    hasSimple = true;
-                }
-            }
-            if (hasComplex && hasSimple) {
-                //参数列表中有复杂对象，并且有额外的简单对象，将类的名称替换，使用方法的名称,重新生成过一个新的对象
-                String name = MessageFormat.format("{0}Req", ToggleCaseUtils.toggleFirstChart(genMethodMeta.getName()));
-                argsClassMeta.setPackagePath(argsClassMeta.getPackagePath().replace(argsClassMeta.getName(), name));
-                argsClassMeta.setName(name);
-            }
+                        .map(clazz -> {
+                            C commonCodeGenClassMeta = this.parse(clazz);
+                            if (commonCodeGenClassMeta == null) {
+                                return false;
+                            }
+                            CommonCodeGenFiledMeta[] fieldMetas = commonCodeGenClassMeta.getFieldMetas();
+                            if (fieldMetas == null) {
+                                return false;
+                            }
+                            commonCodeGenFiledMetas.addAll(Arrays.stream(fieldMetas)
+                                    .map(c -> (F) c)
+                                    .collect(Collectors.toList()));
+                            return true;
+                        }))
+                .flatMap(Stream::distinct)
+                .collect(Collectors.toSet())
+                .contains(Boolean.TRUE);
 
-        }
 
-        // 判断当前参数是否为数组或集合类型 当前仅当只有一个复杂对象作为参数 且为数组或集合类的情况
-        if (effectiveParamsSize == 1) {
-            effectiveParams.values().stream()
-                    .filter(paramClass -> {
-                        // 是否存在复杂对象
-                        Optional<Class<?>> classOptional = Arrays.stream(paramClass).filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
-                                .filter(clazz -> !clazz.isEnum())
-                                .filter(JavaTypeUtils::isNoneJdkComplex)
-                                .findFirst();
-                        return classOptional.isPresent();
-                    })
-                    .forEach(paramClasses -> {
-                        Class<?> paramClass = paramClasses[0];
-                        CommonCodeGenClassMeta[] commonCodeGenClassMetas = languageTypeMapping.mapping(paramClasses)
-                                .stream().map(c -> (CommonCodeGenClassMeta) c)
-                                .toArray(CommonCodeGenClassMeta[]::new);
-                        if (JavaArrayClassTypeMark.class.equals(paramClass)) {
-                            //数组
-                            argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else if (JavaTypeUtils.isCollection(paramClass)) {
-                            //集合
-                            argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else if (JavaTypeUtils.isMap(paramClass)) {
-                            //map
-                            argsClassMeta.setTypeVariables(commonCodeGenClassMetas);
-                        } else {
-                            log.warn("未处理的类型{}", paramClass.getName());
-                        }
-                    });
-        }
-
-        //加入依赖列表
-        final Map<String, C> dependencies = (Map<String, C>) codeGenClassMeta.getDependencies();
-
-        // 合并依赖
-        Set<Class<?>> otherDependencies = effectiveParams.values()
-                .stream()
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
-                .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
-                .collect(Collectors.toSet());
-        Map<String, C> argsClassMetaDependencies = this.fetchDependencies(otherDependencies);
-        argsClassMeta.setDependencies(argsClassMetaDependencies);
-        dependencies.putAll(argsClassMetaDependencies);
-        dependencies.put(argsClassMeta.getName(), argsClassMeta);
-        codeGenClassMeta.setDependencies(dependencies);
-        LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
-        if (argsClassMeta.getTypeVariables() != null && effectiveParamsSize == 1
-                && argsClassMeta.getTypeVariables().length > 0) {
-            // 存在泛型合并名称
-            String combineName = combineTypeDescStrategy.combine(argsClassMeta.getTypeVariables());
-            argsClassMeta.setName(combineName);
-        }
-//        argsClassMeta.setPackagePath("");
-        //请求参数名称，固定为req
-        params.put("req", argsClassMeta);
-        genMethodMeta.setParams(params).setParamAnnotations(codeGenParamAnnotations);
-
-        return genMethodMeta;
     }
 
 
@@ -1361,10 +1298,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 检查spring mvc 控制器的方法
      *
      * @param javaMethodMeta java方法元数据描述
-     * @param classMeta  java类元数据描述
+     * @param classMeta      java类元数据描述
      */
     private void checkSpringMvcMethod(JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
-        if (!classMeta.existAnnotation(Controller.class,RestController.class)) {
+        if (!classMeta.existAnnotation(Controller.class, RestController.class)) {
             return;
         }
         // 检查控制器方法是否合法
@@ -1422,11 +1359,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         return this.codeGenMatchers;
     }
 
-    public void setLanguageTypeMapping(AbstractLanguageTypeMapping<C> languageTypeMapping) {
-        this.languageTypeMapping = languageTypeMapping;
-    }
-
     public AbstractLanguageTypeMapping<C> getLanguageTypeMapping() {
         return languageTypeMapping;
+    }
+
+    public void setLanguageTypeMapping(AbstractLanguageTypeMapping<C> languageTypeMapping) {
+        this.languageTypeMapping = languageTypeMapping;
     }
 }

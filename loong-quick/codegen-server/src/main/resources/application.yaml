@@ -1,0 +1,9 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /codegen
+spring:
+  profiles:
+    active: ${spring.profiles.active}
+
+

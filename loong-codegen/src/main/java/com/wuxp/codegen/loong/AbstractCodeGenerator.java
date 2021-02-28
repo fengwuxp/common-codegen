@@ -1,7 +1,6 @@
 package com.wuxp.codegen.loong;
 
 
-import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.TaskWaiter;
 import com.wuxp.codegen.core.UnifiedResponseExplorer;
@@ -9,11 +8,12 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
+import com.wuxp.codegen.model.languages.java.JavaClassMeta;
+import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -204,6 +204,11 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
         this.tryLoopGenerate(new HashSet<>(Arrays.asList(services)));
     }
 
+
+    /**
+     * 尝试做循环生成
+     * @param classes 需要生成的类列表
+     */
     protected void tryLoopGenerate(Collection<Class<?>> classes) {
         if (unifiedResponseExplorer != null) {
             unifiedResponseExplorer.probe(classes);
@@ -336,12 +341,17 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
     private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+        if (commonCodeGenClassMeta instanceof JavaCodeGenClassMeta){
+            // 属于java的代码生成，一定要导入
+            return true;
+        }
         if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())) {
             return true;
         }
-
+        if (Boolean.TRUE.equals(commonCodeGenClassMeta.getNeedGenerate())){
+            return true;
+        }
         boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-
         if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType()) && notMethod) {
             return false;
         }

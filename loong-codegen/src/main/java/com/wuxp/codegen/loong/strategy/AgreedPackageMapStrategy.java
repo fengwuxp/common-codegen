@@ -63,6 +63,9 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
         if (isJava) {
             List<String> basePackages = CodegenConfigHolder.getConfig().getBasePackages();
             String url = String.join(".", uris);
+            if (url.startsWith(".")) {
+                url = url.substring(1);
+            }
             if (basePackages.size() == 1) {
                 // base package
                 String basePackage = basePackages.get(0);
@@ -70,7 +73,11 @@ public class AgreedPackageMapStrategy implements PackageMapStrategy {
             }
             return url;
         }
-        return MessageFormat.format("/{0}", String.join(PathResolve.RIGHT_SLASH, uris));
+        String result = String.join(PathResolve.RIGHT_SLASH, uris);
+        if (result.startsWith(PathResolve.RIGHT_SLASH)) {
+            return result;
+        }
+        return MessageFormat.format("/{0}", result);
     }
 
     private String innerConvert(Class<?> clazz) {

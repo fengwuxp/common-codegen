@@ -5,12 +5,22 @@
     <parent>
         <artifactId>wuxp-codegen</artifactId>
         <groupId>com.wuxp.codegen</groupId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>wuxp-codegen-loong-quick</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>codegen-server</module>
+        <module>codegen-client-maven-plugin</module>
+    </modules>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+        </dependency>
+    </dependencies>
 </project>

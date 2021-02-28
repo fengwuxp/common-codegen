@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
   **/
 </#if>
 
-<#if fieldMetas??>
+<#if annotations??>
     <#list annotations as annotation>
       @${annotation.name}({
         <#list annotation.namedArguments as name,val>
@@ -39,8 +39,8 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
             <#list field.comments as cmment>
               *${cmment}
             </#list>
+            **/
         </#if>
-      **/
         ${field.accessPermissionName} ${customizeMethod.combineType(field.filedTypes)} ${field.name};
     </#list>
 </#if>

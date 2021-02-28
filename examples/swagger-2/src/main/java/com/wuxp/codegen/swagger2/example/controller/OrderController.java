@@ -11,6 +11,8 @@ import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import com.wuxp.codegen.swagger2.example.services.UserService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,14 +31,27 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @GetMapping(value = {"get_order"})
-    public List<Order> getOrder(@ModelAttribute("text") String text, String[] names, List<Integer> ids, Set<Order> moneys) {
+    public List<Order> getOrder(@ModelAttribute("text") String text, @RequestHeader String[] names, List<Integer> ids, Set<Order> moneys) {
         return Collections.EMPTY_LIST;
     }
+
+    @ApiOperation(value = "获取订单列表", notes = "")
+    @GetMapping(value = {"get_order_32"})
+    public List<Order> getOrder32(@RequestParam(name = "names") String[] names) {
+        return Collections.EMPTY_LIST;
+    }
+
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @RequestMapping(method = RequestMethod.GET)
     public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
         return new PageInfo<Order>();
+    }
+
+    @ApiOperation(value = "获取订单列表", notes = "")
+    @RequestMapping(method = RequestMethod.GET)
+    public Page<Order> pageBySpringData(QueryOrderEvt evt) {
+        return new PageImpl<>(Collections.emptyList());
     }
 
 

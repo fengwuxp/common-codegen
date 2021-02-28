@@ -7,6 +7,9 @@ import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -25,12 +28,16 @@ public class TypescriptTypeMapping extends AbstractLanguageTypeMapping<Typescrip
     //设置基础的数据类型映射
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Object.class, TypescriptClassMeta.ANY);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Date.class, TypescriptClassMeta.NUMBER);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(LocalDateTime.class, TypescriptClassMeta.NUMBER);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(LocalDate.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Boolean.class, TypescriptClassMeta.BOOLEAN);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(String.class, TypescriptClassMeta.STRING);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Long.class, TypescriptClassMeta.STRING);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(BigInteger.class, TypescriptClassMeta.STRING);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Number.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(double.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(float.class, TypescriptClassMeta.NUMBER);
-    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(long.class, TypescriptClassMeta.NUMBER);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(long.class, TypescriptClassMeta.STRING);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(short.class, TypescriptClassMeta.NUMBER);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(byte.class, TypescriptClassMeta.NUMBER);
 

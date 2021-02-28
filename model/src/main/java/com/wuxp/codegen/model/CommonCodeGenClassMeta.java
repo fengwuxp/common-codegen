@@ -79,12 +79,17 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     protected String packagePath;
     /**
      * 依赖
+     *
+     * @key {@link CommonCodeGenClassMeta#getName}
+     * @value {@link  CommonCodeGenClassMeta}
      */
     protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new LinkedHashMap<>();
+
     /**
      * 在有泛型时候的描述 例如 Set<T>,Map<K,V> 等
      */
     protected String genericDescription;
+
     /**
      * 方法列表
      */

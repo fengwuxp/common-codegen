@@ -2,6 +2,7 @@ package com.wuxp.codegen.maven;
 
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.loong.CodegenSdkUploader;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.maven.artifact.Artifact;
@@ -29,6 +30,7 @@ import java.net.URLClassLoader;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * 抽象的sdk生成，用于调用{@link  com.wuxp.codegen.core.CodeGenerator#generate()}生成sdk代码
@@ -80,7 +82,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      * 生成 sdk 的client lib type，如果为null或空，生成所有的
      */
     @Parameter(property = "client.provider.types")
-    protected List<ClientProviderType> clientProviderTypes;
+    protected List<String> clientProviderTypes;
 
     /**
      * 执行的{@link com.wuxp.codegen.core.CodeGenerator} 实现类
@@ -94,6 +96,30 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      */
     @Parameter(property = "plugin.code.generator.class")
     protected String pluginCodeGeneratorClass;
+
+    /**
+     * codegen-server地址
+     */
+    @Parameter(property = CodegenSdkUploader.QUERY_SERVER_ADDRESS)
+    private String loongCodegenServer;
+
+    /**
+     * 项目名称
+     */
+    @Parameter(property = CodegenSdkUploader.PROJECT_NAME)
+    private String projectName;
+
+    /**
+     * 项目当前分支
+     */
+    @Parameter(property = CodegenSdkUploader.PROJECT_BRANCH_NAME, defaultValue = "master")
+    private String projectBranch;
+
+    /**
+     * 运行插件的当前模块名称
+     */
+    @Parameter(property = CodegenSdkUploader.PROJECT_MODULE_NAME)
+    private String currentModule;
 
     /**
      * Replace the absolute path to the local repo with this property. This field is ignored it prefix is declared. The
@@ -161,6 +187,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
             throw new MojoFailureException(e.getMessage(), e);
         }
 
+        setUploadCodegenResultProperties();
         // 在新的线程中执行
         Callable<Object> callable = Executors.callable(() -> {
             Thread.currentThread().setContextClassLoader(pluginProjectClassLoader);
@@ -172,6 +199,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
             this.getLog().error("代码生成执行失败：" + e.getMessage());
         }
     }
+
 
     /**
      * invoke {@link com.wuxp.codegen.core.CodeGenerator#generate()}
@@ -289,6 +317,37 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         return urls;
     }
 
+    private void setUploadCodegenResultProperties() {
+        String name = projectName == null ? mavenProject.getName() : projectName;
+        if (name != null) {
+            System.setProperty(CodegenSdkUploader.PROJECT_NAME, name);
+        }
+        if (projectBranch != null) {
+            System.setProperty(CodegenSdkUploader.PROJECT_BRANCH_NAME, projectBranch);
+        }
+        if (currentModule != null) {
+            System.setProperty(CodegenSdkUploader.PROJECT_MODULE_NAME, currentModule);
+        }
+        if (loongCodegenServer != null) {
+            System.setProperty(CodegenSdkUploader.QUERY_SERVER_ADDRESS, loongCodegenServer);
+        }
+        if (mavenProject == null) {
+            return;
+        }
+        MavenProject parent = mavenProject;
+        while (parent != null) {
+            if (parent.getParent() == null) {
+                break;
+            }
+            if (parent.getParent().getBasedir() == null) {
+                break;
+            }
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            System.setProperty("project.basedir", parent.getBasedir().getAbsolutePath());
+        }
+    }
 
     protected String[] getScanPackages() {
         if (scanPackages == null || scanPackages.length == 0) {
@@ -306,9 +365,9 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
 
     protected List<ClientProviderType> getFinallyClientProviderTypes() {
         if (clientProviderTypes == null || clientProviderTypes.isEmpty()) {
-            clientProviderTypes = Arrays.asList(ClientProviderType.values());
+            return Arrays.asList(ClientProviderType.values());
         }
-        return clientProviderTypes;
+        return clientProviderTypes.stream().map(String::toUpperCase).map(ClientProviderType::valueOf).collect(Collectors.toList());
     }
 
     public ClassLoader getPluginProjectClassLoader() {

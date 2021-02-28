@@ -1,6 +1,7 @@
 package com.wuxp.codegen.swagger2.example.controller;
 
 
+import com.wuxp.codegen.swagger2.example.domain.Order;
 import com.wuxp.codegen.swagger2.example.domain.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,7 +54,7 @@ public class UserController {
     @ApiOperation(value = "创建用户", notes = "根据User对象创建用户")
     @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Long postUser(@RequestBody User user) {
+    public Long postUser(@RequestBody User user, Order order) {
         users.put(user.getId(), user);
         return user.getId();
     }
@@ -71,11 +72,11 @@ public class UserController {
             @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
     })
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public String putUser(@PathVariable(required = false) Long id, @RequestBody User user) {
-        User u = users.get(id);
+    public String putUser(@PathVariable(required = false) Long id2, @RequestBody User user) {
+        User u = users.get(id2);
         u.setName(user.getName());
         u.setAge(user.getAge());
-        users.put(id, u);
+        users.put(id2, u);
         return "success";
     }
 
