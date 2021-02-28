@@ -92,12 +92,10 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
             log.info("codeGeneratorBuilders：{}", codeGeneratorBuilders);
         }
         codeGeneratorBuilders.stream().map(codegenBuilder -> (AbstractLoongCodegenBuilder) codegenBuilder)
-                .forEach(codegenBuilder -> {
-            codegenBuilder
-                    .ignoreClasses(ignoreClasses.toArray(new Class[0]))
-                    .includePackages(ignorePackages.toArray(new String[0]))
-                    .buildCodeGenerator().generate();
-        });
+                .forEach(codegenBuilder -> codegenBuilder
+                        .ignoreClasses(ignoreClasses.toArray(new Class[0]))
+                        .includePackages(ignorePackages.toArray(new String[0]))
+                        .buildCodeGenerator().generate());
         // 上传sdk生成结果到服务端
         new CodegenSdkUploader(this.getCodegenBaseOutputPath()).upload();
     }
@@ -234,9 +232,9 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
         return codeGenerators;
     }
 
-    private String getCodegenBaseOutputPath(){
+    private String getCodegenBaseOutputPath() {
         String codegenOutputPath = this.getCodegenOutputPath(ClientProviderType.RETROFIT);
-        return codegenOutputPath.split(String.join("",File.separator,ClientProviderType.RETROFIT.name().toLowerCase(),File.separator))[0];
+        return codegenOutputPath.split(String.join("", File.separator, ClientProviderType.RETROFIT.name().toLowerCase(), File.separator))[0];
     }
 
     private String getCodegenOutputPath(ClientProviderType type) {
