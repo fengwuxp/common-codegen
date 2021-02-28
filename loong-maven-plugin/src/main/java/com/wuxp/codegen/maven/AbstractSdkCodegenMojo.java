@@ -18,10 +18,10 @@ import org.apache.maven.shared.transfer.repository.RepositoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -125,7 +125,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      * Replace the absolute path to the local repo with this property. This field is ignored it prefix is declared. The
      * value will be forced to "${M2_REPO}" if no value is provided AND the attach flag is true.
      */
-    @Parameter(defaultValue = "")
+    @Parameter(defaultValue = "${M2_REPO}")
     private String localRepoProperty;
 
     /**
@@ -139,6 +139,11 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
+
+    /**
+     * 开启和项目的依赖
+     */
+    private boolean enableMargeProjectDependencies;
 
     /**
      * build context
@@ -234,7 +239,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         if (classLoader instanceof URLClassLoader) {
             getLog().info("add class loader url");
             urls.addAll(Arrays.asList(((URLClassLoader) classLoader).getURLs()));
-            if (false) {
+            if (enableMargeProjectDependencies) {
                 // never enable，is only example usage
                 addProjectArtifactUrlToMainClassLoader(urls, classLoader);
             }
@@ -257,7 +262,7 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
             getLog().warn("get URLClassLoader addURL method fail");
             return;
         }
-        AccessibleObject.setAccessible(new AccessibleObject[]{addUrlMethod}, true);
+        ReflectionUtils.makeAccessible(addUrlMethod);
         try {
             for (URL url : urls) {
                 addUrlMethod.invoke(classLoader, url);
@@ -317,6 +322,9 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         return urls;
     }
 
+    /**
+     * 设置上传sdk到codegen-server的系统属性
+     */
     private void setUploadCodegenResultProperties() {
         String name = projectName == null ? mavenProject.getName() : projectName;
         if (name != null) {
@@ -336,10 +344,8 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
         }
         MavenProject parent = mavenProject;
         while (parent != null) {
-            if (parent.getParent() == null) {
-                break;
-            }
-            if (parent.getParent().getBasedir() == null) {
+            boolean isBreak = parent.getParent() == null || parent.getParent().getBasedir() == null;
+            if (isBreak) {
                 break;
             }
             parent = parent.getParent();

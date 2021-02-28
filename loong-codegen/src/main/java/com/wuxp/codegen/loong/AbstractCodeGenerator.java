@@ -48,8 +48,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
     /**
      * spring 的包扫描组件
      */
-    protected ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(
-            true);
+    protected ClassPathScanningCandidateComponentProvider classPathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(false);
 
 
     /**

@@ -235,7 +235,6 @@
                 <configuration>
                     <projectName>codegen-server</projectName>
                     <clientProviderTypes>typescript_feign</clientProviderTypes>
-                    <scanPackages>com.wuxp.codegen.server.controller</scanPackages>
                     <loongCodegenServer>http://localhost:8080</loongCodegenServer>
                 </configuration>
             </plugin>
