@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {message, Tag} from 'antd';
-import {connect} from 'dva';
+import React, { Component } from 'react';
+import { message, Tag } from 'antd';
+import { connect } from 'dva';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import NoticeIcon from '../noticeicon';
 
 import styles from './index.less';
-import {LoginUserInfo} from "@/feign/user/info/LoginUserInfo";
+import { LoginUserInfo } from '@/feign/user/info/LoginUserInfo';
 
 export interface GlobalHeaderRightProps {
   notices?: any[];
@@ -17,32 +17,27 @@ export interface GlobalHeaderRightProps {
 }
 
 class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   changeReadState = (clickedItem: any): void => {
     // const {id} = clickedItem;
-
   };
 
   handleNoticeClear = (title: string, key: string) => {
-
     message.success(`${'清空了'} ${title}`);
-
   };
 
   getNoticeData = (): {
     [key: string]: any[];
   } => {
-    const {notices = []} = this.props;
+    const { notices = [] } = this.props;
 
     if (notices.length === 0) {
       return {};
     }
 
-    const newNotices = notices.map(notice => {
-      const newNotice = {...notice};
+    const newNotices = notices.map((notice) => {
+      const newNotice = { ...notice };
 
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime as string).fromNow();
@@ -80,7 +75,7 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
     const unreadMsg: {
       [key: string]: number;
     } = {};
-    Object.keys(noticeData).forEach(key => {
+    Object.keys(noticeData).forEach((key) => {
       const value = noticeData[key];
 
       if (!unreadMsg[key]) {
@@ -88,21 +83,21 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
       }
 
       if (Array.isArray(value)) {
-        unreadMsg[key] = value.filter(item => !item.read).length;
+        unreadMsg[key] = value.filter((item) => !item.read).length;
       }
     });
     return unreadMsg;
   };
 
   render() {
-    const {fetchingNotices, onNoticeVisibleChange} = this.props;
+    const { fetchingNotices, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
     const unreadMsg = this.getUnreadData(noticeData);
     return (
       <NoticeIcon
         className={styles.action}
         count={1}
-        onItemClick={item => {
+        onItemClick={(item) => {
           this.changeReadState(item);
         }}
         loading={fetchingNotices}
@@ -142,7 +137,7 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
   }
 }
 
-export default connect(({user, global, loading}: any) => ({
+export default connect(({ user, global, loading }: any) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
   fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],

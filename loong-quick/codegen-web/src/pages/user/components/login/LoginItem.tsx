@@ -1,10 +1,10 @@
-import {Button, Col, Form, Input, message, Row} from 'antd';
-import React, {useCallback, useEffect, useState} from 'react';
+import { Button, Col, Form, Input, message, Row } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import omit from 'omit.js';
-import {FormItemProps} from 'antd/es/form/FormItem';
+import { FormItemProps } from 'antd/es/form/FormItem';
 import ItemMap from './map';
-import LoginContext, {LoginContextProps} from './LoginContext';
+import LoginContext, { LoginContextProps } from './LoginContext';
 import styles from './index.less';
 import UserService from '@/feign/user/UserService';
 
@@ -37,11 +37,11 @@ export interface LoginItemProps extends Partial<FormItemProps> {
 const FormItem = Form.Item;
 
 const getFormItemOptions = ({
-                              onChange,
-                              defaultValue,
-                              customProps = {},
-                              rules,
-                            }: LoginItemProps) => {
+  onChange,
+  defaultValue,
+  customProps = {},
+  rules,
+}: LoginItemProps) => {
   const options: {
     rules?: LoginItemProps['rules'];
     onChange?: LoginItemProps['onChange'];
@@ -58,7 +58,7 @@ const getFormItemOptions = ({
   return options;
 };
 
-const LoginItem: React.FC<LoginItemProps> = props => {
+const LoginItem: React.FC<LoginItemProps> = (props) => {
   const [count, setCount] = useState<number>(props.countDown || 0);
   const [timing, setTiming] = useState(false);
   // 这么写是为了防止restProps中 带入 onChange, defaultValue, rules props tabUtil
@@ -77,7 +77,10 @@ const LoginItem: React.FC<LoginItemProps> = props => {
   } = props;
 
   const onGetCaptcha = useCallback(async (mobile: string) => {
-    const result = await UserService.getMobileCaptcha({mobilePhone: mobile, userType: "LOGIN"});
+    const result = await UserService.getMobileCaptcha({
+      mobilePhone: mobile,
+      userType: 'LOGIN',
+    });
     if (result === false) {
       return;
     }
@@ -87,10 +90,10 @@ const LoginItem: React.FC<LoginItemProps> = props => {
 
   useEffect(() => {
     let interval: number = 0;
-    const {countDown} = props;
+    const { countDown } = props;
     if (timing) {
       interval = window.setInterval(() => {
-        setCount(preSecond => {
+        setCount((preSecond) => {
           if (preSecond <= 1) {
             setTiming(false);
             clearInterval(interval);
@@ -115,7 +118,7 @@ const LoginItem: React.FC<LoginItemProps> = props => {
 
     return (
       <FormItem shouldUpdate>
-        {({getFieldValue}) => (
+        {({ getFieldValue }) => (
           <Row gutter={8}>
             <Col span={16}>
               <FormItem name={name} {...options}>
@@ -149,11 +152,11 @@ const LoginItem: React.FC<LoginItemProps> = props => {
 
 const LoginItems: Partial<LoginItemType> = {};
 
-Object.keys(ItemMap).forEach(key => {
+Object.keys(ItemMap).forEach((key) => {
   const item = ItemMap[key];
   LoginItems[key] = (props: LoginItemProps) => (
     <LoginContext.Consumer>
-      {context => (
+      {(context) => (
         <LoginItem
           customProps={item.props}
           rules={item.rules}

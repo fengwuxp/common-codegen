@@ -29,6 +29,9 @@
     ],
     "baseUrl": ".",
     "paths": {
+      "@/spring/*": [
+        "./.spring/*"
+      ],
       "@/*": [
         "./src/*"
       ],
@@ -40,7 +43,8 @@
   "include": [
     "./src/**/*",
     "./.spring/**/*",
-    "./test/**/*"
+    "./test/**/*",
+    "typings.d.ts"
   ],
   "exclude": [
     "node_modules",

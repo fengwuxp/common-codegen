@@ -1,10 +1,10 @@
-import {Form, Tabs} from 'antd';
-import React, {useState} from 'react';
+import { Form, Tabs } from 'antd';
+import React, { useState } from 'react';
 import useMergeValue from 'use-merge-value';
 import classNames from 'classnames';
-import {FormInstance} from 'antd/es/form';
+import { FormInstance } from 'antd/es/form';
 import LoginContext from './LoginContext';
-import LoginItem, {LoginItemProps} from './LoginItem';
+import LoginItem, { LoginItemProps } from './LoginItem';
 
 import LoginSubmit from './LoginSubmit';
 import LoginTab from './LoginTab';
@@ -29,10 +29,10 @@ interface LoginType extends React.FC<LoginProps> {
   Captcha: React.FunctionComponent<LoginItemProps>;
 }
 
-const Login: LoginType = props => {
-  const {className} = props;
+const Login: LoginType = (props) => {
+  const { className } = props;
   const [tabs, setTabs] = useState<string[]>([]);
-  const [active, setActive] = useState();
+  const [active, setActive] = useState<any>();
   const [type, setType] = useMergeValue('', {
     value: props.activeKey,
     onChange: props.onTabChange,
@@ -41,7 +41,11 @@ const Login: LoginType = props => {
   const otherChildren: React.ReactElement<unknown>[] = [];
   React.Children.forEach(
     props.children,
-    (child: React.ReactComponentElement<typeof LoginTab> | React.ReactElement<unknown>) => {
+    (
+      child:
+        | React.ReactComponentElement<typeof LoginTab>
+        | React.ReactElement<unknown>,
+    ) => {
       if (!child) {
         return;
       }
@@ -56,14 +60,14 @@ const Login: LoginType = props => {
     <LoginContext.Provider
       value={{
         tabUtil: {
-          addTab: id => {
+          addTab: (id) => {
             setTabs([...tabs, id]);
           },
-          removeTab: id => {
-            setTabs(tabs.filter(currentId => currentId !== id));
+          removeTab: (id) => {
+            setTabs(tabs.filter((currentId) => currentId !== id));
           },
         },
-        updateActive: activeItem => {
+        updateActive: (activeItem) => {
           if (active[type]) {
             active[type].push(activeItem);
           } else {
@@ -76,7 +80,7 @@ const Login: LoginType = props => {
       <div className={classNames(className, styles.login)}>
         <Form
           form={props.from}
-          onFinish={values => {
+          onFinish={(values) => {
             if (props.onSubmit) {
               props.onSubmit(values);
             }
@@ -88,7 +92,7 @@ const Login: LoginType = props => {
                 animated={false}
                 className={styles.tabs}
                 activeKey={type}
-                onChange={activeKey => {
+                onChange={(activeKey) => {
                   setType(activeKey);
                 }}
               >

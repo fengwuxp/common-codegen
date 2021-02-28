@@ -1,11 +1,10 @@
 // https://umijs.org/config/
 // import routes from "../.spring/routes";
-import {defineConfig} from 'umi';
+import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import routes from './routes';
 
-const {REACT_APP_ENV} = process.env;
-
+const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
   hash: false,
@@ -48,7 +47,7 @@ export default defineConfig({
             {
               component: '404',
             },
-          ]
+          ],
         },
         {
           path: '/',
@@ -59,8 +58,8 @@ export default defineConfig({
         {
           component: '404',
         },
-      ]
-    }
+      ],
+    },
   ],
   theme: {
     // ...darkTheme,
@@ -74,6 +73,5 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  layout: {},
-  fastRefresh: false
+  fastRefresh: false,
 });

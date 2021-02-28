@@ -1,16 +1,32 @@
-import {IRoute} from "@umijs/core";
-
+import { ViewShowMode } from 'fengwuxp-routing-core';
+import { IRoute } from 'umi';
 
 const routes: IRoute[] = [
   {
-    name: '首页',
+    name: '/home/index',
+
     icon: 'smile',
-    path: '/',
+
+    path: '/home',
     routes: [
-      {path: '/home', component: '@/pages/index'},
-    ]
-  }
-]
+      {
+        name: '/home/index',
 
+        icon: 'smile',
 
-export default routes
+        path: '/home',
+        routes: [
+          {
+            name: '/home/index',
+
+            path: '/home/index',
+
+            component: './home/index',
+          },
+        ],
+      },
+    ],
+  },
+];
+
+export default routes;

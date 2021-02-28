@@ -3,19 +3,21 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import React, {useState} from 'react';
-import DefaultFooter from '@ant-design/pro-layout/es/Footer'
-import ProLayout, {BasicLayoutProps as ProLayoutProps} from '@ant-design/pro-layout/es/BasicLayout'
-import {Settings} from '@ant-design/pro-layout/es/defaultSettings'
-import {MenuDataItem} from '@ant-design/pro-layout/es/typings'
-import SettingDrawer from '@ant-design/pro-layout/es/SettingDrawer/index'
+import React, { useState } from 'react';
+import DefaultFooter from '@ant-design/pro-layout/es/Footer';
+import ProLayout, {
+  BasicLayoutProps as ProLayoutProps,
+} from '@ant-design/pro-layout/es/BasicLayout';
+import { ProSettings } from '@ant-design/pro-layout/es/defaultSettings';
+import { MenuDataItem } from '@ant-design/pro-layout/es/typings';
+import SettingDrawer from '@ant-design/pro-layout/es/components/SettingDrawer/index';
 import AntdIcon from '@ant-design/icons/lib/components/AntdIcon';
 import defaultSettings from '../../config/defaultSettings';
 import logo from '../assets/logo.svg';
 import SvgIcon from '@/components/icon/SvgIcon';
-import AppRouter from "@/AppRouter";
-import RightContent from "@/components/globalheader/RightContent";
-import {Link} from 'umi';
+import AppRouter from '@/AppRouter';
+import RightContent from '@/components/globalheader/RightContent';
+import { Link } from 'umi';
 
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
@@ -29,9 +31,9 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   };
 };
 
-const BasicLayout: React.FC<BasicLayoutProps> = props => {
+const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const [collapsed, handleMenuCollapse] = useState<boolean>(false);
-  const [settings, setSettings] = useState<Partial<Settings>>({
+  const [settings, setSettings] = useState<Partial<ProSettings>>({
     ...defaultSettings,
     fixSiderbar: true,
     fixedHeader: true,
@@ -66,29 +68,36 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         }}
         menuItemRender={(menuItemProps, defaultDom) => {
           const icon = menuItemProps.icon as any;
-          const item = <span>
-            {
-              icon != null && <span>
-              {typeof icon === 'string' ? <SvgIcon className="anticon" src={icon}/> : <AntdIcon icon={icon}/>}
+          const item = (
+            <span>
+              {icon != null && (
+                <span>
+                  {typeof icon === 'string' ? (
+                    <SvgIcon className="anticon" src={icon} />
+                  ) : (
+                    <AntdIcon icon={icon} />
+                  )}
+                </span>
+              )}
+              {menuItemProps.name}
             </span>
-            }
-            {menuItemProps.name}
-          </span>;
+          );
           return menuItemProps.isUrl ? (
             item
           ) : (
             <Link className="qixian-menuItem" to={menuItemProps.path || '/'}>
               {item}
             </Link>
-          )
+          );
         }}
         // menuDataRender={menuDataRender}
-        rightContentRender={() => <RightContent layout={settings.layout}/>}
-        footerRender={() => <DefaultFooter/>}
+        rightContentRender={() => <RightContent layout={settings.layout} />}
+        footerRender={() => <DefaultFooter />}
         collapsed={collapsed}
-        onMenuHeaderClick={() => AppRouter.push("/")}
+        onMenuHeaderClick={() => AppRouter.push('/')}
         {...props}
-        {...settings}>
+        {...settings}
+      >
         {props.children}
       </ProLayout>
       <SettingDrawer
@@ -96,10 +105,10 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         // hideCopyButton
         // hideHintAlert
         settings={settings}
-        onSettingChange={config => setSettings(config)}
+        onSettingChange={(config) => setSettings(config)}
       />
     </>
-  )
+  );
 };
 
 export default BasicLayout;
