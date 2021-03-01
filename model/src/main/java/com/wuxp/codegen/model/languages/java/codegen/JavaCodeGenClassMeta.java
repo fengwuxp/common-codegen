@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 
 /**
  * Java 代码生成的类型常量
+ *
  * @author wuxp
  */
 @EqualsAndHashCode(callSuper = true)
@@ -88,8 +89,8 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     /**
      * Date
      */
-    public static final JavaCodeGenClassMeta DATE = new JavaCodeGenClassMeta("Date", null, ClassType.CLASS, false, null, "java.util.Date",true);
-    public static final JavaCodeGenClassMeta LOCAL_DATE = new JavaCodeGenClassMeta("LocalDate", null, ClassType.CLASS, false, null, "java.time.LocalDate",true);
+    public static final JavaCodeGenClassMeta DATE = new JavaCodeGenClassMeta("Date", null, ClassType.CLASS, false, null, "java.util.Date", true);
+    public static final JavaCodeGenClassMeta LOCAL_DATE = new JavaCodeGenClassMeta("LocalDate", null, ClassType.CLASS, false, null, "java.time.LocalDate", true);
     public static final JavaCodeGenClassMeta LOCAL_DATE_TIME = new JavaCodeGenClassMeta("LocalDateTime", null, ClassType.CLASS, false, null, "java.time.LocalDateTime", true);
 
     /**
@@ -136,15 +137,21 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     public static final JavaCodeGenClassMeta VOID = new JavaCodeGenClassMeta("void", null, ClassType.CLASS, false, null, "", false);
 
 
-    //type variable 类型变量
-    public final static JavaCodeGenClassMeta TYPE_VARIABLE = new JavaCodeGenClassMeta("T", "N", ClassType.CLASS, false, OBJECT, "", false);
+    /**
+     * type variable 类型变量
+     */
+    public static final JavaCodeGenClassMeta TYPE_VARIABLE = new JavaCodeGenClassMeta("T", "N", ClassType.CLASS, false, OBJECT, "", false);
 
 
-    //Observable
+    /**
+     * Observable
+     */
     public static final JavaCodeGenClassMeta RX_JAVA2_OBSERVABLE = new JavaCodeGenClassMeta("Observable", "Observable<T>", ClassType.CLASS,
             false, null, "", false);
 
-    // java数组类型标记
+    /**
+     * java数组类型标记
+     */
     public static final JavaCodeGenClassMeta JAVA_ARRAY_CLASS_TYPE_MARK = new JavaCodeGenClassMeta("JavaArrayClassTypeMark", null,
             ClassType.CLASS, false, null, "", false);
 

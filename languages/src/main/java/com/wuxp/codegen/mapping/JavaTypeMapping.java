@@ -2,9 +2,12 @@ package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -57,7 +60,8 @@ public class JavaTypeMapping extends AbstractLanguageTypeMapping<JavaCodeGenClas
     JAVA_DEFAULT_BASE_MAPPING.put(List.class, JavaCodeGenClassMeta.LIST);
     JAVA_DEFAULT_BASE_MAPPING.put(Collection.class, JavaCodeGenClassMeta.COLLECTION);
     JAVA_DEFAULT_BASE_MAPPING.put(JavaArrayClassTypeMark.class, JavaCodeGenClassMeta.JAVA_ARRAY_CLASS_TYPE_MARK);
-
+    JAVA_DEFAULT_BASE_MAPPING.put(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
+    JAVA_DEFAULT_BASE_MAPPING.put(InputStreamResource.class, JavaCodeGenClassMeta.FILE);
   }
 
   public JavaTypeMapping(LanguageParser<JavaCodeGenClassMeta> languageParser,

@@ -67,8 +67,8 @@ public class Swagger3FeignSdkCodegenDartTest {
                 .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
                 //设置基础数据类型的映射关系
-                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTRUE)
-                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTRUE)
+                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTURE)
+                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTURE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))

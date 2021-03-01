@@ -4,6 +4,7 @@ import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -88,7 +89,14 @@ public final class RequestMappingUtils {
         return findAnnotations(annotations, RequestHeader.class);
     }
 
+    public static Optional<RequestBody> findRequestBody(Annotation[] annotations) {
+        return findAnnotations(annotations, RequestBody.class);
+    }
+
     private static <T> Optional<T> findAnnotations(Annotation[] annotations, Class<T> annotationType) {
+        if (annotations == null) {
+            return Optional.empty();
+        }
         return Arrays.stream(annotations)
                 .filter(annotation -> annotationType.equals(annotation.annotationType()))
                 .map(annotation -> (T) annotation)

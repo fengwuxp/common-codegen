@@ -4,7 +4,10 @@ import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
+import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.reflect.Method;
 import java.util.*;
+
+import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
 
 /**
  * @author wuxp
@@ -25,7 +30,7 @@ public class SpringRequestMappingTransformer implements
     /**
      * 请求方法和Mapping名称的对应
      */
-    protected static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new EnumMap<RequestMethod, String>(RequestMethod.class);
+    protected static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new EnumMap<>(RequestMethod.class);
 
 
     /**
@@ -48,6 +53,7 @@ public class SpringRequestMappingTransformer implements
         mediaTypeMapping.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, "MediaType.APPLICATION_FORM_URLENCODED_VALUE");
         mediaTypeMapping.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.APPLICATION_JSON_VALUE");
         mediaTypeMapping.put(MediaType.APPLICATION_JSON_UTF8_VALUE, "MediaType.APPLICATION_JSON_UTF8_VALUE");
+        mediaTypeMapping.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, "MediaType.APPLICATION_OCTET_STREAM_VALUE");
     }
 
     @Override
@@ -64,7 +70,23 @@ public class SpringRequestMappingTransformer implements
 
     @Override
     public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Method annotationOwner) {
-        return this.innerTransform(annotationMate, annotationOwner.getName());
+        CommonCodeGenAnnotation commonCodeGenAnnotation = this.innerTransform(annotationMate, annotationOwner.getName());
+        Map<String, String> namedArguments = commonCodeGenAnnotation.getNamedArguments();
+        String consumes = namedArguments.get(MappingAnnotationPropNameConstant.CONSUMES);
+        if (consumes != null) {
+            return commonCodeGenAnnotation;
+        }
+        JavaMethodMeta javaMethodMeta = JAVA_CLASS_PARSER.getJavaMethodMeta(annotationOwner, annotationOwner.getDeclaringClass());
+        boolean isNoneReturnFile = Arrays.stream(javaMethodMeta.getReturnType()).noneMatch(clazz -> JavaTypeUtils.isAssignableFrom(clazz, InputStreamResource.class));
+        if (isNoneReturnFile) {
+            return commonCodeGenAnnotation;
+        }
+        // 返回文件类型的数据从新设置consumes
+        List<String> positionArguments = commonCodeGenAnnotation.getPositionArguments();
+        String fileConsumes = wrapperArraySymbol(mediaTypeMapping.get(MediaType.APPLICATION_OCTET_STREAM_VALUE));
+        positionArguments.add(fileConsumes);
+        namedArguments.put(MappingAnnotationPropNameConstant.CONSUMES, fileConsumes);
+        return commonCodeGenAnnotation;
     }
 
     /**
@@ -91,6 +113,7 @@ public class SpringRequestMappingTransformer implements
         if (StringUtils.hasText(val) && !ownerName.equals(val)) {
             namedArguments.put(MappingAnnotationPropNameConstant.VALUE, "\"" + val + "\"");
         }
+
         if (annotationMate.annotationType().equals(RequestMapping.class)) {
             // 将RequestMapping 转换为其他明确的Mapping类型
             RequestMethod requestMethod = annotationMate.getRequestMethod();
@@ -129,13 +152,7 @@ public class SpringRequestMappingTransformer implements
             if (targetMediaType == null) {
                 throw new CodegenRuntimeException("unsupported media type：" + mediaType);
             }
-            String[] arraySymbol = getArraySymbol();
-            //是否已经包装了数组符号
-            boolean isWrapperJsonArray = targetMediaType.startsWith(arraySymbol[0]) && targetMediaType.endsWith(arraySymbol[1]);
-            if (!isWrapperJsonArray) {
-                targetMediaType = arraySymbol[0] + targetMediaType + arraySymbol[1];
-            }
-            namedArguments.put(entry.getKey(), targetMediaType);
+            namedArguments.put(entry.getKey(), wrapperArraySymbol(targetMediaType));
         }
 
         codeGenAnnotation.setNamedArguments(namedArguments);
@@ -143,12 +160,24 @@ public class SpringRequestMappingTransformer implements
         List<String> positionArguments = new LinkedList<>();
         positionArguments.add(namedArguments.get(MappingAnnotationPropNameConstant.VALUE));
         positionArguments.add(namedArguments.get(MappingAnnotationPropNameConstant.METHOD));
-        positionArguments.add(namedArguments.get(MappingAnnotationPropNameConstant.PRODUCES));
+        if (!annotationMate.isGetMethod()) {
+            // GET 请求不需要produces
+            positionArguments.add(namedArguments.get(MappingAnnotationPropNameConstant.PRODUCES));
+        }
         positionArguments.add(namedArguments.get(MappingAnnotationPropNameConstant.CONSUMES));
-
         codeGenAnnotation.setPositionArguments(positionArguments);
 
         return codeGenAnnotation;
+    }
+
+    private String wrapperArraySymbol(String targetMediaType) {
+        String[] arraySymbol = getArraySymbol();
+        //是否已经包装了数组符号
+        boolean isWrapperJsonArray = targetMediaType.startsWith(arraySymbol[0]) && targetMediaType.endsWith(arraySymbol[1]);
+        if (!isWrapperJsonArray) {
+            targetMediaType = arraySymbol[0] + targetMediaType + arraySymbol[1];
+        }
+        return targetMediaType;
     }
 
 }

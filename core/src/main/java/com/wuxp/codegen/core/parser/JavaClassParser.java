@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
@@ -35,10 +36,15 @@ import java.util.stream.Collectors;
 public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
 
+    public static final JavaClassParser JAVA_CLASS_ON_PUBLIC_PARSER = new JavaClassParser(true);
+
+    public static final JavaClassParser JAVA_CLASS_PARSER = new JavaClassParser(false);
+
     /**
      * spring的方法参数发现者
      */
     protected static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+
     private static final Map<Class<?>, JavaClassMeta> PARSER_CACHE = new ConcurrentHashMap<>();
     /**
      * 是否只过滤public的方法
@@ -111,7 +117,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setClazz(source)
                 .setIsAbstract(Modifier.isAbstract(modifiers))
                 .setSuperTypeVariables(superTypeVariables)
-                .setMethodMetas(this.getMethods(source, null, onlyPublic))
+                .setMethodMetas(this.getMethods(source, onlyPublic))
                 .setFieldMetas(this.getFields(source, onlyPublic))
                 .setInterfaces(source.getInterfaces())
                 .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
@@ -203,12 +209,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
     /**
      * 获取单个方法的元数据
      *
-     * @param method
+     * @param method 方法
      * @param owner  可以为空
-     * @param origin
-     * @return
+     * @return 方法元数据
      */
-    protected JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner, Class<?> origin) {
+    public JavaMethodMeta getJavaMethodMeta(Method method, Class<?> owner) {
 
         JavaMethodMeta methodMeta = new JavaMethodMeta();
         methodMeta.setMethod(method);
@@ -218,9 +223,9 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
         methodMeta.setReturnType(returnType);
 
         //方法参数列表
-        Map<String, Class<?>[]> params = new LinkedHashMap<String, Class<?>[]>();
-        Map<String, Parameter> parameterMap = new LinkedHashMap<String, Parameter>();
-        Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<String/*参数名称*/, Annotation[]>();
+        Map<String, Class<?>[]> params = new LinkedHashMap<>();
+        Map<String, Parameter> parameterMap = new LinkedHashMap<>();
+        Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<>();
 
         String[] parameterNames = null;
 
@@ -243,16 +248,12 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             return null;
         }
 
-        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariables = this.getSuperTypeVariables(origin);
+        Map<Class<?>, ClassGenericVariableDesc[]> superTypeVariables = this.getSuperTypeVariables(owner.getSuperclass());
 
         TypeVariable<? extends Class<?>>[] ownerTypeParameters = owner.getTypeParameters();
-        List<String> ownerTypeParameterNames = new ArrayList<>();
-
-        if (ownerTypeParameters != null) {
-            ownerTypeParameterNames = Arrays.stream(ownerTypeParameters)
-                    .map(TypeVariable::getName)
-                    .collect(Collectors.toList());
-        }
+        List<String> ownerTypeParameterNames = Arrays.stream(ownerTypeParameters)
+                .map(TypeVariable::getName)
+                .collect(Collectors.toList());
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
@@ -269,11 +270,11 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             String typeName = parameter.getParameterizedType().getTypeName();
             if (ownerTypeParameterNames.contains(typeName)) {
                 //使用了泛型变量做参数类型
-                ClassGenericVariableDesc[] variableDescs = superTypeVariables.get(owner);
-                if (variableDescs == null) {
+                ClassGenericVariableDesc[] variableDescList = superTypeVariables.get(owner);
+                if (variableDescList == null) {
                     continue;
                 }
-                Class<?> aClass = Arrays.stream(variableDescs)
+                Class<?> aClass = Arrays.stream(variableDescList)
                         .filter(typeVariable -> typeName.endsWith(typeVariable.getName()))
                         .map(ClassGenericVariableDesc::getType)
                         .findFirst()
@@ -327,7 +328,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
             fields = clazz.getFields();
         } else {
             fields = clazz.getDeclaredFields();
-            AccessibleObject.setAccessible(fields, true);
+            Arrays.asList(fields).forEach(ReflectionUtils::makeAccessible);
         }
         return Arrays.stream(fields)
                 .map(field -> this.getJavaFieldMeta(field, clazz))
@@ -397,25 +398,22 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
      * 获取方法列表
      *
      * @param clazz      当前类
-     * @param origin     源类（当前类的子类）
      * @param onlyPublic 是否只处理公共方法
      * @return 方法列表
      */
-    protected JavaMethodMeta[] getMethods(Class<?> clazz,
-                                          Class<?> origin,
-                                          boolean onlyPublic) {
+    JavaMethodMeta[] getMethods(Class<?> clazz, boolean onlyPublic) {
 
         Method[] methods = ReflectUtils.getDeclaredMethodsInOrder(clazz);
         if (onlyPublic) {
             //只获取public的方法
             methods = Arrays.stream(methods).filter(method -> Modifier.isPublic(method.getModifiers())).toArray(Method[]::new);
         } else {
-            AccessibleObject.setAccessible(methods, true);
+            Arrays.asList(methods).forEach(ReflectionUtils::makeAccessible);
         }
 
         List<JavaMethodMeta> methodMetas = new ArrayList<>();
         for (Method method : methods) {
-            JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz, origin);
+            JavaMethodMeta methodMeta = getJavaMethodMeta(method, clazz);
             methodMetas.add(methodMeta);
 
         }

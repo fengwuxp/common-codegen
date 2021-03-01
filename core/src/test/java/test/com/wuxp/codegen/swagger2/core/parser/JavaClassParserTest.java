@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
+
 /**
  * JavaClassParser Tester.
  *
@@ -21,7 +23,7 @@ import java.util.List;
 public class JavaClassParserTest {
 
 
-    protected GenericParser<JavaClassMeta, Class<?>> genericParser = new JavaClassParser(false);
+    protected GenericParser<JavaClassMeta, Class<?>> genericParser = JAVA_CLASS_PARSER;
 
     public void before() throws Exception {
     }
