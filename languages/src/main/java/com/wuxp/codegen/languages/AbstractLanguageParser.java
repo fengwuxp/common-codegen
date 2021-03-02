@@ -12,7 +12,6 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
-import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -22,8 +21,6 @@ import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.model.*;
-import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
-import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -33,6 +30,7 @@ import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
+import com.wuxp.codegen.reactive.ReactorTypeSupport;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import com.wuxp.codegen.util.RequestMappingUtils;
@@ -51,7 +49,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -247,6 +248,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
+        ReactorTypeSupport.handle(javaClassMeta);
         // 加入对spring的特别处理
         SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
@@ -1155,6 +1157,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     /**
      * 增强处理注解
+     *
      * @param codeGenAnnotation
      * @param annotation
      * @param annotationOwner

@@ -7,6 +7,9 @@ import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
+/**
+ * @author wuxp
+ */
 @Slf4j
 public class JavaLanguageMetaInstanceFactory implements
     LanguageParser.LanguageMetaInstanceFactory<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {

@@ -3,8 +3,10 @@ package com.wuxp.codegen.mapping;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
+import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -55,6 +57,8 @@ public class DartTypeMapping extends AbstractLanguageTypeMapping<DartClassMeta> 
     DART_DEFAULT_BASE_MAPPING.put(CommonsMultipartFile.class, DartClassMeta.FILE);
     DART_DEFAULT_BASE_MAPPING.put(InputStreamResource.class, DartClassMeta.FILE);
 
+    // reactor TODO support rxDart
+    DART_DEFAULT_BASE_MAPPING.put(Publisher.class, DartClassMeta.FUTURE);
   }
 
   public DartTypeMapping(LanguageParser<DartClassMeta> languageParser,

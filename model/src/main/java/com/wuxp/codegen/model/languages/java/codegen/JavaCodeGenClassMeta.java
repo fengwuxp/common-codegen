@@ -144,10 +144,23 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
 
 
     /**
-     * Observable
+     * RxJava2 Observable
      */
     public static final JavaCodeGenClassMeta RX_JAVA2_OBSERVABLE = new JavaCodeGenClassMeta("Observable", "Observable<T>", ClassType.CLASS,
-            false, null, "", false);
+            false, null, "io.reactivex.Observable", true);
+
+    /**
+     * reactor Flux
+     */
+    public static final JavaCodeGenClassMeta REACTOR_FLUX = new JavaCodeGenClassMeta("Flux", "Flux<T>", ClassType.CLASS,
+            false, null, "reactor.core.publisher.Flux", true);
+
+    /**
+     * reactor Mono
+     */
+    public static final JavaCodeGenClassMeta REACTOR_MONO = new JavaCodeGenClassMeta("Mono", "Mono<T>", ClassType.CLASS,
+            false, null, "reactor.core.publisher.Mono", true);
+
 
     /**
      * java数组类型标记
@@ -156,8 +169,10 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
             ClassType.CLASS, false, null, "", false);
 
 
-    // or use 1L?
-    private Long serialVersionUIDValue = SnowFlakeIdGenerator.SINGLETON.nextId();
+    /**
+     * or use 1L?
+     */
+    private final Long serialVersionUIDValue = SnowFlakeIdGenerator.SINGLETON.nextId();
 
     public JavaCodeGenClassMeta() {
     }

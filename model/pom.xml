@@ -11,5 +11,12 @@
 
     <artifactId>wuxp-codegen-model</artifactId>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.projectreactor/reactor-core -->
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

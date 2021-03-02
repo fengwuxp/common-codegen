@@ -2,7 +2,9 @@ package com.wuxp.codegen.languages;
 
 
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
+import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -129,12 +131,7 @@ public abstract class AbstractJavaParser extends
         if (!methodReturnTypeIsFile(javaMethodMeta)) {
             returnTypes = this.languageTypeMapping.mapping(methodMetaReturnType);
         }
-        if (this.useAsync) {
-            // 使用异步处理
-            if (!returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
-                returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
-            }
-        }
+        handleReturnTypes(returnTypes);
         if (returnTypes.isEmpty()) {
             //解析失败
             throw new CodegenRuntimeException(String.format("解析类 %s 上的方法 %s 的返回值类型 %s 失败",
@@ -161,5 +158,15 @@ public abstract class AbstractJavaParser extends
 
     }
 
+
+    private void handleReturnTypes(List<JavaCodeGenClassMeta> returnTypes) {
+        if (!ClientProviderType.RETROFIT.equals(CodegenConfigHolder.getConfig().getProviderType())) {
+            return;
+        }
+        // 使用异步处理
+        if (this.useAsync && !returnTypes.contains(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE)) {
+            returnTypes.add(0, JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
+        }
+    }
 
 }
