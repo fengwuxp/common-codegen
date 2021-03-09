@@ -2,6 +2,7 @@
 
 - [生成例子说明](./docs/brief-description-of-the-code-generation-process.md)
 - [接入文档](./docs/doc.md)
+- [通过maven-plugin接入](./docs/doc.md#maven-plugin)
 
 #### examples
 

@@ -289,7 +289,7 @@ export interface CreateOrderEvt extends BaseEvt {
 
 可以看到程序将一部分(RequestMapping相关)java注解装换成了typescript的装饰器（注解），swagger和java.validation相关的注解转换成了对应的 注释，还有Controller这个注解就直接被忽略。
 
-#### 使用maven插件生成
+#### <a href='maven-plugin'>使用maven插件生成</a> 
 
 - 在期望生成sdk的模块加上如下依赖，默认情况下为了不影响打包，请在idea的右侧 maven plugins找到该插件，双击手动执行
 
