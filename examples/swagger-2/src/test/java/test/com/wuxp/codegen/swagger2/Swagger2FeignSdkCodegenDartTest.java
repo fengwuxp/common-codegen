@@ -2,6 +2,8 @@ package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.config.CodegenConfig;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -57,7 +59,6 @@ public class Swagger2FeignSdkCodegenDartTest {
         RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
-
         Swagger2FeignDartCodegenBuilder.builder()
                 .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
@@ -66,12 +67,12 @@ public class Swagger2FeignSdkCodegenDartTest {
                 .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTRUE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
-//        .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();
     }
+
 
 }

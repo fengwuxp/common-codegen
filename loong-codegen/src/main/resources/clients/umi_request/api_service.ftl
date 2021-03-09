@@ -21,10 +21,33 @@
     <#include "../../commons/api_method_comments.ftl">
     <#include "../typescript_feign/inculdes/method_prams_required.ftl">
 
-  export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
+export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
     <#assign tags=method.tags/>
-  return request<${customizeMethod.combineType(method.returnTypes)}>(`${tags["url"]}`, {
-  method: '${tags["httpMethod"]}',
+    <#if tags['hasPathVariable']>
+        const url=`${tags["url"]}`;
+    </#if>
+    <#if (tags['requestHeaderNames']?size>0)>
+        <#--    设置请求头  -->
+        const headers:Record<string,any>={};
+        <#list tags['requestHeaderNames'] as requestHeaderName>
+            const headerParam=req.${requestHeaderName};
+            if(headerParam!=null){
+              headers['${requestHeaderName}']=Array.isArray(headerParam)?headerParam.join(";"):headerParam;
+            }
+        </#list>
+    </#if>
+    <#if (tags['needDeleteParams']?size>0)>
+    <#--    删除路径参数和请求头参数  -->
+        <#list tags['needDeleteParams'] as deleteParamName>
+            // @ts-ignore
+            delete req.${deleteParamName};
+        </#list>
+    </#if>
+  return request<${customizeMethod.combineType(method.returnTypes)}>(<#if tags['hasPathVariable']>url<#else >`${tags["url"]}`</#if>, {
+      method: '${tags["httpMethod"]}',
+    <#if (tags['requestHeaderNames']?size>0)>
+        headers,
+    </#if>
     <#if tags['supportBody']>
         <#if tags['requestType']??>
           requestType: '${tags['requestType']}',

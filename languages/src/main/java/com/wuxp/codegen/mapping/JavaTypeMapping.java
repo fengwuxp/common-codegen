@@ -7,6 +7,8 @@ import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -25,6 +27,8 @@ public class JavaTypeMapping extends AbstractLanguageTypeMapping<JavaCodeGenClas
     //设置基础的数据类型映射
     JAVA_DEFAULT_BASE_MAPPING.put(Object.class, JavaCodeGenClassMeta.OBJECT);
     JAVA_DEFAULT_BASE_MAPPING.put(Date.class, JavaCodeGenClassMeta.DATE);
+    JAVA_DEFAULT_BASE_MAPPING.put(LocalDate.class, JavaCodeGenClassMeta.LOCAL_DATE);
+    JAVA_DEFAULT_BASE_MAPPING.put(LocalDateTime.class, JavaCodeGenClassMeta.LOCAL_DATE_TIME);
     JAVA_DEFAULT_BASE_MAPPING.put(void.class, JavaCodeGenClassMeta.VOID);
 
     JAVA_DEFAULT_BASE_MAPPING.put(Boolean.class, JavaCodeGenClassMeta.BOOLEAN);

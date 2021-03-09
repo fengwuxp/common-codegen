@@ -14,9 +14,9 @@ public class Swagger3MavenPluginInvokeCodeGenerator implements MavenPluginInvoke
     public void generate(String output, List<ClientProviderType> types) {
 
         log.info("output:{}，type：{}", output, types);
-        LoongSdkCodeGenerator LoongSdkCodeGenerator = new LoongSdkCodeGenerator("com.wuxp.codegen");
-        LoongSdkCodeGenerator.setOutputPath(output);
-        LoongSdkCodeGenerator.setClientProviderTypes(types);
-        LoongSdkCodeGenerator.generate();
+        LoongSdkCodeGenerator loongSdkCodeGenerator = new LoongSdkCodeGenerator("com.wuxp.codegen");
+        loongSdkCodeGenerator.setOutputPath(output);
+        loongSdkCodeGenerator.setClientProviderTypes(types);
+        loongSdkCodeGenerator.generate();
     }
 }

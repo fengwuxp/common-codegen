@@ -95,6 +95,9 @@ public final class CodegenConfig {
     }
 
     public boolean isServerClass(Class<?> clazz) {
+        if (clazz == null) {
+            return false;
+        }
         return getApiMarkedAnnotations().stream().anyMatch(clazz::isAnnotationPresent);
     }
 

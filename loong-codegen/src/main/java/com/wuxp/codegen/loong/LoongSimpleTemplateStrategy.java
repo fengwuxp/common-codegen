@@ -131,7 +131,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
                 return;
             }
         }
-        FileUtils.createDirectory(output.substring(0, output.lastIndexOf(File.separator)));
+        FileUtils.createDirectoryRecursively(output.substring(0, output.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
             log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
         }

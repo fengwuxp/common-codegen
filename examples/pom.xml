@@ -18,6 +18,7 @@
         <module>swagger-3-maven-plugin</module>
         <module>swagger-2</module>
         <module>swagger-3</module>
+        <module>swagger-3-client-maven-plugin</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
@@ -71,6 +72,12 @@
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

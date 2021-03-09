@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -25,6 +27,8 @@ public class DartTypeMapping extends AbstractLanguageTypeMapping<DartClassMeta> 
     //设置基础的数据类型映射
     DART_DEFAULT_BASE_MAPPING.put(Object.class, DartClassMeta.OBJECT);
     DART_DEFAULT_BASE_MAPPING.put(Date.class, DartClassMeta.DATE);
+    DART_DEFAULT_BASE_MAPPING.put(LocalDate.class, DartClassMeta.DATE);
+    DART_DEFAULT_BASE_MAPPING.put(LocalDateTime.class, DartClassMeta.DATE);
     DART_DEFAULT_BASE_MAPPING.put(Boolean.class, DartClassMeta.BOOL);
     DART_DEFAULT_BASE_MAPPING.put(String.class, DartClassMeta.STRING);
     DART_DEFAULT_BASE_MAPPING.put(Number.class, DartClassMeta.NUM);

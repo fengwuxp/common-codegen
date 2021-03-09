@@ -20,14 +20,14 @@ public final class FileUtils {
     /**
      * 递归创建目录
      *
-     * @param directoryName 目录名称
+     * @param directoryPath 目录路径
      */
-    public static void createDirectory(String directoryName) {
-        String[] filePaths = directoryName.split(String.format("\\%s", File.separator));
-        StringBuilder filePath = new StringBuilder();
-        for (String path : filePaths) {
-            filePath.append(File.separator).append(path);
-            File directory = new File(filePath.toString());
+    public static void createDirectoryRecursively(String directoryPath) {
+        String[] filepathParts = directoryPath.split(String.format("\\%s", File.separator));
+        StringBuilder path = new StringBuilder();
+        for (String part : filepathParts) {
+            path.append(File.separator).append(part);
+            File directory = new File(path.toString());
             if (!directory.exists()) {
                 boolean r = directory.mkdir();
                 log.debug("创建目录：{}，结果：{}", directory.getPath(), r ? "成功" : "失败");
