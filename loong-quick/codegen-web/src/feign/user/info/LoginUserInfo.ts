@@ -1,52 +1,52 @@
 export interface LoginUserInfo {
-  id: number;
+    id: number;
 
-  /**
-   * 姓名
-   */
-  name: string;
+    /**
+     * 姓名
+     */
+    name: string;
 
-  /**
-   * 昵称
-   */
-  nickName: string;
+    /**
+     * 昵称
+     */
+    nickName: string;
 
-  avatar?: string;
+    avatar?: string;
 
-  /**
-   * 手机号码
-   */
-  mobilePhone: string;
+    /**
+     * 手机号码
+     */
+    mobilePhone: string;
 
-  /**
-   * 邮箱
-   */
-  email: string;
+    /**
+     * 邮箱
+     */
+    email: string;
 
-  /**
-   * 是否超管理
-   */
-  root: string;
+    /**
+     * 是否超管理
+     */
+    root: string;
 
-  /**
-   * token
-   */
-  token: string;
+    /**
+     * token
+     */
+    token: string;
 
-  /**
-   * token失效时间
-   */
-  tokenExpired: number;
+    /**
+     * token失效时间
+     */
+    tokenExpired: number;
 
-  username: string;
+    username: string;
 
-  authorities: any[];
+    authorities: any[];
 
-  accountNonExpired: boolean;
+    accountNonExpired: boolean;
 
-  accountNonLocked: boolean;
+    accountNonLocked: boolean;
 
-  credentialsNonExpired: boolean;
+    credentialsNonExpired: boolean;
 
-  enabled: boolean;
+    enabled: boolean;
 }

@@ -1,21 +1,21 @@
 import {
-  AppCommandStorage,
-  GetStorageCommandMethod,
-  GetStorageCommandMethodSync,
-  RemoveStorageCommandMethod,
-  SetStorageCommandMethod,
+    AppCommandStorage,
+    GetStorageCommandMethod,
+    GetStorageCommandMethodSync,
+    RemoveStorageCommandMethod,
+    SetStorageCommandMethod,
 } from 'fengwuxp-declarative-storage-adapter';
-import { browserAppCommandStorageFactory } from 'fengwuxp-browser-storage';
-import { LoginUserInfo } from '@/feign/user/info/LoginUserInfo';
+import {browserAppCommandStorageFactory} from 'fengwuxp-browser-storage';
+import {LoginUserInfo} from '@/feign/user/info/LoginUserInfo';
 
 export interface BrowserAppStorage extends AppCommandStorage {
-  setUserInfo: SetStorageCommandMethod<LoginUserInfo>;
+    setUserInfo: SetStorageCommandMethod<LoginUserInfo>;
 
-  getUserInfo: GetStorageCommandMethod<LoginUserInfo>;
+    getUserInfo: GetStorageCommandMethod<LoginUserInfo>;
 
-  getUserInfoSync: GetStorageCommandMethodSync<LoginUserInfo>;
+    getUserInfoSync: GetStorageCommandMethodSync<LoginUserInfo>;
 
-  removeUserInfo: RemoveStorageCommandMethod;
+    removeUserInfo: RemoveStorageCommandMethod;
 }
 
 
