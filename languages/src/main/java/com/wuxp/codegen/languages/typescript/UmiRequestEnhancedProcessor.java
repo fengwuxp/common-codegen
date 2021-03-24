@@ -88,11 +88,10 @@ public class UmiRequestEnhancedProcessor implements
                     pathVariableName = name;
                 }
                 if (pathVariable.required()) {
-                    url = url.replace("{" + pathVariableName + "}", "${req." + pathVariableName + "}");
+                    url = url.replace("{" + pathVariableName + "}", "${" + pathVariableName + "}");
                 } else {
                     //  处理PathVariable 非必填
-                    String param = "req." + pathVariableName;
-                    param = param + "==null?" + "'':'/'+" + param;
+                    String param = pathVariableName + "==null?" + "'':'/'+" + pathVariableName;
                     url = url.replace("/{" + pathVariableName + "}", "${" + param + "}");
                 }
                 needDeleteParams.add(pathVariableName);

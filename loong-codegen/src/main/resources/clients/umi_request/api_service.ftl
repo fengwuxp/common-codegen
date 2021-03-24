@@ -23,24 +23,22 @@
 
 export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
     <#assign tags=method.tags/>
+    <#assign reqParamName="req"/>
+    <#if (tags['needDeleteParams']?size>0)>
+        <#assign reqParamName="reqData"/>
+        const {<#list tags['needDeleteParams'] as deleteParamName>${deleteParamName},</#list>...reqData} = req;
+    </#if>
     <#if tags['hasPathVariable']>
-        const url=`${tags["url"]}`;
+        const url =`${tags["url"]}`;
     </#if>
     <#if (tags['requestHeaderNames']?size>0)>
         <#--    设置请求头  -->
         const headers:Record<string,any>={};
         <#list tags['requestHeaderNames'] as requestHeaderName>
-            const headerParam=req.${requestHeaderName};
-            if(headerParam!=null){
-              headers['${requestHeaderName}']=Array.isArray(headerParam)?headerParam.join(";"):headerParam;
+<#--            const headerParam=req.${requestHeaderName};-->
+            if(${requestHeaderName}!=null){
+              headers['${requestHeaderName}']=Array.isArray(${requestHeaderName})?${requestHeaderName}.join(";"):${requestHeaderName};
             }
-        </#list>
-    </#if>
-    <#if (tags['needDeleteParams']?size>0)>
-    <#--    删除路径参数和请求头参数  -->
-        <#list tags['needDeleteParams'] as deleteParamName>
-            // @ts-ignore
-            delete req.${deleteParamName};
         </#list>
     </#if>
   return request<${customizeMethod.combineType(method.returnTypes)}>(<#if tags['hasPathVariable']>url<#else >`${tags["url"]}`</#if>, {
@@ -53,10 +51,10 @@ export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFile
           requestType: '${tags['requestType']}',
         </#if>
         <#if methodParamRequired>
-          data: req<#if methodParamFileldAllNotRequired> || {}</#if>,
+          data: ${reqParamName}<#if methodParamFileldAllNotRequired> || {}</#if>,
          </#if>
     <#elseif methodParamRequired>
-      params: req<#if methodParamFileldAllNotRequired> || {}</#if>,
+      params: ${reqParamName}<#if methodParamFileldAllNotRequired> || {}</#if>,
     </#if>
     <#if tags['responseType']??>
       responseType: '${tags['responseType']}',
