@@ -26,9 +26,7 @@ public class JavaRetrofitRequestMappingTransformer implements
     /**
      * 请求方法和Mapping名称的对应
      */
-    private static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new HashMap<>();
-
-    private final RequestMappingProcessor requestMappingProcessor = new RequestMappingProcessor();
+    private static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new EnumMap<>(RequestMethod.class);
 
 
     static {

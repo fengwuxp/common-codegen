@@ -13,6 +13,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_ON_PUBLIC_PARSER;
 import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_CONTROLLER_ANNOTATIONS;
 import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
 
@@ -25,7 +26,7 @@ import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRI
 public final class SpringControllerFilterUtils {
 
 
-    private static final JavaClassParser JAVA_PARSER = new JavaClassParser(true);
+    private static final JavaClassParser JAVA_PARSER = JAVA_CLASS_ON_PUBLIC_PARSER;
 
     private SpringControllerFilterUtils() {
     }

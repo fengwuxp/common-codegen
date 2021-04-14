@@ -8,7 +8,9 @@ import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.util.RequestMappingUtils;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -157,13 +159,19 @@ public class UmiRequestEnhancedProcessor implements
                                    JavaClassMeta classMeta) {
         String[] produces = requestMappingMate.produces();
         boolean useResponseBody = javaMethodMeta.existAnnotation(ResponseBody.class) || classMeta.existAnnotation(RestController.class);
+        boolean isEmpty = produces.length == 0;
         if (useResponseBody) {
-            if (produces.length == 0) {
+            if (isEmpty) {
                 produces = new String[]{MediaType.APPLICATION_JSON_VALUE};
             }
         } else {
-            if (produces.length == 0) {
-                produces = new String[]{MediaType.TEXT_PLAIN_VALUE};
+            if (isEmpty) {
+                boolean isNoneReturnFile = Arrays.stream(javaMethodMeta.getReturnType()).noneMatch(clazz -> JavaTypeUtils.isAssignableFrom(clazz, InputStreamResource.class));
+                if (isNoneReturnFile) {
+                    produces = new String[]{MediaType.TEXT_PLAIN_VALUE};
+                } else {
+                    produces = new String[]{MediaType.APPLICATION_OCTET_STREAM_VALUE};
+                }
             }
         }
         String produce = produces[0];

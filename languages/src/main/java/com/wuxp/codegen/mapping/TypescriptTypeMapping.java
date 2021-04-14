@@ -5,6 +5,8 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.math.BigInteger;
@@ -48,10 +50,14 @@ public class TypescriptTypeMapping extends AbstractLanguageTypeMapping<Typescrip
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(void.class, TypescriptClassMeta.VOID);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Void.class, TypescriptClassMeta.VOID);
 
+
     //文件上传
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(CommonsMultipartFile.class, TypescriptClassMeta.BROWSER_FILE);
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(InputStreamResource.class, TypescriptClassMeta.BROWSER_FILE);
     TYPESCRIPT_DEFAULT_BASE_MAPPING.put(JavaArrayClassTypeMark.class, TypescriptClassMeta.JAVA_ARRAY_CLASS_TYPE_MARK);
 
+    // reactor TODO support rxJs
+    TYPESCRIPT_DEFAULT_BASE_MAPPING.put(Publisher.class, TypescriptClassMeta.PROMISE);
   }
 
 

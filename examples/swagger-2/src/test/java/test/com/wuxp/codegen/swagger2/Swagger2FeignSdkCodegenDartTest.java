@@ -2,8 +2,6 @@ package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.config.CodegenConfig;
-import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -63,8 +61,8 @@ public class Swagger2FeignSdkCodegenDartTest {
                 .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
                 //设置基础数据类型的映射关系
-                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTRUE)
-                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTRUE)
+                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTURE)
+                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTURE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())

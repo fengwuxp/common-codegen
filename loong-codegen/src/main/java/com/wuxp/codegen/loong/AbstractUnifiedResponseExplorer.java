@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_ON_PUBLIC_PARSER;
 import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
 
 /**
@@ -25,7 +26,7 @@ import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRI
 @Slf4j
 public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponseExplorer {
 
-    private final static JavaClassParser CLASS_PARSER = new JavaClassParser(true);
+    private static final JavaClassParser CLASS_PARSER = JAVA_CLASS_ON_PUBLIC_PARSER;
 
     private final LanguageParser languageParser;
 

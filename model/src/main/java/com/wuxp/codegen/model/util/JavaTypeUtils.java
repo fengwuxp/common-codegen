@@ -11,6 +11,9 @@ public final class JavaTypeUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaTypeUtils.class);
 
+    private JavaTypeUtils() {
+    }
+
     /**
      * 是否为基础数据类型 包括String Date
      *

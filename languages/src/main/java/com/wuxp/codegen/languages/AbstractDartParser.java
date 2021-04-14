@@ -163,7 +163,6 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
     @Override
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation,
                                                 Object annotationOwner) {
-//        super.enhancedProcessingAnnotation(codeGenAnnotation, annotation, annotationOwner);
     }
 
     @Override
@@ -194,7 +193,7 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
         // 移除 返回值中的 Future 类型
         DartClassMeta[] returnTypes = Arrays.stream(commonCodeGenMethodMeta.getReturnTypes())
-                .filter(item -> !DartClassMeta.FUTRUE.getName().equals(item.getName()))
+                .filter(item -> !DartClassMeta.FUTURE.getName().equals(item.getName()))
                 .toArray(DartClassMeta[]::new);
 
         if (returnTypes.length == 0) {

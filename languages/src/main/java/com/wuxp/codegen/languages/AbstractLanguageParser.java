@@ -12,7 +12,6 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
-import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -22,8 +21,6 @@ import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.model.*;
-import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
-import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -33,11 +30,15 @@ import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
+import com.wuxp.codegen.reactive.ReactorTypeSupport;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
+import com.wuxp.codegen.util.RequestMappingUtils;
 import com.wuxp.codegen.util.SpringControllerFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -48,11 +49,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
 
 
 /**
@@ -110,7 +116,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * java类的解析器 默认解析所有的属性 方法
      */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = new JavaClassParser(false);
+    protected GenericParser<JavaClassMeta, Class<?>> javaParser = JAVA_CLASS_PARSER;
     /**
      * 语言元数据对象的工厂
      */
@@ -242,6 +248,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
+        ReactorTypeSupport.handle(javaClassMeta);
         // 加入对spring的特别处理
         SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
@@ -833,6 +840,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         //处理返回值
         Class<?>[] methodMetaReturnType = javaMethodMeta.getReturnType();
+        if (methodReturnTypeIsFile(javaMethodMeta)) {
+            methodMetaReturnType = new Class[]{InputStreamResource.class};
+        }
         List<C> returnTypes = this.languageTypeMapping.mapping(methodMetaReturnType);
         genMethodMeta.setReturnTypes(returnTypes.toArray(new CommonCodeGenClassMeta[0]));
         // 增加依赖
@@ -848,6 +858,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         //增强处理
         this.enhancedProcessingMethod(genMethodMeta, javaMethodMeta, classMeta);
         return genMethodMeta;
+    }
+
+    protected boolean methodReturnTypeIsFile(JavaMethodMeta javaMethodMeta) {
+        Optional<RequestMappingProcessor.RequestMappingMate> optionalRequestMappingMate = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getMethod().getDeclaredAnnotations());
+        if (optionalRequestMappingMate.isPresent()) {
+            RequestMappingProcessor.RequestMappingMate requestMappingMate = optionalRequestMappingMate.get();
+            String[] produces = requestMappingMate.produces();
+            // 文件类型
+            return Arrays.asList(produces).contains(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        }
+        return false;
     }
 
 
@@ -1133,7 +1155,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected abstract void enhancedProcessingMethod(M methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta);
 
-
     /**
      * 增强处理注解
      *
@@ -1141,56 +1162,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @param annotation
      * @param annotationOwner
      */
-    protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation,
-                                                Object annotationOwner) {
-        if (annotationOwner instanceof Class) {
-
-        }
-        if (annotationOwner instanceof Method) {
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-//            RequestMethod httpMethod = RequestMethod.GET;
-//            if (annotation instanceof RequestMappingProcessor.RequestMappingMate) {
-//                httpMethod = ((RequestMappingProcessor.RequestMappingMate) annotation).getRequestMethod();
-//            }
-            //spring的mapping注解
-            if (annotationType.getSimpleName().endsWith("Mapping")) {
-                Method method = (Method) annotationOwner;
-                //判断方法参数是否有RequestBody注解
-                List<Annotation> annotationList = Arrays.stream(method.getParameterAnnotations())
-                        .filter(Objects::nonNull)
-                        .filter(annotations -> annotations.length > 0)
-                        .map(Arrays::asList)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList());
-
-                String produces = codeGenAnnotation.getNamedArguments().get(MappingAnnotationPropNameConstant.PRODUCES);
-                if (StringUtils.hasText(produces)) {
-                    return;
-                } else {
-                    codeGenAnnotation.getNamedArguments().remove(MappingAnnotationPropNameConstant.PRODUCES);
-                }
-
-                //是否启用默认的 produces
-//                boolean enableDefaultProduces = true;
-//                if (!enableDefaultProduces) {
-//                    return;
-//                }
-                boolean hasRequestBodyAnnotation = annotationList.size() > 0 && annotationList.stream()
-                        .anyMatch(paramAnnotation -> RequestBody.class.equals(paramAnnotation.annotationType()));
-                if (hasRequestBodyAnnotation) {
-                    produces = TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8;
-                } else {
-                    // 如果没有 RequestBody 则认为是已表单的方式提交的参数
-                    // 是spring的Mapping注解
-                    produces = TypescriptFeignMediaTypeConstant.FORM_DATA;
-                }
-                if (!StringUtils.hasText(produces)) {
-                    return;
-                }
-                codeGenAnnotation.getNamedArguments().put(MappingAnnotationPropNameConstant.PRODUCES, produces);
-            }
-        }
-    }
+    protected abstract void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner);
 
 
     /**

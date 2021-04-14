@@ -202,6 +202,14 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             }
         }
 
+        /**
+         * 是否为 GET 请求
+         * @return
+         */
+        public boolean isGetMethod(){
+            return RequestMethod.GET.equals(getRequestMethod());
+        }
+
 
         /**
          * 生成 RequestMapping 相关注解

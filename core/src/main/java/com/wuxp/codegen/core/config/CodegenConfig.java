@@ -37,7 +37,7 @@ public final class CodegenConfig {
 
     static {
         DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING.put(LanguageDescription.TYPESCRIPT, TypescriptClassMeta.PROMISE);
-        DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING.put(LanguageDescription.DART, DartClassMeta.FUTRUE);
+        DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING.put(LanguageDescription.DART, DartClassMeta.FUTURE);
 
         DEFAULT_API_SERVICE_ANNOTATIONS.add(Controller.class);
         DEFAULT_API_SERVICE_ANNOTATIONS.add(RequestMapping.class);
