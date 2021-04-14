@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
+ * 用于从线程上下文或者{@link RequestAttributes}请求上下文中获取 scm_code
  * @author wuxp
  */
 public final class CodegenTaskContextHolder {
