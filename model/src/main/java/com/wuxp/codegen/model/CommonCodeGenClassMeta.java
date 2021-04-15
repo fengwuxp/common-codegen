@@ -144,9 +144,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
 
     /**
-     * 获取最终的泛型描述
-     *
-     * @return
+     * @return 获取最终的泛型描述
      */
     public String getFinallyGenericDescription() {
         if (this.typeVariables != null && this.typeVariables.length > 0) {
@@ -164,8 +162,6 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
 
     /**
      * 获取最终的类名称，合并了泛型描述 形如：A<String,Long> or A<K,V>
-     *
-     * @return
      */
     public String getFinallyClassName() {
         if (this.typeVariables != null && this.typeVariables.length > 0) {

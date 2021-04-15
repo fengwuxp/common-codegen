@@ -71,7 +71,7 @@ public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponse
      */
     protected void setUnifiedResponseTypeMapping(Collection<Class<?>> classes) {
         AbstractLanguageParser languageParser = (AbstractLanguageParser) this.languageParser;
-        TypeMapping typeMapping = languageParser.getLanguageTypeMapping().getBaseTypeMapping();
+        TypeMapping typeMapping = languageParser.getLanguageTypeMapping().getCombineTypeMapping();
         if (typeMapping == null) {
             return;
         }

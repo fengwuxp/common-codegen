@@ -19,9 +19,6 @@ import java.util.List;
  */
 public interface LanguageEnhancedProcessor<C extends CommonCodeGenClassMeta, M extends CommonCodeGenMethodMeta, F extends CommonCodeGenFiledMeta> {
 
-    LanguageEnhancedProcessor NONE = new NoneLanguageEnhancedProcessor();
-
-
     /**
      * 增强处理 class
      *
@@ -79,14 +76,10 @@ public interface LanguageEnhancedProcessor<C extends CommonCodeGenClassMeta, M e
     default void setCodeGenMatchers(List<CodeGenMatcher> codeGenMatchers) {
     }
 
-
-    final class NoneLanguageEnhancedProcessor implements
-            LanguageEnhancedProcessor<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
-
-        @Override
-        public void setCodeGenMatchers(List<CodeGenMatcher> codeGenMatchers) {
-
-        }
+    static <C extends CommonCodeGenClassMeta, M extends CommonCodeGenMethodMeta, F extends CommonCodeGenFiledMeta> LanguageEnhancedProcessor<C, M, F> getNoneInstance() {
+        return new LanguageEnhancedProcessor<C, M, F>() {
+        };
     }
+
 
 }

@@ -71,7 +71,6 @@ public class Swagger2FeignSdkGenMatchingStrategy implements CodeGenMatchingStrat
 
     @Override
     public boolean isMatchField(JavaFieldMeta javaFieldMeta) {
-
         return javaFieldMeta.getAnnotation(ApiModelProperty.class)
                 .map(value -> !value.hidden())
                 .orElse(true);

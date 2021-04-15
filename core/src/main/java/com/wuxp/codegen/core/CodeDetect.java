@@ -4,6 +4,8 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 
 /**
  * 代码检查，可以在生成代码的时候顺带检查代码的一下规范（完整性）
+ *
+ * @author wuxp
  */
 @FunctionalInterface
 public interface CodeDetect {

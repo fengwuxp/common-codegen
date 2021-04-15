@@ -18,7 +18,12 @@ import java.util.List;
 public interface LanguageParser<C extends CommonCodeGenClassMeta> extends GenericParser<C, Class<?>> {
 
 
-    <M extends CommonCodeGenMethodMeta, F extends CommonCodeGenFiledMeta> LanguageMetaInstanceFactory<C, M, F> getLanguageMetaInstanceFactory();
+    /**
+     * 获取不同语言元数据实例的创建工厂
+     *
+     * @return LanguageMetaInstanceFactory 的实例
+     */
+    LanguageMetaInstanceFactory<C, ? extends CommonCodeGenMethodMeta, ? extends CommonCodeGenFiledMeta> getLanguageMetaInstanceFactory();
 
 
     /**

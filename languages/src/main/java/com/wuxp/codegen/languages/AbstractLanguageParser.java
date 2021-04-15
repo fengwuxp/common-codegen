@@ -2,10 +2,7 @@ package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.annotation.processors.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processors.javax.NotNullProcessor;
-import com.wuxp.codegen.annotation.processors.javax.PatternProcessor;
-import com.wuxp.codegen.annotation.processors.javax.SizeProcessor;
-import com.wuxp.codegen.annotation.processors.spring.*;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
 import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
@@ -15,7 +12,6 @@ import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.enums.EnumCommentEnhancer;
@@ -31,7 +27,6 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.reactive.ReactorTypeSupport;
-import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import com.wuxp.codegen.util.JavaMethodNameUtils;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import com.wuxp.codegen.util.SpringControllerFilterUtils;
@@ -42,12 +37,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
@@ -79,31 +72,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     public static final String DEFAULT_MARGE_PARAMS_NAME = "req";
 
-    /**
-     * annotationProcessorMap
-     */
-    public static final Map<Class<? extends Annotation>, AnnotationProcessor> ANNOTATION_PROCESSOR_MAP = new LinkedHashMap<>();
-
-    static {
-        ANNOTATION_PROCESSOR_MAP.put(NotNull.class, new NotNullProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(Size.class, new SizeProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(Pattern.class, new PatternProcessor());
-
-        RequestMappingProcessor mappingProcessor = new RequestMappingProcessor();
-        ANNOTATION_PROCESSOR_MAP.put(RequestMapping.class, mappingProcessor);
-        ANNOTATION_PROCESSOR_MAP.put(GetMapping.class, mappingProcessor);
-        ANNOTATION_PROCESSOR_MAP.put(PostMapping.class, mappingProcessor);
-        ANNOTATION_PROCESSOR_MAP.put(DeleteMapping.class, mappingProcessor);
-        ANNOTATION_PROCESSOR_MAP.put(PutMapping.class, mappingProcessor);
-        ANNOTATION_PROCESSOR_MAP.put(PatchMapping.class, mappingProcessor);
-
-        ANNOTATION_PROCESSOR_MAP.put(CookieValue.class, new CookieValueProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestBody.class, new RequestBodyProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestHeader.class, new RequestHeaderProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestParam.class, new RequestParamProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestPart.class, new RequestPartProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(PathVariable.class, new PathVariableProcessor());
-    }
 
     /**
      * 类被处理的次数
@@ -112,7 +80,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 处理结果缓存
      */
-    protected final Map<Class<?>, Object> handleResultCacheMap = new HashMap<>(128);
+    protected final Map<Class<?>, C> handleResultCacheMap = new HashMap<>(128);
     /**
      * java类的解析器 默认解析所有的属性 方法
      */
@@ -141,13 +109,37 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * 匹配需要生成的类匹配器链
      */
     protected List<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
-    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
-    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.NONE;
-    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
-    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
-    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
 
-    {
+    protected List<CodeGenImportMatcher> codeGenImportMatchers = new ArrayList<>();
+
+    protected LanguageEnhancedProcessor<C, M, F> languageEnhancedProcessor = LanguageEnhancedProcessor.getNoneInstance();
+
+    protected SourceCodeCommentEnhancer sourceCodeCommentEnhancer = new SourceCodeCommentEnhancer();
+
+    protected EnumCommentEnhancer enumCommentEnhancer = new EnumCommentEnhancer(sourceCodeCommentEnhancer);
+
+    protected AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
+                                     PackageMapStrategy packageMapStrategy,
+                                     CodeGenMatchingStrategy genMatchingStrategy,
+                                     Collection<CodeDetect> codeDetects) {
+        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());
+    }
+
+
+    protected AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
+                                     PackageMapStrategy packageMapStrategy,
+                                     CodeGenMatchingStrategy genMatchingStrategy,
+                                     Collection<CodeDetect> codeDetects,
+                                     Collection<CodeGenMatcher> includeCodeGenMatchers) {
+        this.languageMetaInstanceFactory = languageMetaInstanceFactory;
+        this.packageMapStrategy = packageMapStrategy;
+        this.genMatchingStrategy = genMatchingStrategy;
+        if (codeDetects != null) {
+            this.codeDetects = codeDetects;
+        }
+        if (includeCodeGenMatchers != null) {
+            this.addCodeGenMatchers(includeCodeGenMatchers.toArray(new CodeGenMatcher[0]));
+        }
 
         // 根据是否为spring的组件进行匹配
         codeGenMatchers.add(clazz -> {
@@ -158,36 +150,12 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         });
     }
 
-    public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
-                                  PackageMapStrategy packageMapStrategy,
-                                  CodeGenMatchingStrategy genMatchingStrategy,
-                                  Collection<CodeDetect> codeDetects) {
-        this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());
-    }
 
-
-    public AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
-                                  PackageMapStrategy packageMapStrategy,
-                                  CodeGenMatchingStrategy genMatchingStrategy,
-                                  Collection<CodeDetect> codeDetects,
-                                  Collection<CodeGenMatcher> includeCodeGenMatchers) {
-        this.languageMetaInstanceFactory = languageMetaInstanceFactory;
-        this.packageMapStrategy = packageMapStrategy;
-        this.genMatchingStrategy = genMatchingStrategy;
-        if (codeDetects != null) {
-            this.codeDetects = codeDetects;
-        }
-        if (includeCodeGenMatchers != null) {
-            this.addCodeGenMatchers(includeCodeGenMatchers.toArray(new CodeGenMatcher[0]));
-        }
-    }
-
-
-    public AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
-                                  LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
-                                  PackageMapStrategy packageMapStrategy,
-                                  CodeGenMatchingStrategy genMatchingStrategy,
-                                  Collection<CodeDetect> codeDetects) {
+    protected AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+                                     LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
+                                     PackageMapStrategy packageMapStrategy,
+                                     CodeGenMatchingStrategy genMatchingStrategy,
+                                     Collection<CodeDetect> codeDetects) {
         this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());
         if (javaParser != null) {
             this.javaParser = javaParser;
@@ -198,13 +166,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     @Override
     public C parse(Class<?> source) {
         //符合匹配规则，或非集合类型和Map的的子类进行
-        if (source == null) {
-            return null;
-        }
 
-        if (!this.isMatchGenCodeRule(source) ||
-                JavaTypeUtils.isMap(source) ||
-                JavaTypeUtils.isCollection(source)) {
+        if (!this.isMatchGenCodeRule(source)) {
             return null;
         }
 
@@ -214,37 +177,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 return results.get(0);
             }
         }
-        if (source.isEnum()) {
-            //枚举出来
-            List<C> results = this.languageTypeMapping.mapping(Enum.class);
-            if (!results.isEmpty()) {
-                return results.get(0);
-            }
-        }
 
-        if (handleCountMap.containsKey(source)) {
+        Integer count = handleCountMap.getOrDefault(source, 0);
+        if (count > 1) {
             //标记某个类被处理的次数如果超过2次，从缓存中返回
-            if (handleCountMap.get(source) > 1) {
-                return this.getResultToLocalCache(source);
-            } else {
-                handleCountMap.put(source, handleCountMap.get(source) + 1);
-            }
-        } else {
-            handleCountMap.put(source, 1);
+            return this.getResultToLocalCache(source);
         }
-        Integer count = handleCountMap.get(source);
+        handleCountMap.put(source, ++count);
 
-        CommonCodeGenClassMeta mapping = languageTypeMapping.getCustomizeTypeMapping().mapping(source);
-
+        C mapping = languageTypeMapping.getCombineTypeMapping().mapping(source);
         if (mapping != null) {
             handleResultCacheMap.put(source, mapping);
-            return (C) mapping;
-        } else {
-            mapping = languageTypeMapping.getBaseTypeMapping().mapping(source);
-            if (mapping != null) {
-                handleResultCacheMap.put(source, mapping);
-                return (C) mapping;
-            }
+            return mapping;
         }
 
         JavaClassMeta javaClassMeta = this.javaParser.parse(source);
@@ -253,17 +197,14 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
         boolean isApiServiceClass = this.matches(javaClassMeta);
-        if (isApiServiceClass) {
-            // 要生成的服务，判断是否需要生成
-            if (!this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
-                //跳过
-                log.warn("跳过类{}", source.getName());
-                return null;
-            }
+        if (isApiServiceClass && !this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
+            // 是api 接的类，判断是否需匹配生成规则
+            log.warn("跳过类{}", source.getName());
+            return null;
         }
 
         C meta = this.getResultToLocalCache(source);
-        if (meta != null/* && (meta.getFieldMetas() != null || meta.getMethodMetas() != null)*/) {
+        if (meta != null) {
             // TODO 由于循环依赖导致，对象还没有初始化完成
             return meta;
         }
@@ -280,8 +221,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         // 处理泛型变量
         CommonCodeGenClassMeta[] classTypeVariables = Arrays.stream(javaClassMeta.getTypeVariables())
                 .map(type -> {
-                    if (type instanceof Class) {
-                        return this.parse((Class) type);
+                    if (type instanceof Class<?>) {
+                        return this.parse((Class<?>) type);
                     } else if (type instanceof TypeVariable) {
                         CommonCodeGenClassMeta typeVariable = getLanguageMetaInstanceFactory().getTypeVariableInstance();
                         String typeName = type.getTypeName();
@@ -309,10 +250,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (!Object.class.equals(javaClassSuperClass)) {
             //不是object
             C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
-            if (javaClassSuperClass != null && commonCodeGenClassMeta == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("超类 {} 解析处理失败或被忽略", javaClassMeta.getClassName());
-                }
+            boolean supperIsIgnore = javaClassSuperClass != null && commonCodeGenClassMeta == null;
+            if (supperIsIgnore && log.isDebugEnabled()) {
+                log.debug("超类 {} 解析处理失败或被忽略", javaClassMeta.getClassName());
             }
             meta.setSuperClass(commonCodeGenClassMeta);
         }
@@ -423,7 +363,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     @Override
-    public LanguageMetaInstanceFactory getLanguageMetaInstanceFactory() {
+    public LanguageMetaInstanceFactory<C, M, F> getLanguageMetaInstanceFactory() {
         return this.languageMetaInstanceFactory;
     }
 
@@ -447,10 +387,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @return <code>true</code> 匹配生成规则
      */
     protected boolean isMatchGenCodeRule(Class<?> clazz) {
-        if (clazz == null) {
+        if (clazz == null || JavaTypeUtils.isMap(clazz) || JavaTypeUtils.isCollection(clazz)) {
             return false;
         }
-
         //必须满足所有的匹配器才能进行生成
         boolean result = codeGenMatchers.stream()
                 .allMatch(codeGenMatcher -> codeGenMatcher.match(clazz));
@@ -472,9 +411,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return;
         }
 
-        this.codeDetects.forEach(codeDetect -> {
-            codeDetect.detect(source);
-        });
+        this.codeDetects.forEach(codeDetect -> codeDetect.detect(source));
     }
 
     /**
@@ -484,17 +421,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @return 返回来自缓存的解析对象
      */
     protected C getResultToLocalCache(Class<?> clazz) {
-
-        C c = (C) handleResultCacheMap.get(clazz);
-        if (c == null) {
-            return null;
-        }
-//        // 做深copy
-//        C target = this.languageMetaInstanceFactory.newClassInstance();
-//        BeanUtils.copyProperties(c, target);
-//        target.setDependencies(new LinkedHashMap<>(c.getDependencies()));
-//        return target;
-        return c;
+        return handleResultCacheMap.get(clazz);
     }
 
     /**
@@ -510,14 +437,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         List<CodeGenCommentEnhancer> codeGenCommentEnhancers = Arrays.stream(annotations)
-                .map(annotation -> {
-                    //将javax的验证注解转换为注释
-                    AnnotationProcessor processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-                    if (processor == null) {
-                        return null;
-                    }
-                    return processor.process(annotation);
-                })
+                .map(annotation ->
+                        //将javax的验证注解转换为注释
+                        AnnotationMetaHolder.getAnnotationProcessor(annotation).map(processor -> processor.process(annotation)).orElse(null)
+                )
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
@@ -582,24 +505,23 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         return Arrays.stream(annotations)
                 .map(annotation -> {
-                    AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-                    if (processor == null) {
-                        return emptyList;
-                    }
-                    AnnotationMate annotationMate = processor.process(annotation);
-                    CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation(annotationOwner);
-                    if (toAnnotation == null) {
-                        return emptyList;
-                    }
-                    List<CommonCodeGenAnnotation> associatedAnnotations =
-                            toAnnotation.getAssociatedAnnotations() == null ? Collections.emptyList() : toAnnotation.getAssociatedAnnotations();
-                    List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>(associatedAnnotations.size() + 1);
-                    toAnnotations.add(toAnnotation);
-                    toAnnotations.addAll(associatedAnnotations);
-                    this.languageEnhancedProcessor.enhancedProcessingAnnotation(toAnnotation, annotation, annotationOwner);
-                    // 只对主的CommonCodeGenAnnotation进行增强处理
-                    this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
-                    return toAnnotations;
+                    Optional<AnnotationProcessor<AnnotationMate, Annotation>> optional = AnnotationMetaHolder.getAnnotationProcessor(annotation);
+                    return optional.map(processor -> {
+                        AnnotationMate annotationMate = processor.process(annotation);
+                        CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation(annotationOwner);
+                        if (toAnnotation == null) {
+                            return emptyList;
+                        }
+                        List<CommonCodeGenAnnotation> associatedAnnotations =
+                                toAnnotation.getAssociatedAnnotations() == null ? Collections.emptyList() : toAnnotation.getAssociatedAnnotations();
+                        List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>(associatedAnnotations.size() + 1);
+                        toAnnotations.add(toAnnotation);
+                        toAnnotations.addAll(associatedAnnotations);
+                        this.languageEnhancedProcessor.enhancedProcessingAnnotation(toAnnotation, annotation, annotationOwner);
+                        // 只对主的CommonCodeGenAnnotation进行增强处理
+                        this.enhancedProcessingAnnotation(toAnnotation, annotationMate, annotationOwner);
+                        return toAnnotations;
+                    }).orElse(Collections.emptyList());
                 })
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
@@ -617,7 +539,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      */
     protected List<F> converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta) {
         if (javaFieldMetas == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         boolean isEnum = classMeta.getClazz().isEnum();
@@ -637,18 +559,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             fieldMetas.addAll(Arrays.stream(classMeta.getMethodMetas())
                     //过滤掉本地方法
                     .filter(javaMethodMeta -> !Boolean.TRUE.equals(javaMethodMeta.getIsNative()))
-                    .filter(javaMethodMeta -> {
-                        //匹配getXX 或isXxx方法
-                        return JavaMethodNameUtils.isGetMethodOrIsMethod(javaMethodMeta.getName());
-                    })
+                    .filter(javaMethodMeta ->
+                            //匹配getXX 或isXxx方法
+                            JavaMethodNameUtils.isGetMethodOrIsMethod(javaMethodMeta.getName())
+                    )
                     .filter(
                             javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()) && Boolean.FALSE.equals(javaMethodMeta.getIsAbstract())
                                     && Boolean.FALSE.equals(javaMethodMeta.getIsTransient()))
                     .filter(javaMethodMeta -> javaMethodMeta.getReturnType() != null && javaMethodMeta.getReturnType().length > 0)
-                    .filter(javaMethodMeta -> {
-                        //属性是否已经存在
-                        return !fieldNameList.contains(JavaMethodNameUtils.replaceGetOrIsPrefix(javaMethodMeta.getName()));
-                    })
+                    .filter(javaMethodMeta ->
+                            //属性是否已经存在
+                            !fieldNameList.contains(JavaMethodNameUtils.replaceGetOrIsPrefix(javaMethodMeta.getName()))
+                    )
                     .map(methodMeta -> {
                         //从get方法或is方法中生成field
 
@@ -676,23 +598,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     protected F converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
-
-        if (javaFieldMeta == null) {
+        boolean isMatch = javaFieldMeta != null && this.genMatchingStrategy.isMatchField(javaFieldMeta);
+        if (!isMatch) {
             return null;
         }
-
-        if (!this.genMatchingStrategy.isMatchField(javaFieldMeta)) {
-            return null;
-        }
-
         Class<?> clazz = classMeta.getClazz();
-        boolean isEnum = clazz.isEnum();
-        if (javaFieldMeta.getIsStatic() && !isEnum) {
-            //不处理静态类型的字段
+        boolean isNoEnumField = !clazz.isEnum() && Boolean.TRUE.equals(javaFieldMeta.getIsStatic());
+        if (isNoEnumField) {
+            // 不处理非枚举类型的静态类型字段
             return null;
         }
-        F fieldInstance = this.languageMetaInstanceFactory.newFieldInstance();
 
+        F fieldInstance = this.languageMetaInstanceFactory.newFieldInstance();
         fieldInstance.setName(javaFieldMeta.getName());
         fieldInstance.setAccessPermission(javaFieldMeta.getAccessPermission());
         fieldInstance.setEnumConstant(javaFieldMeta.getIsEnumConstant());
@@ -704,7 +621,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             comments = this.generateComments(javaFieldMeta.getAnnotations(), javaFieldMeta.getField());
         }
         Class<?>[] types = javaFieldMeta.getTypes();
-        if (isEnum) {
+        if (clazz.isEnum()) {
             if (comments.isEmpty()) {
                 comments.addAll(enumCommentEnhancer.toComments(javaFieldMeta.getField()));
             }
@@ -714,13 +631,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         } else {
             comments.addAll(this.generateComments(types, false));
         }
-
         //注解
         fieldInstance.setComments(comments.toArray(new String[]{}));
-
         //注解
         fieldInstance.setAnnotations(this.converterAnnotations(javaFieldMeta.getAnnotations(), javaFieldMeta.getField()));
-
         //field 类型类别
         Collection<C> classMetaMappings = this.languageTypeMapping.mapping(types);
         //从泛型中解析
@@ -745,7 +659,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
         if (classMetaMappings.isEmpty()) {
             //解析失败
-            throw new RuntimeException(String.format("解析类 %s 上的属性 %s 的类型 %s 失败",
+            throw new CodegenRuntimeException(String.format("解析类 %s 上的属性 %s 的类型 %s 失败",
                     classMeta.getClassName(),
                     javaFieldMeta.getName(),
                     this.classToNamedString(types)));
@@ -1149,18 +1063,18 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 增强处理 method
      *
-     * @param methodMeta
-     * @param javaMethodMeta
-     * @param classMeta
+     * @param methodMeta     用于生成代码的方法元数据
+     * @param javaMethodMeta Java 方法的元数据
+     * @param classMeta      Java 类的元数据
      */
     protected abstract void enhancedProcessingMethod(M methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta);
 
     /**
      * 增强处理注解
      *
-     * @param codeGenAnnotation
-     * @param annotation
-     * @param annotationOwner
+     * @param codeGenAnnotation 用于生成代码注解元数据
+     * @param annotation        Java 注解的元数据
+     * @param annotationOwner   注解所有者
      */
     protected abstract void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner);
 
@@ -1168,12 +1082,15 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 抓取依赖列表
      *
-     * @param dependencies
-     * @return
+     * @param dependencies 类的依赖列表
+     * @return {
+     * key: 全类名，
+     * value：类的元数据信息
+     * }
      */
     protected Map<String, C> fetchDependencies(Set<Class<?>> dependencies) {
 
-        if (dependencies == null || dependencies.size() == 0) {
+        if (CollectionUtils.isEmpty(dependencies)) {
             return new HashMap<>();
         }
 
@@ -1208,18 +1125,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .forEach(classMetas::add);
 
         Map<String, C> map = new HashMap<>();
-        classMetas.forEach(c -> {
-            map.put(c.getName(), c);
-        });
-
+        classMetas.forEach(c -> map.put(c.getName(), c));
         return map;
 
     }
 
     /**
-     * 是否需要合并方法的请求参数
-     *
-     * @return
+     * @return 是否需要合并方法的请求参数
      */
     protected boolean needMargeMethodParams() {
         return false;
@@ -1235,7 +1147,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(codeGenMatcher -> codeGenMatcher instanceof PackageNameCodeGenMatcher)
                 .findFirst();
         if (!optionalCodeGenMatcher.isPresent()) {
-            throw new RuntimeException("PackageNameCodeGenMatcher not found");
+            throw new CodegenRuntimeException("PackageNameCodeGenMatcher not found");
         }
         return optionalCodeGenMatcher.get();
     }
@@ -1245,7 +1157,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      *
      * @return <code>true</code> 改类只需要导入
      */
-    protected boolean tryMatchOnlyImportClasses(Class clazz) {
+    protected boolean tryMatchOnlyImportClasses(Class<?> clazz) {
         return this.codeGenImportMatchers.stream()
                 .anyMatch(codeGenMatcher -> codeGenMatcher.match(clazz));
 
@@ -1282,13 +1194,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             throw new CodegenRuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
         }
         RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations())
-                .map(annotation -> {
-                    AnnotationProcessor<AnnotationMate, Annotation> processor = ANNOTATION_PROCESSOR_MAP.get(annotation.annotationType());
-                    if (processor == null) {
-                        return null;
-                    }
-                    return processor.process(annotation);
-                })
+                .map(annotation -> AnnotationMetaHolder.getAnnotationProcessor(annotation).map(processor -> processor.process(annotation)).orElse(null))
                 .filter(Objects::nonNull)
                 .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
                 .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate)
@@ -1315,7 +1221,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         boolean isSupportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
         if (!isSupportRequestBody && hasRequestBody) {
             // get 请求不支持 RequestBody
-            throw new RuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));
+            throw new CodegenRuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));
         }
     }
 

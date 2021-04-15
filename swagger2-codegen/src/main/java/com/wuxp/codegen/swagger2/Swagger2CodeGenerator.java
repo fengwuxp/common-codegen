@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger2;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.languages.AnnotationMetaHolder;
 import com.wuxp.codegen.loong.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.swagger2.annotations.*;
@@ -13,11 +14,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Set;
 
-import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
-
 
 /**
  * swagger2 模式的代码生成
+ *
  * @author wuxp
  */
 @Slf4j
@@ -26,13 +26,13 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
 
     static {
         //添加swagger相关的注解处理器
-        ANNOTATION_PROCESSOR_MAP.put(Api.class, new ApiProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiModel.class, new ApiModelProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiModelProperty.class, new ApiModelPropertyProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiOperation.class, new ApiOperationProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiParam.class, new ApiParamProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiImplicitParam.class, new ApiImplicitParamProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiImplicitParams.class, new ApiImplicitParamsProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(Api.class, new ApiProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiModel.class, new ApiModelProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiModelProperty.class, new ApiModelPropertyProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiOperation.class, new ApiOperationProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiParam.class, new ApiParamProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiImplicitParam.class, new ApiImplicitParamProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiImplicitParams.class, new ApiImplicitParamsProcessor());
     }
 
 
@@ -48,7 +48,6 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
                                  boolean enableFieldUnderlineStyle) {
         super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle);
     }
-
 
 
     public Swagger2CodeGenerator(String[] packagePaths,

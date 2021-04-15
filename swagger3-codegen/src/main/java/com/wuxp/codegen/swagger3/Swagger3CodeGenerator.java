@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger3;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.languages.AnnotationMetaHolder;
 import com.wuxp.codegen.loong.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.swagger3.annotations.*;
@@ -19,8 +20,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import java.util.Set;
 
-import static com.wuxp.codegen.languages.AbstractLanguageParser.ANNOTATION_PROCESSOR_MAP;
-
 /**
  * @author wxup
  */
@@ -29,13 +28,13 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
 
     static {
         //添加swagger3相关的注解处理器
-        ANNOTATION_PROCESSOR_MAP.put(Operation.class, new OperationProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(ApiResponse.class, new ApiResponseProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(Parameter.class, new ParameterProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(Parameters.class, new ParametersProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(RequestBody.class, new RequestBodyProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(Schema.class, new SchemaProcessor());
-        ANNOTATION_PROCESSOR_MAP.put(Tag.class, new TagProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(Operation.class, new OperationProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(ApiResponse.class, new ApiResponseProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(Parameter.class, new ParameterProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(Parameters.class, new ParametersProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(RequestBody.class, new RequestBodyProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(Schema.class, new SchemaProcessor());
+        AnnotationMetaHolder.registerAnnotationProcessor(Tag.class, new TagProcessor());
     }
 
     {
@@ -51,7 +50,6 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
                                  CodeGenPublisher codeGenPublisher) {
         super(packagePaths, languageParser, templateStrategy, enableFieldUnderlineStyle, codeGenPublisher);
     }
-
 
 
     public Swagger3CodeGenerator(String[] packagePaths,
