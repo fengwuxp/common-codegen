@@ -1,8 +1,8 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
-import com.wuxp.codegen.annotation.processors.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMetaFactory;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
@@ -439,7 +439,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         List<CodeGenCommentEnhancer> codeGenCommentEnhancers = Arrays.stream(annotations)
                 .map(annotation ->
                         //将javax的验证注解转换为注释
-                        AnnotationMetaHolder.getAnnotationProcessor(annotation).map(processor -> processor.process(annotation)).orElse(null)
+                        AnnotationMetaFactoryHolder.getAnnotationMetaFactory(annotation).map(processor -> processor.factory(annotation)).orElse(null)
                 )
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -505,9 +505,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         return Arrays.stream(annotations)
                 .map(annotation -> {
-                    Optional<AnnotationProcessor<AnnotationMate, Annotation>> optional = AnnotationMetaHolder.getAnnotationProcessor(annotation);
+                    Optional<AnnotationMetaFactory<AnnotationMate, Annotation>> optional = AnnotationMetaFactoryHolder.getAnnotationMetaFactory(annotation);
                     return optional.map(processor -> {
-                        AnnotationMate annotationMate = processor.process(annotation);
+                        AnnotationMate annotationMate = processor.factory(annotation);
                         CommonCodeGenAnnotation toAnnotation = annotationMate.toAnnotation(annotationOwner);
                         if (toAnnotation == null) {
                             return emptyList;
@@ -775,9 +775,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     }
 
     protected boolean methodReturnTypeIsFile(JavaMethodMeta javaMethodMeta) {
-        Optional<RequestMappingProcessor.RequestMappingMate> optionalRequestMappingMate = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getMethod().getDeclaredAnnotations());
+        Optional<RequestMappingMetaFactory.RequestMappingMate> optionalRequestMappingMate = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getMethod().getDeclaredAnnotations());
         if (optionalRequestMappingMate.isPresent()) {
-            RequestMappingProcessor.RequestMappingMate requestMappingMate = optionalRequestMappingMate.get();
+            RequestMappingMetaFactory.RequestMappingMate requestMappingMate = optionalRequestMappingMate.get();
             String[] produces = requestMappingMate.produces();
             // 文件类型
             return Arrays.asList(produces).contains(MediaType.APPLICATION_OCTET_STREAM_VALUE);
@@ -1193,11 +1193,11 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             //
             throw new CodegenRuntimeException(classMeta.getClassName() + "的方法，" + javaMethodMeta.getName() + "是静态的或非公有方法");
         }
-        RequestMappingProcessor.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations())
-                .map(annotation -> AnnotationMetaHolder.getAnnotationProcessor(annotation).map(processor -> processor.process(annotation)).orElse(null))
+        RequestMappingMetaFactory.RequestMappingMate requestMappingMate = Arrays.stream(javaMethodMeta.getAnnotations())
+                .map(annotation -> AnnotationMetaFactoryHolder.getAnnotationMetaFactory(annotation).map(processor -> processor.factory(annotation)).orElse(null))
                 .filter(Objects::nonNull)
-                .filter(annotationMate -> annotationMate instanceof RequestMappingProcessor.RequestMappingMate)
-                .map(annotationMate -> (RequestMappingProcessor.RequestMappingMate) annotationMate)
+                .filter(annotationMate -> annotationMate instanceof RequestMappingMetaFactory.RequestMappingMate)
+                .map(annotationMate -> (RequestMappingMetaFactory.RequestMappingMate) annotationMate)
                 .findFirst()
                 .orElse(null);
 
@@ -1218,7 +1218,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (!hasRequestBody) {
             hasRequestBody = consumes.length > 0 && StringUtils.hasText(consumes[0]);
         }
-        boolean isSupportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
+        boolean isSupportRequestBody = RequestMappingMetaFactory.isSupportRequestBody(requestMethod);
         if (!isSupportRequestBody && hasRequestBody) {
             // get 请求不支持 RequestBody
             throw new CodegenRuntimeException(String.format("请求方法%s不支持RequestBody", requestMethod.name()));

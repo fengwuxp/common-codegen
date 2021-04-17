@@ -1,7 +1,7 @@
 package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
@@ -107,7 +107,7 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
         DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.codeFormatter, this.outPath, currentThread);
         dartFeignCodeGenEventHandler.setSdkIndexFileName(this.sdkIndexFileName);
         dartFeignCodeGenEventHandler.setTypeAlias(this.typeAlias);
-        RequestMappingProcessor.setSupportAuthenticationType(true);
+        RequestMappingMetaFactory.setSupportAuthenticationType(true);
 
         return new Swagger2CodeGenerator(
                 this.scanPackages,

@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -14,11 +14,11 @@ import java.lang.reflect.Method;
  * @author wuxp
  * @see RequestBody
  */
-public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBody, RequestBodyProcessor.OperationMate> {
+public class RequestBodyMetaFactory extends AbstractAnnotationMetaFactory<RequestBody, RequestBodyMetaFactory.OperationMate> {
 
 
     @Override
-    public OperationMate process(RequestBody annotation) {
+    public OperationMate factory(RequestBody annotation) {
         return this.newProxyMate(annotation, OperationMate.class);
     }
 

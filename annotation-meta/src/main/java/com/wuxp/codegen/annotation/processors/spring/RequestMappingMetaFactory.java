@@ -1,6 +1,6 @@
 package com.wuxp.codegen.annotation.processors.spring;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
@@ -23,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -35,13 +32,13 @@ import java.util.Map;
  * 处理spring mvc的RequestMapping相关注解
  */
 @Slf4j
-public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotation, RequestMappingProcessor.RequestMappingMate> {
+public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Annotation, RequestMappingMetaFactory.RequestMappingMate> {
 
 
     /**
      * Mapping和mapping元数据的对应
      */
-    private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingProcessor.RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
+    private static final Map<Class<? extends Annotation>, Class<? extends RequestMappingMetaFactory.RequestMappingMate>> ANNOTATION_CLASS_MAP = new LinkedHashMap<>();
 
     /**
      * 需要认证的类型和相关的路径列表，使用ant匹配
@@ -58,12 +55,12 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     private static final List<RequestMethod> SUPPORT_BODY_METHODS = Arrays.asList(RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH);
 
     static {
-        ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingProcessor.RequestMappingMate.class);
-        ANNOTATION_CLASS_MAP.put(PostMapping.class, RequestMappingProcessor.PostMappingMate.class);
-        ANNOTATION_CLASS_MAP.put(GetMapping.class, RequestMappingProcessor.GetMappingMate.class);
-        ANNOTATION_CLASS_MAP.put(DeleteMapping.class, RequestMappingProcessor.DeleteMappingMate.class);
-        ANNOTATION_CLASS_MAP.put(PutMapping.class, RequestMappingProcessor.PutMappingMate.class);
-        ANNOTATION_CLASS_MAP.put(PatchMapping.class, RequestMappingProcessor.PatchMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(RequestMapping.class, RequestMappingMetaFactory.RequestMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(PostMapping.class, RequestMappingMetaFactory.PostMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(GetMapping.class, RequestMappingMetaFactory.GetMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(DeleteMapping.class, RequestMappingMetaFactory.DeleteMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(PutMapping.class, RequestMappingMetaFactory.PutMappingMate.class);
+        ANNOTATION_CLASS_MAP.put(PatchMapping.class, RequestMappingMetaFactory.PatchMappingMate.class);
 
 
         registerAnnotationTransformer(ClientProviderType.SPRING_CLOUD_OPENFEIGN, RequestMapping.class, new SpringRequestMappingTransformer());
@@ -97,7 +94,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
 
     @Override
-    public RequestMappingMate process(Annotation annotation) {
+    public RequestMappingMate factory(Annotation annotation) {
         Class<? extends RequestMappingMate> clazz = ANNOTATION_CLASS_MAP.get(annotation.annotationType());
         if (clazz == null) {
             throw new CodegenRuntimeException(MessageFormat.format("not spring mapping annotation，annotation name: {0}", annotation.annotationType().getName()));
@@ -111,7 +108,7 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
     }
 
     public static void setSupportAuthenticationType(boolean supportAuthenticationType) {
-        RequestMappingProcessor.supportAuthenticationType = supportAuthenticationType;
+        RequestMappingMetaFactory.supportAuthenticationType = supportAuthenticationType;
     }
 
 
@@ -204,9 +201,10 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
 
         /**
          * 是否为 GET 请求
+         *
          * @return
          */
-        public boolean isGetMethod(){
+        public boolean isGetMethod() {
             return RequestMethod.GET.equals(getRequestMethod());
         }
 
@@ -221,13 +219,11 @@ public class RequestMappingProcessor extends AbstractAnnotationProcessor<Annotat
             CodegenConfig codegenGlobalConfig = CodegenConfigHolder.getConfig();
             ClientProviderType providerType = codegenGlobalConfig.getProviderType();
             if (providerType == null) {
-                throw new RuntimeException("CODEGEN_GLOBAL_CONFIG#providerType is null");
+                throw new CodegenRuntimeException("CODEGEN_GLOBAL_CONFIG#providerType is null");
             }
-            AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate> transformer = getAnnotationTransformer(providerType, RequestMapping.class);
-            if (transformer == null) {
-                throw new RuntimeException("client provider type=" + providerType.name() + " not found AnnotationCodeGenTransformer");
-            }
-            return transformer.transform(this, annotationOwner);
+            Optional<AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate>> transformer = getAnnotationTransformer(providerType, RequestMapping.class);
+            return transformer.orElseThrow(() -> new CodegenRuntimeException("client provider type=" + providerType.name() + " not found AnnotationCodeGenTransformer"))
+                    .transform(this, annotationOwner);
 
         }
     }

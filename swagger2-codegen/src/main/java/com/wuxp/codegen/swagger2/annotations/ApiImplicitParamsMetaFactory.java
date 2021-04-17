@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
  * @author wuxp
  * @see ApiImplicitParams
  */
-public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiImplicitParams, ApiImplicitParamsProcessor.ApiImplicitParamsMate> {
+public class ApiImplicitParamsMetaFactory extends AbstractAnnotationMetaFactory<ApiImplicitParams, ApiImplicitParamsMetaFactory.ApiImplicitParamsMate> {
 
 
     @Override
-    public ApiImplicitParamsMate process(ApiImplicitParams annotation) {
+    public ApiImplicitParamsMate factory(ApiImplicitParams annotation) {
         return this.newProxyMate(annotation, ApiImplicitParamsMate.class);
     }
 
@@ -29,7 +29,7 @@ public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiI
 
         private final ApiImplicitParams apiImplicitParams;
 
-        private final ApiImplicitParamProcessor apiImplicitParamProcessor = new ApiImplicitParamProcessor();
+        private final ApiImplicitParamMetaFactory apiImplicitParamProcessor = new ApiImplicitParamMetaFactory();
 
          ApiImplicitParamsMate(ApiImplicitParams apiImplicitParams) {
             this.apiImplicitParams = apiImplicitParams;
@@ -50,7 +50,7 @@ public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiI
             comments.add("参数列表：");
             comments.addAll(Arrays.stream(value)
                     .map(item -> {
-                        ApiImplicitParamProcessor.ApiImplicitParamMate mate = (ApiImplicitParamProcessor.ApiImplicitParamMate) item;
+                        ApiImplicitParamMetaFactory.ApiImplicitParamMate mate = (ApiImplicitParamMetaFactory.ApiImplicitParamMate) item;
                         return String.format("参数名称：%s，参数说明：%s", mate.name(), mate.toComment(annotationOwner));
                     }).collect(Collectors.toList()));
             comments.add("</pre>");
@@ -60,7 +60,7 @@ public class ApiImplicitParamsProcessor extends AbstractAnnotationProcessor<ApiI
         private ApiImplicitParam[] getApiImplicitParams() {
             ApiImplicitParam[] value = apiImplicitParams.value();
             return Arrays.stream(value)
-                    .map(apiImplicitParamProcessor::process)
+                    .map(apiImplicitParamProcessor::factory)
                     .toArray(ApiImplicitParam[]::new);
         }
     }

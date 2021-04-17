@@ -9,7 +9,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 /**
- * 注解transformer
+ * 将 java 的注解转换为 {@link CommonCodeGenAnnotation} 对象
+ *
  * @author wuxp
  */
 public interface AnnotationCodeGenTransformer<T extends CommonCodeGenAnnotation, A extends AnnotationMate> {

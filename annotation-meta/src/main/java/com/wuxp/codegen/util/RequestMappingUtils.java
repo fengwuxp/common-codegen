@@ -1,6 +1,6 @@
 package com.wuxp.codegen.util;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,15 +22,15 @@ public final class RequestMappingUtils {
 
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
 
-    private static final RequestMappingProcessor REQUEST_MAPPING_PROCESSOR = new RequestMappingProcessor();
+    private static final RequestMappingMetaFactory REQUEST_MAPPING_PROCESSOR = new RequestMappingMetaFactory();
 
     private RequestMappingUtils() {
     }
 
-    public static String combinePath(RequestMappingProcessor.RequestMappingMate annotationMate, Method annotationOwner) {
+    public static String combinePath(RequestMappingMetaFactory.RequestMappingMate annotationMate, Method annotationOwner) {
         Class<?> declaringClass = annotationOwner.getDeclaringClass();
-        Optional<RequestMappingProcessor.RequestMappingMate> requestAnnotation = findRequestMappingAnnotation(declaringClass.getAnnotations());
-        String[] clazzMappingValues = requestAnnotation.map(RequestMappingProcessor.RequestMappingMate::getPath).orElse(null);
+        Optional<RequestMappingMetaFactory.RequestMappingMate> requestAnnotation = findRequestMappingAnnotation(declaringClass.getAnnotations());
+        String[] clazzMappingValues = requestAnnotation.map(RequestMappingMetaFactory.RequestMappingMate::getPath).orElse(null);
         String[] v2 = annotationMate.getPath();
         return combinePath(clazzMappingValues, v2);
     }
@@ -57,11 +57,11 @@ public final class RequestMappingUtils {
         return PATH_MATCHER.combine(patterns[0], otherPatterns[0]);
     }
 
-    public static Optional<RequestMappingProcessor.RequestMappingMate> findRequestMappingAnnotation(Annotation[] annotations) {
+    public static Optional<RequestMappingMetaFactory.RequestMappingMate> findRequestMappingAnnotation(Annotation[] annotations) {
         return Arrays.stream(annotations)
                 .map(annotation -> {
-                    if (RequestMappingProcessor.isSupportAnnotationType(annotation)) {
-                        return REQUEST_MAPPING_PROCESSOR.process(annotation);
+                    if (RequestMappingMetaFactory.isSupportAnnotationType(annotation)) {
+                        return REQUEST_MAPPING_PROCESSOR.factory(annotation);
                     }
                     return null;
                 }).filter(Objects::nonNull)

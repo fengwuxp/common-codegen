@@ -1,6 +1,6 @@
 package com.wuxp.codegen.annotation.processors.spring;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,20 +16,18 @@ import java.util.Map;
  * @see RequestBody
  * 处理 RequestBody 注解
  */
-public class RequestBodyProcessor extends AbstractAnnotationProcessor<RequestBody, RequestBodyProcessor.RequestBodyMate> {
+public class RequestBodyMetaFactory extends AbstractAnnotationMetaFactory<RequestBody, RequestBodyMetaFactory.RequestBodyMate> {
 
 
     @Override
-    public RequestBodyProcessor.RequestBodyMate process(RequestBody annotation) {
+    public RequestBodyMetaFactory.RequestBodyMate factory(RequestBody annotation) {
 
-        return super.newProxyMate(annotation, RequestBodyProcessor.RequestBodyMate.class);
+        return super.newProxyMate(annotation, RequestBodyMetaFactory.RequestBodyMate.class);
     }
 
 
     public abstract static class RequestBodyMate implements NamedAnnotationMate, RequestBody {
 
-        public RequestBodyMate() {
-        }
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {

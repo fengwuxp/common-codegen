@@ -1,6 +1,6 @@
 package com.wuxp.codegen.annotation.processors.spring;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.util.StringUtils;
@@ -19,13 +19,13 @@ import java.util.Map;
  * @see RequestParam
  * 处理 RequestParam 注解
  */
-public class RequestParamProcessor extends AbstractAnnotationProcessor<RequestParam, RequestParamProcessor.RequestParamMate> {
+public class RequestParamMetaFactory extends AbstractAnnotationMetaFactory<RequestParam, RequestParamMetaFactory.RequestParamMate> {
 
 
     @Override
-    public RequestParamProcessor.RequestParamMate process(RequestParam annotation) {
+    public RequestParamMetaFactory.RequestParamMate factory(RequestParam annotation) {
 
-        return super.newProxyMate(annotation, RequestParamProcessor.RequestParamMate.class);
+        return super.newProxyMate(annotation, RequestParamMetaFactory.RequestParamMate.class);
     }
 
 
@@ -33,7 +33,7 @@ public class RequestParamProcessor extends AbstractAnnotationProcessor<RequestPa
 
         protected final RequestParam requestParam;
 
-        public RequestParamMate(RequestParam requestParam) {
+        protected RequestParamMate(RequestParam requestParam) {
             this.requestParam = requestParam;
         }
 

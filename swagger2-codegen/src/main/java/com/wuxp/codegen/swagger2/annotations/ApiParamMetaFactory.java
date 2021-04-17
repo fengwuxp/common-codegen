@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.annotations.ApiParam;
@@ -11,7 +11,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor.getRequestAnnotationDesc;
+import static com.wuxp.codegen.annotation.processors.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
 
 /**
  * swagger2 注解处理
@@ -19,11 +19,11 @@ import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcesso
  * @author wuxp
  * @see ApiParam
  */
-public class ApiParamProcessor extends AbstractAnnotationProcessor<ApiParam, ApiParamProcessor.ApiPramMeta> {
+public class ApiParamMetaFactory extends AbstractAnnotationMetaFactory<ApiParam, ApiParamMetaFactory.ApiPramMeta> {
 
 
     @Override
-    public ApiPramMeta process(ApiParam annotation) {
+    public ApiPramMeta factory(ApiParam annotation) {
         return this.newProxyMate(annotation, ApiPramMeta.class);
     }
 

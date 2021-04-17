@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.util.StringUtils;
@@ -14,11 +14,11 @@ import java.lang.reflect.Method;
  * @author wuxp
  * @see Tag
  */
-public class TagProcessor extends AbstractAnnotationProcessor<Tag, TagProcessor.TagMate> {
+public class TagMetaFactory extends AbstractAnnotationMetaFactory<Tag, TagMetaFactory.TagMate> {
 
 
     @Override
-    public TagMate process(Tag annotation) {
+    public TagMate factory(Tag annotation) {
         return this.newProxyMate(annotation, TagMate.class);
     }
 

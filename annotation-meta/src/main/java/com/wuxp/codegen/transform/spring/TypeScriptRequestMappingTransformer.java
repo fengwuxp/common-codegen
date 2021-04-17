@@ -1,7 +1,7 @@
 package com.wuxp.codegen.transform.spring;
 
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class TypeScriptRequestMappingTransformer extends SpringRequestMappingTra
 
 
     @Override
-    public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Class<?> annotationOwner) {
+    public CommonCodeGenAnnotation transform(RequestMappingMetaFactory.RequestMappingMate annotationMate, Class<?> annotationOwner) {
         CommonCodeGenAnnotation annotation = super.innerTransform(annotationMate, annotationOwner.getSimpleName());
         annotation.setName(TS_FEIGN_CLIENT_ANNOTATION_NAME);
         return annotation;

@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.annotations.ApiModel;
 import org.springframework.util.StringUtils;
@@ -11,11 +11,11 @@ import org.springframework.util.StringUtils;
  * @author wuxp
  * @see ApiModel
  */
-public class ApiModelProcessor extends AbstractAnnotationProcessor<ApiModel, ApiModelProcessor.ApiModelMate> {
+public class ApiModelMetaFactory extends AbstractAnnotationMetaFactory<ApiModel, ApiModelMetaFactory.ApiModelMate> {
 
 
     @Override
-    public ApiModelMate process(ApiModel annotation) {
+    public ApiModelMate factory(ApiModel annotation) {
         return this.newProxyMate(annotation, ApiModelMate.class);
     }
 

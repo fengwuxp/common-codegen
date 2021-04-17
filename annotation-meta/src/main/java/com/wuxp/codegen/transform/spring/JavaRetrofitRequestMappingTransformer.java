@@ -1,6 +1,6 @@
 package com.wuxp.codegen.transform.spring;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.util.RequestMappingUtils;
@@ -21,7 +21,7 @@ import java.util.*;
  */
 @Slf4j
 public class JavaRetrofitRequestMappingTransformer implements
-        AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingProcessor.RequestMappingMate> {
+        AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMetaFactory.RequestMappingMate> {
 
     /**
      * 请求方法和Mapping名称的对应
@@ -42,7 +42,7 @@ public class JavaRetrofitRequestMappingTransformer implements
 
 
     @Override
-    public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Method annotationOwner) {
+    public CommonCodeGenAnnotation transform(RequestMappingMetaFactory.RequestMappingMate annotationMate, Method annotationOwner) {
 
         CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
         //注解命名参数
@@ -80,7 +80,7 @@ public class JavaRetrofitRequestMappingTransformer implements
         return codeGenAnnotation;
     }
 
-    private CommonCodeGenAnnotation getHeaders(RequestMappingProcessor.RequestMappingMate annotationMate) {
+    private CommonCodeGenAnnotation getHeaders(RequestMappingMetaFactory.RequestMappingMate annotationMate) {
         CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
         annotation.setName("Headers");
         //注解命名参数

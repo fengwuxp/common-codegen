@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 
-import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor.getRequestAnnotationDesc;
+import static com.wuxp.codegen.annotation.processors.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
 
 
 /**
@@ -18,11 +18,11 @@ import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcesso
  * @author wuxp
  * @see Parameter
  */
-public class ParameterProcessor extends AbstractAnnotationProcessor<Parameter, ParameterProcessor.ParameterMate> {
+public class ParameterMetaFactory extends AbstractAnnotationMetaFactory<Parameter, ParameterMetaFactory.ParameterMate> {
 
 
     @Override
-    public ParameterMate process(Parameter annotation) {
+    public ParameterMate factory(Parameter annotation) {
         return this.newProxyMate(annotation, ParameterMate.class);
     }
 

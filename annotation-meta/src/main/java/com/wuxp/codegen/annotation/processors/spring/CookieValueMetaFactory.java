@@ -1,9 +1,9 @@
 package com.wuxp.codegen.annotation.processors.spring;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
@@ -12,43 +12,45 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.wuxp.codegen.annotation.processors.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
+
 /**
  * @author wxup
- * @see RequestPart
- * 处理 RequestPart 注解
+ * @see CookieValue
+ * 处理 CookieValue 注解
  */
-public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPart, RequestPartProcessor.RequestPartMate> {
+public class CookieValueMetaFactory extends AbstractAnnotationMetaFactory<CookieValue, CookieValueMetaFactory.CookieValueMate> {
 
 
     @Override
-    public RequestPartProcessor.RequestPartMate process(RequestPart annotation) {
+    public CookieValueMetaFactory.CookieValueMate factory(CookieValue annotation) {
 
-        return super.newProxyMate(annotation, RequestPartProcessor.RequestPartMate.class);
+        return super.newProxyMate(annotation, CookieValueMetaFactory.CookieValueMate.class);
     }
 
 
-    public abstract static class RequestPartMate implements NamedAnnotationMate, RequestPart {
+    public abstract static class CookieValueMate implements NamedAnnotationMate, CookieValue {
 
-        private final RequestPart requestPart;
+        protected final CookieValue cookieValue;
 
-        public RequestPartMate(RequestPart requestPart) {
-            this.requestPart = requestPart;
+        protected CookieValueMate(CookieValue cookieValue) {
+            this.cookieValue = cookieValue;
         }
 
         @Override
         public String name() {
-            return requestPart.name();
+            return cookieValue.name();
         }
 
         @Override
         public String value() {
-            return requestPart.value();
+            return cookieValue.value();
         }
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(RequestPart.class.getSimpleName());
+            annotation.setName(CookieValue.class.getSimpleName());
             Map<String, String> arguments = new LinkedHashMap<>();
             String value = this.getParameterName(annotationOwner);
             arguments.put("name", MessageFormat.format("\"{0}\"", value));
@@ -62,7 +64,8 @@ public class RequestPartProcessor extends AbstractAnnotationProcessor<RequestPar
 
         @Override
         public String toComment(Parameter annotationOwner) {
-            return String.format("参数：%s是一个文件对象, %s", this.getParameterName(annotationOwner), required() ? "必填" : "非必填");
+
+            return getRequestAnnotationDesc(String.format("参数：%s是一个cookie value，%s", this.getParameterName(annotationOwner), required() ? "必填" : "非必填"), defaultValue());
         }
     }
 }

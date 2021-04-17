@@ -1,6 +1,6 @@
 package com.wuxp.codegen.transform.spring;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
@@ -23,7 +23,7 @@ import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
  * @see RequestMapping
  */
 public class SpringRequestMappingTransformer implements
-        AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingProcessor.RequestMappingMate> {
+        AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMetaFactory.RequestMappingMate> {
 
     public static final String SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME = "FeignClient";
 
@@ -57,7 +57,7 @@ public class SpringRequestMappingTransformer implements
     }
 
     @Override
-    public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Class<?> annotationOwner) {
+    public CommonCodeGenAnnotation transform(RequestMappingMetaFactory.RequestMappingMate annotationMate, Class<?> annotationOwner) {
         CommonCodeGenAnnotation codeGenAnnotation = this.innerTransform(annotationMate, annotationOwner.getSimpleName());
         codeGenAnnotation.setName(SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME);
         Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
@@ -69,7 +69,7 @@ public class SpringRequestMappingTransformer implements
     }
 
     @Override
-    public CommonCodeGenAnnotation transform(RequestMappingProcessor.RequestMappingMate annotationMate, Method annotationOwner) {
+    public CommonCodeGenAnnotation transform(RequestMappingMetaFactory.RequestMappingMate annotationMate, Method annotationOwner) {
         CommonCodeGenAnnotation commonCodeGenAnnotation = this.innerTransform(annotationMate, annotationOwner.getName());
         Map<String, String> namedArguments = commonCodeGenAnnotation.getNamedArguments();
         String consumes = namedArguments.get(MappingAnnotationPropNameConstant.CONSUMES);
@@ -98,7 +98,7 @@ public class SpringRequestMappingTransformer implements
         return new String[]{"{", "}"};
     }
 
-    protected CommonCodeGenAnnotation innerTransform(RequestMappingProcessor.RequestMappingMate annotationMate, String ownerName) {
+    protected CommonCodeGenAnnotation innerTransform(RequestMappingMetaFactory.RequestMappingMate annotationMate, String ownerName) {
         CommonCodeGenAnnotation codeGenAnnotation = new CommonCodeGenAnnotation();
         codeGenAnnotation.setName(annotationMate.annotationType().getSimpleName());
 

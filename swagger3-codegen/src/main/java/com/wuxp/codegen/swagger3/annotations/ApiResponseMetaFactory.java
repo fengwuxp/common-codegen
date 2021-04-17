@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -13,11 +13,11 @@ import java.lang.reflect.Method;
  * @author wuxp
  * @see ApiResponse
  */
-public class ApiResponseProcessor extends AbstractAnnotationProcessor<ApiResponse, ApiResponseProcessor.ApiResponseMate> {
+public class ApiResponseMetaFactory extends AbstractAnnotationMetaFactory<ApiResponse, ApiResponseMetaFactory.ApiResponseMate> {
 
 
     @Override
-    public ApiResponseMate process(ApiResponse annotation) {
+    public ApiResponseMate factory(ApiResponse annotation) {
         return this.newProxyMate(annotation, ApiResponseMate.class);
     }
 

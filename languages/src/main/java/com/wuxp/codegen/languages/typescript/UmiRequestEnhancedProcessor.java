@@ -1,6 +1,6 @@
 package com.wuxp.codegen.languages.typescript;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -49,15 +49,15 @@ public class UmiRequestEnhancedProcessor implements
         }
 
         Map<String, Object> tags = methodMeta.getTags();
-        Optional<RequestMappingProcessor.RequestMappingMate> mappingAnnotation = RequestMappingUtils
+        Optional<RequestMappingMetaFactory.RequestMappingMate> mappingAnnotation = RequestMappingUtils
                 .findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
         if (!mappingAnnotation.isPresent()) {
             throw new CodegenRuntimeException("方法：" + javaMethodMeta.getName() + "没有RequestMapping相关注解");
         }
-        RequestMappingProcessor.RequestMappingMate requestMappingMate = mappingAnnotation.get();
+        RequestMappingMetaFactory.RequestMappingMate requestMappingMate = mappingAnnotation.get();
         RequestMethod requestMethod = requestMappingMate.getRequestMethod();
         tags.put("httpMethod", requestMethod.name().toLowerCase());
-        boolean supportRequestBody = RequestMappingProcessor.isSupportRequestBody(requestMethod);
+        boolean supportRequestBody = RequestMappingMetaFactory.isSupportRequestBody(requestMethod);
         if (supportRequestBody) {
             tags.put("requestType", this.getRequestType(javaMethodMeta, requestMappingMate));
         }
@@ -73,7 +73,7 @@ public class UmiRequestEnhancedProcessor implements
         return methodMeta;
     }
 
-    private String getRequestUrl(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate, List<String> needDeleteParams) {
+    private String getRequestUrl(JavaMethodMeta javaMethodMeta, RequestMappingMetaFactory.RequestMappingMate requestMappingMate, List<String> needDeleteParams) {
         String url = RequestMappingUtils.combinePath(requestMappingMate, javaMethodMeta.getMethod());
         Map<String, Annotation[]> paramAnnotations = javaMethodMeta.getParamAnnotations();
         for (Map.Entry<String, Annotation[]> entry : paramAnnotations.entrySet()) {
@@ -109,7 +109,7 @@ public class UmiRequestEnhancedProcessor implements
      * @param requestMappingMate RequestMappingMate
      * @return umi-request的请求类型
      */
-    private String getRequestType(JavaMethodMeta javaMethodMeta, RequestMappingProcessor.RequestMappingMate requestMappingMate) {
+    private String getRequestType(JavaMethodMeta javaMethodMeta, RequestMappingMetaFactory.RequestMappingMate requestMappingMate) {
         boolean hasRequestBody = hasRequestBody(javaMethodMeta);
         String[] consumes = requestMappingMate.consumes();
         boolean isEmpty = consumes.length == 0;
@@ -155,7 +155,7 @@ public class UmiRequestEnhancedProcessor implements
         return requestHeaderNames;
     }
 
-    private String getResponseType(RequestMappingProcessor.RequestMappingMate requestMappingMate, JavaMethodMeta javaMethodMeta,
+    private String getResponseType(RequestMappingMetaFactory.RequestMappingMate requestMappingMate, JavaMethodMeta javaMethodMeta,
                                    JavaClassMeta classMeta) {
         String[] produces = requestMappingMate.produces();
         boolean useResponseBody = javaMethodMeta.existAnnotation(ResponseBody.class) || classMeta.existAnnotation(RestController.class);

@@ -3,11 +3,11 @@ package com.wuxp.codegen.annotation.processors;
 import java.lang.annotation.Annotation;
 
 /**
- * 注解装换处理器，
+ * 注解元数据工厂
  *
  * @author wuxp
  */
-public interface AnnotationProcessor<T extends AnnotationToComment, A extends Annotation> {
+public interface AnnotationMetaFactory<T extends AnnotationToComment, A extends Annotation> {
 
     /**
      * 处理
@@ -15,5 +15,5 @@ public interface AnnotationProcessor<T extends AnnotationToComment, A extends An
      * @param annotation 注解实例
      * @return AnnotationToString的子类
      */
-    T process(A annotation);
+    T factory(A annotation);
 }

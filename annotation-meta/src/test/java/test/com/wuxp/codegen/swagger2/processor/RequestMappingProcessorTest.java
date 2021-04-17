@@ -1,8 +1,8 @@
 package test.com.wuxp.codegen.swagger2.processor;
 
-import com.wuxp.codegen.annotation.processors.AnnotationProcessor;
-import com.wuxp.codegen.annotation.processors.javax.NotNullProcessor;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.AnnotationMetaFactory;
+import com.wuxp.codegen.annotation.processors.javax.NotNullMetaFactory;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 class RequestMappingProcessorTest {
 
 
-    AnnotationProcessor<RequestMappingProcessor.RequestMappingMate, Annotation> annotationProcessor = new RequestMappingProcessor();
+    AnnotationMetaFactory<RequestMappingMetaFactory.RequestMappingMate, Annotation> annotationMetaFactory = new RequestMappingMetaFactory();
 
     @Test
     void testProcess() {
@@ -40,7 +40,7 @@ class RequestMappingProcessorTest {
                     Annotation[] annotations = method.getAnnotations();
 
                     Arrays.stream(annotations).forEach(annotation -> {
-                        RequestMappingProcessor.RequestMappingMate mappingMate = annotationProcessor.process(annotation);
+                        RequestMappingMetaFactory.RequestMappingMate mappingMate = annotationMetaFactory.factory(annotation);
                         System.out.println(mappingMate.toAnnotation(method));
                         System.out.println(mappingMate.annotationType().getSimpleName());
                     });
@@ -53,7 +53,7 @@ class RequestMappingProcessorTest {
         TestController controller = new TestController();
         Field field = controller.getClass().getField("name");
         NotNull annotation = field.getAnnotation(NotNull.class);
-        NotNullProcessor.NotNullMate notNullMate = new NotNullProcessor().process(annotation);
+        NotNullMetaFactory.NotNullMate notNullMate = new NotNullMetaFactory().factory(annotation);
         String message = notNullMate.message();
         System.out.println("message: " + message);
         System.out.println("comment: " + notNullMate.toComment(field));

@@ -3,7 +3,7 @@ package com.wuxp.codegen.swagger2;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.languages.AnnotationMetaHolder;
+import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
 import com.wuxp.codegen.loong.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.swagger2.annotations.*;
@@ -26,13 +26,13 @@ public class Swagger2CodeGenerator extends AbstractCodeGenerator {
 
     static {
         //添加swagger相关的注解处理器
-        AnnotationMetaHolder.registerAnnotationProcessor(Api.class, new ApiProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiModel.class, new ApiModelProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiModelProperty.class, new ApiModelPropertyProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiOperation.class, new ApiOperationProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiParam.class, new ApiParamProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiImplicitParam.class, new ApiImplicitParamProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiImplicitParams.class, new ApiImplicitParamsProcessor());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Api.class, new ApiMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiModel.class, new ApiModelMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiModelProperty.class, new ApiModelPropertyMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiOperation.class, new ApiOperationMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiParam.class, new ApiParamMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParam.class, new ApiImplicitParamMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParams.class, new ApiImplicitParamsMetaFactory());
     }
 
 

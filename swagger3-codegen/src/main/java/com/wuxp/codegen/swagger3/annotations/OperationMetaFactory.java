@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -13,11 +13,11 @@ import java.lang.reflect.Method;
  * @author wxup
  * @see Operation
  */
-public class OperationProcessor extends AbstractAnnotationProcessor<Operation, OperationProcessor.OperationMate> {
+public class OperationMetaFactory extends AbstractAnnotationMetaFactory<Operation, OperationMetaFactory.OperationMate> {
 
 
     @Override
-    public OperationMate process(Operation annotation) {
+    public OperationMate factory(Operation annotation) {
         return this.newProxyMate(annotation, OperationMate.class);
     }
 

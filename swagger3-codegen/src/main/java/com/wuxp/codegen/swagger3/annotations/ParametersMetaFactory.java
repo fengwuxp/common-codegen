@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
  * @author wuxp
  * @see Parameters
  */
-public class ParametersProcessor extends AbstractAnnotationProcessor<Parameters, ParametersProcessor.ParametersMate> {
+public class ParametersMetaFactory extends AbstractAnnotationMetaFactory<Parameters, ParametersMetaFactory.ParametersMate> {
 
 
     @Override
-    public ParametersMate process(Parameters annotation) {
+    public ParametersMate factory(Parameters annotation) {
         return this.newProxyMate(annotation, ParametersMate.class);
     }
 
@@ -30,7 +30,7 @@ public class ParametersProcessor extends AbstractAnnotationProcessor<Parameters,
 
         private final Parameters parameters;
 
-        private final ParameterProcessor parameterProcessor = new ParameterProcessor();
+        private final ParameterMetaFactory parameterProcessor = new ParameterMetaFactory();
 
         ParametersMate(Parameters parameters) {
             this.parameters = parameters;
@@ -49,7 +49,7 @@ public class ParametersProcessor extends AbstractAnnotationProcessor<Parameters,
             comments.add("参数列表：");
             comments.addAll(Arrays.stream(value)
                     .map(item -> {
-                        ParameterProcessor.ParameterMate mate = (ParameterProcessor.ParameterMate) item;
+                        ParameterMetaFactory.ParameterMate mate = (ParameterMetaFactory.ParameterMate) item;
                         return String.format("参数名称：%s，参数说明：%s", mate.name(), mate.toComment(annotationOwner));
                     }).collect(Collectors.toList()));
             comments.add("</pre>");
@@ -59,7 +59,7 @@ public class ParametersProcessor extends AbstractAnnotationProcessor<Parameters,
         private Parameter[] getApiImplicitParams() {
             Parameter[] value = parameters.value();
             return Arrays.stream(value)
-                    .map(parameterProcessor::process)
+                    .map(parameterProcessor::factory)
                     .toArray(Parameter[]::new);
         }
 

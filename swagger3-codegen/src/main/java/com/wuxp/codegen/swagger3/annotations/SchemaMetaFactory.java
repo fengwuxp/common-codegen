@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger3.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcessor.getRequestAnnotationDesc;
+import static com.wuxp.codegen.annotation.processors.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
 
 
 /**
@@ -20,11 +20,11 @@ import static com.wuxp.codegen.annotation.processors.spring.RequestParamProcesso
  * @author wuxp
  * @see Schema
  */
-public class SchemaProcessor extends AbstractAnnotationProcessor<Schema, SchemaProcessor.OperationMate> {
+public class SchemaMetaFactory extends AbstractAnnotationMetaFactory<Schema, SchemaMetaFactory.OperationMate> {
 
 
     @Override
-    public OperationMate process(Schema annotation) {
+    public OperationMate factory(Schema annotation) {
         return this.newProxyMate(annotation, OperationMate.class);
     }
 

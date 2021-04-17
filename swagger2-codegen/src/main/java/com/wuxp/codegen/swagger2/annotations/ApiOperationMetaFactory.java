@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.annotations.ApiOperation;
 
@@ -12,11 +12,11 @@ import java.lang.reflect.Method;
  *
  * @see ApiOperation
  */
-public class ApiOperationProcessor extends AbstractAnnotationProcessor<ApiOperation, ApiOperationProcessor.ApiOperationMeta> {
+public class ApiOperationMetaFactory extends AbstractAnnotationMetaFactory<ApiOperation, ApiOperationMetaFactory.ApiOperationMeta> {
 
 
     @Override
-    public ApiOperationMeta process(ApiOperation annotation) {
+    public ApiOperationMeta factory(ApiOperation annotation) {
         return this.newProxyMate(annotation, ApiOperationMeta.class);
     }
 

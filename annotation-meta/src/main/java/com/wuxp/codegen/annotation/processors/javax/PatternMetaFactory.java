@@ -1,6 +1,6 @@
 package com.wuxp.codegen.annotation.processors.javax;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
@@ -13,13 +13,14 @@ import java.util.Map;
 /**
  * javax 验证注解处理
  *
+ * @author wuxp
  * @see Pattern
  */
-public class PatternProcessor extends AbstractAnnotationProcessor<Pattern, PatternProcessor.PatternMate> {
+public class PatternMetaFactory extends AbstractAnnotationMetaFactory<Pattern, PatternMetaFactory.PatternMate> {
 
 
     @Override
-    public PatternMate process(Pattern annotation) {
+    public PatternMate factory(Pattern annotation) {
 
         return super.newProxyMate(annotation, PatternMate.class);
     }

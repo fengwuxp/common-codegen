@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.util.StringUtils;
@@ -12,11 +12,11 @@ import java.lang.reflect.Field;
  *
  * @see ApiModelProperty
  */
-public class ApiModelPropertyProcessor extends AbstractAnnotationProcessor<ApiModelProperty, ApiModelPropertyProcessor.ApiModelPropertyMate> {
+public class ApiModelPropertyMetaFactory extends AbstractAnnotationMetaFactory<ApiModelProperty, ApiModelPropertyMetaFactory.ApiModelPropertyMate> {
 
 
     @Override
-    public ApiModelPropertyMate process(ApiModelProperty annotation) {
+    public ApiModelPropertyMate factory(ApiModelProperty annotation) {
         return this.newProxyMate(annotation, ApiModelPropertyMate.class);
     }
 

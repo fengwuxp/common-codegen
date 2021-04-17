@@ -1,7 +1,7 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -171,7 +171,7 @@ public abstract class AbstractTypescriptParser extends
     @Override
     protected void enhancedProcessingAnnotation(CommonCodeGenAnnotation codeGenAnnotation, AnnotationMate annotation, Object annotationOwner) {
         if (annotationOwner instanceof Method) {
-            Optional<RequestMappingProcessor.RequestMappingMate> optionalRequestMappingMate = RequestMappingUtils.findRequestMappingAnnotation(new Annotation[]{annotation});
+            Optional<RequestMappingMetaFactory.RequestMappingMate> optionalRequestMappingMate = RequestMappingUtils.findRequestMappingAnnotation(new Annotation[]{annotation});
             //spring的mapping注解
             if (optionalRequestMappingMate.isPresent()) {
                 Method method = (Method) annotationOwner;

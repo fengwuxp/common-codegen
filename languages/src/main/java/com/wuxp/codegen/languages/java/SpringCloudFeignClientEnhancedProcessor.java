@@ -1,6 +1,6 @@
 package com.wuxp.codegen.languages.java;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -67,7 +67,7 @@ public class SpringCloudFeignClientEnhancedProcessor implements
   public CommonCodeGenMethodMeta enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta,
       JavaClassMeta classMeta) {
 
-    Optional<RequestMappingProcessor.RequestMappingMate> requestMappingAnnotation = RequestMappingUtils
+    Optional<RequestMappingMetaFactory.RequestMappingMate> requestMappingAnnotation = RequestMappingUtils
         .findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
     if (!requestMappingAnnotation.isPresent()) {
       throw new RuntimeException("方法：" + javaMethodMeta.getName() + "没有RequestMapping相关注解");

@@ -16,10 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -31,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author wuxp
  */
 @Slf4j
-public abstract class AbstractAnnotationProcessor<A extends Annotation, T extends AnnotationMate> implements AnnotationProcessor<T, A> {
+public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T extends AnnotationMate> implements AnnotationMetaFactory<T, A> {
 
 
     private static final Map<ClientProviderType, ClientAnnotationProvider> ANNOTATION_PROVIDERS = new ConcurrentHashMap<>(8);
@@ -45,20 +42,21 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
      * value: AnnotationCodeGenTransformer
      * }
      */
-    private static final Map<ClientProviderType, Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate>>>
-            CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS = new HashMap<>(32);
+    private static final Map<ClientProviderType, Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate>>>
+            CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS = new EnumMap<>(ClientProviderType.class);
 
 
     /**
      * 返回一个代理的元数据对象
      *
-     * @param annotation
-     * @param clazz
-     * @return
+     * @param annotation 注解实例对象
+     * @param clazz      注解实例的元数据类型
+     * @return 代理的实例对象
      */
+    @SuppressWarnings("unchecked")
     protected T newProxyMate(Annotation annotation, Class<? extends AnnotationMate> clazz) {
         if (annotation == null) {
-            return null;
+            throw new NullPointerException("annotation must not null");
         }
         clazz = tryGetAnnotationType(annotation, clazz);
         Enhancer enhancer = new Enhancer();
@@ -104,19 +102,17 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
         ANNOTATION_PROVIDERS.put(type, annotationProvider);
     }
 
-    public static void registerAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType, AnnotationCodeGenTransformer transformer) {
-        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate>> transformerMap
-                = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.computeIfAbsent(type, (key) -> new HashMap<>(8));
+    public static void registerAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate> transformer) {
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate>> transformerMap
+                = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.computeIfAbsent(type, key -> new HashMap<>(8));
         transformerMap.put(annotationType, transformer);
     }
 
 
-    public static <A extends AnnotationMate> AnnotationCodeGenTransformer<CommonCodeGenAnnotation, A> getAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType) {
-        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<CommonCodeGenAnnotation, AnnotationMate>> transformerMap = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
-        if (transformerMap == null) {
-            return null;
-        }
-        return (AnnotationCodeGenTransformer<CommonCodeGenAnnotation, A>) transformerMap.get(annotationType);
+    @SuppressWarnings("unchecked")
+    public static <T extends CommonCodeGenAnnotation, A extends AnnotationMate> Optional<AnnotationCodeGenTransformer<T, A>> getAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType) {
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate>> transformerMap = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
+        return Optional.ofNullable((AnnotationCodeGenTransformer<T, A>) transformerMap.get(annotationType));
     }
 
 
@@ -162,13 +158,13 @@ public abstract class AbstractAnnotationProcessor<A extends Annotation, T extend
             }
 
             Object result = methodProxy.invokeSuper(annotationMate, args);
-            if (modifiers == 1) {
-                if (log.isInfoEnabled()) {
-                    log.info("注解：{}，默认方法：{}的执行结果：{}",
-                            annotation.annotationType().getSimpleName(),
-                            method.getName(),
-                            result);
-                }
+            boolean isDefaultMethod = modifiers == 1;
+            // 默认方法
+            if (isDefaultMethod && log.isInfoEnabled()) {
+                log.info("注解：{}，默认方法：{}的执行结果：{}",
+                        annotation.annotationType().getSimpleName(),
+                        method.getName(),
+                        result);
             }
             return result;
         }

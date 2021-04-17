@@ -1,6 +1,6 @@
 package com.wuxp.codegen.util;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -76,11 +76,11 @@ public final class SpringControllerFilterUtils {
         methodMetas.stream()
                 .filter(Objects::nonNull)
                 .forEach(javaMethodMeta -> {
-                    Optional<RequestMappingProcessor.RequestMappingMate> requestMappingAnnotation = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
+                    Optional<RequestMappingMetaFactory.RequestMappingMate> requestMappingAnnotation = RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getAnnotations());
                     if (!requestMappingAnnotation.isPresent()) {
                         return;
                     }
-                    RequestMappingProcessor.RequestMappingMate requestMappingMate = requestMappingAnnotation.get();
+                    RequestMappingMetaFactory.RequestMappingMate requestMappingMate = requestMappingAnnotation.get();
                     String[] value = requestMappingMate.value();
                     RequestMethod[] methods = requestMappingMate.method();
                     if (methods.length == 0) {

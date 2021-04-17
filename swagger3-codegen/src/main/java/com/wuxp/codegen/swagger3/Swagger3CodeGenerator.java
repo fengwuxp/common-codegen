@@ -3,7 +3,7 @@ package com.wuxp.codegen.swagger3;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.languages.AnnotationMetaHolder;
+import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
 import com.wuxp.codegen.loong.AbstractCodeGenerator;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.swagger3.annotations.*;
@@ -28,13 +28,13 @@ public class Swagger3CodeGenerator extends AbstractCodeGenerator {
 
     static {
         //添加swagger3相关的注解处理器
-        AnnotationMetaHolder.registerAnnotationProcessor(Operation.class, new OperationProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(ApiResponse.class, new ApiResponseProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(Parameter.class, new ParameterProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(Parameters.class, new ParametersProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(RequestBody.class, new RequestBodyProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(Schema.class, new SchemaProcessor());
-        AnnotationMetaHolder.registerAnnotationProcessor(Tag.class, new TagProcessor());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Operation.class, new OperationMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiResponse.class, new ApiResponseMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Parameter.class, new ParameterMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Parameters.class, new ParametersMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(RequestBody.class, new RequestBodyMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Schema.class, new SchemaMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Tag.class, new TagMetaFactory());
     }
 
     {

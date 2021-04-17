@@ -1,6 +1,6 @@
 package test.com.wuxp.codegen.swagger2;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -54,7 +54,7 @@ public class Swagger2FeignSdkCodegenDartTest {
             put(DartClassMeta.BUILT_LIST, Collections.singletonList("PageInfo"));
         }};
 
-        RequestMappingProcessor.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
+        RequestMappingMetaFactory.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
         Swagger2FeignDartCodegenBuilder.builder()

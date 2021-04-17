@@ -1,6 +1,6 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.util.RequestMappingUtils;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,11 +16,11 @@ import java.util.Optional;
  * @author wuxp
  * @see ApiImplicitParam
  */
-public class ApiImplicitParamProcessor extends AbstractAnnotationProcessor<ApiImplicitParam, ApiImplicitParamProcessor.ApiImplicitParamMate> {
+public class ApiImplicitParamMetaFactory extends AbstractAnnotationMetaFactory<ApiImplicitParam, ApiImplicitParamMetaFactory.ApiImplicitParamMate> {
 
 
     @Override
-    public ApiImplicitParamMate process(ApiImplicitParam annotation) {
+    public ApiImplicitParamMate factory(ApiImplicitParam annotation) {
         return this.newProxyMate(annotation, ApiImplicitParamMate.class);
     }
 

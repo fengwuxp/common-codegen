@@ -1,7 +1,7 @@
 package com.wuxp.codegen;
 
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
@@ -34,7 +34,6 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -56,7 +55,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     private static final String CODEGEN_TEMP_EXTENSIONS_DIR = String.join(File.separator, System.getProperty("user.dir"), "codegen", "extensions");
 
     static {
-        AbstractAnnotationProcessor.registerAnnotationProvider(ClientProviderType.RETROFIT, new Retrofit2AnnotationProvider());
+        AbstractAnnotationMetaFactory.registerAnnotationProvider(ClientProviderType.RETROFIT, new Retrofit2AnnotationProvider());
     }
 
     protected LanguageDescription languageDescription;

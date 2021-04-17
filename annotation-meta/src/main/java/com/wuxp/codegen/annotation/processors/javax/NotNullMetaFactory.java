@@ -1,10 +1,10 @@
 package com.wuxp.codegen.annotation.processors.javax;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationProcessor;
+import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.annotation.processors.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -13,27 +13,27 @@ import java.util.Map;
 /**
  * javax 验证注解处理
  *
- * @see Size
+ * @author wuxp
+ * @see javax.validation.constraints.NotNull
  */
-public class SizeProcessor extends AbstractAnnotationProcessor<Size, SizeProcessor.SizeMate> {
+public class NotNullMetaFactory extends AbstractAnnotationMetaFactory<NotNull, NotNullMetaFactory.NotNullMate> {
 
 
     @Override
-    public SizeMate process(Size annotation) {
-        return super.newProxyMate(annotation, SizeMate.class);
+    public NotNullMate factory(NotNull annotation) {
+
+        return super.newProxyMate(annotation, NotNullMate.class);
     }
 
 
-    public abstract static class SizeMate implements AnnotationMate, Size {
+    public abstract static class NotNullMate implements AnnotationMate, NotNull {
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Field annotationOwner) {
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(Size.class.getName());
+            annotation.setName(NotNull.class.getName());
             Map<String, String> namedArguments = new HashMap<>();
             namedArguments.put("message", this.message());
-            namedArguments.put("max", MessageFormat.format("{0}", this.max()));
-            namedArguments.put("min", MessageFormat.format("{0}", this.min()));
             annotation.setNamedArguments(namedArguments);
             return annotation;
         }
@@ -41,7 +41,7 @@ public class SizeProcessor extends AbstractAnnotationProcessor<Size, SizeProcess
         @Override
         public String toComment(Field annotationOwner) {
 
-            return MessageFormat.format("属性：{0}输入字符串的最小长度为：{1}，输入字符串的最大长度为：{2}", annotationOwner.getName(), this.min(), this.max());
+            return MessageFormat.format("属性：{0}为必填项，不能为空", annotationOwner.getName());
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingProcessor;
+import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
@@ -63,7 +63,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
                 this.outPath,
                 LanguageDescription.TYPESCRIPT.getSuffixName(),
                 this.isDeletedOutputDirectory, this.codeFormatter);
-        RequestMappingProcessor.setSupportAuthenticationType(true);
+        RequestMappingMetaFactory.setSupportAuthenticationType(true);
 
         return new Swagger2CodeGenerator(
                 this.scanPackages,
