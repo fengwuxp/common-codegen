@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * <p>
  * 1：自动探测是否支持对响应式编程的处理
- * 2：移除参数中的reactor 类型
+ * 2：移除参数中的 reactor 类型
  * </p>
  *
  * @author wuxp

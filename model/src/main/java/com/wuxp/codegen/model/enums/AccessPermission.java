@@ -2,6 +2,7 @@ package com.wuxp.codegen.model.enums;
 
 /**
  * 访问权限控制
+ * @author wuxp
  */
 public enum AccessPermission {
 
@@ -23,5 +24,12 @@ public enum AccessPermission {
 
     public String getValue() {
         return value;
+    }
+
+    public boolean isPublic(){
+        return PUBLIC.equals(this);
+    }
+    public boolean isPrivate(){
+        return PRIVATE.equals(this);
     }
 }

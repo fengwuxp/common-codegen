@@ -88,7 +88,6 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
      * @param method http 请求方法
      */
     public static boolean isSupportRequestBody(RequestMethod method) {
-
         return SUPPORT_BODY_METHODS.contains(method);
     }
 
