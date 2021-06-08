@@ -1,6 +1,7 @@
 package com.wuxp.codegen.templates;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
@@ -21,16 +22,13 @@ import java.util.Map;
 @Slf4j
 public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
-
     private String templateBaseDir = "clients";
 
     protected Configuration configuration;
 
-
     public FreemarkerTemplateLoader(ClientProviderType clientProviderType) {
         this(clientProviderType, null);
     }
-
 
     public FreemarkerTemplateLoader(ClientProviderType clientProviderType, Map<String, Object> sharedVariables) {
         this(clientProviderType, TemplateFileVersion.DEFAULT.getVersion(), sharedVariables);
@@ -40,11 +38,9 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         this(clientProviderType, templateFileVersion, initConfiguration(sharedVariables));
     }
 
-    public FreemarkerTemplateLoader(ClientProviderType clientProviderType, TemplateFileVersion templateFileVersion,
-                                    Map<String, Object> sharedVariables) {
+    public FreemarkerTemplateLoader(ClientProviderType clientProviderType, TemplateFileVersion templateFileVersion, Map<String, Object> sharedVariables) {
         this(clientProviderType, templateFileVersion.getVersion(), initConfiguration(sharedVariables));
     }
-
 
     public FreemarkerTemplateLoader(ClientProviderType clientProviderType, String templateFileVersion, Configuration configuration) {
         super(clientProviderType, templateFileVersion);
@@ -82,7 +78,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         //支持从jar中加载模板
         configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class, "/");
         if (sharedVariables == null) {
-            throw new RuntimeException("sharedVariables is null");
+            throw new CodegenRuntimeException("sharedVariables is null");
         }
         Map<Object, Object> templateMethods = initCustomizeMethods();
         sharedVariables.put("customizeMethod", templateMethods);

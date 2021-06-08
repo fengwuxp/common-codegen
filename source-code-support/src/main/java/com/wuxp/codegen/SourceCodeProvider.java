@@ -29,6 +29,7 @@ import static com.github.javaparser.utils.CodeGenerationUtils.mavenModuleRoot;
 /**
  * 用于提供源代码的AST分析结果
  * 通过类对象{@link Class<?>}交换对应的编译结果
+ *
  * @author wuxp
  */
 @Slf4j
@@ -105,6 +106,7 @@ public class SourceCodeProvider {
      * @param clazz 类对象
      * @return class的编译AST的分析结果对象
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public <T extends TypeDeclaration> Optional<T> getTypeDeclaration(Class<?> clazz) {
         Assert.notNull(clazz, "clazz must not null");
         Optional<CompilationUnit> unitOptional = this.getCompilationUnit(clazz);
@@ -124,7 +126,7 @@ public class SourceCodeProvider {
                     .map(typeDeclaration -> typeDeclaration.getMembers()
                             .stream()
                             .filter(node -> node instanceof TypeDeclaration)
-                            .map(bodyDeclaration -> (TypeDeclaration) bodyDeclaration)
+                            .map(TypeDeclaration.class::cast)
                             .filter(bodyDeclaration -> bodyDeclaration.getNameAsString().equals(simpleName))
                             .map(bodyDeclaration -> (T) bodyDeclaration)
                             .findFirst()
@@ -156,7 +158,7 @@ public class SourceCodeProvider {
      * @param clazz 类对象
      * @return class的编译AST的分析结果对象
      */
-    public Optional<EnumDeclaration> getEnumDeclaration(Class<? extends Enum> clazz) {
+    public Optional<EnumDeclaration> getEnumDeclaration(Class<? extends Enum<?>> clazz) {
         if (!clazz.isEnum()) {
             log.warn("class={} not enum", clazz.getName());
             return Optional.empty();
@@ -210,6 +212,7 @@ public class SourceCodeProvider {
      * @param fieldName 字段名称
      * @return Field编译描述对象
      */
+    @SuppressWarnings({"unchecked"})
     public Optional<FieldDeclaration> getFieldDeclaration(Class<?> clazz, String fieldName) {
         return this.getTypeDeclaration(clazz).flatMap(declaration -> declaration
                 .getMembers()
@@ -229,6 +232,7 @@ public class SourceCodeProvider {
      * @param field 枚举常量field
      * @return 枚举常量编译描述对象
      */
+    @SuppressWarnings({"rawtypes","unchecked"})
     public Optional<EnumConstantDeclaration> getEnumConstantDeclaration(Field field) {
         if (field == null || !field.isEnumConstant()) {
             return Optional.empty();
@@ -245,6 +249,7 @@ public class SourceCodeProvider {
      * @param enumConstant 枚举常量名称
      * @return 枚举常量编译描述对象
      */
+    @SuppressWarnings({"rawtypes"})
     public Optional<EnumConstantDeclaration> getEnumConstantDeclaration(Class<? extends Enum> enumClass, String enumConstant) {
         Optional<EnumDeclaration> typeDeclaration = this.getTypeDeclaration(enumClass);
         return typeDeclaration.flatMap(declaration -> declaration
@@ -276,41 +281,42 @@ public class SourceCodeProvider {
      * @param parameterTypes 参数类型列表
      * @return Method编译描述对象
      */
+    @SuppressWarnings({"rawtypes","unchecked"})
     public Optional<MethodDeclaration> getMethodDeclaration(Class<?> clazz, String methodName, Class[] parameterTypes) {
         String[] parameterTypeNames = Arrays.stream(parameterTypes).map(Class::getName).toArray(String[]::new);
         return this.getTypeDeclaration(clazz)
                 .flatMap(declaration -> declaration
-                .getMembers()
-                .stream()
-                .filter(item -> item instanceof MethodDeclaration)
-                .filter(item -> ((MethodDeclaration) item).getName().asString().equals(methodName))
-                .filter(item -> {
-                    // 参数匹配
-                    MethodDeclaration methodDeclaration = (MethodDeclaration) item;
-                    NodeList<Parameter> parameters = methodDeclaration.getParameters();
-                    String[] parameterTypeSimpleNames = parameters.stream()
-                            .map(parameter -> parameter.getType().asString())
-                            .toArray(String[]::new);
+                        .getMembers()
+                        .stream()
+                        .filter(item -> item instanceof MethodDeclaration)
+                        .filter(item -> ((MethodDeclaration) item).getName().asString().equals(methodName))
+                        .filter(item -> {
+                            // 参数匹配
+                            MethodDeclaration methodDeclaration = (MethodDeclaration) item;
+                            NodeList<Parameter> parameters = methodDeclaration.getParameters();
+                            String[] parameterTypeSimpleNames = parameters.stream()
+                                    .map(parameter -> parameter.getType().asString())
+                                    .toArray(String[]::new);
 
-                    boolean matchParameterType;
-                    for (int i = 0; i < parameterTypeSimpleNames.length; i++) {
-                        String expectName = parameterTypeNames[i];
-                        String actual = parameterTypeSimpleNames[i];
-                        if (actual.contains(".")) {
-                            // 参数写了全类名
-                            matchParameterType = expectName.equals(actual);
-                        } else {
-                            // 只匹配类型后缀，为了准确加上"."
-                            matchParameterType = expectName.endsWith(String.format(".%s", actual));
-                        }
-                        if (!matchParameterType) {
-                            // 不匹配则返回失败
-                            return false;
-                        }
-                    }
-                    return true;
-                })
-                .findFirst());
+                            boolean matchParameterType;
+                            for (int i = 0; i < parameterTypeSimpleNames.length; i++) {
+                                String expectName = parameterTypeNames[i];
+                                String actual = parameterTypeSimpleNames[i];
+                                if (actual.contains(".")) {
+                                    // 参数写了全类名
+                                    matchParameterType = expectName.equals(actual);
+                                } else {
+                                    // 只匹配类型后缀，为了准确加上"."
+                                    matchParameterType = expectName.endsWith(String.format(".%s", actual));
+                                }
+                                if (!matchParameterType) {
+                                    // 不匹配则返回失败
+                                    return false;
+                                }
+                            }
+                            return true;
+                        })
+                        .findFirst());
     }
 
 
@@ -349,9 +355,9 @@ public class SourceCodeProvider {
             return Optional.empty();
         }
         String sourceCodePath = codeSource.getLocation().getPath();
-        if (isSystemWindows()){
+        if (isSystemWindows()) {
             // 如果是windows 移除路径上的第一个斜杆
-            sourceCodePath=sourceCodePath.substring(1);
+            sourceCodePath = sourceCodePath.substring(1);
         }
         if (this.isInSourcesJar(sourceCodePath)) {
             // sources.jar中
@@ -447,7 +453,7 @@ public class SourceCodeProvider {
         return classSourcePath.endsWith(JAR_SUFFIX);
     }
 
-    private static  boolean isSystemWindows (){
+    private static boolean isSystemWindows() {
         return System.getProperty("os.name").toUpperCase().contains("WINDOWS");
     }
 }

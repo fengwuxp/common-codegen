@@ -8,4 +8,11 @@ public class BaseInfo<ID, T> {
     protected ID id;
 
     protected T data;
+
+    protected BaseExample example;
+
+    public enum BaseExample {
+
+        A;
+    }
 }

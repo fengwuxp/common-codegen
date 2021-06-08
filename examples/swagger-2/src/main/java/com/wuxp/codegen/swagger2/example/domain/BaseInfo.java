@@ -8,4 +8,11 @@ public class BaseInfo<ID> {
 
     @ApiModelProperty("id")
     protected ID id;
+
+    protected BaseExample example;
+
+    public enum BaseExample {
+
+        A;
+    }
 }
