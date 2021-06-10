@@ -98,7 +98,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     /**
      * 需要忽略的类
      */
-    protected Set<Class> ignoreClasses = new HashSet<>();
+    protected Set<Class<?>> ignoreClasses = new HashSet<>();
 
     /**
      * 到导入的包
@@ -108,7 +108,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     /**
      * 额外导入的类
      */
-    protected Set<Class> includeClasses = new HashSet<>();
+    protected Set<Class<?>> includeClasses = new HashSet<>();
 
 
     /**

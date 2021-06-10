@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -35,7 +36,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("org.hibernate.");
         IGNORE_PACKAGE_LIST.add("org.jetbrains.");
         IGNORE_PACKAGE_LIST.add("org.jodd.");
-        IGNORE_PACKAGE_LIST.add("org.apache.commons.");
+        IGNORE_PACKAGE_LIST.add("org.apache.");
         IGNORE_PACKAGE_LIST.add("lombok.");
         IGNORE_PACKAGE_LIST.add("javax.persistence.");
         IGNORE_PACKAGE_LIST.add("javax.servlet.");
@@ -50,6 +51,8 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("com.alipay.");
         IGNORE_PACKAGE_LIST.add("com.baidu.");
         IGNORE_PACKAGE_LIST.add("com.github.");
+        IGNORE_PACKAGE_LIST.add("reactor.");
+        IGNORE_PACKAGE_LIST.add("org.reactivestreams");
         IGNORE_PACKAGE_LIST.add("com.wuxp.basic.");
 
         /**
@@ -75,18 +78,14 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
 
     @Override
     public boolean match(Class<?> clazz) {
-        if (clazz == null) {
-            return false;
-        }
-
         //在包含列表里面
-        boolean anyMatch = includePackages.stream().anyMatch(name -> clazz.getName().startsWith(name));
-        if (anyMatch) {
+        boolean isMatch = IncludeClassCodeGenMatcher.of(includePackages, Collections.emptyList()).match(clazz);
+        if (isMatch) {
             return true;
         }
 
         // 不在忽略列表里面则返回true
-        return ignorePackages.stream().noneMatch(name -> clazz.getName().startsWith(name));
+        return !ExcludeClassCodeGenMatcher.of(ignorePackages, Collections.emptyList()).match(clazz);
     }
 
     public void addIgnorePackages(Collection<String> ignorePackages) {
