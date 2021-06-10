@@ -10,6 +10,7 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.GenericParser;
+import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -199,7 +200,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         // 加入对spring的特别处理
         SpringControllerFilterUtils.filterMethods(javaClassMeta);
 
-        boolean isApiServiceClass = this.matches(javaClassMeta);
+        boolean isApiServiceClass = this.isApiServiceClass(javaClassMeta);
         if (isApiServiceClass && !this.genMatchingStrategy.isMatchClazz(javaClassMeta)) {
             // 是api 接的类，判断是否需匹配生成规则
             log.warn("跳过类{}", source.getName());
@@ -264,29 +265,16 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
         meta.setAnnotations(this.converterAnnotations(source.getAnnotations(), source));
-        boolean isFirst = count == 1;
-        if (isFirst && isApiServiceClass) {
-            //spring的控制器  生成方法列表
-            meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
-                    .toArray(new CommonCodeGenMethodMeta[]{}));
-        }
-
-        boolean needGenFields = !isApiServiceClass && (isFirst || meta.getFieldMetas() == null);
-        if (needGenFields) {
-            // 普通的java bean DTO  生成属性列表
-            meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
-                    .stream()
-                    .filter(Objects::nonNull)
-                    .toArray(CommonCodeGenFiledMeta[]::new));
-        }
-
+        boolean isFirstCodegen = count == 1;
         //依赖处理
         final Map<String, C> metaDependencies =
                 meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
-        if (isFirst) {
-            //依赖列表
-            Set<Class<?>> dependencyList = javaClassMeta.getDependencyList();
+        if (isFirstCodegen) {
             if (isApiServiceClass) {
+                Set<Class<?>> dependencyList = JavaClassParser.fetchClassMethodDependencies(source, javaClassMeta.getMethodMetas());
+                // spring的控制器  生成方法列表
+                meta.setMethodMetas(this.converterMethodMetas(javaClassMeta.getMethodMetas(), javaClassMeta, meta)
+                        .toArray(new CommonCodeGenMethodMeta[]{}));
                 dependencyList = dependencyList.stream().
                         filter(Objects::nonNull)
                         //忽略所有接口的依赖
@@ -294,16 +282,23 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         //忽略超类的依赖
                         .filter(clazz -> !clazz.equals(javaClassSuperClass))
                         .collect(Collectors.toSet());
+                Map<String, C> dependencies = this.fetchDependencies(dependencyList);
+                dependencies.forEach(metaDependencies::put);
+            }else {
+                // 普通的java bean DTO  生成属性列表
+                meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .toArray(CommonCodeGenFiledMeta[]::new));
             }
-            Map<String, C> dependencies = this.fetchDependencies(dependencyList);
-            dependencies.forEach(metaDependencies::put);
         }
+
 
         Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
 
         // 处理超类上面的类型变量
         javaClassMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
-            if (val == null || val.length == 0) {
+            if (ObjectUtils.isEmpty(val)) {
                 return;
             }
             //处理超类
@@ -377,8 +372,8 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .filter(item -> !CodeGenImportMatcher.class.isAssignableFrom(item.getClass()))
                 .collect(Collectors.toList()));
         this.codeGenImportMatchers.addAll(genMatchers.stream()
-                .filter(item -> item instanceof CodeGenImportMatcher)
-                .map(codeGenMatcher -> (CodeGenImportMatcher) codeGenMatcher)
+                .filter(CodeGenImportMatcher.class::isInstance)
+                .map(CodeGenImportMatcher.class::cast)
                 .collect(Collectors.toList()));
     }
 
@@ -1095,6 +1090,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         List<Class<?>> classList = dependencies.stream()
+                .filter(this::isMatchGenCodeRule)
                 .map(languageTypeMapping.getCustomizeJavaTypeMapping()::mapping)
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)

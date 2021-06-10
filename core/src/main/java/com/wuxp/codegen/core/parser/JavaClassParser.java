@@ -120,7 +120,7 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
                 .setMethodMetas(this.getMethods(source, onlyPublic))
                 .setFieldMetas(this.getFields(source, onlyPublic))
                 .setInterfaces(source.getInterfaces())
-                .setDependencyList(this.fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
+                .setDependencyList(fetchDependencies(source, classMeta.getFieldMetas(), classMeta.getMethodMetas()))
                 .setSuperClass(source.getSuperclass())
                 .setAnnotations(source.getAnnotations())
                 .setTypeVariables(typeParameters)
@@ -472,20 +472,24 @@ public class JavaClassParser implements GenericParser<JavaClassMeta, Class<?>> {
 
     /**
      * 获取该类的依赖列表
-     *
-     * @param clazz
-     * @param fieldMetas
-     * @param methodMetas
-     * @return
      */
-    protected Set<Class<?>> fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
+    public static Set<Class<?>> fetchClassMethodDependencies(Class<?> clazz, JavaMethodMeta[] methodMetas) {
+        return fetchDependencies(clazz, new JavaFieldMeta[0], methodMetas);
+    }
+
+    /**
+     * 获取该类的依赖列表
+     */
+    private static Set<Class<?>> fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
 
         Set<Class<?>> classSet = new HashSet<>();
 
         //来自属性的依赖
         for (JavaFieldMeta fieldMeta : fieldMetas) {
-            //TODO 忽略静态属性的依赖
-            classSet.addAll(Arrays.asList(fieldMeta.getTypes()));
+            // 忽略静态属性的依赖
+            if (!Boolean.TRUE.equals(fieldMeta.getIsStatic())) {
+                classSet.addAll(Arrays.asList(fieldMeta.getTypes()));
+            }
         }
 
         //方法的依赖

@@ -1,5 +1,6 @@
 package com.wuxp.codegen.swagger2.example.controller;
 
+import lombok.Getter;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
@@ -14,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping("/file")
+@Getter
 public class FileController {
 
+    private ExampleFiled exampleFiled;
 
     @RequestMapping("/download")
     public HttpEntity<InputStreamResource> download(String name) {
@@ -27,4 +30,7 @@ public class FileController {
 
     }
 
+    public static class ExampleFiled{
+        private Long id;
+    }
 }

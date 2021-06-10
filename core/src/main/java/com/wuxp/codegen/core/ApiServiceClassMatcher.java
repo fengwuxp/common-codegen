@@ -18,7 +18,7 @@ public interface ApiServiceClassMatcher {
      * @return if return <code>true</code>表示为 api server class
      */
     @SuppressWarnings("unchecked")
-    default boolean matches(JavaClassMeta javaClassMeta) {
+    default boolean isApiServiceClass(JavaClassMeta javaClassMeta) {
         if (javaClassMeta == null) {
             return false;
         }

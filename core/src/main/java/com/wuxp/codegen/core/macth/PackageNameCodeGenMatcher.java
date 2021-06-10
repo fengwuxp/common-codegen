@@ -53,6 +53,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         IGNORE_PACKAGE_LIST.add("com.github.");
         IGNORE_PACKAGE_LIST.add("reactor.");
         IGNORE_PACKAGE_LIST.add("org.reactivestreams");
+        IGNORE_PACKAGE_LIST.add("io.reactivex.");
         IGNORE_PACKAGE_LIST.add("com.wuxp.basic.");
 
         /**
@@ -85,7 +86,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         }
 
         // 不在忽略列表里面则返回true
-        return !ExcludeClassCodeGenMatcher.of(ignorePackages, Collections.emptyList()).match(clazz);
+        return ExcludeClassCodeGenMatcher.of(ignorePackages, Collections.emptyList()).match(clazz);
     }
 
     public void addIgnorePackages(Collection<String> ignorePackages) {
