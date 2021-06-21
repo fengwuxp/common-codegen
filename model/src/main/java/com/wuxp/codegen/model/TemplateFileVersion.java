@@ -26,7 +26,7 @@ public enum TemplateFileVersion {
     V_2_0_0("2.0.0");
 
 
-    private String version;
+    private final String version;
 
 
 }

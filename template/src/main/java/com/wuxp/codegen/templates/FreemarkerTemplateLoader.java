@@ -54,7 +54,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
             String templatePath = MessageFormat.format("{0}/{1}/{2}{3}",
                     this.templateBaseDir,
                     this.clientProviderType.name().toLowerCase(),
-                    StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("{0}", this.templateFileVersion) : "",
+                    StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("{0}/", this.templateFileVersion) : "",
                     templateName);
             return configuration.getTemplate(templatePath);
         } catch (IOException e) {
