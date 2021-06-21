@@ -1,7 +1,7 @@
 package com.wuxp.codegen.languages;
 
 
-import com.wuxp.codegen.annotation.processors.AnnotationMate;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;

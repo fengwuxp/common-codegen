@@ -1,8 +1,8 @@
 package com.wuxp.codegen;
 
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
-import com.wuxp.codegen.annotation.retrofit2.Retrofit2AnnotationProvider;
+import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
@@ -15,7 +15,7 @@ import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.enums.EnumCommentEnhancer;
+import com.wuxp.codegen.meta.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
 import com.wuxp.codegen.languages.typescript.UmiModel;

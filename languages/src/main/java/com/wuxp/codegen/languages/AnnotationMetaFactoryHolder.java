@@ -1,11 +1,11 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.annotation.processors.AnnotationMetaFactory;
-import com.wuxp.codegen.annotation.processors.AnnotationToComment;
-import com.wuxp.codegen.annotation.processors.javax.NotNullMetaFactory;
-import com.wuxp.codegen.annotation.processors.javax.PatternMetaFactory;
-import com.wuxp.codegen.annotation.processors.javax.SizeMetaFactory;
-import com.wuxp.codegen.annotation.processors.spring.*;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationToComment;
+import com.wuxp.codegen.meta.annotations.factories.javax.NotNullMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.javax.PatternMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.javax.SizeMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;

@@ -1,7 +1,7 @@
 package com.wuxp.codegen.languages;
 
 
-import com.wuxp.codegen.annotation.processors.AnnotationMate;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -14,7 +14,7 @@ import com.wuxp.codegen.model.languages.dart.DartFieldMate;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.util.JavaMethodNameUtils;
+import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZERS;
-import static com.wuxp.codegen.transform.spring.TypeScriptRequestMappingTransformer.TS_FEIGN_CLIENT_ANNOTATION_NAME;
+import static com.wuxp.codegen.meta.transform.spring.TypeScriptRequestMappingTransformer.TS_FEIGN_CLIENT_ANNOTATION_NAME;
 
 /**
  * 抽象的dart parser

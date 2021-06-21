@@ -12,7 +12,7 @@ import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.templates.TemplateLoader;
 import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
-import com.wuxp.codegen.util.FileUtils;
+import com.wuxp.codegen.meta.util.FileUtils;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.Setter;

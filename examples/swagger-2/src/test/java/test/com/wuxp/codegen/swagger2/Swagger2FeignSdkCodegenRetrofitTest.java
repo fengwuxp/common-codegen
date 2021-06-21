@@ -4,7 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.enums.EnumCommentEnhancer;
+import com.wuxp.codegen.meta.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
@@ -19,7 +19,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;

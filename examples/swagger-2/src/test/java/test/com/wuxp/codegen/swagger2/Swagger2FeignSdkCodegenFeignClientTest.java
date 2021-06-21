@@ -4,7 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
-import com.wuxp.codegen.enums.EnumCommentEnhancer;
+import com.wuxp.codegen.meta.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
 import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;

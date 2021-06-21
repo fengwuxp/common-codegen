@@ -98,7 +98,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>target/generated-sources/java</outputDirectory>
-                            <processors>com.wuxp.codegen.annotation.processors.SpringApiSdkCodegenProcessor</processors>
+                            <processors>com.wuxp.codegen.meta.annotations.factories.SpringApiSdkCodegenProcessor</processors>
                         </configuration>
                     </execution>
                 </executions>

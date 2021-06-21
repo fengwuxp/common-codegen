@@ -1,7 +1,7 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.annotation.processors.AnnotationMate;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
@@ -18,7 +18,7 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
-import com.wuxp.codegen.util.RequestMappingUtils;
+import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;

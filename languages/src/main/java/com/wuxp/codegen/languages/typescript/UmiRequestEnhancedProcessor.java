@@ -1,6 +1,6 @@
 package com.wuxp.codegen.languages.typescript;
 
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -9,7 +9,7 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
-import com.wuxp.codegen.util.RequestMappingUtils;
+import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;

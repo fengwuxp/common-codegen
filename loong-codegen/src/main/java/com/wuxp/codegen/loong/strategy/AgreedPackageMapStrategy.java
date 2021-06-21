@@ -4,7 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.loong.path.PathResolve;
-import com.wuxp.codegen.util.FileUtils;
+import com.wuxp.codegen.meta.util.FileUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;

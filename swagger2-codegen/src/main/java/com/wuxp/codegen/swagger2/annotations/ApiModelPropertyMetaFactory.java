@@ -1,7 +1,7 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
-import com.wuxp.codegen.annotation.processors.AnnotationMate;
+import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.util.StringUtils;
 

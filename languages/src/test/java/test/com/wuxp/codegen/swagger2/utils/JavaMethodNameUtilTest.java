@@ -1,7 +1,7 @@
 package test.com.wuxp.codegen.swagger2.utils;
 
 
-import com.wuxp.codegen.util.JavaMethodNameUtils;
+import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

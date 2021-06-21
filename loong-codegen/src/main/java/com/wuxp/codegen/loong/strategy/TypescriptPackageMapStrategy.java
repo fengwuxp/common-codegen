@@ -2,7 +2,7 @@ package com.wuxp.codegen.loong.strategy;
 
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.loong.path.PathResolve;
-import com.wuxp.codegen.util.FileUtils;
+import com.wuxp.codegen.meta.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

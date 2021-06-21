@@ -1,8 +1,8 @@
 package test.com.wuxp.codegen.swagger2.processor;
 
-import com.wuxp.codegen.annotation.processors.AnnotationMetaFactory;
-import com.wuxp.codegen.annotation.processors.javax.NotNullMetaFactory;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.javax.NotNullMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;

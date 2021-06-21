@@ -1,8 +1,8 @@
 package com.wuxp.codegen.swagger2.annotations;
 
-import com.wuxp.codegen.annotation.processors.AbstractAnnotationMetaFactory;
-import com.wuxp.codegen.annotation.processors.AnnotationMate;
-import com.wuxp.codegen.util.RequestMappingUtils;
+import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
+import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import io.swagger.annotations.ApiParam;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,7 +11,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import static com.wuxp.codegen.annotation.processors.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
+import static com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
 
 /**
  * swagger2 注解处理

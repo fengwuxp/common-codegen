@@ -1,7 +1,7 @@
 package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
-import com.wuxp.codegen.annotation.processors.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
