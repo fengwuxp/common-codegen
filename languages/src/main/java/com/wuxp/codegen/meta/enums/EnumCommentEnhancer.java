@@ -108,13 +108,6 @@ public class EnumCommentEnhancer implements CodeGenCommentEnhancer, LanguageEnha
 
     @Override
     public CommonCodeGenFiledMeta enhancedProcessingField(CommonCodeGenFiledMeta fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
-
-//        LanguageDescription languageDescription = CodegenConfigHolder.getConfig().getLanguageDescription();
-//        if (LanguageDescription.DART.equals(languageDescription) || LanguageDescription.TYPESCRIPT.equals(languageDescription)) {
-//            if (ClassType.ENUM.equals(classMeta.getClassType()) && !Boolean.TRUE.equals(javaFieldMeta.getIsEnumConstant())) {
-//                return null;
-//            }
-//        }
         Class<?> clazz = classMeta.getClazz();
         if (!clazz.isEnum()) {
             return fieldMeta;

@@ -1,3 +1,4 @@
+package ${packagePath?replace('.'+name,'')};
 import retrofit2.http.*;
 
 
