@@ -1,9 +1,5 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
-import com.wuxp.codegen.meta.annotations.factories.AnnotationToComment;
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
@@ -16,8 +12,15 @@ import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
-import com.wuxp.codegen.meta.enums.EnumCommentEnhancer;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationToComment;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.enums.EnumCommentEnhancer;
+import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
+import com.wuxp.codegen.meta.util.RequestMappingUtils;
+import com.wuxp.codegen.meta.util.SpringControllerFilterUtils;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -29,9 +32,6 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.reactive.ReactorTypeSupport;
-import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
-import com.wuxp.codegen.meta.util.RequestMappingUtils;
-import com.wuxp.codegen.meta.util.SpringControllerFilterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;
@@ -251,7 +251,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
         // 处理超类
         Class<?> javaClassSuperClass = javaClassMeta.getSuperClass();
-        if (!Object.class.equals(javaClassSuperClass)) {
+        if (!Object.class.equals(javaClassSuperClass) && !source.isEnum()) {
             //不是object
             C commonCodeGenClassMeta = this.parse(javaClassSuperClass);
             boolean supperIsIgnore = javaClassSuperClass != null && commonCodeGenClassMeta == null;
@@ -260,7 +260,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             }
             meta.setSuperClass(commonCodeGenClassMeta);
         }
-
         //类上的注释
         meta.setComments(this.generateComments(source.getAnnotations(), source).toArray(new String[]{}));
         //类上的注解
@@ -270,6 +269,9 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         final Map<String, C> metaDependencies =
                 meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
         if (isFirstCodegen) {
+            javaClassMeta.getDependencyList().stream().map(this::parse)
+                    .filter(Objects::nonNull)
+                    .forEach(getDependencyMeta -> metaDependencies.put(getDependencyMeta.getName(), getDependencyMeta));
             if (isApiServiceClass) {
                 Set<Class<?>> dependencyList = JavaClassParser.fetchClassMethodDependencies(source, javaClassMeta.getMethodMetas());
                 // spring的控制器  生成方法列表
@@ -284,7 +286,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         .collect(Collectors.toSet());
                 Map<String, C> dependencies = this.fetchDependencies(dependencyList);
                 dependencies.forEach(metaDependencies::put);
-            }else {
+            } else {
                 // 普通的java bean DTO  生成属性列表
                 meta.setFieldMetas(this.converterFieldMetas(javaClassMeta.getFieldMetas(), javaClassMeta)
                         .stream()
@@ -292,8 +294,6 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                         .toArray(CommonCodeGenFiledMeta[]::new));
             }
         }
-
-
         Map<String/*类型，父类，接口，本身*/, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
 
         // 处理超类上面的类型变量
@@ -328,6 +328,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                     .toArray(CommonCodeGenClassMeta[]::new);
             superTypeVariables.put(typescriptClassMeta.getName(), typeVariables);
         });
+
 
         //如果依赖中包含自身 则排除，用于打断循环依赖
         metaDependencies.remove(source.getSimpleName());
@@ -598,8 +599,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
             return null;
         }
         Class<?> clazz = classMeta.getClazz();
-        boolean isNoEnumField = !clazz.isEnum() && Boolean.TRUE.equals(javaFieldMeta.getIsStatic());
-        if (isNoEnumField) {
+        if (isNoEnumStaticField(javaFieldMeta, clazz)) {
             // 不处理非枚举类型的静态类型字段
             return null;
         }
@@ -669,6 +669,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         }
 
         return fieldInstance;
+    }
+
+    private boolean isNoEnumStaticField(JavaFieldMeta javaFieldMeta, Class<?> clazz) {
+        return !clazz.isEnum() && Boolean.TRUE.equals(javaFieldMeta.getIsStatic());
     }
 
 
