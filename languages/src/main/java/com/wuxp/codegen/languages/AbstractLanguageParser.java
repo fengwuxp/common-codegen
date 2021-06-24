@@ -386,7 +386,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
      * @return <code>true</code> 匹配生成规则
      */
     protected boolean isMatchGenCodeRule(Class<?> clazz) {
-        if (clazz == null || JavaTypeUtils.isMap(clazz) || JavaTypeUtils.isCollection(clazz)) {
+        if (clazz == null /*|| JavaTypeUtils.isMap(clazz) || JavaTypeUtils.isCollection(clazz)*/) {
             return false;
         }
         //必须满足所有的匹配器才能进行生成
