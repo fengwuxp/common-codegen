@@ -269,7 +269,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
                     //过滤掉不需要导入的依赖
                     dependencies.forEach((key, val) -> {
-                        if (val.isNeedImport() && this.hasExistMember(val)) {
+                        if (val.isNeedImport() || this.hasExistMember(val)) {
                             needImportDependencies.put(key, val);
                         }
                     });

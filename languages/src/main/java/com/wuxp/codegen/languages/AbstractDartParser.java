@@ -1,12 +1,13 @@
 package com.wuxp.codegen.languages;
 
 
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.DartLanguageMetaInstanceFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
+import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -14,8 +15,8 @@ import com.wuxp.codegen.model.languages.dart.DartFieldMate;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotBlank;
@@ -25,8 +26,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZERS;
 import static com.wuxp.codegen.meta.transform.spring.TypeScriptRequestMappingTransformer.TS_FEIGN_CLIENT_ANNOTATION_NAME;
+import static com.wuxp.codegen.model.languages.dart.DartClassMeta.BUILT_SERIALIZERS;
 
 /**
  * 抽象的dart parser
@@ -88,7 +89,8 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
         CommonCodeGenMethodMeta[] methodMetas = dartClassMeta.getMethodMetas();
         boolean isFeignClient = false;
-        if (methodMetas == null || methodMetas.length == 0) {
+        boolean isRequestObject = methodMetas == null || methodMetas.length == 0;
+        if (isRequestObject) {
             Map<String, CommonCodeGenClassMeta> dependencies = (Map<String, CommonCodeGenClassMeta>) dartClassMeta.getDependencies();
             dependencies.put(BUILT_SERIALIZERS.getName(), BUILT_SERIALIZERS);
         } else {
@@ -137,6 +139,11 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
     }
 
     @Override
+    protected List<DartFieldMate> converterFieldMetas(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta) {
+        return combineSupperClassFields(javaFieldMetas, classMeta);
+    }
+
+    @Override
     protected DartFieldMate converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
         DartFieldMate dartFieldMate = super.converterField(javaFieldMeta, classMeta);
 
@@ -151,13 +158,10 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
     @Override
     protected void enhancedProcessingField(DartFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
-
-
     }
 
     @Override
     protected void enhancedProcessingClass(DartClassMeta methodMeta, JavaClassMeta classMeta) {
-
     }
 
     @Override
@@ -208,7 +212,6 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
     @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
-
     }
 
 
@@ -228,5 +231,12 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
                 .collect(Collectors.toList());
     }
 
-
+    private List<DartFieldMate> combineSupperClassFields(JavaFieldMeta[] javaFieldMetas, JavaClassMeta classMeta) {
+        List<DartFieldMate> fieldMates = super.converterFieldMetas(javaFieldMetas, classMeta);
+        DartClassMeta supperMeta = this.parse(classMeta.getSuperClass());
+        if (supperMeta != null && !ObjectUtils.isEmpty(supperMeta.getFieldMetas())) {
+            fieldMates.addAll(Arrays.stream(supperMeta.getFieldMetas()).map(DartFieldMate.class::cast).collect(Collectors.toList()));
+        }
+        return fieldMates.stream().distinct().collect(Collectors.toList());
+    }
 }
