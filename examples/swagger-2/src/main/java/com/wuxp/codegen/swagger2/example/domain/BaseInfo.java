@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class BaseInfo<ID> {
 
-    @ApiModelProperty("id")
+    @ApiModelProperty("id \n我的 \\n 你的 \r 他的 \\r 不是的")
     protected ID id;
 
     protected BaseExample example;

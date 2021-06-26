@@ -434,20 +434,13 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         if (ObjectUtils.isEmpty(annotations)) {
             return new ArrayList<>();
         }
-
         List<CodeGenCommentEnhancer> codeGenCommentEnhancers = Arrays.stream(annotations)
                 .map(this::getAnnotationMeta)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-
         codeGenCommentEnhancers.add(sourceCodeCommentEnhancer);
         codeGenCommentEnhancers.add(enumCommentEnhancer);
-        return codeGenCommentEnhancers.stream()
-                .map(codeGenCommentEnhancer -> codeGenCommentEnhancer.toComments(owner))
-                .flatMap(Collection::stream)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .collect(Collectors.toList());
+         return CombineCodeGenCommentEnhancer.of(codeGenCommentEnhancers).toComments(owner);
     }
 
     /**
