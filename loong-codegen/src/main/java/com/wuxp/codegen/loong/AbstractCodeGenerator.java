@@ -8,12 +8,12 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenPublisher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
-import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -205,6 +206,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
     /**
      * 尝试做循环生成
+     *
      * @param classes 需要生成的类列表
      */
     protected void tryLoopGenerate(Collection<Class<?>> classes) {
@@ -236,16 +238,16 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
             }
         }
 
-       if (CollectionUtils.isEmpty(taskWaiters)){
-           return;
-       }
-       // 等待所有的任务完成
-       for (TaskWaiter taskWaiter:taskWaiters){
-           if (taskWaiter==null){
-               continue;
-           }
-           taskWaiter.waitTaskCompleted();
-       }
+        if (CollectionUtils.isEmpty(taskWaiters)) {
+            return;
+        }
+        // 等待所有的任务完成
+        for (TaskWaiter taskWaiter : taskWaiters) {
+            if (taskWaiter == null) {
+                continue;
+            }
+            taskWaiter.waitTaskCompleted();
+        }
     }
 
 
@@ -269,7 +271,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                     Collection<? extends CommonCodeGenClassMeta> values = dependencies.values();
                     //过滤掉不需要导入的依赖
                     dependencies.forEach((key, val) -> {
-                        if (val.isNeedImport() || this.hasExistMember(val)) {
+                        if (needImportDependencies(val)) {
                             needImportDependencies.put(key, val);
                         }
                     });
@@ -293,6 +295,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
                 .flatMap(Collection::stream)
                 .filter(CommonCodeGenClassMeta::getNeedGenerate)
                 .collect(Collectors.toSet());
+    }
+
+    private boolean needImportDependencies(CommonCodeGenClassMeta val) {
+        return (val.isNeedImport() || this.hasExistMember(val)) && hasPackagePath(val);
     }
 
     protected Set<CommonCodeGenClassMeta> parseCodegenMetas(Collection<Class<?>> classes) {
@@ -339,14 +345,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
     private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
-        if (commonCodeGenClassMeta instanceof JavaCodeGenClassMeta){
-            // 属于java的代码生成，一定要导入
-            return true;
-        }
         if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())) {
             return true;
         }
-        if (Boolean.TRUE.equals(commonCodeGenClassMeta.getNeedGenerate())){
+        if (Boolean.TRUE.equals(commonCodeGenClassMeta.getNeedGenerate())) {
             return true;
         }
         boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
@@ -356,6 +358,10 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
         boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
         return !(notFiled && notMethod);
+    }
+
+    protected boolean hasPackagePath(CommonCodeGenClassMeta commonCodeGenClassMeta) {
+        return StringUtils.hasText(commonCodeGenClassMeta.getPackagePath());
     }
 
 

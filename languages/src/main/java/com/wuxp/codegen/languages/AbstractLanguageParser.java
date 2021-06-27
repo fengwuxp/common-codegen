@@ -269,7 +269,10 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         final Map<String, C> metaDependencies =
                 meta.getDependencies() == null ? new LinkedHashMap<>() : (Map<String, C>) meta.getDependencies();
         if (isFirstCodegen) {
-            javaClassMeta.getDependencyList().stream().map(this::parse)
+            javaClassMeta.getDependencyList()
+                    .stream()
+                    .filter(clazz -> clazz != source)
+                    .map(this::parse)
                     .filter(Objects::nonNull)
                     .forEach(getDependencyMeta -> metaDependencies.put(getDependencyMeta.getName(), getDependencyMeta));
             if (isApiServiceClass) {
@@ -440,7 +443,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
                 .collect(Collectors.toList());
         codeGenCommentEnhancers.add(sourceCodeCommentEnhancer);
         codeGenCommentEnhancers.add(enumCommentEnhancer);
-         return CombineCodeGenCommentEnhancer.of(codeGenCommentEnhancers).toComments(owner);
+        return CombineCodeGenCommentEnhancer.of(codeGenCommentEnhancers).toComments(owner);
     }
 
     /**

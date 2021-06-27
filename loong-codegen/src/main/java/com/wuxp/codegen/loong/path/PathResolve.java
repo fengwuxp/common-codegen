@@ -2,6 +2,7 @@ package com.wuxp.codegen.loong.path;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -59,13 +60,11 @@ public class PathResolve {
         List<Path> paths = Arrays.stream(args)
                 .filter(StringUtils::hasText)
                 // 移除路径中的双斜杆
-                .map(val-> val.replace("//","/"))
+                .map(val -> val.replace("//", "/"))
                 .map(path -> basePath.resolveSibling(Paths.get(path)))
                 .collect(Collectors.toList());
-        if (paths.isEmpty()) {
-            log.error("根路径{}，需要导入依赖的文件 {}，导入的依赖路径  {}", baseDir, args[0], args[1]);
-            return null;
-        }
+        Assert.isTrue(!paths.isEmpty(), String.format("[paths isEmpty] 根路径%s，需要导入依赖的文件：%s，导入的依赖路径：%s", baseDir, args[0], args[1]));
+        Assert.isTrue(paths.size() >= 2, String.format("[paths seize < 2] 根路径%s，需要导入依赖的文件：%s，导入的依赖路径：%s", baseDir, args[0], args[1]));
         String pathArgs2 = paths.get(1).toString();
         if (!pathArgs2.startsWith(DOT) && !pathArgs2.startsWith(File.separator)) {
             return args[1];

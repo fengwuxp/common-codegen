@@ -9,7 +9,7 @@ import 'package:fengwuxp_dart_basic/index.dart';
 <#--依赖导入处理-->
     <#list dependencies as key,val >
         <#if !val.packagePath?starts_with("package:")>
-          import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
+            import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
         </#if>
     </#list>
 </#if>
@@ -25,14 +25,14 @@ import 'package:fengwuxp_dart_basic/index.dart';
     <#assign genericDesc=className?substring(genericIndex)/>
 </#if>
 <#if (genericIndex>0)>
-  part '${serializerName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
+    part '${serializerName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
 <#else >
-  part '${finallyClassName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
+    part '${finallyClassName?replace("([a-z])([A-Z]+)","$1_$2","r")?lower_case}.g.dart';
 </#if>
 
 <#if (comments?size>0)>
     <#list comments as cmment>
-      /// ${cmment}
+        /// ${cmment}
     </#list>
 </#if>
 
@@ -46,27 +46,19 @@ factory ${serializerName}([Function(${serializerName}Builder${genericDesc}) upda
 <#if fieldMetas??>
     <#list fieldMetas as field>
         <#list field.comments as cmment>
-          /// ${cmment}
+            /// ${cmment}
         </#list>
-    <#--            <#list field.annotations as annotation>-->
-    <#--                @${annotation.name}({-->
-    <#--                <#list annotation.namedArguments as name,val>-->
-    <#--                    ${name}:${val},-->
-    <#--                </#list>-->
-    <#--                })-->
-    <#--            </#list>-->
         <#if !field.requered??>
-          @nullable
+            @nullable
         </#if>
-      @BuiltValueField(wireName: '${field.name}')
+        @BuiltValueField(wireName: '${field.name}')
         ${customizeMethod.combineType(field.filedTypes)} get ${field.name};
     </#list>
 </#if>
 
 @override
-Map
-<String, dynamic> toMap() {
-return serializers.serializeWith(${serializerName}.serializer, this);
+Map<String, dynamic> toMap() {
+return serializers.serializeWith(${serializerName}.serializer, this) as Map<String, dynamic>;
 }
 
 @override
