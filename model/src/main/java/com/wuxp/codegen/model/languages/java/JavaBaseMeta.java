@@ -1,10 +1,13 @@
 package com.wuxp.codegen.model.languages.java;
 
 import com.wuxp.codegen.model.CommonBaseMeta;
-import lombok.Data;
+import com.wuxp.codegen.model.enums.AccessPermission;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Objects;
@@ -14,7 +17,8 @@ import java.util.Optional;
 /**
  * @author wuxp
  */
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 public class JavaBaseMeta extends CommonBaseMeta {
 
@@ -27,10 +31,15 @@ public class JavaBaseMeta extends CommonBaseMeta {
      */
     protected Type[] typeVariables;
 
-    /**
-     * 类型参数的个数
-     */
-    protected Integer typeVariableNum = 0;
+
+    protected JavaBaseMeta() {
+    }
+
+    protected JavaBaseMeta(int modifiers) {
+        this.setAccessPermission(AccessPermission.valueOfModifiers(modifiers));
+        this.setIsStatic(Modifier.isStatic(modifiers));
+        this.setIsFinal(Modifier.isFinal(modifiers));
+    }
 
 
     /**
@@ -71,6 +80,13 @@ public class JavaBaseMeta extends CommonBaseMeta {
         return this.findAnnotation(clazz);
     }
 
+    /**
+     * 获取泛型参数的个数
+     */
+    public int getTypeVariableNum() {
+        return typeVariables == null ? 0 : typeVariables.length;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -85,12 +101,12 @@ public class JavaBaseMeta extends CommonBaseMeta {
         JavaBaseMeta that = (JavaBaseMeta) o;
         return Arrays.equals(annotations, that.annotations) &&
                 Arrays.equals(typeVariables, that.typeVariables) &&
-                Objects.equals(typeVariableNum, that.typeVariableNum);
+                Objects.equals(getTypeVariableNum(), that.getTypeVariableNum());
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), typeVariableNum);
+        int result = Objects.hash(super.hashCode(), getTypeVariableNum());
         result = 31 * result + Arrays.hashCode(annotations);
         result = 31 * result + Arrays.hashCode(typeVariables);
         return result;

@@ -1,10 +1,12 @@
 package com.wuxp.codegen.model.languages.java;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -14,7 +16,8 @@ import java.util.Objects;
  *
  * @author wuxp
  */
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 public class JavaFieldMeta extends JavaBaseMeta {
 
@@ -43,6 +46,16 @@ public class JavaFieldMeta extends JavaBaseMeta {
      * 是否为枚举的常量
      */
     private Boolean isEnumConstant = false;
+
+    public JavaFieldMeta() {
+        super();
+    }
+
+    public JavaFieldMeta(int modifiers) {
+        super(modifiers);
+        this.setIsTransient(Modifier.isTransient(modifiers))
+                .setIsVolatile(Modifier.isVolatile(modifiers));
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,12 +1,12 @@
 package com.wuxp.codegen.meta.transform.spring;
 
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
-import com.wuxp.codegen.meta.transform.AnnotationCodeGenTransformer;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -76,7 +76,7 @@ public class SpringRequestMappingTransformer implements
         if (consumes != null) {
             return commonCodeGenAnnotation;
         }
-        JavaMethodMeta javaMethodMeta = JAVA_CLASS_PARSER.getJavaMethodMeta(annotationOwner, annotationOwner.getDeclaringClass());
+        JavaMethodMeta javaMethodMeta = JAVA_CLASS_PARSER.getJavaMethodMeta(annotationOwner);
         boolean isNoneReturnFile = Arrays.stream(javaMethodMeta.getReturnType()).noneMatch(clazz -> JavaTypeUtils.isAssignableFrom(clazz, InputStreamResource.class));
         if (isNoneReturnFile) {
             return commonCodeGenAnnotation;

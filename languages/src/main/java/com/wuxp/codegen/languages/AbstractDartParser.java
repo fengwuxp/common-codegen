@@ -3,6 +3,7 @@ package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.GenericParser;
+import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.DartLanguageMetaInstanceFactory;
@@ -70,7 +71,7 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
     }
 
-    public AbstractDartParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+    public AbstractDartParser(JavaClassParser javaParser,
                               LanguageMetaInstanceFactory<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> languageMetaInstanceFactory,
                               PackageMapStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,

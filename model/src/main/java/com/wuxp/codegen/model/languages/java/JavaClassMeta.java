@@ -2,8 +2,11 @@ package com.wuxp.codegen.model.languages.java;
 
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -13,7 +16,8 @@ import java.util.Set;
  *
  * @author wuxp
  */
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 public class JavaClassMeta extends JavaBaseMeta {
 
@@ -67,6 +71,10 @@ public class JavaClassMeta extends JavaBaseMeta {
      */
     private Class<?> superClass;
 
+    public JavaClassMeta(int modifiers) {
+        super(modifiers);
+        this.setIsAbstract(Modifier.isAbstract(modifiers));
+    }
 
     @Override
     public boolean equals(Object o) {

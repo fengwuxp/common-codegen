@@ -5,7 +5,6 @@ import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
-import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
@@ -88,7 +87,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * java类的解析器 默认解析所有的属性 方法
      */
-    protected GenericParser<JavaClassMeta, Class<?>> javaParser = JAVA_CLASS_PARSER;
+    protected JavaClassParser javaParser = JAVA_CLASS_PARSER;
     /**
      * 语言元数据对象的工厂
      */
@@ -155,7 +154,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     }
 
 
-    protected AbstractLanguageParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+    protected AbstractLanguageParser(JavaClassParser javaParser,
                                      LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
                                      PackageMapStrategy packageMapStrategy,
                                      CodeGenMatchingStrategy genMatchingStrategy,

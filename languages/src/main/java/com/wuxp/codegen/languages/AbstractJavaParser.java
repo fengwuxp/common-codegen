@@ -1,15 +1,15 @@
 package com.wuxp.codegen.languages;
 
 
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
-import com.wuxp.codegen.core.parser.GenericParser;
+import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.JavaLanguageMetaInstanceFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
@@ -79,7 +79,7 @@ public abstract class AbstractJavaParser extends
 
     }
 
-    public AbstractJavaParser(GenericParser<JavaClassMeta, Class<?>> javaParser,
+    protected AbstractJavaParser(JavaClassParser javaParser,
                               LanguageMetaInstanceFactory<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> languageMetaInstanceFactory,
                               PackageMapStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,

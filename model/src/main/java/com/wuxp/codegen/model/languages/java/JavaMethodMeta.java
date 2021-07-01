@@ -1,11 +1,13 @@
 package com.wuxp.codegen.model.languages.java;
 
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Map;
@@ -16,7 +18,8 @@ import java.util.Objects;
  *
  * @author wuxp
  */
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 public class JavaMethodMeta extends JavaBaseMeta {
 
@@ -78,6 +81,13 @@ public class JavaMethodMeta extends JavaBaseMeta {
      * 方法归属的类
      */
     private Class<?> owner;
+
+    public JavaMethodMeta(int modifiers) {
+        super(modifiers);
+        this.setIsAbstract(Modifier.isAbstract(modifiers))
+                .setIsSynchronized(Modifier.isSynchronized(modifiers))
+                .setIsNative(Modifier.isNative(modifiers));
+    }
 
     @Override
     public boolean equals(Object o) {
