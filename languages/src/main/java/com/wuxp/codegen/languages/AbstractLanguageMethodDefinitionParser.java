@@ -55,13 +55,13 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     public M parse(JavaMethodMeta methodMeta) {
         LanguageTypeDefinitionAssert.isValidSpringWebMethod(methodMeta);
         // method转换
-        M genMethodMeta = parseMethodInner(methodMeta);
-        genMethodMeta.setAnnotations(LanguageAnnotationParser.getInstance().parse(methodMeta.getMethod()))
+        M result = parseMethodInner(methodMeta);
+        result.setAnnotations(LanguageAnnotationParser.getInstance().parse(methodMeta.getMethod()))
                 .setReturnTypes(getReturnTypes(methodMeta))
                 .setAccessPermission(methodMeta.getAccessPermission())
                 .setComments(extractComments(methodMeta))
                 .setName(methodMeta.getName());
-        return postProcess(genMethodMeta);
+        return postProcess(result);
     }
 
     /**
@@ -294,6 +294,4 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         comments.addAll(LanguageCommentDefinitionDescriber.extractComments(ElementType.METHOD, methodMeta.getReturnType()));
         return comments.toArray(new String[]{});
     }
-
-
 }

@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -40,5 +41,15 @@ public class MappingLanguageTypeDefinitionParser<C extends CommonCodeGenClassMet
     @Override
     public C newInstance() {
         return delegate.newInstance();
+    }
+
+    @Override
+    public <M extends CommonCodeGenClassMeta> M newTypeVariableInstance() {
+        return delegate.newTypeVariableInstance();
+    }
+
+    @Override
+    public <M extends CommonCodeGenClassMeta> M parseTypeVariable(Type type) {
+        return delegate.parseTypeVariable(type);
     }
 }

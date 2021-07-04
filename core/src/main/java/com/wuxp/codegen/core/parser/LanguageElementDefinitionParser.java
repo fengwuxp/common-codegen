@@ -2,8 +2,10 @@ package com.wuxp.codegen.core.parser;
 
 import com.wuxp.codegen.core.parser.enhance.SimpleLanguageDefinitionPostProcessor;
 import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import org.springframework.lang.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -15,8 +17,12 @@ import java.util.stream.Collectors;
  *
  * @author wuxp
  */
-public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S> extends SimpleLanguageDefinitionPostProcessor<C> {
+public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
+        extends SimpleLanguageDefinitionPostProcessor<C>,
+        LanguageElementDefinitionFactory<C>{
 
+    @Nullable
+    C parse(S source);
 
     /**
      * parse source
@@ -27,14 +33,6 @@ public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S> ex
     default Optional<C> parseOfNullable(S source) {
         return Optional.ofNullable(parse(source));
     }
-
-    @Nullable
-    C parse(S source);
-
-    /**
-     * @return 实例化一个 Element Meta Object
-     */
-    C newInstance();
 
     /**
      * 分发一个元数据对象用于解析成对应的 {@link CommonBaseMeta} 子类

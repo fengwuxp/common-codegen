@@ -585,7 +585,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
         } else {
             comments.addAll(this.generateComments(ElementType.FIELD, types));
         }
-        //注解
+        // 注释
         fieldInstance.setComments(comments.toArray(new String[]{}));
         //注解
         fieldInstance.setAnnotations(this.converterAnnotations(javaFieldMeta.getField()));

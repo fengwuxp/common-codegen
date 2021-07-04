@@ -47,7 +47,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
      */
     private final PackageMapStrategy packageMapStrategy;
 
-
     protected AbstractLanguageTypeDefinitionParser(PackageMapStrategy packageMapStrategy) {
         this.packageMapStrategy = packageMapStrategy;
         this.javaParser = JAVA_CLASS_PARSER;
@@ -59,29 +58,25 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
     }
 
-    protected abstract C newTypeVariableInstance();
 
     private C parseInner(Class<?> source) {
         JavaClassMeta classMeta = javaParser.parse(source);
         preProcess(classMeta);
-        C meta = newCodeGenClassMetaAndPutCache(source);
-        meta.setName(this.packageMapStrategy.convertClassName(source));
-        meta.setPackagePath(this.packageMapStrategy.convert(source));
-        meta.setClassType(classMeta.getClassType());
-        meta.setAccessPermission(classMeta.getAccessPermission());
-        meta.setTypeVariables(getTypeVariables(classMeta));
-        meta.setGenericDescription(getGenericDescription(meta.getTypeVariables()));
-        //类上的注释
-        meta.setComments(extractComments(classMeta));
-        //类上的注解
-        meta.setAnnotations(LanguageAnnotationParser.getInstance().parse(source));
-        meta.setSuperClass(getSupperClassMeta(classMeta));
-        meta.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
-
-        meta.setMethodMetas(getCodegenMethodMetas(classMeta));
-        meta.setFieldMetas(getCodegenFiledMetas(classMeta));
-        meta.setDependencies(getClassDependencies(classMeta));
-        return postProcess(meta);
+        C result = newCodeGenClassMetaAndPutCache(source);
+        result.setName(this.packageMapStrategy.convertClassName(source));
+        result.setPackagePath(this.packageMapStrategy.convert(source));
+        result.setClassType(classMeta.getClassType());
+        result.setAccessPermission(classMeta.getAccessPermission());
+        result.setTypeVariables(getTypeVariables(classMeta));
+        result.setGenericDescription(getGenericDescription(result.getTypeVariables()));
+        result.setComments(extractComments(classMeta));
+        result.setAnnotations(LanguageAnnotationParser.getInstance().parse(source));
+        result.setSuperClass(getSupperClassMeta(classMeta));
+        result.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
+        result.setMethodMetas(getCodegenMethodMetas(classMeta));
+        result.setFieldMetas(getCodegenFiledMetas(classMeta));
+        result.setDependencies(getClassDependencies(classMeta));
+        return postProcess(result);
     }
 
     private void preProcess(JavaClassMeta classMeta) {
@@ -104,16 +99,13 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
                     if (type instanceof Class<?>) {
                         return dispatch((Class<?>) type);
                     } else if (type instanceof TypeVariable) {
-                        CommonCodeGenClassMeta typeVariable = newTypeVariableInstance();
-                        String typeName = type.getTypeName();
-                        typeVariable.setName(typeName);
-                        typeVariable.setGenericDescription(typeName);
-                        return typeVariable;
+                        return parseTypeVariable(type);
                     } else {
                         return null;
                     }
                 })
                 .filter(Objects::nonNull)
+                .map(CommonCodeGenClassMeta.class::cast)
                 .toArray(CommonCodeGenClassMeta[]::new);
     }
 

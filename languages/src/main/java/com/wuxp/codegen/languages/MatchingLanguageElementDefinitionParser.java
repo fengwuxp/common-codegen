@@ -8,6 +8,8 @@ import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
+import java.lang.reflect.Type;
+
 /**
  * @author wuxp
  */
@@ -41,6 +43,16 @@ public class MatchingLanguageElementDefinitionParser<C extends CommonBaseMeta> i
     @Override
     public C newInstance() {
         return delegate.newInstance();
+    }
+
+    @Override
+    public <M extends CommonCodeGenClassMeta> M newTypeVariableInstance() {
+        return delegate.newTypeVariableInstance();
+    }
+
+    @Override
+    public <M extends CommonCodeGenClassMeta> M parseTypeVariable(Type type) {
+        return delegate.parseTypeVariable(type);
     }
 
     @SuppressWarnings("unchecked")
