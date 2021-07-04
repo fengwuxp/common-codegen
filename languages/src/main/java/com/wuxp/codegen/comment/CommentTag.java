@@ -16,8 +16,7 @@ public enum CommentTag {
     /**
      * 返回值
      */
-    RETURN("return")
-    ;
+    RETURN("return");
 
     String tagName;
 

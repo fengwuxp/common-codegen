@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
  *
  * @author wuxp
  */
-public interface AnnotationMetaFactory<T extends AnnotationToComment, A extends Annotation> {
+public interface AnnotationMetaFactory<T extends AnnotationCodeGenCommentExtractor, A extends Annotation> {
 
     /**
      * 处理

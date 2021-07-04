@@ -15,7 +15,7 @@ import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.meta.enums.EnumCommentEnhancer;
+import com.wuxp.codegen.meta.enums.EnumCodeGenCommentExtractor;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
 import com.wuxp.codegen.languages.typescript.UmiModel;
@@ -350,8 +350,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         if (needAddUmiRequestEnhancedProcessor) {
             languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
         }
-        if (!this.containsLanguageEnhancedProcessorType(EnumCommentEnhancer.class)) {
-            languageEnhancedProcessors.add(new EnumCommentEnhancer());
+        if (!this.containsLanguageEnhancedProcessorType(EnumCodeGenCommentExtractor.class)) {
+            languageEnhancedProcessors.add(new EnumCodeGenCommentExtractor());
         }
         boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
         if (needSetUmiModel) {

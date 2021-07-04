@@ -42,7 +42,7 @@ public class JavaClassParser {
      */
     protected static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
-    private static final Map<Class<?>, JavaClassMeta> PARSER_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, JavaClassMeta> PARSER_CACHES = new ConcurrentHashMap<>();
     /**
      * 是否只过滤public的方法
      */
@@ -74,7 +74,7 @@ public class JavaClassParser {
         if (source == null) {
             return null;
         }
-        return PARSER_CACHE.computeIfAbsent(source, this::parseClass);
+        return PARSER_CACHES.computeIfAbsent(source, this::parseClass);
     }
 
     private JavaClassMeta parseClass(Class<?> source) {

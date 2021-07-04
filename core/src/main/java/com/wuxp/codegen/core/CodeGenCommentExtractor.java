@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 代码生成用于增强注释获取的增强器
+ * 代码生成用于提取注释
  *
  * @author wuxp
  * @since 1.1.0
  */
-public interface CodeGenCommentEnhancer {
+public interface CodeGenCommentExtractor {
 
     /**
      * 分隔多行注释的标记
@@ -26,7 +26,7 @@ public interface CodeGenCommentEnhancer {
      *
      * @see #toComments(AnnotatedElement)
      */
-    String MULTILINE_COMMENT_TAG = "multiline_tag_@@@@@@@@@@_end";
+    String MULTILINE_COMMENT_TAG = "___________________________multiline_tag_@@@@@@@@@@_end___________________________";
 
 
     /**

@@ -4,6 +4,7 @@ package com.wuxp.codegen.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -16,6 +17,12 @@ import java.util.Objects;
 @Data
 @Accessors(chain = true)
 public class CommonCodeGenMethodMeta extends CommonBaseMeta {
+
+
+    /**
+     * 原目标 Method
+     */
+    private Method source;
 
     /**
      * 类型参数, 泛型

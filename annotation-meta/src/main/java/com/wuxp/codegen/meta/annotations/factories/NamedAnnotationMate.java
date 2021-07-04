@@ -7,6 +7,7 @@ import java.lang.reflect.Parameter;
 
 /**
  * 有名称属性的注解，且value属性和名称属性的意思一致
+ *
  * @author wuxp
  */
 public interface NamedAnnotationMate extends AnnotationMate {
@@ -17,6 +18,10 @@ public interface NamedAnnotationMate extends AnnotationMate {
 
     default String value() {
         return "";
+    }
+
+    default String finalyName() {
+        return StringUtils.hasText(value()) ? value() : name();
     }
 
     /**

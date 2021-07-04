@@ -9,7 +9,7 @@ import com.github.javaparser.javadoc.Javadoc;
 import com.github.javaparser.javadoc.JavadocBlockTag;
 import com.github.javaparser.javadoc.description.JavadocDescriptionElement;
 import com.wuxp.codegen.SourceCodeProvider;
-import com.wuxp.codegen.core.CodeGenCommentEnhancer;
+import com.wuxp.codegen.core.CodeGenCommentExtractor;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import org.springframework.util.StringUtils;
 
@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
  *
  * @author wuxp
  */
-public class SourceCodeCommentEnhancer implements CodeGenCommentEnhancer {
+public class SourceCodeGenCommentExtractor implements CodeGenCommentExtractor {
 
     private final SourceCodeProvider sourceCodeProvider;
 
-    public SourceCodeCommentEnhancer() {
+    public SourceCodeGenCommentExtractor() {
         sourceCodeProvider = new SourceCodeProvider();
     }
 

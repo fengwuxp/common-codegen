@@ -1,7 +1,7 @@
 package com.wuxp.codegen.meta.enums;
 
-import com.wuxp.codegen.comment.SourceCodeCommentEnhancer;
-import com.wuxp.codegen.core.CodeGenCommentEnhancer;
+import com.wuxp.codegen.comment.SourceCodeGenCommentExtractor;
+import com.wuxp.codegen.core.CodeGenCommentExtractor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -23,7 +23,7 @@ import java.util.*;
  * @author wuxp
  */
 @Slf4j
-public class EnumCommentEnhancer implements CodeGenCommentEnhancer, LanguageEnhancedProcessor<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
+public class EnumCodeGenCommentExtractor implements CodeGenCommentExtractor, LanguageEnhancedProcessor<CommonCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> {
 
     /**
      * 可能是用于描述字段名称
@@ -39,18 +39,18 @@ public class EnumCommentEnhancer implements CodeGenCommentEnhancer, LanguageEnha
 
     private final Set<String> descFieldNames;
 
-    private final SourceCodeCommentEnhancer sourceCodeCommentEnhancer;
+    private final SourceCodeGenCommentExtractor sourceCodeCommentEnhancer;
 
-    public EnumCommentEnhancer() {
+    public EnumCodeGenCommentExtractor() {
         this(null);
     }
 
-    public EnumCommentEnhancer(SourceCodeCommentEnhancer sourceCodeCommentEnhancer) {
+    public EnumCodeGenCommentExtractor(SourceCodeGenCommentExtractor sourceCodeCommentEnhancer) {
         this(DESC_FILED_NAMES, sourceCodeCommentEnhancer);
 
     }
 
-    public EnumCommentEnhancer(Collection<String> descFieldNames, SourceCodeCommentEnhancer sourceCodeCommentEnhancer) {
+    public EnumCodeGenCommentExtractor(Collection<String> descFieldNames, SourceCodeGenCommentExtractor sourceCodeCommentEnhancer) {
         this.descFieldNames = new HashSet<>(descFieldNames);
         this.sourceCodeCommentEnhancer = sourceCodeCommentEnhancer;
     }

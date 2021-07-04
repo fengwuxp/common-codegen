@@ -6,6 +6,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,16 +14,20 @@ import java.util.stream.Collectors;
 /**
  * @author wuxp
  */
-public class CombineCodeGenCommentEnhancer implements CodeGenCommentEnhancer {
+public class CombineCodeGenCommentExtractor implements CodeGenCommentExtractor {
 
-    private final Collection<CodeGenCommentEnhancer> codeGenCommentEnhancers;
+    private final Collection<CodeGenCommentExtractor> codeGenCommentEnhancers;
 
-    private CombineCodeGenCommentEnhancer(Collection<CodeGenCommentEnhancer> codeGenCommentEnhancers) {
+    private CombineCodeGenCommentExtractor(Collection<CodeGenCommentExtractor> codeGenCommentEnhancers) {
         this.codeGenCommentEnhancers = codeGenCommentEnhancers;
     }
 
-    public static CombineCodeGenCommentEnhancer of(Collection<CodeGenCommentEnhancer> codeGenCommentEnhancers) {
-        return new CombineCodeGenCommentEnhancer(codeGenCommentEnhancers);
+    public static CombineCodeGenCommentExtractor of(CodeGenCommentExtractor... codeGenCommentEnhancers) {
+        return of(Arrays.asList(codeGenCommentEnhancers));
+    }
+
+    public static CombineCodeGenCommentExtractor of(Collection<CodeGenCommentExtractor> codeGenCommentEnhancers) {
+        return new CombineCodeGenCommentExtractor(codeGenCommentEnhancers);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
-import com.wuxp.codegen.meta.annotations.factories.AnnotationToComment;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationCodeGenCommentExtractor;
 import com.wuxp.codegen.meta.annotations.factories.javax.NotNullMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.javax.PatternMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.javax.SizeMetaFactory;
@@ -23,12 +23,13 @@ import java.util.Optional;
 public final class AnnotationMetaFactoryHolder {
 
     private AnnotationMetaFactoryHolder() {
+        throw new AssertionError();
     }
 
     /**
      * 注解元数据工厂缓存
      */
-    private static final Map<Class<? extends Annotation>, AnnotationMetaFactory<? extends AnnotationToComment, ? extends Annotation>> ANNOTATION_META_FACTORIES = new LinkedHashMap<>();
+    private static final Map<Class<? extends Annotation>, AnnotationMetaFactory<? extends AnnotationCodeGenCommentExtractor, ? extends Annotation>> ANNOTATION_META_FACTORIES = new LinkedHashMap<>();
 
     static {
         ANNOTATION_META_FACTORIES.put(NotNull.class, new NotNullMetaFactory());
@@ -51,16 +52,21 @@ public final class AnnotationMetaFactoryHolder {
         ANNOTATION_META_FACTORIES.put(PathVariable.class, new PathVariableMetaFactory());
     }
 
-    public static <T extends AnnotationToComment, A extends Annotation> Optional<AnnotationMetaFactory<T, A>> getAnnotationMetaFactory(Annotation annotation) {
+    public static <T extends AnnotationCodeGenCommentExtractor, A extends Annotation> Optional<AnnotationMetaFactory<T, A>> getAnnotationMetaFactory(Annotation annotation) {
         return getAnnotationMetaFactory(annotation.annotationType());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends AnnotationToComment, A extends Annotation> Optional<AnnotationMetaFactory<T, A>> getAnnotationMetaFactory(Class<? extends Annotation> annotationType) {
+    public static <T extends AnnotationCodeGenCommentExtractor, A extends Annotation> Optional<AnnotationMetaFactory<T, A>> getAnnotationMetaFactory(Class<? extends Annotation> annotationType) {
         return Optional.ofNullable((AnnotationMetaFactory<T, A>) ANNOTATION_META_FACTORIES.get(annotationType));
     }
 
-    public static void registerAnnotationMetaFactory(Class<? extends Annotation> annotationType, AnnotationMetaFactory<? extends AnnotationToComment, ? extends Annotation> factory) {
+    public static void registerAnnotationMetaFactory(Class<? extends Annotation> annotationType, AnnotationMetaFactory<? extends AnnotationCodeGenCommentExtractor, ? extends Annotation> factory) {
         ANNOTATION_META_FACTORIES.put(annotationType, factory);
+    }
+
+    public static Optional<AnnotationCodeGenCommentExtractor> getAnnotationMeta(Annotation annotation) {
+        return AnnotationMetaFactoryHolder.getAnnotationMetaFactory(annotation)
+                .map(processor -> processor.factory(annotation));
     }
 }

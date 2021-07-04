@@ -21,7 +21,6 @@ import java.util.Objects;
 @Accessors(chain = true)
 public class JavaFieldMeta extends JavaBaseMeta {
 
-
     /**
      * filed
      */

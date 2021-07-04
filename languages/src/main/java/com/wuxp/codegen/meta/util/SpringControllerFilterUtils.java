@@ -1,7 +1,7 @@
 package com.wuxp.codegen.meta.util;
 
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.parser.JavaClassParser;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +37,9 @@ public final class SpringControllerFilterUtils {
      * @param classMeta 类元数据
      */
     public static void filterMethods(JavaClassMeta classMeta) {
-        //判断是否为spring的控制器
+        // 判断是否为spring的控制器
         Class<?> clazz = classMeta.getClazz();
-        boolean isSpringController = Arrays.stream(SPRING_CONTROLLER_ANNOTATIONS)
-                .map(aClass -> clazz.getAnnotation(aClass) != null)
-                .filter(b -> b).findFirst()
-                .orElse(false);
-        if (!isSpringController) {
+        if (!isSpringController(clazz)) {
             return;
         }
 
@@ -61,6 +57,13 @@ public final class SpringControllerFilterUtils {
                 //过滤掉非mapping的方法
                 .filter(javaMethodMeta -> findSpringControllerMappingAnnotation(javaMethodMeta).isPresent())
                 .toArray(JavaMethodMeta[]::new));
+    }
+
+    private static boolean isSpringController(Class<?> clazz) {
+        return Arrays.stream(SPRING_CONTROLLER_ANNOTATIONS)
+                .map(aClass -> clazz.getAnnotation(aClass) != null)
+                .filter(b -> b).findFirst()
+                .orElse(false);
     }
 
     /**

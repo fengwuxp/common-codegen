@@ -4,6 +4,7 @@ package com.wuxp.codegen.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 
@@ -16,6 +17,11 @@ import java.util.Arrays;
 @Accessors(chain = true)
 public class CommonCodeGenFiledMeta extends CommonBaseMeta {
 
+
+    /**
+     * 原目标 Field
+     */
+    private Field source;
 
     /**
      * 域对象类型列表 大于一个表示有泛型泛型
