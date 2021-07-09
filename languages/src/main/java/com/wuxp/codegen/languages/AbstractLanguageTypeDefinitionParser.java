@@ -15,7 +15,6 @@ import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.reactive.ReactorTypeSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +25,7 @@ import java.lang.reflect.TypeVariable;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
 
@@ -58,7 +58,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
     }
 
-
     private C parseInner(Class<?> source) {
         JavaClassMeta classMeta = javaParser.parse(source);
         preProcess(classMeta);
@@ -75,8 +74,7 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         result.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
         result.setMethodMetas(getCodegenMethodMetas(classMeta));
         result.setFieldMetas(getCodegenFiledMetas(classMeta));
-        result.setDependencies(getClassDependencies(classMeta));
-        return postProcess(result);
+        return resolveAllDependencies(postProcess(result));
     }
 
     private void preProcess(JavaClassMeta classMeta) {
@@ -89,15 +87,14 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     private C newCodeGenClassMetaAndPutCache(Class<?> source) {
         C result = newInstance();
         result.setSource(source);
-        cacheLanguageTypeDefinitionParser.put(result);
-        return result;
+        return cacheLanguageTypeDefinitionParser.put(result);
     }
 
     private CommonCodeGenClassMeta[] getTypeVariables(JavaClassMeta classMeta) {
         return Arrays.stream(classMeta.getTypeVariables())
                 .map(type -> {
                     if (type instanceof Class<?>) {
-                        return dispatch((Class<?>) type);
+                        return dispatch(type);
                     } else if (type instanceof TypeVariable) {
                         return parseTypeVariable(type);
                     } else {
@@ -154,7 +151,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     private Map<String, CommonCodeGenClassMeta[]> getSuperTypeGenericTypeVariables(JavaClassMeta classMeta) {
         /*类型，父类，接口，本身*/
         Map<String, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
-
         // 处理超类上面的类型变量
         classMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
             if (ObjectUtils.isEmpty(val)) {
@@ -165,7 +161,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
             if (typescriptClassMeta == null) {
                 return;
             }
-
             //处理超类上的类型变量 例如 A<T,E> extends B<C<T>,E> 这种情况
             CommonCodeGenClassMeta[] typeVariables = Arrays.stream(val)
                     .map(this::dispatchOfNullable)
@@ -177,66 +172,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         });
         return superTypeVariables;
     }
-
-    private Map<String, C> getClassDependencies(JavaClassMeta classMeta) {
-        Map<String, C> metaDependencies = resolveDependencies(classMeta);
-        this.recursionResolveDependencies(getMethodDependencies(classMeta)).forEach(metaDependencies::put);
-        metaDependencies.putAll(getSupperTypeVariableDependencies(classMeta));
-        // 如果依赖中包含自身 则排除，用于打断循环依赖
-        metaDependencies.remove(classMeta.getClazz().getSimpleName());
-        return metaDependencies;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, C> resolveDependencies(JavaClassMeta classMeta) {
-        return classMeta.getDependencyList()
-                .stream()
-                .map(this::dispatch)
-                .filter(Objects::nonNull)
-                .map(result -> (C) result)
-                .collect(Collectors.toMap(CommonBaseMeta::getName, value -> value));
-    }
-
-    private Set<Class<?>> getMethodDependencies(JavaClassMeta classMeta) {
-        return JavaClassParser.fetchClassMethodDependencies(classMeta.getClazz(), classMeta.getMethodMetas()).stream().
-                filter(Objects::nonNull)
-                // 忽略所有接口的依赖
-                .filter(clazz -> !clazz.isInterface())
-                // 忽略超类的依赖
-                .filter(clazz -> !clazz.equals(classMeta.getSuperClass()))
-                .collect(Collectors.toSet());
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Map<String, C> recursionResolveDependencies(Set<Class<?>> dependencies) {
-        return dependencies.stream()
-                .map(this::dispatch)
-                .filter(Objects::nonNull)
-                .map(result -> (C) result)
-                .map(meta -> {
-                    List<C> dependencyMetas = new ArrayList<>((Collection<C>) meta.getDependencies().values());
-                    dependencyMetas.add(meta);
-                    return dependencyMetas;
-                })
-                .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
-                .filter(CommonCodeGenClassMeta::getNeedImport)
-                .distinct()
-                .collect(Collectors.toMap(C::getName, value -> value));
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, C> getSupperTypeVariableDependencies(JavaClassMeta classMeta) {
-        return getSuperTypeGenericTypeVariables(classMeta).values()
-                .stream()
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
-                .filter(typeVariable -> JavaTypeUtils.isNoneJdkComplex(typeVariable.getSource()))
-                .map(typeVariable -> (C) typeVariable)
-                .collect(Collectors.toMap(C::getName, value -> value));
-    }
-
 
     private CommonCodeGenMethodMeta[] getCodegenMethodMetas(JavaClassMeta classMeta) {
         return Arrays.stream(classMeta.getMethodMetas())
@@ -308,5 +243,70 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return fieldMeta;
     }
 
+    private C resolveAllDependencies(C meta) {
+        meta.setDependencies(getAllDependencies(meta));
+        return meta;
+    }
 
+    private Map<String, ? extends CommonCodeGenClassMeta> getAllDependencies(C meta) {
+        Map<String, CommonCodeGenClassMeta> result = new LinkedHashMap<>(collectDependencies(Stream.of(meta.getSuperClass())));
+        result.putAll(getFieldMetaDependencies(meta));
+        result.putAll(getMethodMetaDependencies(meta));
+        result.putAll(getMethodParameterDependencies(meta));
+        result.putAll(getTypeVariablesDependencies(meta));
+        result.putAll(getSupperTypeVariablesDependencies(meta));
+        result.putAll(flatMapDependencies(result));
+        return result;
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> getFieldMetaDependencies(C meta) {
+        return resolveDependencies(Arrays.stream(meta.getFieldMetas())
+                .map(CommonCodeGenFiledMeta::getFiledTypes));
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> getMethodMetaDependencies(C meta) {
+        return resolveDependencies(Arrays.stream(meta.getMethodMetas())
+                .map(CommonCodeGenMethodMeta::getReturnTypes));
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> getMethodParameterDependencies(C meta) {
+        return collectDependencies(Arrays.stream(meta.getMethodMetas())
+                .map(CommonCodeGenMethodMeta::getParams)
+                .filter(Objects::nonNull)
+                .map(Map::values)
+                .flatMap(Collection::stream));
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> getTypeVariablesDependencies(C meta) {
+        return resolveDependencies(Arrays.stream(meta.getMethodMetas())
+                .map(CommonCodeGenMethodMeta::getTypeVariables));
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> getSupperTypeVariablesDependencies(C meta) {
+        Map<String, ? extends CommonCodeGenClassMeta[]> superTypeVariables = meta.getSuperTypeVariables();
+        return resolveDependencies(superTypeVariables.values().stream());
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> resolveDependencies(Stream<? extends CommonCodeGenClassMeta[]> classMetaStream) {
+        return collectDependencies(classMetaStream
+                .filter(Objects::nonNull)
+                .map(Arrays::asList)
+                .flatMap(Collection::stream));
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> collectDependencies(Stream<? extends CommonCodeGenClassMeta> classMetaStream) {
+        return classMetaStream
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(CommonCodeGenClassMeta::getName, value -> value));
+    }
+
+    private Map<String, ? extends CommonCodeGenClassMeta> flatMapDependencies(Map<String, ? extends CommonCodeGenClassMeta> dependencies) {
+        return collectDependencies(dependencies.values()
+                .stream()
+                .map(CommonCodeGenClassMeta::getDependencies)
+                .filter(Objects::nonNull)
+                .map(Map::values)
+                .flatMap(Collection::stream));
+
+    }
 }

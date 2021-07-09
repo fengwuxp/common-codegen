@@ -50,8 +50,8 @@ public class CacheLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta>
         return delegate.parseTypeVariable(type);
     }
 
-    public void put(C meta) {
-        resultCaches.put(meta.getSource(), meta);
+    public C put(C meta) {
+       return resultCaches.put(meta.getSource(), meta);
     }
 
     private C getCodeGenClassMeta(Class<?> clazz) {
