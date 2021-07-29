@@ -64,24 +64,6 @@ public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
     }
 
     @Override
-    protected TypescriptFieldMate converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
-        if (javaFieldMeta.existAnnotation(Hidden.class)) {
-            return null;
-        }
-        TypescriptFieldMate typescriptFieldMate = super.converterField(javaFieldMeta, classMeta);
-        Class<?>[] types = javaFieldMeta.getTypes();
-        if (types.length > 2 && JavaTypeUtils.isMap(types[0])) {
-            if (JavaTypeUtils.isEnum(types[1])) {
-                // key 是枚举类型 重新设置key的类型
-                // Omit<Partial<Record<keyof typeof GoodsStatus, T>>, "prototype">
-                typescriptFieldMate.getFiledTypes()[0] = TypescriptClassMeta.ENUM_KEY_RECORD;
-            }
-        }
-
-        return typescriptFieldMate;
-    }
-
-    @Override
     protected void enhancedProcessingMethod(CommonCodeGenMethodMeta methodMeta, JavaMethodMeta javaMethodMeta, JavaClassMeta classMeta) {
 
         if (!javaMethodMeta.existAnnotation(Parameters.class)) {

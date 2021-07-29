@@ -84,12 +84,6 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     public static final TypescriptClassMeta RECORD = new TypescriptClassMeta("Record", "Record<K,V>", ClassType.CLASS, false, OBJECT);
 
     /**
-     * 枚举key的 record
-     */
-    public static final TypescriptClassMeta ENUM_KEY_RECORD = new TypescriptClassMeta("Enum_Key_Record", "Enum_Key_Record<K,V>",
-            ClassType.CLASS, false, OBJECT);
-
-    /**
      * 枚举类型
      */
     public static final TypescriptClassMeta ENUM = new TypescriptClassMeta("Enum", null, ClassType.INTERFACE, false, null, "Enum");
@@ -116,6 +110,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
         ENUM.setNeedGenerate(true);
 
     }
+
+    private String enumTypes;
 
     public TypescriptClassMeta() {
     }
@@ -145,5 +141,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
         this.needImport = false;
     }
 
-
+    @Override
+    public String getTypeIdent() {
+        return enumTypes == null ? name : enumTypes;
+    }
 }

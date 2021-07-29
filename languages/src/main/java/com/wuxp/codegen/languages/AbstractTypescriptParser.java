@@ -1,14 +1,16 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.factory.TypescriptLanguageMetaInstanceFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
@@ -18,7 +20,6 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
-import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,6 +55,26 @@ public abstract class AbstractTypescriptParser extends
         codeGenMatchers.add(clazz -> clazz.isEnum() || JavaTypeUtils.isNoneJdkComplex(clazz) || clazz.isAnnotation());
     }
 
+    @Override
+    public TypescriptClassMeta parse(Class<?> source) {
+        TypescriptClassMeta result = super.parse(source);
+        if (result == null) {
+            return null;
+        }
+        handleEnumTypes(result);
+        return result;
+    }
+
+    private void handleEnumTypes(TypescriptClassMeta result) {
+        if (result.getEnumConstants() != null) {
+            String enumTypes = Arrays.stream(result.getEnumConstants())
+                    .map(CommonCodeGenFiledMeta::getName)
+                    .map(name -> String.format("'%s'", name))
+                    .collect(Collectors.joining(" | "));
+            result.setEnumTypes(enumTypes);
+            result.setNeedImport(false);
+        }
+    }
 
     @Override
     protected TypescriptFieldMate converterField(JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
@@ -138,18 +159,6 @@ public abstract class AbstractTypescriptParser extends
         return commonCodeGenMethodMeta;
     }
 
-    @Override
-    protected void enhancedProcessingField(TypescriptFieldMate fieldMeta, JavaFieldMeta javaFieldMeta, JavaClassMeta classMeta) {
-        if (javaFieldMeta == null) {
-            return;
-        }
-        Class<?>[] types = javaFieldMeta.getTypes();
-        boolean isEnumField = types != null && types.length > 0 && types[0].isEnum();
-        if (isEnumField) {
-            // 设置为字符串
-            fieldMeta.setFiledTypes(new CommonCodeGenClassMeta[]{TypescriptClassMeta.STRING});
-        }
-    }
 
     @Override
     protected void enhancedProcessingClass(TypescriptClassMeta methodMeta, JavaClassMeta classMeta) {

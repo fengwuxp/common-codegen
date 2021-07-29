@@ -3,6 +3,8 @@ package com.wuxp.codegen.swagger2.example.controller;
 
 import com.wuxp.codegen.swagger2.example.domain.Order;
 import com.wuxp.codegen.swagger2.example.domain.User;
+import com.wuxp.codegen.swagger2.example.enums.ExampleEnum;
+import com.wuxp.codegen.swagger2.example.enums.Sex;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -111,12 +113,27 @@ public class UserController {
 
     @ApiOperation(value = "test3", notes = "test3")
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    @RequestMapping(value = "/test3", method = RequestMethod.GET)
     public Map<String, Object> test3(Long id) {
         HashMap<String, Object> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("userName", "id");
         stringStringHashMap.put("aH2", "112");
         return stringStringHashMap;
+    }
+
+
+    @ApiOperation(value = "test4", notes = "test4")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
+    @RequestMapping(value = "/test4", method = RequestMethod.GET)
+    public Map<Sex, ExampleEnum> test4(Long id) {
+        return Collections.emptyMap();
+    }
+
+    @ApiOperation(value = "test5", notes = "test5")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long", paramType = "path")
+    @RequestMapping(value = "/test5", method = RequestMethod.GET)
+    public Sex test5(Long id) {
+        return Sex.MAN;
     }
 
 }

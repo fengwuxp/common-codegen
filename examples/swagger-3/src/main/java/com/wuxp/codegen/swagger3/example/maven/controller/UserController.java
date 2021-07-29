@@ -96,13 +96,13 @@ public class UserController {
 
 
     @RequestMapping(value = "/test2", method = RequestMethod.GET)
-    public ServiceResponse<List<PageInfo<User>>> test4(Long id) {
+    public ServiceResponse<List<PageInfo<User>>> test2(Long id) {
 
         return null;
     }
 
-    @RequestMapping(value = "/test5", method = RequestMethod.GET)
-    public Map<PageInfo<User>, List<PageInfo<User>>> test5(Long id) {
+    @RequestMapping(value = "/test4", method = RequestMethod.GET)
+    public Map<PageInfo<User>, List<PageInfo<User>>> test4(Long id) {
         return null;
     }
 
@@ -127,5 +127,10 @@ public class UserController {
     public Map<String[][], String[]>[][][] test9(Long id) {
 
         return null;
+    }
+
+    @RequestMapping(value = "/test5", method = RequestMethod.GET)
+    public Sex test5(Long id) {
+        return Sex.MAN;
     }
 }
