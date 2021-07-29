@@ -24,10 +24,10 @@ public class DispatchCodeGenElementMatcher implements CodeGenElementMatcher<Obje
 
     @Override
     public boolean matches(Object source) {
-        return elementMatchers.get(source.getClass()).matches(source);
+        return elementMatchers.getOrDefault(source.getClass(), key -> true).matches(source);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addCodeGenElementMatcher(Class<?> clazz, CodeGenElementMatcher codeGenElementMatcher) {
         elementMatchers.put(clazz, codeGenElementMatcher);
     }

@@ -2,6 +2,7 @@ package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.annotations.LanguageAnnotationParser;
 import com.wuxp.codegen.comment.LanguageCommentDefinitionDescriber;
+import com.wuxp.codegen.core.macth.DispatchCodeGenElementMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
@@ -47,15 +48,25 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
      */
     private final PackageMapStrategy packageMapStrategy;
 
+    private final DispatchCodeGenElementMatcher dispatchCodeGenElementMatcher;
+
+
     protected AbstractLanguageTypeDefinitionParser(PackageMapStrategy packageMapStrategy) {
         this.packageMapStrategy = packageMapStrategy;
         this.javaParser = JAVA_CLASS_PARSER;
         this.cacheLanguageTypeDefinitionParser = new CacheLanguageTypeDefinitionParser<>(this);
+        this.dispatchCodeGenElementMatcher = DispatchCodeGenElementMatcher.getInstance();
     }
 
     @Override
     public C parse(Class<?> source) {
-        return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
+        if (source == null) {
+            return null;
+        }
+        if (dispatchCodeGenElementMatcher.matches(source)) {
+            return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
+        }
+        return null;
     }
 
     private C parseInner(Class<?> source) {

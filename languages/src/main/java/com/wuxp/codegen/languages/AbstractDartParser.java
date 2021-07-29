@@ -2,7 +2,6 @@ package com.wuxp.codegen.languages;
 
 
 import com.wuxp.codegen.core.CodeDetect;
-import com.wuxp.codegen.core.parser.GenericParser;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;

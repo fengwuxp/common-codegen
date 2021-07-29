@@ -15,8 +15,11 @@ import java.util.List;
  * @param <C>
  * @author wxup
  */
-public interface LanguageParser<C extends CommonCodeGenClassMeta> extends GenericParser<C, Class<?>> {
+public interface LanguageParser<C extends CommonCodeGenClassMeta> {
 
+
+
+    C parse(Class<?> source);
 
     /**
      * 获取不同语言元数据实例的创建工厂

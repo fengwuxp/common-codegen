@@ -3,15 +3,12 @@ package com.wuxp.codegen.languages.typescript;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
-import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
-import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
+import com.wuxp.codegen.core.macth.DispatchCodeGenElementMatcher;
+import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.parser.SimpleLanguageElementDefinitionDispatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.languages.MappingLanguageTypeDefinitionParser;
-import com.wuxp.codegen.languages.MatchingLanguageElementDefinitionParser;
 import com.wuxp.codegen.languages.examples.ExampleController;
-import com.wuxp.codegen.mapping.TypescriptTypeMapping;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import org.junit.jupiter.api.Assertions;
@@ -28,9 +25,17 @@ class TypeScriptDefinitionParserTest {
         CodegenConfigHolder.setConfig(codegenConfig);
         TypeScriptDefinitionParser typeScriptDefinitionParser = new TypeScriptDefinitionParser(getTestPackageMapStrategy());
         this.definitionParser = wrapperDefinitionParser(typeScriptDefinitionParser);
-        SimpleLanguageElementDefinitionDispatcher dispatcher = SimpleLanguageElementDefinitionDispatcher.getInstance();
-        dispatcher.addLanguageElementDefinitionParser(Class.class, this.definitionParser);
-        dispatcher.addLanguageElementDefinitionParser(JavaMethodMeta.class, new TypeScriptMethodDefinitionParser(getTestPackageMapStrategy()));
+        configLanguageElementDefinitionDispatcher();
+        DispatchCodeGenElementMatcher.getInstance().addCodeGenElementMatcher(Class.class, JavaClassElementMatcher.builder()
+                .includePackages("com.wuxp.codegen.languages.examples")
+                .build());
+
+    }
+
+    private void configLanguageElementDefinitionDispatcher() {
+        SimpleLanguageElementDefinitionDispatcher languageElementDefinitionDispatcher = SimpleLanguageElementDefinitionDispatcher.getInstance();
+        languageElementDefinitionDispatcher.addLanguageElementDefinitionParser(Class.class, this.definitionParser);
+        languageElementDefinitionDispatcher.addLanguageElementDefinitionParser(JavaMethodMeta.class, new TypeScriptMethodDefinitionParser(getTestPackageMapStrategy()));
     }
 
     private PackageMapStrategy getTestPackageMapStrategy() {
@@ -53,9 +58,7 @@ class TypeScriptDefinitionParserTest {
     }
 
     private LanguageTypeDefinitionParser<TypescriptClassMeta> wrapperDefinitionParser(LanguageTypeDefinitionParser<TypescriptClassMeta> delegate) {
-        new MatchingLanguageElementDefinitionParser<TypescriptClassMeta>(delegate);
-//        new MappingLanguageTypeDefinitionParser<>(delegate,new TypescriptTypeMapping());
-        return null;
+        return delegate;
     }
 
     @Test

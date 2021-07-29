@@ -1,5 +1,7 @@
 package com.wuxp.codegen.core.util;
 
+import org.springframework.util.Assert;
+
 import java.io.InputStream;
 import java.lang.reflect.*;
 import java.nio.charset.StandardCharsets;
@@ -92,20 +94,18 @@ public final class ReflectUtils {
      * Grok the bytecode to get the declared order
      */
     public static Method[] getDeclaredMethodsInOrder(Class clazz) {
+        ClassLoader classLoader = clazz.getClassLoader();
+        Assert.notNull(classLoader, clazz.getName() + " class loader must not null");
         Method[] methods = null;
         try {
             String resource = clazz.getName().replace('.', '/') + ".class";
-
             methods = clazz.getDeclaredMethods();
-
-            InputStream is = clazz.getClassLoader()
-                    .getResourceAsStream(resource);
-
+            InputStream is = classLoader.getResourceAsStream(resource);
             if (is == null) {
                 return methods;
             }
 
-            java.util.Arrays.sort(methods, new ByLength());
+            Arrays.sort(methods, new ByLength());
             ArrayList<byte[]> blocks = new ArrayList<byte[]>();
             int length = 0;
             for (; ; ) {
@@ -113,7 +113,7 @@ public final class ReflectUtils {
                 int n = is.read(block);
                 if (n > 0) {
                     if (n < block.length) {
-                        block = java.util.Arrays.copyOf(block, n);
+                        block = Arrays.copyOf(block, n);
                     }
                     length += block.length;
                     blocks.add(block);

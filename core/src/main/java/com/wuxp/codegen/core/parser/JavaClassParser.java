@@ -360,7 +360,6 @@ public class JavaClassParser {
      * @return 方法列表
      */
     JavaMethodMeta[] getMethodMetas(Class<?> clazz, boolean onlyPublic) {
-
         Method[] methods = ReflectUtils.getDeclaredMethodsInOrder(clazz);
         if (onlyPublic) {
             //只获取public的方法
