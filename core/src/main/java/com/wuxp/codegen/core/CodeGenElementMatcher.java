@@ -1,6 +1,8 @@
 package com.wuxp.codegen.core;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 匹配用于生成代码 元素
@@ -18,7 +20,9 @@ public interface CodeGenElementMatcher<S> {
      */
     boolean matches(S source);
 
-    default boolean matches(Collection<S> sources) {
-        return sources.stream().anyMatch(this::matches);
+    default List<S> filter(Collection<S> sources) {
+        return sources.stream()
+                .filter(this::matches)
+                .collect(Collectors.toList());
     }
 }

@@ -23,23 +23,26 @@ public interface LanguageElementDefinitionFactory<C extends CommonBaseMeta> {
      * 生成一个类型变量
      * {@link java.lang.reflect.TypeVariable}
      *
-     * @return
+     * @return 类型变量
      */
-    <M extends CommonCodeGenClassMeta> M newTypeVariableInstance();
+    CommonCodeGenClassMeta newTypeVariableInstance();
 
-    default <M extends CommonCodeGenClassMeta> M parseTypeVariable(Type type) {
-        M classInstance = newTypeVariableInstance();
+    /**
+     * 解析类型上的类型变量 例如：A extends C<F,E,G>{}
+     *
+     * @return 类型变量
+     */
+    default CommonCodeGenClassMeta parseTypeVariable(Type type) {
+        CommonCodeGenClassMeta classInstance = newTypeVariableInstance();
         classInstance.setName(type.getTypeName());
         classInstance.setGenericDescription(type.getTypeName());
         return classInstance;
     }
 
-    @SuppressWarnings("unchecked")
-    default <M extends CommonCodeGenClassMeta> List<M> parseTypeVariables(Collection<? extends Type> typeVariables) {
+    default List<CommonCodeGenClassMeta> parseTypeVariables(Collection<? extends Type> typeVariables) {
         return typeVariables.stream()
                 .filter(Objects::nonNull)
                 .map(this::parseTypeVariable)
-                .map(element -> (M) element)
                 .collect(Collectors.toList());
     }
 

@@ -13,8 +13,7 @@ import java.util.Optional;
  */
 public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
         extends SimpleLanguageDefinitionPostProcessor<C>,
-        LanguageElementDefinitionDispatcher,
-        LanguageElementDefinitionFactory<C> {
+        LanguageElementDefinitionDispatcher{
 
     /**
      * 解析一个 element

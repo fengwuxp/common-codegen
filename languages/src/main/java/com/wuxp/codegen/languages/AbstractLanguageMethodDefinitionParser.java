@@ -64,6 +64,17 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         return postProcess(result);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public M newInstance() {
+        return (M) new CommonCodeGenMethodMeta();
+    }
+
+    @Override
+    public CommonCodeGenClassMeta newTypeVariableInstance() {
+        throw new UnsupportedOperationException("");
+    }
+
     /**
      * @return 是否需要合并方法的请求参数
      */
@@ -132,7 +143,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
     private M margeParamsAndParseMethod(JavaMethodMeta methodMeta) {
 
-        if (isValidComplexParameterOnSignle(methodMeta)) {
+        if (isSingleComplexParameter(methodMeta)) {
             // 方法只存在一个复杂参数
             return parseMethod(methodMeta);
         }
@@ -140,7 +151,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         // 用于缓存合并的参数 filedList，合并复杂参数
         final Set<CommonCodeGenFiledMeta> filedMetas = new LinkedHashSet<>(resolveComplexParameters(methodMeta));
         // 合并简单参数
-        filedMetas.addAll(resolveSimpleParameters(methodMeta));
+        filedMetas.addAll(meagreSimpleParameters(methodMeta));
 
         // 参数的元数据类型信息
         final CommonCodeGenClassMeta argsClassMeta = new CommonCodeGenClassMeta();
@@ -178,7 +189,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 .collect(Collectors.toMap(CommonCodeGenClassMeta::getName, value -> value));
     }
 
-    private boolean isValidComplexParameterOnSignle(JavaMethodMeta methodMeta) {
+    private boolean isSingleComplexParameter(JavaMethodMeta methodMeta) {
         return methodMeta.getParams()
                 .values()
                 .stream()
@@ -191,7 +202,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     // 合并简单参数
-    private List<CommonCodeGenFiledMeta> resolveSimpleParameters(JavaMethodMeta methodMeta) {
+    private List<CommonCodeGenFiledMeta> meagreSimpleParameters(JavaMethodMeta methodMeta) {
         List<CommonCodeGenFiledMeta> results = new ArrayList<>();
         methodMeta.getParams().forEach((parameterName, classes) -> {
             // 注解

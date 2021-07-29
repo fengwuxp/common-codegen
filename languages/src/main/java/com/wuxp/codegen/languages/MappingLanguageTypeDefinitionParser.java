@@ -4,15 +4,12 @@ import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
  * @author wuxp
  */
-public class MappingLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta> implements LanguageTypeDefinitionParser<C> {
-
-    private final LanguageTypeDefinitionParser<C> delegate;
+public class MappingLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta> extends DelegateLanguageTypeDefinitionParser<C> {
 
     /**
      * 映射java类型和其他语言类型之间的关系
@@ -20,7 +17,7 @@ public class MappingLanguageTypeDefinitionParser<C extends CommonCodeGenClassMet
     private final AbstractLanguageTypeMapping<C> languageTypeMapping;
 
     public MappingLanguageTypeDefinitionParser(LanguageTypeDefinitionParser<C> delegate, AbstractLanguageTypeMapping<C> languageTypeMapping) {
-        this.delegate = delegate;
+        super(delegate);
         this.languageTypeMapping = languageTypeMapping;
     }
 
@@ -35,21 +32,7 @@ public class MappingLanguageTypeDefinitionParser<C extends CommonCodeGenClassMet
         if (result != null) {
             return result;
         }
-        return delegate.parse(source);
+        return getDelegate().parse(source);
     }
 
-    @Override
-    public C newInstance() {
-        return delegate.newInstance();
-    }
-
-    @Override
-    public <M extends CommonCodeGenClassMeta> M newTypeVariableInstance() {
-        return delegate.newTypeVariableInstance();
-    }
-
-    @Override
-    public <M extends CommonCodeGenClassMeta> M parseTypeVariable(Type type) {
-        return delegate.parseTypeVariable(type);
-    }
 }

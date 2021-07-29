@@ -5,6 +5,7 @@ import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -26,26 +27,26 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
     private static final int MAX_EXECUTE_COMMAND_TIMEOUT_MILLISECONDS = 3500;
 
     /**
-     * 是否支持 prettier命令行工具
+     * 是否启用 formatter
      */
-    protected final boolean support;
+    protected final boolean enabledFormatter;
 
     /**
      * 用于执行命令的 Executor
      */
     protected ThreadPoolExecutor executor;
 
-    private final List<Future<?>> futures;
+    private final List<Future<?>> futureTasks;
 
     protected AbstractCommandCodeFormatter() {
-        this.support = this.preCheckEnv();
+        this.enabledFormatter = this.preCheckEnv();
         this.init();
-        this.futures = new ArrayList<>(512);
+        this.futureTasks = new ArrayList<>(512);
     }
 
     @Override
     public void format(String filepath) {
-        if (!support) {
+        if (!enabledFormatter) {
             return;
         }
         if (executor == null) {
@@ -58,7 +59,7 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
                 runCommand(genFormatCommand(filepath));
                 CodegenConfigHolder.clear();
             });
-            this.futures.add(future);
+            this.futureTasks.add(future);
         }
     }
 
@@ -73,26 +74,36 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
      */
     @Override
     public void waitTaskCompleted() {
-        if (futures == null || futures.isEmpty()) {
+        if (CollectionUtils.isEmpty(futureTasks)) {
             return;
         }
-        int count = 0;
+        int taskTotal = countFutureTaskTotal();
+        if (log.isInfoEnabled()) {
+            log.info("共执行的异步任务数量：{}", taskTotal);
+        }
+        futureTasks.clear();
+
+    }
+
+    private int countFutureTaskTotal() {
         try {
-            for (Future<?> future : futures) {
-                future.get();
-                count++;
-            }
+            return countFutureTask();
         } catch (InterruptedException exception) {
             log.error("调用命令行格式代码失败：{}", exception.getMessage(), exception);
             Thread.currentThread().interrupt();
         } catch (ExecutionException exception) {
             log.error("调用命令行格式代码发生线程中断异常：{}", exception.getMessage(), exception);
         }
-        if (log.isInfoEnabled()) {
-            log.info("共执行的异步任务数量：{}", count);
-        }
-        futures.clear();
+        return -1;
+    }
 
+    private int countFutureTask() throws InterruptedException, ExecutionException {
+        int count = 0;
+        for (Future<?> future : futureTasks) {
+            future.get();
+            count++;
+        }
+        return count;
     }
 
     /**

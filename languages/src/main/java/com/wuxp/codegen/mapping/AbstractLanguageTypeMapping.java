@@ -52,7 +52,6 @@ public abstract class AbstractLanguageTypeMapping<C extends CommonCodeGenClassMe
                                           Map<Class<?>, CommonCodeGenClassMeta> customizeTypeMappingMap,
                                           Map<Class<?>, Class<?>[]> customizeJavaMappingMap) {
         this.languageParser = languageParser;
-
         Map<Class<?>, CommonCodeGenClassMeta> languageBaseTypeMappingMap = this.getBaseTypeMappingMap();
         final Map<Class<?>, CommonCodeGenClassMeta> baseTypeMap = new LinkedHashMap<>(baseTypeMappingMap);
         languageBaseTypeMappingMap.forEach((key, val) -> {

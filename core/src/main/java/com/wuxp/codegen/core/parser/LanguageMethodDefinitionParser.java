@@ -6,6 +6,7 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 /**
  * @author wuxp
  */
-public interface LanguageMethodDefinitionParser<C extends CommonCodeGenMethodMeta> extends LanguageElementDefinitionParser<C, JavaMethodMeta> {
+public interface LanguageMethodDefinitionParser<M extends CommonCodeGenMethodMeta> extends LanguageElementDefinitionParser<M, JavaMethodMeta>,
+        LanguageElementDefinitionFactory<M> {
 
 }

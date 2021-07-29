@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * @author wuxp
  */
-public class JavaClassMetaPostProcessor implements LanguageDefinitionPostProcessor<JavaCodeGenClassMeta> {
+public class JavaCodeGenMetaPostProcessor implements LanguageDefinitionPostProcessor<JavaCodeGenClassMeta> {
 
     /**
      * 使用异步的方式
      */
     private final boolean useRxJava;
 
-    public JavaClassMetaPostProcessor(boolean useRxJava) {
+    public JavaCodeGenMetaPostProcessor(boolean useRxJava) {
         this.useRxJava = useRxJava;
     }
 

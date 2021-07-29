@@ -1,6 +1,8 @@
 package com.wuxp.codegen.core;
 
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import org.apache.commons.io.FileUtils;
+import org.springframework.util.Assert;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -23,14 +25,12 @@ public interface CodeFormatter extends TaskWaiter {
         Charset charset = StandardCharsets.UTF_8;
         try {
             File sourceFile = new File(filepath);
-            if (!sourceFile.exists() || !sourceFile.canRead()) {
-                return;
-            }
+            Assert.isTrue(sourceFile.exists(), String.format("filepath = %s 的文件不存在", filepath));
+            Assert.isTrue(sourceFile.canRead(), String.format("filepath = %s 的文件不可读", filepath));
             String sourcecode = FileUtils.readFileToString(sourceFile, charset);
-            String result = format(sourcecode, charset);
-            FileUtils.write(sourceFile, result, charset);
-        } catch (Exception e) {
-            e.printStackTrace();
+            FileUtils.write(sourceFile, format(sourcecode, charset), charset);
+        } catch (Exception exception) {
+            throw new CodegenRuntimeException(exception);
         }
     }
 

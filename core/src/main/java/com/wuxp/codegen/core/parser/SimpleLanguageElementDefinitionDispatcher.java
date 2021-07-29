@@ -1,5 +1,6 @@
 package com.wuxp.codegen.core.parser;
 
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import org.springframework.lang.Nullable;
 
@@ -15,31 +16,40 @@ public class SimpleLanguageElementDefinitionDispatcher implements LanguageElemen
     private static final SimpleLanguageElementDefinitionDispatcher INSTANCE = new SimpleLanguageElementDefinitionDispatcher();
 
     @SuppressWarnings("rawtypes")
-    private final Map<Class<?>, LanguageElementDefinitionParser> parsers;
+    private final Map<Class<?>, LanguageElementDefinitionParser> parserCaches;
 
     private SimpleLanguageElementDefinitionDispatcher() {
-        this.parsers = new HashMap<>();
+        this.parserCaches = new HashMap<>();
     }
 
     public static SimpleLanguageElementDefinitionDispatcher getInstance() {
         return INSTANCE;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends CommonBaseMeta> Optional<T> dispatchOfNullable(Object value) {
-        return parsers.get(value.getClass()).parseOfNullable(value);
+        LanguageElementDefinitionParser<T, Object> elementDefinitionParser = getDefinitionParser(value);
+        return elementDefinitionParser.parseOfNullable(value);
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public <T extends CommonBaseMeta> T dispatch(Object value) {
-        return (T) parsers.get(value.getClass()).parse(value);
+        LanguageElementDefinitionParser<T, Object> elementDefinitionParser = getDefinitionParser(value);
+        return elementDefinitionParser.parse(value);
     }
 
     @SuppressWarnings("rawtypes")
     public void addLanguageElementDefinitionParser(Class<?> clazz, LanguageElementDefinitionParser languageEnhancedProcessor) {
-        parsers.put(clazz, languageEnhancedProcessor);
+        parserCaches.put(clazz, languageEnhancedProcessor);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends CommonBaseMeta> LanguageElementDefinitionParser<T, Object> getDefinitionParser(Object value) {
+        LanguageElementDefinitionParser<T, Object> result = parserCaches.get(value.getClass());
+        if (result == null) {
+            throw new CodegenRuntimeException(String.format("未找到 value Class =%s 的 LanguageElementDefinitionParser", value.getClass().getName()));
+        }
+        return result;
     }
 }
