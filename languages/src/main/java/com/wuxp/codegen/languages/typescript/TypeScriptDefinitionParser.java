@@ -16,13 +16,13 @@ public class TypeScriptDefinitionParser extends AbstractLanguageTypeDefinitionPa
     }
 
     @Override
-    public TypescriptClassMeta newInstance() {
+    public TypescriptClassMeta newElementInstance() {
         return new TypescriptClassMeta();
     }
 
     @Override
     public CommonCodeGenClassMeta newTypeVariableInstance() {
-        TypescriptClassMeta typescriptClassMeta = newInstance();
+        TypescriptClassMeta typescriptClassMeta = newElementInstance();
         BeanUtils.copyProperties(CommonCodeGenClassMeta.TYPE_VARIABLE, typescriptClassMeta);
         typescriptClassMeta.setSuperClass(TypescriptClassMeta.OBJECT)
                 .setNeedGenerate(false)

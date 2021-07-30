@@ -17,7 +17,7 @@ public interface LanguageElementDefinitionFactory<C extends CommonBaseMeta> {
     /**
      * @return 实例化一个 Element Meta Object
      */
-    C newInstance();
+    C newElementInstance();
 
     /**
      * 生成一个类型变量

@@ -66,7 +66,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
     @Override
     @SuppressWarnings("unchecked")
-    public M newInstance() {
+    public M newElementInstance() {
         return (M) new CommonCodeGenMethodMeta();
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 codeGenParamAnnotations.put(parameterName, parameterMeta.getAnnotations());
             });
         }
-        M result = newInstance();
+        M result = newElementInstance();
         result.setParams(codeGenParams)
                 .setParamAnnotations(codeGenParamAnnotations);
         return result;
@@ -169,7 +169,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
         //请求参数名称，固定为req
         params.put(DEFAULT_MARGE_PARAMS_NAME, argsClassMeta);
-        M result = newInstance();
+        M result = newElementInstance();
         result.setParams(params)
                 .setParamAnnotations(resolveCodegenParamAnnotations(filedMetas));
         return result;

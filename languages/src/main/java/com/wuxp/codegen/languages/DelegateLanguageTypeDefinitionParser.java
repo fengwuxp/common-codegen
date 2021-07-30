@@ -7,7 +7,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 /**
  * @author wuxp
  */
-public abstract class DelegateLanguageTypeDefinitionParser <C extends CommonCodeGenClassMeta> implements LanguageTypeDefinitionParser<C> {
+public abstract class DelegateLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta> implements LanguageTypeDefinitionParser<C> {
 
     private final LanguageTypeDefinitionParser<C> delegate;
 
@@ -16,13 +16,13 @@ public abstract class DelegateLanguageTypeDefinitionParser <C extends CommonCode
     }
 
     @Override
-    public C newInstance() {
-        return delegate.newInstance();
+    public C newElementInstance() {
+        return getDelegate().newElementInstance();
     }
 
     @Override
     public CommonCodeGenClassMeta newTypeVariableInstance() {
-        return delegate.newTypeVariableInstance();
+        return getDelegate().newTypeVariableInstance();
     }
 
     public LanguageTypeDefinitionParser<C> getDelegate() {

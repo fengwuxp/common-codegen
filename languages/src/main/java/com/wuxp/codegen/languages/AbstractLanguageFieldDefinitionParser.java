@@ -21,7 +21,7 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
 
     @Override
     public F parse(JavaFieldMeta fieldMeta) {
-        F result = newInstance();
+        F result = newElementInstance();
         result.setSource(fieldMeta.getField());
         result.setAccessPermission(fieldMeta.getAccessPermission());
         result.setEnumConstant(fieldMeta.getIsEnumConstant());

@@ -1,5 +1,6 @@
 package com.wuxp.codegen.mapping;
 
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -48,7 +49,7 @@ public final class LanguageTypeMappingFactory {
       case TYPESCRIPT:
         return new TypescriptTypeMapping(languageParser, baseTypeMapping, customizeTypeMapping, customizeJavaMapping);
       default:
-        throw new RuntimeException("not support language");
+        throw new CodegenRuntimeException("not support language");
     }
   }
 }

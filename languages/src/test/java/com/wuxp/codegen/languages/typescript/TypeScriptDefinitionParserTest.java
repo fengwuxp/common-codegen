@@ -9,6 +9,7 @@ import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.parser.SimpleLanguageElementDefinitionDispatcher;
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.examples.ExampleController;
+import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import org.junit.jupiter.api.Assertions;
@@ -17,14 +18,14 @@ import org.junit.jupiter.api.Test;
 
 class TypeScriptDefinitionParserTest {
 
-    private LanguageTypeDefinitionParser<TypescriptClassMeta> definitionParser;
+    private LanguageTypeDefinitionParser<TypescriptClassMeta> languageTypeDefinitionParser;
 
     @BeforeEach
     void setup() throws Exception {
         CodegenConfig codegenConfig = CodegenConfig.builder().providerType(ClientProviderType.TYPESCRIPT_FEIGN).build();
         CodegenConfigHolder.setConfig(codegenConfig);
         TypeScriptDefinitionParser typeScriptDefinitionParser = new TypeScriptDefinitionParser(getTestPackageMapStrategy());
-        this.definitionParser = wrapperDefinitionParser(typeScriptDefinitionParser);
+        this.languageTypeDefinitionParser = wrapperDefinitionParser(typeScriptDefinitionParser);
         configLanguageElementDefinitionDispatcher();
         DispatchCodeGenElementMatcher.getInstance().addCodeGenElementMatcher(Class.class, JavaClassElementMatcher.builder()
                 .includePackages("com.wuxp.codegen.languages.examples")
@@ -34,7 +35,7 @@ class TypeScriptDefinitionParserTest {
 
     private void configLanguageElementDefinitionDispatcher() {
         SimpleLanguageElementDefinitionDispatcher languageElementDefinitionDispatcher = SimpleLanguageElementDefinitionDispatcher.getInstance();
-        languageElementDefinitionDispatcher.addLanguageElementDefinitionParser(Class.class, this.definitionParser);
+        languageElementDefinitionDispatcher.addLanguageElementDefinitionParser(Class.class, this.languageTypeDefinitionParser);
         languageElementDefinitionDispatcher.addLanguageElementDefinitionParser(JavaMethodMeta.class, new TypeScriptMethodDefinitionParser(getTestPackageMapStrategy()));
     }
 
@@ -58,12 +59,13 @@ class TypeScriptDefinitionParserTest {
     }
 
     private LanguageTypeDefinitionParser<TypescriptClassMeta> wrapperDefinitionParser(LanguageTypeDefinitionParser<TypescriptClassMeta> delegate) {
-        return delegate;
+        return MappingTypescriptTypeDefinitionParser.builder(delegate)
+                .build();
     }
 
     @Test
     void testParse() {
-        TypescriptClassMeta result = definitionParser.parse(ExampleController.class);
-        Assertions.assertNull(result);
+        TypescriptClassMeta result = languageTypeDefinitionParser.parse(ExampleController.class);
+        Assertions.assertNotNull(result);
     }
 }

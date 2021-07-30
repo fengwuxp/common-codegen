@@ -41,15 +41,14 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
      */
     private final JavaClassParser javaParser;
 
-    private final CacheLanguageTypeDefinitionParser<C> cacheLanguageTypeDefinitionParser;
-
     /**
      * 包名映射策略
      */
     private final PackageMapStrategy packageMapStrategy;
 
-    private final DispatchCodeGenElementMatcher dispatchCodeGenElementMatcher;
+    private final CacheLanguageTypeDefinitionParser<C> cacheLanguageTypeDefinitionParser;
 
+    private final DispatchCodeGenElementMatcher dispatchCodeGenElementMatcher;
 
     protected AbstractLanguageTypeDefinitionParser(PackageMapStrategy packageMapStrategy) {
         this.packageMapStrategy = packageMapStrategy;
@@ -96,7 +95,7 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     }
 
     private C newCodeGenClassMetaAndPutCache(Class<?> source) {
-        C result = newInstance();
+        C result = newElementInstance();
         result.setSource(source);
         return cacheLanguageTypeDefinitionParser.put(result);
     }
@@ -151,7 +150,7 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
             return superClassMeta;
         }
 
-        C currentSupperClassMeta = this.newInstance();
+        C currentSupperClassMeta = this.newElementInstance();
         // 做一次值复制，防止改变缓存中的值
         BeanUtils.copyProperties(superClassMeta, currentSupperClassMeta);
         // 超类的类型变量不为空的时候，重新设置一下超类的类型变量
