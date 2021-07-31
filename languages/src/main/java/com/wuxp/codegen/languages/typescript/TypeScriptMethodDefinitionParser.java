@@ -2,7 +2,6 @@ package com.wuxp.codegen.languages.typescript;
 
 import com.wuxp.codegen.core.strategy.PackageMapStrategy;
 import com.wuxp.codegen.languages.AbstractLanguageMethodDefinitionParser;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 
 /**
@@ -12,10 +11,5 @@ public class TypeScriptMethodDefinitionParser extends AbstractLanguageMethodDefi
 
     public TypeScriptMethodDefinitionParser(PackageMapStrategy packageMapStrategy) {
         super(packageMapStrategy);
-    }
-
-    @Override
-    public CommonCodeGenClassMeta newTypeVariableInstance() {
-        return null;
     }
 }

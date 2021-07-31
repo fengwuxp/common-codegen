@@ -1,6 +1,7 @@
 package com.wuxp.codegen.core.parser;
 
 import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,10 @@ public interface LanguageElementDefinitionDispatcher {
      */
     default <T extends CommonBaseMeta> Optional<T> dispatchOfNullable(Object meta) {
         return SimpleLanguageElementDefinitionDispatcher.getInstance().dispatchOfNullable(meta);
+    }
+
+    default CommonCodeGenClassMeta dispatchTypeVariable() {
+        return SimpleLanguageElementDefinitionDispatcher.getInstance().dispatchTypeVariable();
     }
 
     @SuppressWarnings("unchecked")

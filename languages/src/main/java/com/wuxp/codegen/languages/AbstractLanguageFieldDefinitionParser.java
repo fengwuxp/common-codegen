@@ -32,6 +32,12 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
         return postProcess(result);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public F newElementInstance() {
+        return (F) new CommonCodeGenFiledMeta();
+    }
+
     private String[] extractComments(JavaFieldMeta fieldMeta) {
         // 注解转注释
         List<String> comments = LanguageCommentDefinitionDescriber.extractComments(fieldMeta.getField());

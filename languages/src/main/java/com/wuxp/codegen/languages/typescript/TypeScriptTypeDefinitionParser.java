@@ -9,9 +9,9 @@ import org.springframework.beans.BeanUtils;
 /**
  * @author wuxp
  */
-public class TypeScriptDefinitionParser extends AbstractLanguageTypeDefinitionParser<TypescriptClassMeta> {
+public class TypeScriptTypeDefinitionParser extends AbstractLanguageTypeDefinitionParser<TypescriptClassMeta> {
 
-    public TypeScriptDefinitionParser(PackageMapStrategy packageMapStrategy) {
+    public TypeScriptTypeDefinitionParser(PackageMapStrategy packageMapStrategy) {
         super(packageMapStrategy);
     }
 

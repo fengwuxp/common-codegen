@@ -70,11 +70,6 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         return (M) new CommonCodeGenMethodMeta();
     }
 
-    @Override
-    public CommonCodeGenClassMeta newTypeVariableInstance() {
-        throw new UnsupportedOperationException("");
-    }
-
     /**
      * @return 是否需要合并方法的请求参数
      */

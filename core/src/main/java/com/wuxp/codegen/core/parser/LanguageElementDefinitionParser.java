@@ -2,6 +2,7 @@ package com.wuxp.codegen.core.parser;
 
 import com.wuxp.codegen.core.parser.enhance.SimpleLanguageDefinitionPostProcessor;
 import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import org.springframework.lang.Nullable;
 
 import java.util.Optional;
@@ -13,7 +14,8 @@ import java.util.Optional;
  */
 public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
         extends SimpleLanguageDefinitionPostProcessor<C>,
-        LanguageElementDefinitionDispatcher{
+        LanguageElementDefinitionFactory<C>,
+        LanguageElementDefinitionDispatcher {
 
     /**
      * 解析一个 element
@@ -34,4 +36,8 @@ public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
         return Optional.ofNullable(parse(source));
     }
 
+    @Override
+    default CommonCodeGenClassMeta newTypeVariableInstance() {
+        return dispatchTypeVariable();
+    }
 }

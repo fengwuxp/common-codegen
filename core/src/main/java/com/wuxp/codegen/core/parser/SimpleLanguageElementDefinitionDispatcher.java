@@ -2,6 +2,7 @@ package com.wuxp.codegen.core.parser;
 
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import org.springframework.lang.Nullable;
 
 import java.util.HashMap;
@@ -39,14 +40,23 @@ public class SimpleLanguageElementDefinitionDispatcher implements LanguageElemen
         return elementDefinitionParser.parse(value);
     }
 
+    @Override
+    public CommonCodeGenClassMeta dispatchTypeVariable() {
+        return getLanguageTypeDefinitionParser().newTypeVariableInstance();
+    }
+
+    private <C extends CommonCodeGenClassMeta> LanguageElementDefinitionParser<C, Class<?>> getLanguageTypeDefinitionParser() {
+        return getDefinitionParser(Class.class);
+    }
+
     @SuppressWarnings("rawtypes")
     public void addLanguageElementDefinitionParser(Class<?> clazz, LanguageElementDefinitionParser languageEnhancedProcessor) {
         parserCaches.put(clazz, languageEnhancedProcessor);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends CommonBaseMeta> LanguageElementDefinitionParser<T, Object> getDefinitionParser(Object value) {
-        LanguageElementDefinitionParser<T, Object> result = parserCaches.get(value.getClass());
+    private <T extends CommonBaseMeta, S> LanguageElementDefinitionParser<T, S> getDefinitionParser(Object value) {
+        LanguageElementDefinitionParser<T, S> result = parserCaches.get(value.getClass());
         if (result == null) {
             throw new CodegenRuntimeException(String.format("未找到 value Class =%s 的 LanguageElementDefinitionParser", value.getClass().getName()));
         }

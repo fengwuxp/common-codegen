@@ -6,7 +6,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 /**
  * @author wuxp
  */
-public class TypeScriptCodeGenMetaPostProcessor implements LanguageDefinitionPostProcessor<TypescriptClassMeta> {
+public class TypeScriptDefinitionPostProcessor implements LanguageDefinitionPostProcessor<TypescriptClassMeta> {
 
     @Override
     public TypescriptClassMeta postProcess(TypescriptClassMeta meta) {

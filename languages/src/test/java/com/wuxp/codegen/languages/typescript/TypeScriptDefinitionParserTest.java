@@ -24,7 +24,7 @@ class TypeScriptDefinitionParserTest {
     void setup() throws Exception {
         CodegenConfig codegenConfig = CodegenConfig.builder().providerType(ClientProviderType.TYPESCRIPT_FEIGN).build();
         CodegenConfigHolder.setConfig(codegenConfig);
-        TypeScriptDefinitionParser typeScriptDefinitionParser = new TypeScriptDefinitionParser(getTestPackageMapStrategy());
+        TypeScriptTypeDefinitionParser typeScriptDefinitionParser = new TypeScriptTypeDefinitionParser(getTestPackageMapStrategy());
         this.languageTypeDefinitionParser = wrapperDefinitionParser(typeScriptDefinitionParser);
         configLanguageElementDefinitionDispatcher();
         DispatchCodeGenElementMatcher.getInstance().addCodeGenElementMatcher(Class.class, JavaClassElementMatcher.builder()

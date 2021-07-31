@@ -6,7 +6,6 @@ import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 /**
  * @author wuxp
  */
-public interface LanguageFieldDefinitionParser<F extends CommonCodeGenFiledMeta> extends LanguageElementDefinitionParser<F, JavaFieldMeta>,
-        LanguageElementDefinitionFactory<F> {
+public interface LanguageFieldDefinitionParser<F extends CommonCodeGenFiledMeta> extends LanguageElementDefinitionParser<F, JavaFieldMeta>{
 
 }
