@@ -119,9 +119,9 @@ public abstract class AbstractTypescriptParser extends
                             newTypes.add(Object.class);
                         }
                         Class<?> keyClazz = newTypes.get(i1);
-                        if (!JavaTypeUtils.isJavaBaseType(keyClazz)) {
-                            // TODO 如果map的key不是基础数据类
-                            log.error("类 {} 的 {} 方法的返回值Map类型的key不是基础数据类型或字符串", classMeta.getName(), javaMethodMeta.getName());
+                        if (!isAllowMapKey(keyClazz)) {
+                            // TODO 如果map的key不是基础数据类型或枚举
+                            log.error("类 {} 的 {} 方法的返回值Map类型的key不是基础数据类型、字符串、枚举", classMeta.getName(), javaMethodMeta.getName());
                         }
                         break;
                     }
@@ -157,6 +157,13 @@ public abstract class AbstractTypescriptParser extends
         this.enhancedProcessingMethod(commonCodeGenMethodMeta, javaMethodMeta, classMeta);
 
         return commonCodeGenMethodMeta;
+    }
+
+    private boolean isAllowMapKey(Class<?> keyClazz) {
+        if (keyClazz == null) {
+            return true;
+        }
+        return JavaTypeUtils.isJavaBaseType(keyClazz) || keyClazz.isEnum();
     }
 
 
