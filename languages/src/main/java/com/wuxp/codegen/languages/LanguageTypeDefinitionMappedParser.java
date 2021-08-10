@@ -1,6 +1,5 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.core.parser.enhance.SimpleLanguageDefinitionPostProcessor;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import org.springframework.util.Assert;
 
@@ -12,14 +11,13 @@ import java.util.stream.Collectors;
  *
  * @author wuxp
  */
-public class LanguageTypeDefinitionMappedParser implements SimpleLanguageDefinitionPostProcessor<CommonCodeGenClassMeta> {
+public class LanguageTypeDefinitionMappedParser {
 
     private final Map<Class<?>, CommonCodeGenClassMeta> typeDefinitionMappings = new LinkedHashMap<>();
 
     private final Map<Class<?>, Class<?>[]> classMappings = new LinkedHashMap<>();
 
     public List<CommonCodeGenClassMeta> parse(Class<?>... classes) {
-
         return Arrays.stream(classes)
                 .map(this::mapping)
                 .flatMap(Collection::stream)

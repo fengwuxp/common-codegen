@@ -2,7 +2,7 @@ package com.wuxp.codegen.swagger3.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.AbstractDartParser;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 public class Swagger3FeignSdkDartParser extends AbstractDartParser {
 
 
-    public Swagger3FeignSdkDartParser(PackageMapStrategy packageMapStrategy,
+    public Swagger3FeignSdkDartParser(PackageNameConvertStrategy packageMapStrategy,
                                       CodeGenMatchingStrategy genMatchingStrategy,
                                       Collection<CodeDetect> codeDetects,
                                       Map<Class<?>, List<String>> ignoreFields) {

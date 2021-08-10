@@ -1,6 +1,6 @@
 package com.wuxp.codegen.core.extensions;
 
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -14,7 +14,7 @@ class JsonSchemaCodegenTypeLoaderTest {
 
     String dirPath = String.join(File.separator, PathResolveUtils.relative(System.getProperty("user.dir"),"../model"), "src", "main", "resources", "codegen-meta-extensions");
 
-    PackageMapStrategy packageMapStrategy = new PackageMapStrategy() {
+    PackageNameConvertStrategy packageMapStrategy = new PackageNameConvertStrategy() {
         @Override
         public String convert(Class<?> clazz) {
             return null;

@@ -2,7 +2,7 @@ package com.wuxp.codegen.swagger3.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.AbstractTypescriptParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
@@ -30,7 +30,7 @@ import java.util.*;
 public class Swagger3FeignSdkTypescriptParser extends AbstractTypescriptParser {
 
 
-    public Swagger3FeignSdkTypescriptParser(PackageMapStrategy packageMapStrategy,
+    public Swagger3FeignSdkTypescriptParser(PackageNameConvertStrategy packageMapStrategy,
                                             CodeGenMatchingStrategy genMatchingStrategy,
                                             Collection<CodeDetect> codeDetects) {
         super(packageMapStrategy, genMatchingStrategy, codeDetects);

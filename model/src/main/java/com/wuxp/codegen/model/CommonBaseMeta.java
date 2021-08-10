@@ -64,7 +64,6 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
         return this.accessPermission.getValue();
     }
 
-
     public <T> T getTag(String key) {
         if (this.tags == null) {
             return null;
@@ -82,44 +81,4 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
         return this.hashCode() - o.hashCode();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        CommonBaseMeta that = (CommonBaseMeta) o;
-
-        if (!Objects.equals(name, that.name)) {
-            return false;
-        }
-        if (!Objects.equals(isStatic, that.isStatic)) {
-            return false;
-        }
-        if (!Objects.equals(isFinal, that.isFinal)) {
-            return false;
-        }
-        if (accessPermission != that.accessPermission) {
-            return false;
-        }
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(comments, that.comments)) {
-            return false;
-        }
-        return Objects.equals(tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (isStatic != null ? isStatic.hashCode() : 0);
-        result = 31 * result + (isFinal != null ? isFinal.hashCode() : 0);
-        result = 31 * result + (accessPermission != null ? accessPermission.hashCode() : 0);
-        result = 31 * result + Arrays.hashCode(comments);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        return result;
-    }
 }

@@ -24,6 +24,14 @@ public class AbstractCodeGenTypeElementMatcher extends AbstractCodeGenElementMat
         if (super.matches(clazz)) {
             return true;
         }
-        return antPatterns.stream().anyMatch(name -> clazz.getName().startsWith(name) || pathMatcher.match(name, clazz.getName()));
+        return antPatterns.stream().anyMatch(pattern -> match(clazz.getName(), pattern));
+    }
+
+    private boolean match(String className, String pattern) {
+        if (pathMatcher.isPattern(pattern)) {
+            return pathMatcher.match(pattern, className);
+        } else {
+            return className.startsWith(pattern);
+        }
     }
 }

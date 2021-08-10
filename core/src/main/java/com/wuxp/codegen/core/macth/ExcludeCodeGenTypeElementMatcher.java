@@ -19,9 +19,4 @@ public class ExcludeCodeGenTypeElementMatcher extends AbstractCodeGenTypeElement
     public static ExcludeCodeGenTypeElementMatcher of(Collection<String> includePackages, Collection<Class<?>> includeClasses) {
         return new ExcludeCodeGenTypeElementMatcher(new HashSet<>(includePackages), new HashSet<>(includeClasses));
     }
-
-    @Override
-    public boolean matches(Class<?> clazz) {
-        return !super.matches(clazz);
-    }
 }

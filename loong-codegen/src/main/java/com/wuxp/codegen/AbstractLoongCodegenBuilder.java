@@ -1,8 +1,6 @@
 package com.wuxp.codegen;
 
 
-import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
-import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
@@ -14,8 +12,7 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
-import com.wuxp.codegen.meta.enums.EnumCodeGenCommentExtractor;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.languages.AbstractLanguageParser;
 import com.wuxp.codegen.languages.typescript.UmiModel;
@@ -23,9 +20,12 @@ import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
+import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
+import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -122,7 +122,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     /**
      * 包名映射策略
      */
-    protected PackageMapStrategy packageMapStrategy = new AgreedPackageMapStrategy();
+    protected PackageNameConvertStrategy packageMapStrategy = new AgreedPackageMapStrategy();
 
     /**
      * 代码检测器
@@ -234,7 +234,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     }
 
 
-    public AbstractLoongCodegenBuilder packageMapStrategy(PackageMapStrategy packageMapStrategy) {
+    public AbstractLoongCodegenBuilder packageMapStrategy(PackageNameConvertStrategy packageMapStrategy) {
         Assert.notNull(packageMapStrategy, "package map strategy not null");
         this.packageMapStrategy = packageMapStrategy;
         return this;
@@ -318,6 +318,11 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public FreemarkerTemplateLoader getTemplateLoader() {
+        // 实例化模板加载器
+        return new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
+    }
+
     protected void initTypeMapping() {
         CodegenConfig codegenConfig = CodegenConfigHolder.getConfig();
         if (codegenConfig == null) {
@@ -350,9 +355,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         if (needAddUmiRequestEnhancedProcessor) {
             languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
         }
-        if (!this.containsLanguageEnhancedProcessorType(EnumCodeGenCommentExtractor.class)) {
-            languageEnhancedProcessors.add(new EnumCodeGenCommentExtractor());
-        }
+
         boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
         if (needSetUmiModel) {
             this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
@@ -407,7 +410,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     private void initJsonSchemaExtensions() {
         JsonSchemaCodegenTypeLoader loader = new JsonSchemaCodegenTypeLoader(getJsonSchemaFiles(), languageDescription, packageMapStrategy);
         File file = new File(CODEGEN_TEMP_EXTENSIONS_DIR);
-        if (file.exists()){
+        if (file.exists()) {
             file.mkdir();
         }
         try {

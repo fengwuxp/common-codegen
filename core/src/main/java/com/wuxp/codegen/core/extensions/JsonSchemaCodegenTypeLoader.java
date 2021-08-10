@@ -1,7 +1,7 @@
 package com.wuxp.codegen.core.extensions;
 
 import com.alibaba.fastjson.JSON;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.extensions.*;
@@ -85,14 +85,14 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
 
     private final LanguageDescription language;
 
-    private final PackageMapStrategy packageMapStrategy;
+    private final PackageNameConvertStrategy packageMapStrategy;
 
 
-    public JsonSchemaCodegenTypeLoader(String filepath, LanguageDescription language, PackageMapStrategy packageMapStrategy) {
+    public JsonSchemaCodegenTypeLoader(String filepath, LanguageDescription language, PackageNameConvertStrategy packageMapStrategy) {
         this(getJsonFiles(filepath), language, packageMapStrategy);
     }
 
-    public JsonSchemaCodegenTypeLoader(List<File> jsonFiles, LanguageDescription language, PackageMapStrategy packageMapStrategy) {
+    public JsonSchemaCodegenTypeLoader(List<File> jsonFiles, LanguageDescription language, PackageNameConvertStrategy packageMapStrategy) {
         this.jsonFiles = jsonFiles;
         this.language = language;
         this.packageMapStrategy = packageMapStrategy;

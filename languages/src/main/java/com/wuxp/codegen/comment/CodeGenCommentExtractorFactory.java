@@ -3,7 +3,6 @@ package com.wuxp.codegen.comment;
 import com.wuxp.codegen.core.CodeGenCommentExtractor;
 import com.wuxp.codegen.core.CombineCodeGenCommentExtractor;
 import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
-import com.wuxp.codegen.meta.enums.EnumCodeGenCommentExtractor;
 import org.springframework.util.ObjectUtils;
 
 import java.lang.annotation.Annotation;
@@ -58,8 +57,7 @@ public final class CodeGenCommentExtractorFactory {
     private void initDefaultCommentExtractors() {
         SourceCodeGenCommentExtractor sourceCodeGenCommentExtractor = new SourceCodeGenCommentExtractor();
         addCommentExtractor(
-                sourceCodeGenCommentExtractor,
-                new EnumCodeGenCommentExtractor(sourceCodeGenCommentExtractor)
+                sourceCodeGenCommentExtractor
         );
     }
 }

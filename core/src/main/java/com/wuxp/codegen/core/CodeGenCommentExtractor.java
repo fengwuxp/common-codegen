@@ -7,8 +7,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,7 @@ public interface CodeGenCommentExtractor {
     default List<String> toComments(AnnotatedElement element) {
         String comment = toComment(element);
         if (comment == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
         return Arrays.stream(comment.split(MULTILINE_COMMENT_TAG))
                 .filter(StringUtils::hasLength)

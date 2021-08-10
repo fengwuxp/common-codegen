@@ -4,7 +4,6 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.meta.enums.EnumCodeGenCommentExtractor;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
@@ -55,7 +54,6 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .clientProviderType(ClientProviderType.RETROFIT)
-                .languageEnhancedProcessors(new EnumCodeGenCommentExtractor())
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)

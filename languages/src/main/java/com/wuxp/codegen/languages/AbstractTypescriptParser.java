@@ -5,7 +5,7 @@ import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFact
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.factory.TypescriptLanguageMetaInstanceFactory;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -43,7 +43,7 @@ public abstract class AbstractTypescriptParser extends
         AbstractLanguageParser<TypescriptClassMeta, CommonCodeGenMethodMeta, TypescriptFieldMate> {
 
 
-    public AbstractTypescriptParser(PackageMapStrategy packageMapStrategy,
+    public AbstractTypescriptParser(PackageNameConvertStrategy packageMapStrategy,
                                     CodeGenMatchingStrategy genMatchingStrategy,
                                     Collection<CodeDetect> codeDetects) {
         super(new TypescriptLanguageMetaInstanceFactory(),

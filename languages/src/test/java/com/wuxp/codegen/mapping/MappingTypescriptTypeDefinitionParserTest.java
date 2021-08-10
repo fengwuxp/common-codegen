@@ -1,7 +1,6 @@
 package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,11 +18,6 @@ class MappingTypescriptTypeDefinitionParserTest {
         LanguageTypeDefinitionParser<TypescriptClassMeta> definitionParser = wrapperDefinitionParser(new LanguageTypeDefinitionParser<TypescriptClassMeta>() {
             @Override
             public TypescriptClassMeta newElementInstance() {
-                return null;
-            }
-
-            @Override
-            public CommonCodeGenClassMeta newTypeVariableInstance() {
                 return null;
             }
 

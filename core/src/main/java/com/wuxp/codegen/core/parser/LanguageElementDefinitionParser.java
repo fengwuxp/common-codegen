@@ -1,11 +1,15 @@
 package com.wuxp.codegen.core.parser;
 
-import com.wuxp.codegen.core.parser.enhance.SimpleLanguageDefinitionPostProcessor;
+import com.wuxp.codegen.core.CodeGenClassSupportHandler;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import org.springframework.lang.Nullable;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 用于将 {@link Class<?>} 对象解析为代码生成的模型对象
@@ -13,9 +17,9 @@ import java.util.Optional;
  * @author wuxp
  */
 public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
-        extends SimpleLanguageDefinitionPostProcessor<C>,
-        LanguageElementDefinitionFactory<C>,
-        LanguageElementDefinitionDispatcher {
+        extends LanguageElementDefinitionFactory<C>,
+        LanguageElementDefinitionPublishSourceParser,
+        CodeGenClassSupportHandler {
 
     /**
      * 解析一个 element
@@ -36,8 +40,17 @@ public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
         return Optional.ofNullable(parse(source));
     }
 
-    @Override
-    default CommonCodeGenClassMeta newTypeVariableInstance() {
-        return dispatchTypeVariable();
+    @Nullable
+    default CommonCodeGenClassMeta parseType(Type type) {
+        return (CommonCodeGenClassMeta) this.publishParse(type);
     }
+
+    default List<CommonCodeGenClassMeta> parseTypes(List<? extends Type> types) {
+        return types.stream()
+                .map(this::parseType)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+
 }

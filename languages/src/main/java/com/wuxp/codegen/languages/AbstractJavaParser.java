@@ -7,7 +7,7 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.factory.JavaLanguageMetaInstanceFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
@@ -40,7 +40,7 @@ public abstract class AbstractJavaParser extends
      */
     protected boolean useAsync = false;
 
-    public AbstractJavaParser(PackageMapStrategy packageMapStrategy,
+    public AbstractJavaParser(PackageNameConvertStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects) {
         this(null,
@@ -50,7 +50,7 @@ public abstract class AbstractJavaParser extends
                 codeDetects);
     }
 
-    public AbstractJavaParser(PackageMapStrategy packageMapStrategy,
+    public AbstractJavaParser(PackageNameConvertStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects,
                               boolean useAsync) {
@@ -81,7 +81,7 @@ public abstract class AbstractJavaParser extends
 
     protected AbstractJavaParser(JavaClassParser javaParser,
                               LanguageMetaInstanceFactory<JavaCodeGenClassMeta, CommonCodeGenMethodMeta, CommonCodeGenFiledMeta> languageMetaInstanceFactory,
-                              PackageMapStrategy packageMapStrategy,
+                              PackageNameConvertStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects) {
         super(javaParser, languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);

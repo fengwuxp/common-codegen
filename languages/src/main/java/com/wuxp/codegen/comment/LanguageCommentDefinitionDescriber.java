@@ -1,6 +1,5 @@
 package com.wuxp.codegen.comment;
 
-import com.wuxp.codegen.comment.CodeGenCommentExtractorFactory;
 import com.wuxp.codegen.core.CodeGenCommentExtractor;
 import org.springframework.util.ObjectUtils;
 
@@ -28,6 +27,9 @@ public final class LanguageCommentDefinitionDescriber {
      * @return 注释列表
      */
     public static List<String> extractComments(AnnotatedElement annotationOwner) {
+        if (annotationOwner == null) {
+            return new ArrayList<>();
+        }
         return CodeGenCommentExtractorFactory.getInstance().factory(annotationOwner.getAnnotations()).toComments(annotationOwner);
     }
 

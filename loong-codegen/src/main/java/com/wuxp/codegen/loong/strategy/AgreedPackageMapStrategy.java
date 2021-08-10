@@ -2,7 +2,7 @@ package com.wuxp.codegen.loong.strategy;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.loong.path.PathResolve;
 import com.wuxp.codegen.meta.util.FileUtils;
 
@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author wuxp
  */
-public class AgreedPackageMapStrategy implements PackageMapStrategy {
+public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
 
     private static final List<String> IGNORE_NAMES = Arrays.asList(
             "controller",

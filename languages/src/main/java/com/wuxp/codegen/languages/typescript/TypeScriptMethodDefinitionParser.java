@@ -1,7 +1,9 @@
 package com.wuxp.codegen.languages.typescript;
 
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.AbstractLanguageMethodDefinitionParser;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 
 /**
@@ -9,7 +11,8 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
  */
 public class TypeScriptMethodDefinitionParser extends AbstractLanguageMethodDefinitionParser<CommonCodeGenMethodMeta> {
 
-    public TypeScriptMethodDefinitionParser(PackageMapStrategy packageMapStrategy) {
-        super(packageMapStrategy);
+    public TypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> languageElementDefinitionEventParser,
+                                            PackageNameConvertStrategy packageMapStrategy) {
+        super(languageElementDefinitionEventParser, packageMapStrategy);
     }
 }

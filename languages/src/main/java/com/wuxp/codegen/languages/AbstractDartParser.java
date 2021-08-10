@@ -4,7 +4,7 @@ package com.wuxp.codegen.languages;
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.factory.DartLanguageMetaInstanceFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
@@ -41,7 +41,7 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
     private static final String RIGHT_SLASH = "/";
 
-    public AbstractDartParser(PackageMapStrategy packageMapStrategy,
+    public AbstractDartParser(PackageNameConvertStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects,
                               Map<Class<?>, List<String>> ignoreFields) {
@@ -72,7 +72,7 @@ public abstract class AbstractDartParser extends AbstractLanguageParser<DartClas
 
     public AbstractDartParser(JavaClassParser javaParser,
                               LanguageMetaInstanceFactory<DartClassMeta, CommonCodeGenMethodMeta, DartFieldMate> languageMetaInstanceFactory,
-                              PackageMapStrategy packageMapStrategy,
+                              PackageNameConvertStrategy packageMapStrategy,
                               CodeGenMatchingStrategy genMatchingStrategy,
                               Collection<CodeDetect> codeDetects) {
         super(javaParser, languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects);

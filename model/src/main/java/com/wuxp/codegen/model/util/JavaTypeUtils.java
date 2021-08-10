@@ -267,7 +267,6 @@ public final class JavaTypeUtils {
 
 
     public static boolean isAssignableFrom(Class<?> clazz, Class<?> superClazz) {
-
         return superClazz.isAssignableFrom(clazz);
     }
 

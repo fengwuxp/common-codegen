@@ -29,7 +29,7 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
         DEFAULT_IGNORE_PATTERNS.add("java.text.");
         DEFAULT_IGNORE_PATTERNS.add("java.io.");
         DEFAULT_IGNORE_PATTERNS.add("java.time.");
-        DEFAULT_IGNORE_PATTERNS.add("java.util.concurrent.");
+        DEFAULT_IGNORE_PATTERNS.add("java.util.");
         DEFAULT_IGNORE_PATTERNS.add("sun.");
         DEFAULT_IGNORE_PATTERNS.add("com.google.");
         DEFAULT_IGNORE_PATTERNS.add("com.alibaba.");
@@ -76,16 +76,19 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
     }
 
     public static class JavaClassElementMatcherBuilder {
-        private Set<String> ignorePackages;
-        private Set<Class<?>> ignoreClasses;
-        private Set<String> includePackages;
-        private Set<Class<?>> includeClasses;
+        private final Set<String> ignorePackages;
+
+        private final Set<Class<?>> ignoreClasses;
+
+        private final Set<String> includePackages;
+
+        private final Set<Class<?>> includeClasses;
 
         public JavaClassElementMatcherBuilder() {
             this.ignorePackages = new HashSet<>();
             this.ignoreClasses = new HashSet<>();
             this.includePackages = new HashSet<>();
-            this.includeClasses = new HashSet<>();
+            this.includeClasses = new HashSet<>(Collections.singletonList(Date.class));
         }
 
         public JavaClassElementMatcherBuilder ignorePackages(Collection<String> ignorePackages) {
@@ -109,7 +112,7 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
         }
 
         public JavaClassElementMatcherBuilder includePackages(Collection<String> includePackages) {
-            this.includePackages.addAll(ignorePackages);
+            this.includePackages.addAll(includePackages);
             return this;
         }
 

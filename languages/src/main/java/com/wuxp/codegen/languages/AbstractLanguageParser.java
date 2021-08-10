@@ -10,7 +10,7 @@ import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationCodeGenCommentExtractor;
@@ -98,7 +98,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
     /**
      * 包名映射策略
      */
-    protected PackageMapStrategy packageMapStrategy;
+    protected PackageNameConvertStrategy packageMapStrategy;
     /**
      * 代码检查者
      */
@@ -118,7 +118,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     protected AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
-                                     PackageMapStrategy packageMapStrategy,
+                                     PackageNameConvertStrategy packageMapStrategy,
                                      CodeGenMatchingStrategy genMatchingStrategy,
                                      Collection<CodeDetect> codeDetects) {
         this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());
@@ -126,7 +126,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
 
     protected AbstractLanguageParser(LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
-                                     PackageMapStrategy packageMapStrategy,
+                                     PackageNameConvertStrategy packageMapStrategy,
                                      CodeGenMatchingStrategy genMatchingStrategy,
                                      Collection<CodeDetect> codeDetects,
                                      Collection<CodeGenMatcher> includeCodeGenMatchers) {
@@ -152,7 +152,7 @@ public abstract class AbstractLanguageParser<C extends CommonCodeGenClassMeta,
 
     protected AbstractLanguageParser(JavaClassParser javaParser,
                                      LanguageMetaInstanceFactory<C, M, F> languageMetaInstanceFactory,
-                                     PackageMapStrategy packageMapStrategy,
+                                     PackageNameConvertStrategy packageMapStrategy,
                                      CodeGenMatchingStrategy genMatchingStrategy,
                                      Collection<CodeDetect> codeDetects) {
         this(languageMetaInstanceFactory, packageMapStrategy, genMatchingStrategy, codeDetects, Collections.emptyList());

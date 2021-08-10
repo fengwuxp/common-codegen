@@ -1,6 +1,7 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 
 
@@ -20,12 +21,17 @@ public abstract class DelegateLanguageTypeDefinitionParser<C extends CommonCodeG
         return getDelegate().newElementInstance();
     }
 
-    @Override
-    public CommonCodeGenClassMeta newTypeVariableInstance() {
-        return getDelegate().newTypeVariableInstance();
-    }
-
     public LanguageTypeDefinitionParser<C> getDelegate() {
         return delegate;
+    }
+
+    @Override
+    public <C extends CommonBaseMeta> C publishParse(Object source) {
+        return getDelegate().publishParse(source);
+    }
+
+    @Override
+    public boolean supports(Class<?> source) {
+        return getDelegate().supports(source);
     }
 }

@@ -26,9 +26,8 @@ public class JavaCodeGenMetaPostProcessor implements LanguageDefinitionPostProce
     }
 
     @Override
-    public JavaCodeGenClassMeta postProcess(JavaCodeGenClassMeta meta) {
+    public void postProcess(JavaCodeGenClassMeta meta) {
         Arrays.asList(meta.getMethodMetas()).forEach(this::postMethodMeta);
-        return meta;
     }
 
     private void postMethodMeta(CommonCodeGenMethodMeta methodMeta) {

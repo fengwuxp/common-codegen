@@ -55,11 +55,8 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 Boolean.TRUE.equals(enabledAndroidSqliteSupport));
         initLanguageParser(languageParser);
 
-        //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
-
         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new LoongSimpleTemplateStrategy(
-                templateLoader,
+                getTemplateLoader(),
                 this.outPath,
                 this.languageDescription.getSuffixName(),
                 this.isDeletedOutputDirectory, this.codeFormatter);
@@ -69,6 +66,5 @@ public class Swagger2FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 .otherCodegenClassMetas(otherCodegenClassMetas)
                 .taskWaiters(Collections.singletonList(codeFormatter));
     }
-
 
 }

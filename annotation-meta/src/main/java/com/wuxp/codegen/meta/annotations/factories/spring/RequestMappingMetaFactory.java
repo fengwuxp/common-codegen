@@ -43,7 +43,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
     /**
      * 需要认证的类型和相关的路径列表，使用ant匹配
      */
-    private static final Map<AuthenticationType, String[]> AUTHENTICATION_PATH = new LinkedHashMap<>();
+    private static final Map<AuthenticationType, String[]> AUTHENTICATION_TYPE_PATHS = new LinkedHashMap<>();
 
     /**
      * 是否支持{@link MappingAnnotationPropNameConstant#AUTHENTICATION_TYPE}
@@ -103,7 +103,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
     }
 
     public static void addAuthenticationTypePaths(AuthenticationType type, String[] paths) {
-        AUTHENTICATION_PATH.put(type, paths);
+        AUTHENTICATION_TYPE_PATHS.put(type, paths);
     }
 
     public static void setSupportAuthenticationType(boolean supportAuthenticationType) {
@@ -157,14 +157,19 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
             if (!supportAuthenticationType) {
                 return codeGenAnnotation;
             }
-            if (AUTHENTICATION_PATH.isEmpty()) {
-                return codeGenAnnotation;
+            trySetAuthenicationType(annotationOwner, codeGenAnnotation);
+            return codeGenAnnotation;
+        }
+
+        private void trySetAuthenicationType(Method annotationOwner, CommonCodeGenAnnotation codeGenAnnotation) {
+            if (AUTHENTICATION_TYPE_PATHS.isEmpty()) {
+                return ;
             }
             assert codeGenAnnotation != null;
             Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
             String requestUri = RequestMappingUtils.combinePath(this, annotationOwner);
 
-            AUTHENTICATION_PATH.forEach((key, value) -> Arrays.stream(value)
+            AUTHENTICATION_TYPE_PATHS.forEach((key, value) -> Arrays.stream(value)
                     .filter(pattern -> PATH_MATCHER.match(pattern, requestUri))
                     .findFirst()
                     .ifPresent(matchResult -> {
@@ -177,8 +182,6 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
                             log.error("路径匹配到多种认证类型,path = {}", requestUri);
                         }
                     }));
-
-            return codeGenAnnotation;
         }
 
 

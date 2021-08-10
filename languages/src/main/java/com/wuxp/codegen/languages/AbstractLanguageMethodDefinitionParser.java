@@ -1,9 +1,8 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.annotations.LanguageAnnotationParser;
 import com.wuxp.codegen.comment.LanguageCommentDefinitionDescriber;
 import com.wuxp.codegen.core.parser.LanguageMethodDefinitionParser;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 /**
  * @author wuxp
  */
-public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCodeGenMethodMeta> implements LanguageMethodDefinitionParser<M> {
+public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCodeGenMethodMeta> extends DelegateLanguagePublishParser implements LanguageMethodDefinitionParser<M> {
 
     /**
      * 默认合并后的参数名称
@@ -45,9 +44,11 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     /**
      * 包名映射策略
      */
-    private final PackageMapStrategy packageMapStrategy;
+    private final PackageNameConvertStrategy packageMapStrategy;
 
-    protected AbstractLanguageMethodDefinitionParser(PackageMapStrategy packageMapStrategy) {
+    protected AbstractLanguageMethodDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> languageElementDefinitionEventParser,
+                                                     PackageNameConvertStrategy packageMapStrategy) {
+        super(languageElementDefinitionEventParser);
         this.packageMapStrategy = packageMapStrategy;
     }
 
@@ -56,18 +57,12 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         LanguageTypeDefinitionAssert.isValidSpringWebMethod(methodMeta);
         // method转换
         M result = parseMethodInner(methodMeta);
-        result.setAnnotations(LanguageAnnotationParser.getInstance().parse(methodMeta.getMethod()))
+        result.setAnnotations(parseAnnotatedElement(methodMeta.getMethod()))
                 .setReturnTypes(getReturnTypes(methodMeta))
                 .setAccessPermission(methodMeta.getAccessPermission())
                 .setComments(extractComments(methodMeta))
                 .setName(methodMeta.getName());
-        return postProcess(result);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public M newElementInstance() {
-        return (M) new CommonCodeGenMethodMeta();
+        return result;
     }
 
     /**
@@ -111,13 +106,13 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     private Optional<CommonCodeGenClassMeta> getParameterMeta(JavaMethodMeta methodMeta, String parameterName, Class<?>[] parameterTypes) {
-        Optional<CommonCodeGenClassMeta> optionalMeta = this.dispatchOfNullable(parameterTypes[0]);
+        Optional<CommonCodeGenClassMeta> optionalMeta = this.publishParseOfNullable(parameterTypes[0]);
         return optionalMeta.map(result -> {
             CommonCodeGenClassMeta classMeta = new CommonCodeGenClassMeta();
             classMeta.setTypeVariables(getCodegenClassMetas(parameterTypes));
             classMeta.setClassType(ClassType.CLASS)
                     .setSource(result.getSource())
-                    .setAnnotations(LanguageAnnotationParser.getInstance().parse(methodMeta.getParameters().get(parameterName)))
+                    .setAnnotations(parseAnnotatedElement(methodMeta.getParameters().get(parameterName)))
                     .setIsAbstract(false)
                     .setAccessPermission(AccessPermission.PUBLIC)
                     .setIsFinal(false)
@@ -130,7 +125,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     private CommonCodeGenClassMeta[] getCodegenClassMetas(Class<?>[] classes) {
-        return this.dispatch(Arrays.asList(classes))
+        return this.publishParse(Arrays.asList(classes))
                 .stream()
                 .map(CommonCodeGenClassMeta.class::cast)
                 .toArray(CommonCodeGenClassMeta[]::new);
@@ -212,7 +207,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
             javaParameterMeta.setName(parameterName);
             javaParameterMeta.setParameter(methodMeta.getParameters().get(parameterName));
 
-            CommonCodeGenFiledMeta codeGenFiledMeta = this.dispatch(javaParameterMeta);
+            CommonCodeGenFiledMeta codeGenFiledMeta = this.publishParse(javaParameterMeta);
             if (codeGenFiledMeta == null) {
                 return;
             }
@@ -264,7 +259,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 .filter(clazz -> !clazz.isEnum())
                 //非jdk中的复杂对象
                 .filter(JavaTypeUtils::isNoneJdkComplex)
-                .map(this::dispatchOfNullable)
+                .map(this::publishParseOfNullable)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(CommonCodeGenClassMeta.class::cast)

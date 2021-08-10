@@ -4,7 +4,6 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
-import com.wuxp.codegen.meta.enums.EnumCodeGenCommentExtractor;
 import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
 import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -62,7 +61,6 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
-                .languageEnhancedProcessors(new EnumCodeGenCommentExtractor())
                 .packageMapStrategy(packageMapStrategy)
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)

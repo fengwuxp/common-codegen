@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * code formatter
@@ -15,6 +16,10 @@ import java.nio.charset.StandardCharsets;
  * @author wuxp
  */
 public interface CodeFormatter extends TaskWaiter {
+
+    default CompletableFuture<Void> asyncFormat(String filepath) {
+        return CompletableFuture.completedFuture(null);
+    }
 
     /**
      * 格式化代码
@@ -33,6 +38,7 @@ public interface CodeFormatter extends TaskWaiter {
             throw new CodegenRuntimeException(exception);
         }
     }
+
 
     /**
      * 格式化代码

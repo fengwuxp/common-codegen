@@ -5,11 +5,11 @@ import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
+import com.wuxp.codegen.meta.util.FileUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
-import com.wuxp.codegen.meta.util.FileUtils;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 
@@ -116,7 +116,6 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
         String packagePath = data.getPackagePath();
         packagePath = this.fileNameGenerateStrategy.generateName(packagePath);
 
-        String extName = this.extName;
         String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, FileUtils.packageNameToFilePath(packagePath), extName))
                 .toString();
         //如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式

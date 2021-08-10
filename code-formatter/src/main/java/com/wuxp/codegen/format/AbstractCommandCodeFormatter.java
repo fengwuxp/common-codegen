@@ -29,45 +29,66 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
     /**
      * 是否启用 formatter
      */
-    protected final boolean enabledFormatter;
+    protected final boolean enabled;
 
     /**
      * 用于执行命令的 Executor
      */
     protected ThreadPoolExecutor executor;
 
-    private final List<Future<?>> futureTasks;
+    private final List<CompletableFuture<?>> futureTasks;
 
     protected AbstractCommandCodeFormatter() {
-        this.enabledFormatter = this.preCheckEnv();
-        this.init();
+        this.enabled = this.preCheckEnv();
         this.futureTasks = new ArrayList<>(512);
+        this.init();
+    }
+
+    @Override
+    public CompletableFuture<Void> asyncFormat(String filepath) {
+        if (!enabled) {
+            return CompletableFuture.completedFuture(null);
+        }
+        if (executor == null) {
+            runCommand(genFormatCommand(filepath));
+            return CompletableFuture.completedFuture(null);
+        } else {
+            Future<?> future = asyncRunCommand(filepath, CodegenConfigHolder.getConfig());
+            return CompletableFuture.runAsync(waitFutureResult(future));
+        }
+    }
+
+    private Future<?> asyncRunCommand(String filepath, CodegenConfig codegenConfig) {
+        return executor.submit(() -> {
+            // keep config
+            CodegenConfigHolder.setConfig(codegenConfig);
+            runCommand(genFormatCommand(filepath));
+            CodegenConfigHolder.clear();
+        });
+    }
+
+    private Runnable waitFutureResult(Future<?> future) {
+        return () -> {
+            try {
+                future.get();
+            } catch (InterruptedException exception) {
+                log.error("调用命令行格式代码发生线程中断异常：{}", exception.getMessage(), exception);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException exception) {
+                log.error("调用命令行格式代码失败：{}", exception.getMessage(), exception);
+            }
+        };
     }
 
     @Override
     public void format(String filepath) {
-        if (!enabledFormatter) {
-            return;
-        }
-        if (executor == null) {
-            runCommand(genFormatCommand(filepath));
-        } else {
-            CodegenConfig codegenConfig = CodegenConfigHolder.getConfig();
-            Future<?> future = executor.submit(() -> {
-                // keep config
-                CodegenConfigHolder.setConfig(codegenConfig);
-                runCommand(genFormatCommand(filepath));
-                CodegenConfigHolder.clear();
-            });
-            this.futureTasks.add(future);
-        }
+        futureTasks.add(asyncFormat(filepath));
     }
 
     @Override
     public String format(String sourcecode, Charset charsetName) {
         return sourcecode;
     }
-
 
     /**
      * 等待所有的异步任务结束
@@ -77,7 +98,7 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
         if (CollectionUtils.isEmpty(futureTasks)) {
             return;
         }
-        int taskTotal = countFutureTaskTotal();
+        int taskTotal = syncCountFutureTaskTotal();
         if (log.isInfoEnabled()) {
             log.info("共执行的异步任务数量：{}", taskTotal);
         }
@@ -85,22 +106,10 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
 
     }
 
-    private int countFutureTaskTotal() {
-        try {
-            return countFutureTask();
-        } catch (InterruptedException exception) {
-            log.error("调用命令行格式代码失败：{}", exception.getMessage(), exception);
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException exception) {
-            log.error("调用命令行格式代码发生线程中断异常：{}", exception.getMessage(), exception);
-        }
-        return -1;
-    }
-
-    private int countFutureTask() throws InterruptedException, ExecutionException {
+    private int syncCountFutureTaskTotal() {
         int count = 0;
-        for (Future<?> future : futureTasks) {
-            future.get();
+        for (CompletableFuture<?> future : futureTasks) {
+            waitFutureResult(future).run();
             count++;
         }
         return count;
@@ -123,15 +132,8 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
         if (log.isDebugEnabled()) {
             log.debug("执行命令：{}", command);
         }
-        Process exec;
         try {
-            exec = Runtime.getRuntime().exec(command);
-            // 最多等待5秒钟
-            boolean success = exec.waitFor(MAX_EXECUTE_COMMAND_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS);
-            if (log.isTraceEnabled()) {
-                log.trace("调用命令行格式代码：{}", success);
-            }
-            exec.destroy();
+            executeCommand(command);
             return true;
         } catch (IOException exception) {
             log.error("调用命令行格式代码失败：{}", exception.getMessage(), exception);
@@ -140,6 +142,16 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
             Thread.currentThread().interrupt();
         }
         return false;
+    }
+
+    private void executeCommand(String command) throws IOException, InterruptedException {
+        Process exec = Runtime.getRuntime().exec(command);
+        // 最多等待5秒钟
+        boolean success = exec.waitFor(MAX_EXECUTE_COMMAND_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        if (log.isTraceEnabled()) {
+            log.trace("调用命令行格式代码：{}", success);
+        }
+        exec.destroy();
     }
 
     protected String genCommand(String cmd, String[] args, String delimiter) {

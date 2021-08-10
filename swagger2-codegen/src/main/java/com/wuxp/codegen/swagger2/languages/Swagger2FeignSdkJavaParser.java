@@ -2,7 +2,7 @@ package com.wuxp.codegen.swagger2.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.AbstractJavaParser;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -25,7 +25,7 @@ public class Swagger2FeignSdkJavaParser extends AbstractJavaParser {
 
     private final LanguageDescription languageDescription;
 
-    public Swagger2FeignSdkJavaParser(PackageMapStrategy packageMapStrategy,
+    public Swagger2FeignSdkJavaParser(PackageNameConvertStrategy packageMapStrategy,
                                       CodeGenMatchingStrategy genMatchingStrategy,
                                       Collection<CodeDetect> codeDetects,
                                       LanguageDescription languageDescription,

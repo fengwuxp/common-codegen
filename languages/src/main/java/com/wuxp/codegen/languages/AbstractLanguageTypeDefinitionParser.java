@@ -1,11 +1,10 @@
 package com.wuxp.codegen.languages;
 
-import com.wuxp.codegen.annotations.LanguageAnnotationParser;
 import com.wuxp.codegen.comment.LanguageCommentDefinitionDescriber;
-import com.wuxp.codegen.core.macth.DispatchCodeGenElementMatcher;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.meta.util.JavaMethodNameUtils;
 import com.wuxp.codegen.meta.util.SpringControllerFilterUtils;
 import com.wuxp.codegen.model.CommonBaseMeta;
@@ -34,7 +33,8 @@ import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
  * @author wuxp
  */
 @Slf4j
-public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta> implements LanguageTypeDefinitionParser<C> {
+public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta> extends DelegateLanguagePublishParser
+        implements LanguageTypeDefinitionParser<C> {
 
     /**
      * java类的解析器 默认解析所有的属性 方法
@@ -44,47 +44,43 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     /**
      * 包名映射策略
      */
-    private final PackageMapStrategy packageMapStrategy;
+    private final PackageNameConvertStrategy packageNameConvertStrategy;
 
     private final CacheLanguageTypeDefinitionParser<C> cacheLanguageTypeDefinitionParser;
 
-    private final DispatchCodeGenElementMatcher dispatchCodeGenElementMatcher;
 
-    protected AbstractLanguageTypeDefinitionParser(PackageMapStrategy packageMapStrategy) {
-        this.packageMapStrategy = packageMapStrategy;
+    protected AbstractLanguageTypeDefinitionParser(LanguageTypeDefinitionPublishParser<?> languageTypeDefinitionPublishParser, PackageNameConvertStrategy packageNameConvertStrategy) {
+        super(languageTypeDefinitionPublishParser);
+        this.packageNameConvertStrategy = packageNameConvertStrategy;
         this.javaParser = JAVA_CLASS_PARSER;
         this.cacheLanguageTypeDefinitionParser = new CacheLanguageTypeDefinitionParser<>(this);
-        this.dispatchCodeGenElementMatcher = DispatchCodeGenElementMatcher.getInstance();
     }
 
     @Override
     public C parse(Class<?> source) {
-        if (source == null) {
-            return null;
-        }
-        if (dispatchCodeGenElementMatcher.matches(source)) {
-            return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
-        }
-        return null;
+        return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
     }
 
     private C parseInner(Class<?> source) {
+        if (source == Enum.class) {
+            return null;
+        }
         JavaClassMeta classMeta = javaParser.parse(source);
         preProcess(classMeta);
         C result = newCodeGenClassMetaAndPutCache(source);
-        result.setName(this.packageMapStrategy.convertClassName(source));
-        result.setPackagePath(this.packageMapStrategy.convert(source));
+        result.setName(this.packageNameConvertStrategy.convertClassName(source));
+        result.setPackagePath(this.packageNameConvertStrategy.convert(source));
         result.setClassType(classMeta.getClassType());
         result.setAccessPermission(classMeta.getAccessPermission());
         result.setTypeVariables(getTypeVariables(classMeta));
         result.setGenericDescription(getGenericDescription(result.getTypeVariables()));
         result.setComments(extractComments(classMeta));
-        result.setAnnotations(LanguageAnnotationParser.getInstance().parse(source));
+        result.setAnnotations(parseAnnotatedElement(source));
         result.setSuperClass(getSupperClassMeta(classMeta));
         result.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
         result.setMethodMetas(getCodegenMethodMetas(classMeta));
         result.setFieldMetas(getCodegenFiledMetas(classMeta));
-        return resolveAllDependencies(postProcess(result));
+        return resolveAllDependencies(result);
     }
 
     private void preProcess(JavaClassMeta classMeta) {
@@ -104,9 +100,9 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return Arrays.stream(classMeta.getTypeVariables())
                 .map(type -> {
                     if (type instanceof Class<?>) {
-                        return dispatch(type);
+                        return publishParse(type);
                     } else if (type instanceof TypeVariable) {
-                        return parseTypeVariable(type);
+                        return parseType(type);
                     } else {
                         return null;
                     }
@@ -135,11 +131,8 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     private C getSupperClassMeta(JavaClassMeta classMeta) {
         // 处理超类
         Class<?> superClass = classMeta.getSuperClass();
-        if (superClass == null || Object.class.equals(superClass) || classMeta.getClazz().isEnum()) {
-            return null;
-        }
         // 不是object
-        C superClassMeta = this.dispatch(superClass);
+        C superClassMeta = this.publishParse(superClass);
         if (superClassMeta == null) {
             log.warn("超类 {} 解析处理失败或被忽略", classMeta.getClassName());
             return null;
@@ -167,13 +160,13 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
                 return;
             }
             //处理超类
-            C typescriptClassMeta = this.dispatch(superClazz);
+            C typescriptClassMeta = this.publishParse(superClazz);
             if (typescriptClassMeta == null) {
                 return;
             }
             //处理超类上的类型变量 例如 A<T,E> extends B<C<T>,E> 这种情况
             CommonCodeGenClassMeta[] typeVariables = Arrays.stream(val)
-                    .map(this::dispatchOfNullable)
+                    .map(this::publishParseOfNullable)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .map(CommonCodeGenClassMeta.class::cast)
@@ -184,11 +177,15 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     }
 
     private CommonCodeGenMethodMeta[] getCodegenMethodMetas(JavaClassMeta classMeta) {
+        if (!CodegenConfigHolder.getConfig().isServerClass(classMeta.getClazz())) {
+            return new CommonCodeGenMethodMeta[0];
+        }
+
         return Arrays.stream(classMeta.getMethodMetas())
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsTransient()))
                 .filter(javaMethodMeta -> AccessPermission.PUBLIC.equals(javaMethodMeta.getAccessPermission()))
-                .map(this::dispatch)
+                .map(this::publishParse)
                 .filter(Objects::nonNull)
                 .map(CommonCodeGenMethodMeta.class::cast)
                 .distinct()
@@ -198,7 +195,7 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     private CommonCodeGenFiledMeta[] getCodegenFiledMetas(JavaClassMeta classMeta) {
         return margeFiledMetas(classMeta)
                 .stream()
-                .map(this::dispatch)
+                .map(this::publishParse)
                 .filter(Objects::nonNull)
                 .map(CommonCodeGenFiledMeta.class::cast)
                 .distinct()
@@ -307,6 +304,9 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     private Map<String, ? extends CommonCodeGenClassMeta> collectDependencies(Stream<? extends CommonCodeGenClassMeta> classMetaStream) {
         return classMetaStream
                 .filter(Objects::nonNull)
+                .filter(commonCodeGenClassMeta -> {
+                    return Boolean.TRUE.equals(commonCodeGenClassMeta.getTypeArgumentVariable());
+                })
                 .collect(Collectors.toMap(CommonCodeGenClassMeta::getName, value -> value));
     }
 

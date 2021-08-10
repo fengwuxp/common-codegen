@@ -33,10 +33,6 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
         throw new UnsupportedOperationException("MappingTypeDefinitionParser not support operation");
     }
 
-    @Override
-    public CommonCodeGenClassMeta newTypeVariableInstance() {
-        throw new UnsupportedOperationException("MappingTypeDefinitionParser not support operation");
-    }
 
     @Override
     public C parse(Class<?> source) {

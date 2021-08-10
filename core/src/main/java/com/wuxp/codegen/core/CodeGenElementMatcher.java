@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * @author wuxp
  */
 @FunctionalInterface
-public interface CodeGenElementMatcher<S> {
+public interface CodeGenElementMatcher<S> extends CodeGenClassSupportHandler {
 
     /**
      * 类是否匹配
@@ -19,6 +19,11 @@ public interface CodeGenElementMatcher<S> {
      * @return <code>return true</code> 是否匹配
      */
     boolean matches(S source);
+
+    @Override
+    default boolean supports(Class<?> clazz) {
+        return false;
+    }
 
     default List<S> filter(Collection<S> sources) {
         return sources.stream()

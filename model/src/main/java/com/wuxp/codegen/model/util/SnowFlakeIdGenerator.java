@@ -7,41 +7,41 @@ package com.wuxp.codegen.model.util;
  */
 public final class SnowFlakeIdGenerator {
 
-    public final static SnowFlakeIdGenerator SINGLETON = new SnowFlakeIdGenerator(2, 3);
+    public static final SnowFlakeIdGenerator SINGLETON = new SnowFlakeIdGenerator(2, 3);
 
     /**
      * 起始的时间戳
      */
-    private final static long START_TIME_STAMP = 1480166465631L;
+    private static final long START_TIME_STAMP = 1480166465631L;
 
     /**
      * 每一部分占用的位数 序列号占用的位数
      */
-    private final static long SEQUENCE_BIT = 12;
+    private static final long SEQUENCE_BIT = 12;
 
     /**
      * 机器标识占用的位数
      */
-    private final static long MACHINE_BIT = 5;
+    private static final long MACHINE_BIT = 5;
 
     /**
      * 数据中心占用的位数
      */
-    private final static long DATA_CENTER_BIT = 5;
+    private static final long DATA_CENTER_BIT = 5;
 
     /**
      * 每一部分的最大值
      */
-    private final static long MAX_DATA_CENTER_NUM = ~(-1L << DATA_CENTER_BIT);
-    private final static long MAX_MACHINE_NUM = ~(-1L << MACHINE_BIT);
-    private final static long MAX_SEQUENCE = ~(-1L << SEQUENCE_BIT);
+    private static final long MAX_DATA_CENTER_NUM = ~(-1L << DATA_CENTER_BIT);
+    private static final long MAX_MACHINE_NUM = ~(-1L << MACHINE_BIT);
+    private static final long MAX_SEQUENCE = ~(-1L << SEQUENCE_BIT);
 
     /**
      * 每一部分向左的位移
      */
-    private final static long MACHINE_LEFT = SEQUENCE_BIT;
-    private final static long DATA_CENTER_LEFT = SEQUENCE_BIT + MACHINE_BIT;
-    private final static long TIME_STAMP_LEFT = DATA_CENTER_LEFT + DATA_CENTER_BIT;
+    private static final long MACHINE_LEFT = SEQUENCE_BIT;
+    private static final long DATA_CENTER_LEFT = SEQUENCE_BIT + MACHINE_BIT;
+    private static final long TIME_STAMP_LEFT = DATA_CENTER_LEFT + DATA_CENTER_BIT;
 
     /**
      * 数据中心

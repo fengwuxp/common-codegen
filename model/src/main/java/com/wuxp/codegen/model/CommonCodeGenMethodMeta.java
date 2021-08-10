@@ -1,28 +1,30 @@
 package com.wuxp.codegen.model;
 
 
+import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * 通用的代码生成method元数据
  *
  * @author wuxp
  */
+@EqualsAndHashCode(exclude = {"declaringClassMeta", "returnTypes", "params", "typeVariables", "paramAnnotations"}, callSuper = true)
 @Data
 @Accessors(chain = true)
 public class CommonCodeGenMethodMeta extends CommonBaseMeta {
-
 
     /**
      * 原目标 Method
      */
     private Method source;
+
+    private JavaClassMeta declaringClassMeta;
 
     /**
      * 类型参数, 泛型
@@ -48,31 +50,4 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
      */
     private CommonCodeGenAnnotation[] annotations;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        CommonCodeGenMethodMeta that = (CommonCodeGenMethodMeta) o;
-        return Arrays.equals(returnTypes, that.returnTypes) &&
-                Objects.equals(params, that.params) &&
-                Objects.equals(paramAnnotations, that.paramAnnotations) &&
-                Arrays.equals(annotations, that.annotations) &&
-                Arrays.equals(typeVariables, that.typeVariables);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(super.hashCode(), params, paramAnnotations);
-        result = 31 * result + Arrays.hashCode(returnTypes);
-        result = 31 * result + Arrays.hashCode(annotations);
-        result = 31 * result + Arrays.hashCode(typeVariables);
-        return result;
-    }
 }

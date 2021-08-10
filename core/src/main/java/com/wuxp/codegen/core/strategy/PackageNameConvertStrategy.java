@@ -5,7 +5,7 @@ package com.wuxp.codegen.core.strategy;
  *
  * @author wuxp
  */
-public interface PackageMapStrategy {
+public interface PackageNameConvertStrategy {
 
 
     /**

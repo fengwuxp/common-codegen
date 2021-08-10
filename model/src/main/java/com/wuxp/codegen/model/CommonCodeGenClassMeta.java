@@ -2,6 +2,7 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.enums.ClassType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.util.StringUtils;
 
@@ -9,7 +10,6 @@ import java.beans.Transient;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
  * @author wuxp
  */
 @Data
+@EqualsAndHashCode(exclude = {"superClass", "interfaces", "annotations", "dependencies"}, callSuper = true)
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
-
 
     /**
      * 数组类型的名称前缀
@@ -120,6 +120,11 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      */
     private Map<String, ? extends CommonCodeGenClassMeta[]> superTypeVariables;
 
+    /**
+     * 是否为类型参数变量
+     */
+    private Boolean typeArgumentVariable = false;
+
     public CommonCodeGenClassMeta() {
     }
 
@@ -168,44 +173,6 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
             return this.getFinallyGenericDescription();
         }
         return this.name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        CommonCodeGenClassMeta that = (CommonCodeGenClassMeta) o;
-        return Objects.equals(source, that.source) &&
-                Arrays.equals(typeVariables, that.typeVariables) &&
-                Objects.equals(superTypeVariables, that.superTypeVariables) &&
-                classType == that.classType &&
-                Objects.equals(isAbstract, that.isAbstract) &&
-                Objects.equals(superClass, that.superClass) &&
-                Arrays.equals(interfaces, that.interfaces) &&
-                Arrays.equals(annotations, that.annotations) &&
-                Objects.equals(packagePath, that.packagePath) &&
-                Objects.equals(dependencies, that.dependencies) &&
-                Objects.equals(genericDescription, that.genericDescription) &&
-                Arrays.equals(methodMetas, that.methodMetas) &&
-                Arrays.equals(fieldMetas, that.fieldMetas) &&
-                Objects.equals(needGenerate, that.needGenerate) &&
-                Objects.equals(needImport, that.needImport);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(source, classType, packagePath, genericDescription);
-        result = 31 * result + Arrays.hashCode(annotations);
-        result = 31 * result + Arrays.hashCode(methodMetas);
-        result = 31 * result + Arrays.hashCode(fieldMetas);
-        return result;
     }
 
     @Transient

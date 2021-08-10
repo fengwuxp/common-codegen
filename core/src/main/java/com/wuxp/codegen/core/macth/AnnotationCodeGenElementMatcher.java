@@ -27,6 +27,11 @@ public class AnnotationCodeGenElementMatcher implements CodeGenElementMatcher<An
         return matches(source.getAnnotations());
     }
 
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return clazz.isAssignableFrom(Annotation.class);
+    }
+
     private boolean matches(Annotation... annotations) {
         return Arrays.stream(annotations).map(Annotation::getClass).anyMatch(this.annotationTypes::contains);
     }

@@ -23,4 +23,9 @@ public class CodeGenFieldMatcher implements CodeGenElementMatcher<JavaFieldMeta>
         }
         return true;
     }
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return clazz.isAssignableFrom(JavaFieldMeta.class);
+    }
 }

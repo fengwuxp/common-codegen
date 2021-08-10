@@ -1,9 +1,11 @@
 package com.wuxp.codegen.annotations;
 
-import com.wuxp.codegen.core.parser.enhance.SimpleLanguageDefinitionPostProcessor;
+import com.wuxp.codegen.core.parser.LanguageAnnotationParser;
+import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.util.ObjectUtils;
 
@@ -14,12 +16,12 @@ import java.util.*;
 /**
  * @author wuxp
  */
-public final class LanguageAnnotationParser implements SimpleLanguageDefinitionPostProcessor<CommonCodeGenAnnotation> {
+public final class DefaultLanguageAnnotationParser implements LanguageAnnotationParser {
 
-    private static final LanguageAnnotationParser INSTANCE = new LanguageAnnotationParser();
+    private final List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> postProcessors;
 
-    public static LanguageAnnotationParser getInstance() {
-        return INSTANCE;
+    public DefaultLanguageAnnotationParser(List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> postProcessors) {
+        this.postProcessors = postProcessors;
     }
 
     /**
@@ -28,7 +30,8 @@ public final class LanguageAnnotationParser implements SimpleLanguageDefinitionP
      * @param annotationOwner 注解持有者
      * @return 用于生成的注解列表
      */
-    public CommonCodeGenAnnotation[] parse(AnnotatedElement annotationOwner) {
+    @Override
+    public CommonCodeGenAnnotation[] parseAnnotatedElement(AnnotatedElement annotationOwner) {
         Annotation[] annotations = annotationOwner.getAnnotations();
         if (ObjectUtils.isEmpty(annotations)) {
             return new CommonCodeGenAnnotation[0];
@@ -51,9 +54,19 @@ public final class LanguageAnnotationParser implements SimpleLanguageDefinitionP
             return Collections.emptyList();
         }
         List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>();
-        toAnnotations.add(postProcess(toAnnotation));
+        postProcess(toAnnotation);
+        toAnnotations.add(toAnnotation);
         toAnnotations.addAll(getCommonCodeGenAnnotations(toAnnotation));
         return toAnnotations;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void postProcess(CommonCodeGenAnnotation meta) {
+        for (LanguageDefinitionPostProcessor processor : postProcessors) {
+            if (processor.supports(meta.getClass())) {
+                processor.postProcess(meta);
+            }
+        }
     }
 
     private List<CommonCodeGenAnnotation> getCommonCodeGenAnnotations(CommonCodeGenAnnotation toAnnotation) {

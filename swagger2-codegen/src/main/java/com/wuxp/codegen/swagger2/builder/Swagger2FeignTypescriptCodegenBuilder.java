@@ -1,24 +1,29 @@
 package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
-import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
+import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
+import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionParser;
+import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
+import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
-import com.wuxp.codegen.swagger2.Swagger2CodeGenerator;
-import com.wuxp.codegen.swagger2.Swagger2FeignSdkGenMatchingStrategy;
-import com.wuxp.codegen.swagger2.languages.Swagger2FeignSdkTypescriptParser;
-import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
-import com.wuxp.codegen.templates.TemplateLoader;
+import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author wuxp
@@ -44,36 +49,52 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
         if (this.clientProviderType == null) {
             this.clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
         }
-        this.codeGenMatchingStrategies.add(new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods));
-        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
-            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
-        }
         this.initTypeMapping();
-        //实例化语言解析器
-        LanguageParser languageParser = new Swagger2FeignSdkTypescriptParser(
-                packageMapStrategy,
-                CombinationCodeGenMatchingStrategy.of(this.codeGenMatchingStrategies),
-                this.codeDetects);
-        initLanguageParser(languageParser);
-        //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
+        if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
+//            DispatchLanguageDefinitionPostProcessor.getInstance().addLanguageDefinitionPostProcessor(new UmiRequestMethodDefinitionPostProcessor());
+        }
+        LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(scanPackages, configureAndGetDefinitionParser(), getTemplateStrategy());
+        codeGenerator.setIgnoreClasses(ignoreClasses);
+        codeGenerator.setIncludeClasses(includeClasses);
+        codeGenerator.setIgnorePackages(ignorePackages);
+        codeGenerator.setEnableFieldUnderlineStyle(enableFieldUnderlineStyle);
+        return codeGenerator;
+    }
 
-        TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new LoongSimpleTemplateStrategy(
-                templateLoader,
+    private TemplateStrategy<CommonCodeGenClassMeta> getTemplateStrategy() {
+        return new LoongSimpleTemplateStrategy(
+                this.getTemplateLoader(),
                 this.outPath,
-                LanguageDescription.TYPESCRIPT.getSuffixName(),
+                this.languageDescription.getSuffixName(),
                 this.isDeletedOutputDirectory, this.codeFormatter);
-        RequestMappingMetaFactory.setSupportAuthenticationType(true);
+    }
 
-        return new Swagger2CodeGenerator(
-                this.scanPackages,
-                this.ignorePackages,
-                this.includeClasses.toArray(new Class[0]),
-                this.ignoreClasses.toArray(new Class[0]),
-                languageParser,
-                templateStrategy,
-                this.enableFieldUnderlineStyle)
-                .otherCodegenClassMetas(otherCodegenClassMetas)
-                .taskWaiters(Collections.singletonList(codeFormatter));
+    private LanguageTypeDefinitionParser<TypescriptClassMeta> configureAndGetDefinitionParser() {
+        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>();
+        result.addElementDefinitionParsers(getElementDefinitionParsers(result));
+        result.addCodeGenElementMatchers(Collections.singletonList(JavaClassElementMatcher.builder().build()));
+        return result;
+    }
+
+    private List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result) {
+        TypeScriptTypeDefinitionParser typeScriptDefinitionParser = new TypeScriptTypeDefinitionParser(result, this.packageMapStrategy);
+        return Arrays.asList(
+                getTypeDefinitionParser(typeScriptDefinitionParser),
+                getTypeScriptMethodDefinitionParser(result),
+                new TypeScriptFieldDefinitionParser(result),
+                new TypeScriptTypeVariableDefinitionParser()
+        );
+    }
+
+    private LanguageTypeDefinitionParser<TypescriptClassMeta> getTypeDefinitionParser(TypeScriptTypeDefinitionParser typeScriptDefinitionParser) {
+        return MappingTypescriptTypeDefinitionParser.builder(typeScriptDefinitionParser)
+                .javaTypeMappings(customJavaTypeMapping)
+                .typeMapping(baseTypeMapping)
+                .build();
+    }
+
+
+    private TypeScriptMethodDefinitionParser getTypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> publishParser) {
+        return new TypeScriptMethodDefinitionParser(publishParser, this.packageMapStrategy);
     }
 }

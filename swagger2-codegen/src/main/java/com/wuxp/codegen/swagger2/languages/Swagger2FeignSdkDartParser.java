@@ -2,7 +2,7 @@ package com.wuxp.codegen.swagger2.languages;
 
 import com.wuxp.codegen.core.CodeDetect;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
-import com.wuxp.codegen.core.strategy.PackageMapStrategy;
+import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.languages.AbstractDartParser;
 
 import java.util.Collection;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class Swagger2FeignSdkDartParser extends AbstractDartParser {
 
 
-    public Swagger2FeignSdkDartParser(PackageMapStrategy packageMapStrategy,
+    public Swagger2FeignSdkDartParser(PackageNameConvertStrategy packageMapStrategy,
                                       CodeGenMatchingStrategy genMatchingStrategy,
                                       Collection<CodeDetect> codeDetects,
                                       Map<Class<?>, List<String>> ignoreFields) {

@@ -9,7 +9,7 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 public class TypeScriptDefinitionPostProcessor implements LanguageDefinitionPostProcessor<TypescriptClassMeta> {
 
     @Override
-    public TypescriptClassMeta postProcess(TypescriptClassMeta meta) {
-        return meta;
+    public void postProcess(TypescriptClassMeta meta) {
+
     }
 }

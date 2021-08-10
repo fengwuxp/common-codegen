@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Setter
-public abstract class AbstractPackageMapStrategy implements PackageMapStrategy {
+public abstract class AbstractPackageMapStrategy implements PackageNameConvertStrategy {
 
     /**
      * @key 类的包名前缀
