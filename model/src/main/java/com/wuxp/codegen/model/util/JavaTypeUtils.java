@@ -277,7 +277,6 @@ public final class JavaTypeUtils {
      * @return
      */
     public static boolean isFileUploadObject(Class<?> clazz) {
-
         return CommonsMultipartFile.class.equals(clazz);
     }
 

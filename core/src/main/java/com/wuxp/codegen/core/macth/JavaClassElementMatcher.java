@@ -12,6 +12,7 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
      */
     private static final List<String> DEFAULT_IGNORE_PATTERNS = new ArrayList<>();
 
+    // org.springframework.core.io.InputStreamResource
 
     static {
         DEFAULT_IGNORE_PATTERNS.add("org.springframework.");
@@ -88,7 +89,9 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
             this.ignorePackages = new HashSet<>();
             this.ignoreClasses = new HashSet<>();
             this.includePackages = new HashSet<>();
-            this.includeClasses = new HashSet<>(Collections.singletonList(Date.class));
+            this.includeClasses = new HashSet<>(Collections.singletonList(
+                    Date.class
+            ));
         }
 
         public JavaClassElementMatcherBuilder ignorePackages(Collection<String> ignorePackages) {

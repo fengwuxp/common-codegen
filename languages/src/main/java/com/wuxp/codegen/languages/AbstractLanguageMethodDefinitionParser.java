@@ -58,6 +58,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         // method转换
         M result = parseMethodInner(methodMeta);
         result.setAnnotations(parseAnnotatedElement(methodMeta.getMethod()))
+                .setSource(methodMeta.getMethod())
                 .setReturnTypes(getReturnTypes(methodMeta))
                 .setAccessPermission(methodMeta.getAccessPermission())
                 .setComments(extractComments(methodMeta))
@@ -133,7 +134,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
     private M margeParamsAndParseMethod(JavaMethodMeta methodMeta) {
 
-        if (isSingleComplexParameter(methodMeta)) {
+        if (isOnlySingleComplexParameter(methodMeta)) {
             // 方法只存在一个复杂参数
             return parseMethod(methodMeta);
         }
@@ -176,17 +177,23 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 .map(CommonCodeGenFiledMeta::getFiledTypes)
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
+                .filter(meta -> Boolean.TRUE.equals(meta.getNeedGenerate()))
+                .distinct()
                 .collect(Collectors.toMap(CommonCodeGenClassMeta::getName, value -> value));
     }
 
-    private boolean isSingleComplexParameter(JavaMethodMeta methodMeta) {
-        return methodMeta.getParams()
+    private boolean isOnlySingleComplexParameter(JavaMethodMeta methodMeta) {
+        List<Class<?>> params = methodMeta.getParams()
                 .values()
                 .stream()
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
                 .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
-                .filter(clazz -> !clazz.isEnum())
+                .collect(Collectors.toList());
+        if (params.size() > 1) {
+            return false;
+        }
+        return params.stream()
                 .filter(JavaTypeUtils::isNoneJdkComplex)
                 .count() == 1;
     }
@@ -272,13 +279,13 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     private CommonCodeGenClassMeta[] getReturnTypes(JavaMethodMeta javaMethodMeta) {
         //处理返回值
         Class<?>[] returnTypes = javaMethodMeta.getReturnType();
-        if (isReturnStream(javaMethodMeta)) {
+        if (isStreamReturnType(javaMethodMeta)) {
             returnTypes = new Class[]{InputStreamResource.class};
         }
         return getCodegenClassMetas(returnTypes);
     }
 
-    private boolean isReturnStream(JavaMethodMeta javaMethodMeta) {
+    private boolean isStreamReturnType(JavaMethodMeta javaMethodMeta) {
         return RequestMappingUtils.findRequestMappingAnnotation(javaMethodMeta.getMethod().getDeclaredAnnotations())
                 .map(requestMappingMate -> {
                     String[] produces = requestMappingMate.produces();
@@ -287,7 +294,6 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 })
                 .orElse(false);
     }
-
 
     private String[] extractComments(JavaMethodMeta methodMeta) {
         // 注解转注释

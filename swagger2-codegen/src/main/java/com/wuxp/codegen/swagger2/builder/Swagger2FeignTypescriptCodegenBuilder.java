@@ -70,7 +70,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
     }
 
     private LanguageTypeDefinitionParser<TypescriptClassMeta> configureAndGetDefinitionParser() {
-        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>();
+        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getTypeDefinitionParser());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
         result.addCodeGenElementMatchers(Collections.singletonList(JavaClassElementMatcher.builder().build()));
         return result;
@@ -79,15 +79,15 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
     private List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result) {
         TypeScriptTypeDefinitionParser typeScriptDefinitionParser = new TypeScriptTypeDefinitionParser(result, this.packageMapStrategy);
         return Arrays.asList(
-                getTypeDefinitionParser(typeScriptDefinitionParser),
+                typeScriptDefinitionParser,
                 getTypeScriptMethodDefinitionParser(result),
                 new TypeScriptFieldDefinitionParser(result),
                 new TypeScriptTypeVariableDefinitionParser()
         );
     }
 
-    private LanguageTypeDefinitionParser<TypescriptClassMeta> getTypeDefinitionParser(TypeScriptTypeDefinitionParser typeScriptDefinitionParser) {
-        return MappingTypescriptTypeDefinitionParser.builder(typeScriptDefinitionParser)
+    private LanguageTypeDefinitionParser<TypescriptClassMeta> getTypeDefinitionParser() {
+        return MappingTypescriptTypeDefinitionParser.builder()
                 .javaTypeMappings(customJavaTypeMapping)
                 .typeMapping(baseTypeMapping)
                 .build();

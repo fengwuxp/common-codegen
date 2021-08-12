@@ -3,25 +3,25 @@
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
-      import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
+        import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
     </#list>
 </#if>
 
 <#if (comments?size>0)>
-  /**
+    /**
     <#list comments as cmment>
-      * ${cmment}
+        * ${cmment}
     </#list>
-  **/
+    **/
 </#if>
 
 <#if annotations??>
     <#list annotations as annotation>
-      @${annotation.name}({
+        @${annotation.name}({
         <#list annotation.namedArguments as name,val>
             ${name}:${val},
         </#list>
-      })
+        })
     </#list>
 </#if>
 export interface  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
@@ -29,20 +29,13 @@ export interface  ${finallyClassName}<#if superClass??> extends ${superClass.fin
 <#if fieldMetas??>
     <#list fieldMetas as field>
         <#if (field.comments?size>0)>
-          /**
+            /**
             <#list field.comments as cmment>
-              *${cmment}
+                *${cmment}
             </#list>
             **/
         </#if>
-    <#--        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customizeMethod.combineType(field.filedTypes)};-->
-        <#assign returnType=customizeMethod.combineType(field.filedTypes)/>
-        <#if returnType?starts_with('Enum_Key_Record<')>
-            ${field.name}<#if !field.required!false>?</#if>: ${returnType?replace('Enum_Key_Record<','Omit<Partial<Record<keyof typeof ')+'>, "prototype">'};
-        <#else >
-            ${field.name}<#if !field.required!false>?</#if>: ${returnType};
-        </#if>
-
+        ${field.name}<#if field.required?string('true', 'false')=='false'>?</#if>: ${customizeMethod.combineType(field.filedTypes)};
     </#list>
 </#if>
 }

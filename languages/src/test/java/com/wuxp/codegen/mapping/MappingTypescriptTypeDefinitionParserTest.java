@@ -8,24 +8,10 @@ import org.junit.jupiter.api.Test;
 class MappingTypescriptTypeDefinitionParserTest {
 
 
-    private LanguageTypeDefinitionParser<TypescriptClassMeta> wrapperDefinitionParser(LanguageTypeDefinitionParser<TypescriptClassMeta> delegate) {
-        return MappingTypescriptTypeDefinitionParser.builder(delegate)
-                .build();
-    }
-
     @Test
     void testMapping() {
-        LanguageTypeDefinitionParser<TypescriptClassMeta> definitionParser = wrapperDefinitionParser(new LanguageTypeDefinitionParser<TypescriptClassMeta>() {
-            @Override
-            public TypescriptClassMeta newElementInstance() {
-                return null;
-            }
-
-            @Override
-            public TypescriptClassMeta parse(Class<?> source) {
-                return null;
-            }
-        });
+        LanguageTypeDefinitionParser<TypescriptClassMeta> definitionParser = MappingTypescriptTypeDefinitionParser.builder()
+                .build();
         TypescriptClassMeta result = definitionParser.parse(String.class);
         Assertions.assertNotNull(result, "String type mapping result must not null");
     }

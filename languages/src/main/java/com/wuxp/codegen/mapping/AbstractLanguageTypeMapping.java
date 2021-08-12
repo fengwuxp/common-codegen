@@ -12,6 +12,7 @@ import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ResolvableType;
+import org.springframework.core.io.InputStreamResource;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -138,6 +139,10 @@ public abstract class AbstractLanguageTypeMapping<C extends CommonCodeGenClassMe
      * @return 映射后的类型
      */
     protected C mapping(Class<?> clazz) {
+
+        if (InputStreamResource.class == clazz) {
+            System.out.printf("");
+        }
 
         if (JavaArrayClassTypeMark.class.equals(clazz)) {
             // 标记的数据数组类型

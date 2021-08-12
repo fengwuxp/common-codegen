@@ -1,6 +1,5 @@
 package com.wuxp.codegen.mapping;
 
-import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import org.reactivestreams.Publisher;
 import org.springframework.core.io.InputStreamResource;
@@ -49,8 +48,8 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
         DART_DEFAULT_BASE_MAPPING.put(Publisher.class, DartClassMeta.FUTURE);
     }
 
-    public static AbstractMappingTypeDefinitionParserBuilder<DartClassMeta> builder(LanguageTypeDefinitionParser<DartClassMeta> delegate) {
-        return new AbstractMappingTypeDefinitionParserBuilder<DartClassMeta>(delegate, DART_DEFAULT_BASE_MAPPING) {
+    public static AbstractMappingTypeDefinitionParserBuilder<DartClassMeta> builder() {
+        return new AbstractMappingTypeDefinitionParserBuilder<DartClassMeta>(DART_DEFAULT_BASE_MAPPING) {
             @Override
             public MappingDartTypeDefinitionParser build() {
                 return new MappingDartTypeDefinitionParser(this);
@@ -59,6 +58,6 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     private MappingDartTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<DartClassMeta> builder) {
-        super(builder.getDelegate(), new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
     }
 }

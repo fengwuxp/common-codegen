@@ -15,4 +15,9 @@ public class TypeScriptMethodDefinitionParser extends AbstractLanguageMethodDefi
                                             PackageNameConvertStrategy packageMapStrategy) {
         super(languageElementDefinitionEventParser, packageMapStrategy);
     }
+
+    @Override
+    protected boolean needMargeMethodParams() {
+        return true;
+    }
 }

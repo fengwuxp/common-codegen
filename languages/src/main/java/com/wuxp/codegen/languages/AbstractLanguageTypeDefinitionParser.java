@@ -302,10 +302,15 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     }
 
     private Map<String, ? extends CommonCodeGenClassMeta> collectDependencies(Stream<? extends CommonCodeGenClassMeta> classMetaStream) {
+        Set<String> names = new HashSet<>();
         return classMetaStream
                 .filter(Objects::nonNull)
-                .filter(commonCodeGenClassMeta -> {
-                    return Boolean.TRUE.equals(commonCodeGenClassMeta.getTypeArgumentVariable());
+                .filter(meta -> {
+                    if (names.contains(meta.getName())) {
+                        return false;
+                    }
+                    names.add(meta.getName());
+                    return true;
                 })
                 .collect(Collectors.toMap(CommonCodeGenClassMeta::getName, value -> value));
     }

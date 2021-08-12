@@ -10,7 +10,6 @@ import java.util.Map;
 @Getter
 public abstract class AbstractMappingTypeDefinitionParserBuilder<C extends CommonCodeGenClassMeta> {
 
-    private final LanguageTypeDefinitionParser<C> delegate;
     /**
      * 类型映射器
      */
@@ -21,8 +20,7 @@ public abstract class AbstractMappingTypeDefinitionParserBuilder<C extends Commo
      */
     private final Map<Class<?>, Class<?>[]> javaTypeMappings;
 
-    AbstractMappingTypeDefinitionParserBuilder(LanguageTypeDefinitionParser<C> delegate, Map<Class<?>, C> baseMappings) {
-        this.delegate = delegate;
+    AbstractMappingTypeDefinitionParserBuilder(Map<Class<?>, C> baseMappings) {
         this.typeMappings = new HashMap<>(baseMappings);
         this.javaTypeMappings = new HashMap<>(32);
     }

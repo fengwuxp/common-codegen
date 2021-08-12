@@ -52,7 +52,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 类型参数, 泛型
      */
-    protected CommonCodeGenClassMeta[] typeVariables;
+    protected CommonCodeGenClassMeta[] typeVariables = new CommonCodeGenClassMeta[0];
     /**
      * 类类型
      */
@@ -93,11 +93,11 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 方法列表
      */
-    protected CommonCodeGenMethodMeta[] methodMetas;
+    protected CommonCodeGenMethodMeta[] methodMetas = new CommonCodeGenMethodMeta[0];
     /**
      * 属性列表
      */
-    protected CommonCodeGenFiledMeta[] fieldMetas;
+    protected CommonCodeGenFiledMeta[] fieldMetas = new CommonCodeGenFiledMeta[0];
     /**
      * 枚举常量列表
      *

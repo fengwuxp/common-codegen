@@ -30,7 +30,10 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
 
     private final LanguageAnnotationParser languageAnnotationParser;
 
-    public LanguageTypeDefinitionPublishParser() {
+    private final LanguageTypeDefinitionParser<C> mappingTypeDefinitionParser;
+
+    public LanguageTypeDefinitionPublishParser(LanguageTypeDefinitionParser<C> mappingTypeDefinitionParser) {
+        this.mappingTypeDefinitionParser = mappingTypeDefinitionParser;
         this.elementDefinitionParsers = new ArrayList<>();
         this.postProcessors = new ArrayList<>();
         this.codeGenElementMatchers = new ArrayList<>();
@@ -48,15 +51,26 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <C extends CommonBaseMeta> C publishParse(Object source) {
-        if (!matches(source)) {
-            return null;
+        C result = (C) mappingTypeDefinition(source);
+        if (result != null) {
+            return result;
         }
-        C result = dispatchParse(source);
+        if (matches(source)) {
+            result = dispatchParse(source);
+        }
         if (result != null) {
             postProcess(result);
         }
         return result;
+    }
+
+    private C mappingTypeDefinition(Object source) {
+        if (source instanceof Class<?>) {
+            return mappingTypeDefinitionParser.parse((Class<?>) source);
+        }
+        return null;
     }
 
     @Override

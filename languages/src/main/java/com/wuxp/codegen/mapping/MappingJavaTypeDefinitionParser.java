@@ -59,8 +59,8 @@ public class MappingJavaTypeDefinitionParser extends AbstractMappingTypeDefiniti
         JAVA_BASE_MAPPINGS.put(Mono.class, JavaCodeGenClassMeta.REACTOR_MONO);
     }
 
-    public static AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta> builder(LanguageTypeDefinitionParser<JavaCodeGenClassMeta> delegate) {
-        return new AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta>(delegate, JAVA_BASE_MAPPINGS) {
+    public static AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta> builder() {
+        return new AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta>( JAVA_BASE_MAPPINGS) {
             @Override
             public MappingJavaTypeDefinitionParser build() {
                 return new MappingJavaTypeDefinitionParser(this);
@@ -69,7 +69,7 @@ public class MappingJavaTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     private MappingJavaTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta> builder) {
-        super(builder.getDelegate(), new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
+        super( new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
     }
 
 

@@ -17,7 +17,6 @@ public class MappingTypescriptTypeDefinitionParser extends AbstractMappingTypeDe
     private static final Map<Class<?>, TypescriptClassMeta> TYPESCRIPT_BASE_MAPPINGS = new LinkedHashMap<>();
 
     static {
-
         //设置基础的数据类型映射
         TYPESCRIPT_BASE_MAPPINGS.put(Object.class, TypescriptClassMeta.ANY);
         TYPESCRIPT_BASE_MAPPINGS.put(Date.class, TypescriptClassMeta.NUMBER);
@@ -51,8 +50,8 @@ public class MappingTypescriptTypeDefinitionParser extends AbstractMappingTypeDe
         TYPESCRIPT_BASE_MAPPINGS.put(Publisher.class, TypescriptClassMeta.PROMISE);
     }
 
-    public static AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta> builder(LanguageTypeDefinitionParser<TypescriptClassMeta> delegate) {
-        return new AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta>(delegate, TYPESCRIPT_BASE_MAPPINGS) {
+    public static AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta> builder() {
+        return new AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta>( TYPESCRIPT_BASE_MAPPINGS) {
             @Override
             public MappingTypescriptTypeDefinitionParser build() {
                 return new MappingTypescriptTypeDefinitionParser(this);
@@ -61,7 +60,7 @@ public class MappingTypescriptTypeDefinitionParser extends AbstractMappingTypeDe
     }
 
     private MappingTypescriptTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta> builder) {
-        super(builder.getDelegate(), new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
     }
 
 

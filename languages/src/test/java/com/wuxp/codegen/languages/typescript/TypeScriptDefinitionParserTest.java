@@ -52,7 +52,8 @@ class TypeScriptDefinitionParserTest {
     }
 
     private LanguageTypeDefinitionPublishParser<TypescriptClassMeta> createDefinitionParser() {
-        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>();
+        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(MappingTypescriptTypeDefinitionParser.builder()
+                .build());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
         result.addCodeGenElementMatchers(Collections.singletonList(JavaClassElementMatcher.builder().build()));
         return result;
@@ -60,9 +61,7 @@ class TypeScriptDefinitionParserTest {
 
     private List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result) {
         TypeScriptTypeDefinitionParser typeScriptDefinitionParser = new TypeScriptTypeDefinitionParser(result, getTestPackageMapStrategy());
-        LanguageTypeDefinitionParser<TypescriptClassMeta> typeDefinitionParser = MappingTypescriptTypeDefinitionParser.builder(typeScriptDefinitionParser)
-                .build();
-        return Arrays.asList(typeDefinitionParser,
+        return Arrays.asList(typeScriptDefinitionParser,
                 getTypeScriptMethodDefinitionParser(result),
                 new TypeScriptFieldDefinitionParser(result),
                 new TypeScriptTypeVariableDefinitionParser()
