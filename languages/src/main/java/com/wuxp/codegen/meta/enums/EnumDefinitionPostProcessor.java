@@ -6,6 +6,7 @@ import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.AccessibleObject;
@@ -18,22 +19,23 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
     @Override
     public void postProcess(CommonBaseMeta meta) {
         Class<?> clazz = meta.getClass();
-        if (clazz.isAssignableFrom(CommonCodeGenClassMeta.class)) {
+        if (JavaTypeUtils.isAssignableFrom(clazz, CommonCodeGenClassMeta.class)) {
             postProcessClassMeta((CommonCodeGenClassMeta) meta);
         }
-        if (clazz.isAssignableFrom(CommonCodeGenFiledMeta.class)) {
+        if (JavaTypeUtils.isAssignableFrom(clazz, CommonCodeGenFiledMeta.class)) {
             postProcessFiledMeta((CommonCodeGenFiledMeta) meta);
         }
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(CommonCodeGenClassMeta.class)
-                || clazz.isAssignableFrom(CommonCodeGenFiledMeta.class);
+        return JavaTypeUtils.isAssignableFrom(clazz, CommonCodeGenClassMeta.class) ||
+                JavaTypeUtils.isAssignableFrom(clazz, CommonCodeGenFiledMeta.class);
     }
 
     private void postProcessClassMeta(CommonCodeGenClassMeta classMeta) {
-        if (!classMeta.getSource().isEnum()) {
+        Class<?> source = classMeta.getSource();
+        if (source == null || !source.isEnum()) {
             return;
         }
         CommonCodeGenFiledMeta[] enumConstants = Arrays.stream(classMeta.getFieldMetas())
@@ -49,7 +51,7 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
 
     public void postProcessFiledMeta(CommonCodeGenFiledMeta fieldMeta) {
         Field sourceFiled = fieldMeta.getSource();
-        if (!sourceFiled.isEnumConstant()) {
+        if (sourceFiled == null || !sourceFiled.isEnumConstant()) {
             return;
         }
         EnumUtils.getEnumConstant(sourceFiled).ifPresent(enumConstant -> fieldMeta.setEnumFiledValues(resolveEnumFiledValues(fieldMeta, enumConstant)));

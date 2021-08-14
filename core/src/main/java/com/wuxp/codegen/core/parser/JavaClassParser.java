@@ -14,6 +14,7 @@ import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.beans.Transient;
@@ -91,6 +92,8 @@ public class JavaClassParser {
                 .setTypeVariables(source.getTypeParameters())
                 .setAnnotations(source.getAnnotations())
                 .setName(source.getSimpleName());
+        Arrays.stream(classMeta.getMethodMetas()).forEach(methodMeta -> methodMeta.setDeclaringClassMeta(classMeta));
+        Arrays.stream(classMeta.getFieldMetas()).forEach(fieldMeta -> fieldMeta.setDeclaringClassMeta(classMeta));
         return classMeta;
     }
 
@@ -212,7 +215,11 @@ public class JavaClassParser {
         Parameter[] parameters = method.getParameters();
         for (int i = 0; i < parameterNames.length; i++) {
             String parameterName = parameterNames[i];
-            parameterTypes.put(parameterName, getParameterTypes(parameters[i]));
+            Class<?>[] paramTypes = getParameterTypes(parameters[i]);
+            if (ObjectUtils.isEmpty(paramTypes)) {
+                paramTypes = new Class<?>[]{method.getParameterTypes()[0]};
+            }
+            parameterTypes.put(parameterName, paramTypes);
         }
         return parameterTypes;
     }
@@ -367,7 +374,6 @@ public class JavaClassParser {
         } else {
             Arrays.asList(methods).forEach(ReflectionUtils::makeAccessible);
         }
-
         return Arrays.stream(methods)
                 .map(this::getJavaMethodMeta)
                 .filter(Objects::nonNull)
@@ -392,7 +398,12 @@ public class JavaClassParser {
         } else {
             classes.add(resolvableType.getRawClass());
             for (ResolvableType generic : generics) {
-                classes.addAll(Arrays.asList(getGenericsAndClassType(generic)));
+                Class<?>[] typeVariables = getGenericsAndClassType(generic);
+                if (typeVariables.length == 0) {
+                    classes.addAll(Collections.singletonList(Object.class));
+                } else {
+                    classes.addAll(Arrays.asList(typeVariables));
+                }
             }
         }
         return classes.stream()

@@ -29,7 +29,7 @@ public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
      * @see #parseOfNullable
      */
     @Nullable
-    C parse(S source);
+    C  parse(S source);
 
     /**
      * @param source 待解析 {@link S} 类型 的 element

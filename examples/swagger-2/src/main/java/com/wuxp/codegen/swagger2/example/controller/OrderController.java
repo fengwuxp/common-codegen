@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
 
@@ -100,14 +101,20 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "test hello", notes = "非必填参数测试")
     @PostMapping(value = {"hello_2"})
-    public ServiceResponse hello2(@RequestParam(required = false, defaultValue = "test") @ApiParam("test") String name) {
+    public ServiceQueryResponse hello2(@RequestParam(required = false, defaultValue = "test") @ApiParam("test") String name) {
 
-        return new ServiceResponse<>();
+        return new ServiceQueryResponse<>();
     }
 
     @ApiOperation(value = "test hello", notes = "测试方法名称=delete")
     @DeleteMapping(value = {"hello_delete"})
     public void delete(@RequestParam(required = false) String id) {
+
+    }
+
+    @RequestMapping("/testIgnore")
+    @ApiIgnore
+    public void testIgnore() {
 
     }
 }

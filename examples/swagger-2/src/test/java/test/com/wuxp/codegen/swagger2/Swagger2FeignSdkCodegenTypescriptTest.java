@@ -60,11 +60,11 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
         Swagger2FeignTypescriptCodegenBuilder.builder()
                 .languageDescription(LanguageDescription.TYPESCRIPT)
                 .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                // 自定义的类型映射
+                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 // 基础类型映射
                 .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
                 .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
-                // 自定义的类型映射
-                .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)

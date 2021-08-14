@@ -18,6 +18,6 @@ public interface LanguageDefinitionPostProcessor<C extends CommonBaseMeta> exten
 
     @Override
     default boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(CommonBaseMeta.class);
+        return CommonBaseMeta.class.isAssignableFrom(clazz);
     }
 }

@@ -22,7 +22,9 @@ public class TypeScriptTypeVariableDefinitionParser implements LanguageTypeVaria
         result.setSuperClass(TypescriptClassMeta.OBJECT)
                 .setNeedGenerate(false)
                 .setNeedImport(false)
-                .setTypeArgumentVariable(true);
+                .setTypeArgumentVariable(true)
+                .setGenericDescription(source.getName())
+                .setName(source.getName());
         return result;
     }
 }

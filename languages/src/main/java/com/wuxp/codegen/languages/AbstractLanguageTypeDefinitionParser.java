@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.text.MessageFormat;
 import java.util.*;
@@ -71,15 +72,21 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         result.setName(this.packageNameConvertStrategy.convertClassName(source));
         result.setPackagePath(this.packageNameConvertStrategy.convert(source));
         result.setClassType(classMeta.getClassType());
+        result.setIsAbstract(classMeta.getIsAbstract());
+        result.setIsStatic(classMeta.getIsStatic());
         result.setAccessPermission(classMeta.getAccessPermission());
-        result.setTypeVariables(getTypeVariables(classMeta));
         result.setGenericDescription(getGenericDescription(result.getTypeVariables()));
         result.setComments(extractComments(classMeta));
         result.setAnnotations(parseAnnotatedElement(source));
+        result.setTypeVariables(getTypeVariables(classMeta.getTypeVariables()));
         result.setSuperClass(getSupperClassMeta(classMeta));
         result.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
-        result.setMethodMetas(getCodegenMethodMetas(classMeta));
-        result.setFieldMetas(getCodegenFiledMetas(classMeta));
+        if (CodegenConfigHolder.getConfig().isServerClass(source)) {
+            result.setMethodMetas(getCodegenMethodMetas(classMeta));
+        } else {
+            result.setFieldMetas(getCodegenFiledMetas(classMeta));
+        }
+        result.setNeedGenerate(true);
         return resolveAllDependencies(result);
     }
 
@@ -96,8 +103,8 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return cacheLanguageTypeDefinitionParser.put(result);
     }
 
-    private CommonCodeGenClassMeta[] getTypeVariables(JavaClassMeta classMeta) {
-        return Arrays.stream(classMeta.getTypeVariables())
+    private CommonCodeGenClassMeta[] getTypeVariables(Type[] typeVariables) {
+        return Arrays.stream(typeVariables)
                 .map(type -> {
                     if (type instanceof Class<?>) {
                         return publishParse(type);
@@ -131,6 +138,9 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     private C getSupperClassMeta(JavaClassMeta classMeta) {
         // 处理超类
         Class<?> superClass = classMeta.getSuperClass();
+        if (superClass == Object.class) {
+            return null;
+        }
         // 不是object
         C superClassMeta = this.publishParse(superClass);
         if (superClassMeta == null) {
@@ -138,7 +148,7 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
             return null;
         }
 
-        CommonCodeGenClassMeta[] supperClassTypeVariables = getSuperTypeGenericTypeVariables(classMeta).get(superClass.getName());
+        CommonCodeGenClassMeta[] supperClassTypeVariables = getSuperTypeGenericTypeVariables(classMeta).get(superClass.getSimpleName());
         if (ObjectUtils.isEmpty(supperClassTypeVariables)) {
             return superClassMeta;
         }
@@ -155,32 +165,18 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         /*类型，父类，接口，本身*/
         Map<String, CommonCodeGenClassMeta[]> superTypeVariables = new LinkedHashMap<>();
         // 处理超类上面的类型变量
-        classMeta.getSuperTypeVariables().forEach((superClazz, val) -> {
-            if (ObjectUtils.isEmpty(val)) {
+        classMeta.getSuperTypeVariables().forEach((superClazz, classes) -> {
+            if (ObjectUtils.isEmpty(classes)) {
                 return;
             }
-            //处理超类
-            C typescriptClassMeta = this.publishParse(superClazz);
-            if (typescriptClassMeta == null) {
-                return;
-            }
-            //处理超类上的类型变量 例如 A<T,E> extends B<C<T>,E> 这种情况
-            CommonCodeGenClassMeta[] typeVariables = Arrays.stream(val)
-                    .map(this::publishParseOfNullable)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(CommonCodeGenClassMeta.class::cast)
-                    .toArray(CommonCodeGenClassMeta[]::new);
-            superTypeVariables.put(typescriptClassMeta.getName(), typeVariables);
+            // 处理超类上的类型变量 例如 A<T,E> extends B<C<T>,E> 这种情况
+            CommonCodeGenClassMeta[] typeVariables = getTypeVariables(classes);
+            superTypeVariables.put(superClazz.getSimpleName(), typeVariables);
         });
         return superTypeVariables;
     }
 
     private CommonCodeGenMethodMeta[] getCodegenMethodMetas(JavaClassMeta classMeta) {
-        if (!CodegenConfigHolder.getConfig().isServerClass(classMeta.getClazz())) {
-            return new CommonCodeGenMethodMeta[0];
-        }
-
         return Arrays.stream(classMeta.getMethodMetas())
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsStatic()))
                 .filter(javaMethodMeta -> Boolean.FALSE.equals(javaMethodMeta.getIsTransient()))

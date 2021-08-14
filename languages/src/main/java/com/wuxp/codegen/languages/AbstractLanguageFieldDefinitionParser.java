@@ -1,17 +1,18 @@
 package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.comment.LanguageCommentDefinitionDescriber;
-import com.wuxp.codegen.core.parser.LanguageElementDefinitionPublishSourceParser;
 import com.wuxp.codegen.core.parser.LanguageFieldDefinitionParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,13 +27,20 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
 
     @Override
     public F parse(JavaFieldMeta fieldMeta) {
+        CommonCodeGenClassMeta[] filedTypes = getFiledTypes(fieldMeta);
+        if (ObjectUtils.isEmpty(filedTypes)) {
+            return null;
+        }
         F result = newElementInstance();
+        result.setFiledTypes(filedTypes);
         result.setSource(fieldMeta.getField());
+        result.setDeclaringClassMeta(fieldMeta.getDeclaringClassMeta());
+        result.setName(fieldMeta.getName());
         result.setAccessPermission(fieldMeta.getAccessPermission());
         result.setEnumConstant(fieldMeta.getIsEnumConstant());
         result.setComments(extractComments(fieldMeta));
         result.setAnnotations(parseAnnotatedElement(fieldMeta.getField()));
-        result.setFiledTypes(getFiledTypes(fieldMeta));
+
         result.setTypeVariables(getFieldTypeVariables(fieldMeta).toArray(new CommonCodeGenClassMeta[0]));
         return result;
     }
@@ -58,7 +66,10 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
 
     @NonNull
     private List<CommonCodeGenClassMeta> getFieldTypeVariables(JavaFieldMeta fieldMeta) {
-        return parseTypes(Arrays.asList(fieldMeta.getTypes()));
+        if (fieldMeta.getTypeVariables() == null) {
+            return Collections.emptyList();
+        }
+        return parseTypes(Arrays.asList(fieldMeta.getTypeVariables()));
     }
 
 }

@@ -7,10 +7,10 @@ import com.wuxp.codegen.core.parser.LanguageAnnotationParser;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
-import com.wuxp.codegen.core.util.MatchCodeGenClassSupportHandlerUtils;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.languages.java.JavaBaseMeta;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.AnnotatedElement;
@@ -41,7 +41,7 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
     }
 
     @Override
-    public boolean supports(Class<?> source) {
+    public boolean supports(Class<?> clazz) {
         return true;
     }
 
@@ -53,6 +53,9 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
     @Override
     @SuppressWarnings("unchecked")
     public <C extends CommonBaseMeta> C publishParse(Object source) {
+        if (!supports(source)) {
+            return null;
+        }
         C result = (C) mappingTypeDefinition(source);
         if (result != null) {
             return result;
@@ -64,6 +67,10 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
             postProcess(result);
         }
         return result;
+    }
+
+    private boolean supports(Object source) {
+        return source instanceof JavaBaseMeta || source instanceof AnnotatedElement;
     }
 
     private C mappingTypeDefinition(Object source) {
@@ -81,22 +88,30 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
         return languageAnnotationParser.parseAnnotatedElement(annotationOwner);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     private boolean matches(Object source) {
         if (source == null) {
             return false;
         }
-        CodeGenElementMatcher codeGenElementMatcher = MatchCodeGenClassSupportHandlerUtils.matchesHandler(codeGenElementMatchers, source.getClass());
-        if (codeGenElementMatcher == null) {
-            log.warn("not found source: {} matcher", source.getClass().getName());
-            return true;
+        boolean result = codeGenElementMatchers.stream()
+                .filter(matcher -> matcher.supports(source.getClass()))
+                .map(CodeGenElementMatcher.class::cast)
+                .allMatch(matcher -> matcher.matches(source));
+        if (!result) {
+            log.warn("class={} not match", source.getClass().getName());
         }
-        return codeGenElementMatcher.matches(source);
+        return result;
     }
+
 
     @SuppressWarnings({"unchecked"})
     private <C extends CommonBaseMeta> C dispatchParse(Object source) {
-        return (C) getLanguageElementDefinitionParser(source.getClass()).parse(source);
+        for (LanguageElementDefinitionParser<? extends CommonBaseMeta, Object> parser : elementDefinitionParsers) {
+            if (parser.supports(source.getClass())) {
+                return (C) parser.parse(source);
+            }
+        }
+        throw new CodegenRuntimeException(String.format("un support source，class name：%s", source.getClass().getName()));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -106,15 +121,6 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
                 processor.postProcess(meta);
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <C extends CommonBaseMeta> LanguageElementDefinitionParser<C, Object> getLanguageElementDefinitionParser(Class<?> sourceClass) {
-        LanguageElementDefinitionParser<? extends CommonBaseMeta, Object> elementDefinitionParser = MatchCodeGenClassSupportHandlerUtils.matchesHandler(elementDefinitionParsers, sourceClass);
-        if (elementDefinitionParser == null) {
-            throw new CodegenRuntimeException(String.format("un support source，class name：%s", sourceClass.getName()));
-        }
-        return (LanguageElementDefinitionParser<C, Object>) elementDefinitionParser;
     }
 
     @SuppressWarnings("unchecked")

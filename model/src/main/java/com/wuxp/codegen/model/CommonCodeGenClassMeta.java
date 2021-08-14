@@ -108,7 +108,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * 是否需要自动生成
      */
-    protected Boolean needGenerate = true;
+    protected Boolean needGenerate = false;
     /**
      * 是否需要导入的依赖
      */

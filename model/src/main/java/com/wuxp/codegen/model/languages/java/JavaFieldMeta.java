@@ -26,6 +26,8 @@ public class JavaFieldMeta extends JavaBaseMeta {
      */
     private Field field;
 
+    private JavaClassMeta declaringClassMeta;
+
     /**
      * 属性类型 如果有泛型则有多个
      */

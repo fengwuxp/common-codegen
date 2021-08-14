@@ -29,6 +29,8 @@ public class JavaMethodMeta extends JavaBaseMeta {
      */
     private Method method;
 
+    private JavaClassMeta declaringClassMeta;
+
     /**
      * 返回值类型，如果有泛型则有多个 void是为null
      */

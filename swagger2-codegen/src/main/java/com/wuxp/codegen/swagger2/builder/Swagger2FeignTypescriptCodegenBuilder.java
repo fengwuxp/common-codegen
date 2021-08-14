@@ -3,11 +3,13 @@ package com.wuxp.codegen.swagger2.builder;
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
+import com.wuxp.codegen.core.macth.ExcludeAnnotationCodeGenElementMatcher;
 import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.languages.RemoveClientResponseTypePostProcessor;
 import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
 import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionParser;
 import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
@@ -15,11 +17,13 @@ import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionPar
 import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
+import com.wuxp.codegen.meta.enums.EnumDefinitionPostProcessor;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import lombok.extern.slf4j.Slf4j;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,9 +74,16 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
     }
 
     private LanguageTypeDefinitionParser<TypescriptClassMeta> configureAndGetDefinitionParser() {
-        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getTypeDefinitionParser());
+        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypescriptTypeDefinitionParser());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
-        result.addCodeGenElementMatchers(Collections.singletonList(JavaClassElementMatcher.builder().build()));
+        result.addCodeGenElementMatchers(Arrays.asList(
+                new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
+                JavaClassElementMatcher.builder().build()
+        ));
+        result.addLanguageDefinitionPostProcessors(Arrays.asList(
+                new RemoveClientResponseTypePostProcessor(TypescriptClassMeta.PROMISE),
+                new EnumDefinitionPostProcessor()
+        ));
         return result;
     }
 
@@ -86,7 +97,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
         );
     }
 
-    private LanguageTypeDefinitionParser<TypescriptClassMeta> getTypeDefinitionParser() {
+    private LanguageTypeDefinitionParser<TypescriptClassMeta> getMappingTypescriptTypeDefinitionParser() {
         return MappingTypescriptTypeDefinitionParser.builder()
                 .javaTypeMappings(customJavaTypeMapping)
                 .typeMapping(baseTypeMapping)
