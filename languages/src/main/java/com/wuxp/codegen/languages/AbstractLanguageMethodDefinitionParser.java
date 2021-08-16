@@ -277,6 +277,8 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         Class<?>[] returnTypes = javaMethodMeta.getReturnType();
         if (isStreamReturnType(javaMethodMeta)) {
             returnTypes = new Class[]{InputStreamResource.class};
+        } else {
+            returnTypes = mappingClasses(returnTypes);
         }
         return getCodegenClassMetas(returnTypes);
     }

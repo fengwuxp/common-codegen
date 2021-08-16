@@ -10,6 +10,7 @@ import com.wuxp.codegen.core.macth.IncludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
+import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
@@ -22,10 +23,12 @@ import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationProvider;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -45,6 +48,7 @@ import static org.springframework.util.ResourceUtils.FILE_URL_PREFIX;
  *
  * @author wxup
  */
+@Getter
 public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     /**
@@ -133,6 +137,10 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      * 代码匹配器
      */
     protected Collection<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
+
+    protected Collection<CodeGenElementMatcher<?>> codeGenElementMatchers = new ArrayList<>();
+
+    protected Collection<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> elementParsePostProcessors = new ArrayList<>();
 
     /**
      * 代码生成匹配策略
@@ -253,6 +261,16 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     public AbstractLoongCodegenBuilder codeGenMatchers(CodeGenMatchingStrategy... codeGenMatchingStrategies) {
         this.codeGenMatchingStrategies.addAll(Arrays.asList(codeGenMatchingStrategies));
+        return this;
+    }
+
+    public AbstractLoongCodegenBuilder codeGenElementMatchers(CodeGenElementMatcher<?>... elementMatchers) {
+        this.codeGenElementMatchers.addAll(Arrays.asList(elementMatchers));
+        return this;
+    }
+
+    public AbstractLoongCodegenBuilder elementParsePostProcessors(LanguageDefinitionPostProcessor<? extends CommonBaseMeta>... elementParsePostProcessors) {
+        this.elementParsePostProcessors.addAll(Arrays.asList(elementParsePostProcessors));
         return this;
     }
 

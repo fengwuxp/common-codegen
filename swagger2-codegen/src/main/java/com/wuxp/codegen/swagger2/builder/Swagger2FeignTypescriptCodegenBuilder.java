@@ -8,8 +8,7 @@ import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
-import com.wuxp.codegen.languages.RemoveClientResponseTypePostProcessor;
+import com.wuxp.codegen.languages.*;
 import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
 import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionParser;
 import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
@@ -22,6 +21,8 @@ import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
+import com.wuxp.codegen.swagger2.annotations.*;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -53,6 +54,25 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
         if (this.clientProviderType == null) {
             this.clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
         }
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Api.class, new ApiMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiModel.class, new ApiModelMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiModelProperty.class, new ApiModelPropertyMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiOperation.class, new ApiOperationMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiParam.class, new ApiParamMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParam.class, new ApiImplicitParamMetaFactory());
+        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParams.class, new ApiImplicitParamsMetaFactory());
+
+        this.elementParsePostProcessors(new RemoveClientResponseTypePostProcessor(TypescriptClassMeta.PROMISE), new EnumDefinitionPostProcessor());
+        this.codeGenElementMatchers(
+                new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
+                JavaClassElementMatcher.builder()
+                        .includePackages(this.getIncludePackages())
+                        .includeClasses(this.getIncludeClasses())
+                        .includePackages(this.getIgnorePackages())
+                        .ignoreClasses(this.getIgnoreClasses())
+                        .build()
+        );
+
         this.initTypeMapping();
         if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
 //            DispatchLanguageDefinitionPostProcessor.getInstance().addLanguageDefinitionPostProcessor(new UmiRequestMethodDefinitionPostProcessor());
@@ -68,38 +88,43 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
     private TemplateStrategy<CommonCodeGenClassMeta> getTemplateStrategy() {
         return new LoongSimpleTemplateStrategy(
                 this.getTemplateLoader(),
-                this.outPath,
-                this.languageDescription.getSuffixName(),
-                this.isDeletedOutputDirectory, this.codeFormatter);
+                this.getOutPath(),
+                this.getLanguageDescription().getSuffixName(),
+                this.getIsDeletedOutputDirectory(),
+                this.getCodeFormatter());
     }
 
     private LanguageTypeDefinitionParser<TypescriptClassMeta> configureAndGetDefinitionParser() {
         LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypescriptTypeDefinitionParser());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
-        result.addCodeGenElementMatchers(Arrays.asList(
-                new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
-                JavaClassElementMatcher.builder().build()
-        ));
-        result.addLanguageDefinitionPostProcessors(Arrays.asList(
-                new RemoveClientResponseTypePostProcessor(TypescriptClassMeta.PROMISE),
-                new EnumDefinitionPostProcessor()
-        ));
+        result.addCodeGenElementMatchers(this.getCodeGenElementMatchers());
+        result.addLanguageDefinitionPostProcessors(this.getElementParsePostProcessors());
         return result;
     }
 
     private List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result) {
         TypeScriptTypeDefinitionParser typeScriptDefinitionParser = new TypeScriptTypeDefinitionParser(result, this.packageMapStrategy);
-        return Arrays.asList(
+        List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ?>> parsers = Arrays.asList(
                 typeScriptDefinitionParser,
                 getTypeScriptMethodDefinitionParser(result),
                 new TypeScriptFieldDefinitionParser(result),
                 new TypeScriptTypeVariableDefinitionParser()
         );
+        configureElementParsers(parsers);
+        return parsers;
+    }
+
+    private void configureElementParsers(List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> elementDefinitionParsers) {
+        JavaTypeMapper javaTypeMapper = new JavaTypeMapper(customJavaTypeMapping);
+        elementDefinitionParsers.forEach(languageElementDefinitionParser -> {
+            if (languageElementDefinitionParser instanceof DelegateLanguagePublishParser) {
+                ((DelegateLanguagePublishParser) languageElementDefinitionParser).setJavaTypeMapper(javaTypeMapper);
+            }
+        });
     }
 
     private LanguageTypeDefinitionParser<TypescriptClassMeta> getMappingTypescriptTypeDefinitionParser() {
         return MappingTypescriptTypeDefinitionParser.builder()
-                .javaTypeMappings(customJavaTypeMapping)
                 .typeMapping(baseTypeMapping)
                 .build();
     }

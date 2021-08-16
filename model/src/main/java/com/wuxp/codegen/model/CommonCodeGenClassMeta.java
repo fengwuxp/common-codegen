@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -118,7 +119,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      *
      * @key 类型，父类，接口，本身
      */
-    private Map<String, ? extends CommonCodeGenClassMeta[]> superTypeVariables;
+    private Map<String, ? extends CommonCodeGenClassMeta[]> superTypeVariables = Collections.emptyMap();
 
     /**
      * 是否为类型参数变量

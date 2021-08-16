@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> implements LanguageTypeDefinitionParser<C> {
@@ -17,14 +18,9 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
      */
     private final Map<Class<?>, C> typeMappings;
 
-    /**
-     * 自定义的java类型映射
-     */
-    private final Map<Class<?>, Class<?>[]> javaTypeMappings;
 
-    public MappingTypeDefinitionParser(Map<Class<?>, C> typeMappings, Map<Class<?>, Class<?>[]> javaTypeMappings) {
+    public MappingTypeDefinitionParser(Map<Class<?>, C> typeMappings) {
         this.typeMappings = typeMappings;
-        this.javaTypeMappings = javaTypeMappings;
     }
 
 
@@ -36,11 +32,8 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
 
     @Override
     public C parse(Class<?> source) {
-        Class<?>[] classes = this.mappingClasses(source);
-        return Arrays.stream(ObjectUtils.isEmpty(classes) ? new Class<?>[]{source} : classes)
+        return Stream.of(source)
                 .filter(Objects::nonNull)
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
                 .map(this::mappingType)
                 .filter(Objects::nonNull)
                 .findFirst()
@@ -70,9 +63,6 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
         return Optional.ofNullable(typeMappings.get(clazz));
     }
 
-    private Class<?>[] mappingClasses(Class<?> clazz) {
-        return javaTypeMappings.get(clazz);
-    }
 
     /**
      * 尝试向上转换类型

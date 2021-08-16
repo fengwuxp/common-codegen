@@ -5,8 +5,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class RemoveClientResponseTypePostProcessor implements LanguageDefinitionPostProcessor<CommonCodeGenMethodMeta> {
 
@@ -19,14 +18,13 @@ public class RemoveClientResponseTypePostProcessor implements LanguageDefinition
 
     @Override
     public void postProcess(CommonCodeGenMethodMeta meta) {
-        CommonCodeGenClassMeta[] returnTypes = meta.getReturnTypes();
-        List<CommonCodeGenClassMeta> types = new ArrayList<>(returnTypes.length);
-        for (CommonCodeGenClassMeta classMeta : returnTypes) {
-            if (!clientResponseType.equals(classMeta)) {
-                types.add(classMeta);
-            }
-        }
-        meta.setReturnTypes(types.toArray(new CommonCodeGenClassMeta[0]));
+        meta.setReturnTypes(removeClientResponseType(meta));
+    }
+
+    private CommonCodeGenClassMeta[] removeClientResponseType(CommonCodeGenMethodMeta meta) {
+        return Arrays.stream(meta.getReturnTypes())
+                .filter(classMeta -> !clientResponseType.equals(classMeta))
+                .toArray(CommonCodeGenClassMeta[]::new);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.wuxp.codegen.mapping;
 
-import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import org.reactivestreams.Publisher;
@@ -51,7 +50,7 @@ public class MappingTypescriptTypeDefinitionParser extends AbstractMappingTypeDe
     }
 
     public static AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta> builder() {
-        return new AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta>( TYPESCRIPT_BASE_MAPPINGS) {
+        return new AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta>(TYPESCRIPT_BASE_MAPPINGS) {
             @Override
             public MappingTypescriptTypeDefinitionParser build() {
                 return new MappingTypescriptTypeDefinitionParser(this);
@@ -60,8 +59,6 @@ public class MappingTypescriptTypeDefinitionParser extends AbstractMappingTypeDe
     }
 
     private MappingTypescriptTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<TypescriptClassMeta> builder) {
-        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings()));
     }
-
-
 }

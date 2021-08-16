@@ -56,8 +56,6 @@ public final class CodeGenCommentExtractorFactory {
 
     private void initDefaultCommentExtractors() {
         SourceCodeGenCommentExtractor sourceCodeGenCommentExtractor = new SourceCodeGenCommentExtractor();
-        addCommentExtractor(
-                sourceCodeGenCommentExtractor
-        );
+        addCommentExtractor(sourceCodeGenCommentExtractor);
     }
 }

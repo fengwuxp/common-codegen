@@ -12,6 +12,8 @@ public abstract class DelegateLanguagePublishParser implements LanguageElementDe
 
     private final LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishSourceParser;
 
+    private JavaTypeMapper javaTypeMapper;
+
     protected DelegateLanguagePublishParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishSourceParser) {
         this.publishSourceParser = publishSourceParser;
     }
@@ -28,5 +30,16 @@ public abstract class DelegateLanguagePublishParser implements LanguageElementDe
 
     public LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> getDelegatePublishParser() {
         return publishSourceParser;
+    }
+
+    protected Class<?>[] mappingClasses(Class<?>... sources) {
+        if (javaTypeMapper == null) {
+            return sources;
+        }
+        return javaTypeMapper.mappingClasses(sources);
+    }
+
+    public void setJavaTypeMapper(JavaTypeMapper javaTypeMapper) {
+        this.javaTypeMapper = javaTypeMapper;
     }
 }

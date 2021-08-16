@@ -79,11 +79,11 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         result.setComments(extractComments(classMeta));
         result.setAnnotations(parseAnnotatedElement(source));
         result.setTypeVariables(getTypeVariables(classMeta.getTypeVariables()));
-        result.setSuperClass(getSupperClassMeta(classMeta));
-        result.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
         if (CodegenConfigHolder.getConfig().isServerClass(source)) {
             result.setMethodMetas(getCodegenMethodMetas(classMeta));
         } else {
+            result.setSuperClass(getSupperClassMeta(classMeta));
+            result.setSuperTypeVariables(getSuperTypeGenericTypeVariables(classMeta));
             result.setFieldMetas(getCodegenFiledMetas(classMeta));
         }
         result.setNeedGenerate(true);
@@ -252,13 +252,18 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     }
 
     private Map<String, ? extends CommonCodeGenClassMeta> getAllDependencies(C meta) {
-        Map<String, CommonCodeGenClassMeta> result = new LinkedHashMap<>(collectDependencies(Stream.of(meta.getSuperClass())));
+        Map<String, CommonCodeGenClassMeta> result = new LinkedHashMap<>();
         result.putAll(getFieldMetaDependencies(meta));
         result.putAll(getMethodMetaDependencies(meta));
         result.putAll(getMethodParameterDependencies(meta));
         result.putAll(getTypeVariablesDependencies(meta));
         result.putAll(getSupperTypeVariablesDependencies(meta));
         result.putAll(flatMapDependencies(result));
+        CommonCodeGenClassMeta superClass = meta.getSuperClass();
+        if (superClass != null) {
+            // 防止当前类的超类有泛型变量，重新解析过。
+            result.putAll(collectDependencies(Stream.of(this.publishParse(superClass.getSource()))));
+        }
         return result;
     }
 

@@ -58,6 +58,6 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     private MappingDartTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<DartClassMeta> builder) {
-        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings(), builder.getJavaTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings()));
     }
 }
