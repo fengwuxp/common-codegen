@@ -117,6 +117,11 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
 
     }
 
+    /**
+     * 枚举的名称列表
+     */
+    private String enumNames;
+
     public TypescriptClassMeta() {
     }
 
@@ -146,4 +151,8 @@ public final class TypescriptClassMeta extends CommonCodeGenClassMeta {
     }
 
 
+    @Override
+    public String getTypeIdent() {
+        return enumNames == null ? super.getTypeIdent() : enumNames;
+    }
 }

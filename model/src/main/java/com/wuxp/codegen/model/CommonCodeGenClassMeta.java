@@ -157,13 +157,13 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
             String typeDesc = Arrays.stream(this.typeVariables)
                     .map(CommonCodeGenClassMeta::getFinallyGenericDescription)
                     .collect(Collectors.joining(","));
-            return this.name + "<" + typeDesc + ">";
+            return getTypeIdent() + "<" + typeDesc + ">";
         }
         if (StringUtils.hasText(genericDescription)) {
             return genericDescription;
         }
 
-        return name;
+        return getTypeIdent();
     }
 
     /**
@@ -173,6 +173,10 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
         if (this.typeVariables != null && this.typeVariables.length > 0) {
             return this.getFinallyGenericDescription();
         }
+        return getTypeIdent();
+    }
+
+    public String getTypeIdent() {
         return this.name;
     }
 

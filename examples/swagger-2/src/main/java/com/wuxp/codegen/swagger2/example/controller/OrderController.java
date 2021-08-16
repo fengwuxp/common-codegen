@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger2.example.controller;
 
 import com.wuxp.codegen.swagger2.example.domain.Order;
 import com.wuxp.codegen.swagger2.example.domain.User;
+import com.wuxp.codegen.swagger2.example.enums.Sex;
 import com.wuxp.codegen.swagger2.example.evt.CreateOrderEvt;
 import com.wuxp.codegen.swagger2.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
@@ -110,6 +111,21 @@ public class OrderController extends BaseController<String> {
     @DeleteMapping(value = {"hello_delete"})
     public void delete(@RequestParam(required = false) String id) {
 
+    }
+
+    @RequestMapping("/testEnumNames")
+    public Map<Sex, Sex> testEnumNames() {
+        return Collections.emptyMap();
+    }
+
+    @RequestMapping("/testEnumNames2")
+    public Map<String, Sex> testEnumNames2() {
+        return Collections.emptyMap();
+    }
+
+    @RequestMapping("/testEnumNames3")
+    public Map<Sex, Integer> testEnumNames3() {
+        return Collections.emptyMap();
     }
 
     @RequestMapping("/testIgnore")

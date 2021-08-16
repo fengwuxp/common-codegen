@@ -40,7 +40,12 @@ public class UmiRequestMethodDefinitionPostProcessor implements LanguageDefiniti
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(CommonCodeGenMethodMeta.class);
+        return JavaTypeUtils.isAssignableFrom(clazz, CommonCodeGenMethodMeta.class);
+    }
+
+    @Override
+    public int getOrder() {
+        return 1;
     }
 
     @Override

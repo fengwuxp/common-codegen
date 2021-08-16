@@ -138,9 +138,9 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      */
     protected Collection<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
 
-    protected Collection<CodeGenElementMatcher<?>> codeGenElementMatchers = new ArrayList<>();
+    protected List<CodeGenElementMatcher<?>> codeGenElementMatchers = new ArrayList<>();
 
-    protected Collection<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> elementParsePostProcessors = new ArrayList<>();
+    protected List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> elementParsePostProcessors = new ArrayList<>();
 
     /**
      * 代码生成匹配策略

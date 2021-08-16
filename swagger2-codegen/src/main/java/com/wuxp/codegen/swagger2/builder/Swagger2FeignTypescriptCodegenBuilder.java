@@ -7,12 +7,10 @@ import com.wuxp.codegen.core.macth.ExcludeAnnotationCodeGenElementMatcher;
 import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
+import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.languages.*;
-import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
-import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionParser;
-import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
-import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionParser;
+import com.wuxp.codegen.languages.typescript.*;
 import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
@@ -24,10 +22,12 @@ import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.swagger2.annotations.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.OrderComparator;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -63,6 +63,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
         AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParams.class, new ApiImplicitParamsMetaFactory());
 
         this.elementParsePostProcessors(new RemoveClientResponseTypePostProcessor(TypescriptClassMeta.PROMISE), new EnumDefinitionPostProcessor());
+        this.elementParsePostProcessors(new EnumNamesPostProcessor());
         this.codeGenElementMatchers(
                 new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
                 JavaClassElementMatcher.builder()
@@ -75,7 +76,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
 
         this.initTypeMapping();
         if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
-//            DispatchLanguageDefinitionPostProcessor.getInstance().addLanguageDefinitionPostProcessor(new UmiRequestMethodDefinitionPostProcessor());
+            this.elementParsePostProcessors(new UmiRequestMethodDefinitionPostProcessor());
         }
         LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(scanPackages, configureAndGetDefinitionParser(), getTemplateStrategy());
         codeGenerator.setIgnoreClasses(ignoreClasses);
@@ -98,7 +99,9 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
         LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypescriptTypeDefinitionParser());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
         result.addCodeGenElementMatchers(this.getCodeGenElementMatchers());
-        result.addLanguageDefinitionPostProcessors(this.getElementParsePostProcessors());
+        List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> postProcessors = this.getElementParsePostProcessors();
+        OrderComparator.sort(postProcessors);
+        result.addLanguageDefinitionPostProcessors(postProcessors);
         return result;
     }
 
