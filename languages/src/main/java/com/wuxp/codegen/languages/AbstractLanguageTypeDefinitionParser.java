@@ -87,7 +87,8 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
             result.setFieldMetas(getCodegenFiledMetas(classMeta));
         }
         result.setNeedGenerate(true);
-        return resolveAllDependencies(result);
+        result.setDependencies(getAllDependencies(result));
+        return result;
     }
 
     private void preProcess(JavaClassMeta classMeta) {
@@ -246,10 +247,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return fieldMeta;
     }
 
-    private C resolveAllDependencies(C meta) {
-        meta.setDependencies(getAllDependencies(meta));
-        return meta;
-    }
 
     private Map<String, ? extends CommonCodeGenClassMeta> getAllDependencies(C meta) {
         Map<String, CommonCodeGenClassMeta> result = new LinkedHashMap<>();

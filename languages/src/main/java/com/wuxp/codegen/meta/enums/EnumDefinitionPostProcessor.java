@@ -8,6 +8,7 @@ import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -44,8 +45,11 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
         CommonCodeGenFiledMeta[] fieldMetas = Arrays.stream(classMeta.getFieldMetas())
                 .filter(commonCodeGenFiledMeta -> !commonCodeGenFiledMeta.isEnumConstant())
                 .toArray(CommonCodeGenFiledMeta[]::new);
-        classMeta.setEnumConstants(enumConstants);
-        classMeta.setFieldMetas(fieldMetas);
+        if (!ObjectUtils.isEmpty(enumConstants)) {
+            // 由于通过事件解析，可能出现重复处理，此处仅在获取到数据是进行设置
+            classMeta.setEnumConstants(enumConstants);
+            classMeta.setFieldMetas(fieldMetas);
+        }
     }
 
 

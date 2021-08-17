@@ -27,7 +27,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -133,7 +132,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
     }
 
 
-    private TypeScriptMethodDefinitionParser getTypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> publishParser) {
-        return new TypeScriptMethodDefinitionParser(publishParser, this.packageMapStrategy);
+    private CommonMethodDefinitionParser getTypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> publishParser) {
+        return new CommonMethodDefinitionParser(publishParser, this.packageMapStrategy);
     }
 }

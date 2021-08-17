@@ -21,7 +21,7 @@
     <#include "../../commons/api_method_comments.ftl">
     <#include "../typescript_feign/inculdes/method_prams_required.ftl">
 
-export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${method.params["req"].name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
+export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${methodParam.name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
     <#assign tags=method.tags/>
     <#assign reqParamName="req"/>
     <#if (tags['needDeleteParams']?size>0)>

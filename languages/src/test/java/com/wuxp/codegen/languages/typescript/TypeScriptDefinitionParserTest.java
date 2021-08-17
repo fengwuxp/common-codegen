@@ -7,6 +7,7 @@ import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
+import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.languages.examples.ExampleController;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
@@ -68,8 +69,8 @@ class TypeScriptDefinitionParserTest {
         );
     }
 
-    private TypeScriptMethodDefinitionParser getTypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> publishParser) {
-        return new TypeScriptMethodDefinitionParser(publishParser, getTestPackageMapStrategy());
+    private CommonMethodDefinitionParser getTypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> publishParser) {
+        return new CommonMethodDefinitionParser(publishParser, getTestPackageMapStrategy());
     }
 
     @Test

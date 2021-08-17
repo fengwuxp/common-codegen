@@ -98,6 +98,9 @@ public class JavaClassParser {
     }
 
     private Map<Class<?>, Class<?>[]> getSuperTypeVariables(Class<?> clazz) {
+        if (clazz.isEnum()) {
+            return Collections.emptyMap();
+        }
         Map<Class<?>, Class<?>[]> superTypeVariables = new LinkedHashMap<>();
         getSuperTypeGenericTypeVariables(clazz).forEach((key, val) -> {
             Class<?>[] classes = Arrays.stream(val)

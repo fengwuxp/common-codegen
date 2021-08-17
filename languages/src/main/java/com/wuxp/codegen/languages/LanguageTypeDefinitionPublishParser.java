@@ -63,7 +63,7 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
         if (matches(source)) {
             result = dispatchParse(source);
         }
-        if (result != null) {
+        if (isParseCompleted(result)) {
             postProcess(result);
         }
         return result;
@@ -112,6 +112,13 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
             }
         }
         throw new CodegenRuntimeException(String.format("un support source，class name：%s", source.getClass().getName()));
+    }
+
+    private boolean isParseCompleted(CommonBaseMeta meta) {
+        if (meta == null) {
+            return false;
+        }
+        return true;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
