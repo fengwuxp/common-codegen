@@ -140,7 +140,7 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
     /**
      * type variable 类型变量
      */
-    public static final JavaCodeGenClassMeta TYPE_VARIABLE = new JavaCodeGenClassMeta("T", "N", ClassType.CLASS, false, OBJECT, "", false);
+    public static final JavaCodeGenClassMeta TYPE_VARIABLE = new JavaCodeGenClassMeta("T", "T", ClassType.CLASS, false, OBJECT, "", false);
 
 
     /**

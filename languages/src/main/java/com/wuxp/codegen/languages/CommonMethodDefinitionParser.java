@@ -9,13 +9,19 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
  */
 public class CommonMethodDefinitionParser extends AbstractLanguageMethodDefinitionParser<CommonCodeGenMethodMeta> {
 
+    private boolean margeMethodParams;
+
     public CommonMethodDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> languageElementDefinitionEventParser,
                                         PackageNameConvertStrategy packageMapStrategy) {
         super(languageElementDefinitionEventParser, packageMapStrategy);
     }
 
     @Override
-    protected boolean needMargeMethodParams() {
-        return true;
+    protected boolean isMargeMethodParams() {
+        return margeMethodParams;
+    }
+
+    public void setMargeMethodParams(boolean margeMethodParams) {
+        this.margeMethodParams = margeMethodParams;
     }
 }

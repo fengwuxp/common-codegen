@@ -1,39 +1,27 @@
 package com.wuxp.codegen.swagger2.builder;
 
-import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.macth.ExcludeAnnotationCodeGenElementMatcher;
-import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
-import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
-import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.languages.*;
+import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.languages.typescript.*;
-import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
-import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
-import com.wuxp.codegen.meta.enums.EnumDefinitionPostProcessor;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
-import com.wuxp.codegen.swagger2.annotations.*;
-import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.OrderComparator;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author wuxp
  */
 @Slf4j
-public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenBuilder {
+public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2CodegenBuilder {
 
 
     private Swagger2FeignTypescriptCodegenBuilder() {
@@ -47,92 +35,42 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
 
     @Override
     public CodeGenerator buildCodeGenerator() {
-        if (this.languageDescription == null) {
-            this.languageDescription = LanguageDescription.TYPESCRIPT;
-        }
-        if (this.clientProviderType == null) {
-            this.clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
-        }
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Api.class, new ApiMetaFactory());
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiModel.class, new ApiModelMetaFactory());
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiModelProperty.class, new ApiModelPropertyMetaFactory());
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiOperation.class, new ApiOperationMetaFactory());
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiParam.class, new ApiParamMetaFactory());
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParam.class, new ApiImplicitParamMetaFactory());
-        AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParams.class, new ApiImplicitParamsMetaFactory());
-
-        this.elementParsePostProcessors(new RemoveClientResponseTypePostProcessor(TypescriptClassMeta.PROMISE), new EnumDefinitionPostProcessor());
-        this.elementParsePostProcessors(new EnumNamesPostProcessor());
-        this.codeGenElementMatchers(
-                new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
-                JavaClassElementMatcher.builder()
-                        .includePackages(this.getIncludePackages())
-                        .includeClasses(this.getIncludeClasses())
-                        .includePackages(this.getIgnorePackages())
-                        .ignoreClasses(this.getIgnoreClasses())
-                        .build()
-        );
-
-        this.initTypeMapping();
+        initCodegenConfig(LanguageDescription.TYPESCRIPT, ClientProviderType.TYPESCRIPT_FEIGN);
         if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
             this.elementParsePostProcessors(new UmiRequestMethodDefinitionPostProcessor());
         }
-        LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(scanPackages, configureAndGetDefinitionParser(), getTemplateStrategy());
-        codeGenerator.setIgnoreClasses(ignoreClasses);
-        codeGenerator.setIncludeClasses(includeClasses);
-        codeGenerator.setIgnorePackages(ignorePackages);
-        codeGenerator.setEnableFieldUnderlineStyle(enableFieldUnderlineStyle);
-        return codeGenerator;
+        configParserPostProcessors(TypescriptClassMeta.PROMISE);
+        configCodeGenElementMatchers();
+        configUmiModel();
+        return createCodeGenerator();
     }
 
-    private TemplateStrategy<CommonCodeGenClassMeta> getTemplateStrategy() {
-        return new LoongSimpleTemplateStrategy(
-                this.getTemplateLoader(),
-                this.getOutPath(),
-                this.getLanguageDescription().getSuffixName(),
-                this.getIsDeletedOutputDirectory(),
-                this.getCodeFormatter());
+    private void configUmiModel() {
+        boolean needSetUmiModel = !this.getSharedVariables().containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
+        if (needSetUmiModel) {
+            this.getSharedVariables().put("umiModel", UmiModel.OPEN_SOURCE);
+        }
     }
 
-    private LanguageTypeDefinitionParser<TypescriptClassMeta> configureAndGetDefinitionParser() {
-        LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypescriptTypeDefinitionParser());
-        result.addElementDefinitionParsers(getElementDefinitionParsers(result));
-        result.addCodeGenElementMatchers(this.getCodeGenElementMatchers());
-        List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> postProcessors = this.getElementParsePostProcessors();
-        OrderComparator.sort(postProcessors);
-        result.addLanguageDefinitionPostProcessors(postProcessors);
-        return result;
-    }
-
-    private List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> result) {
-        TypeScriptTypeDefinitionParser typeScriptDefinitionParser = new TypeScriptTypeDefinitionParser(result, this.packageMapStrategy);
+    @Override
+    protected List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser) {
+        CommonMethodDefinitionParser methodDefinitionParser = getLanguageMethodDefinitionParser(publishParser);
+        methodDefinitionParser.setMargeMethodParams(true);
         List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ?>> parsers = Arrays.asList(
-                typeScriptDefinitionParser,
-                getTypeScriptMethodDefinitionParser(result),
-                new TypeScriptFieldDefinitionParser(result),
+                new TypeScriptTypeDefinitionParser(publishParser, this.getPackageMapStrategy()),
+                methodDefinitionParser,
+                new TypeScriptFieldDefinitionParser(publishParser),
                 new TypeScriptTypeVariableDefinitionParser()
         );
         configureElementParsers(parsers);
         return parsers;
     }
 
-    private void configureElementParsers(List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> elementDefinitionParsers) {
-        JavaTypeMapper javaTypeMapper = new JavaTypeMapper(customJavaTypeMapping);
-        elementDefinitionParsers.forEach(languageElementDefinitionParser -> {
-            if (languageElementDefinitionParser instanceof DelegateLanguagePublishParser) {
-                ((DelegateLanguagePublishParser) languageElementDefinitionParser).setJavaTypeMapper(javaTypeMapper);
-            }
-        });
-    }
-
-    private LanguageTypeDefinitionParser<TypescriptClassMeta> getMappingTypescriptTypeDefinitionParser() {
+    @Override
+    protected LanguageTypeDefinitionParser<TypescriptClassMeta> getMappingTypeDefinitionParser() {
         return MappingTypescriptTypeDefinitionParser.builder()
                 .typeMapping(baseTypeMapping)
                 .build();
     }
 
-
-    private CommonMethodDefinitionParser getTypeScriptMethodDefinitionParser(LanguageTypeDefinitionPublishParser<TypescriptClassMeta> publishParser) {
-        return new CommonMethodDefinitionParser(publishParser, this.packageMapStrategy);
-    }
 }

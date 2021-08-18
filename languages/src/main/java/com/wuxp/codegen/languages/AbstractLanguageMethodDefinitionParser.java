@@ -70,12 +70,12 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     /**
      * @return 是否需要合并方法的请求参数
      */
-    protected boolean needMargeMethodParams() {
+    protected boolean isMargeMethodParams() {
         return false;
     }
 
     private M parseMethodInner(JavaMethodMeta methodMeta) {
-        if (this.needMargeMethodParams()) {
+        if (this.isMargeMethodParams()) {
             return margeParamsAndParseMethod(methodMeta);
         } else {
             return parseMethod(methodMeta);

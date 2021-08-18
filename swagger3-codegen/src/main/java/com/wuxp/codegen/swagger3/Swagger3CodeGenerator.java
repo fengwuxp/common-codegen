@@ -27,7 +27,7 @@ import java.util.Set;
 public class Swagger3CodeGenerator extends AbstractCodeGenerator {
 
     static {
-        //添加swagger3相关的注解处理器
+        // 添加swagger3相关的注解处理器
         AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Operation.class, new OperationMetaFactory());
         AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiResponse.class, new ApiResponseMetaFactory());
         AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Parameter.class, new ParameterMetaFactory());

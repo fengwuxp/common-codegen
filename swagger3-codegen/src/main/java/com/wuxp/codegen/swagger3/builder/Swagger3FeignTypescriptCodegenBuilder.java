@@ -1,6 +1,9 @@
 package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
+import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
+import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
@@ -9,6 +12,7 @@ import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
@@ -19,6 +23,7 @@ import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author wuxp
@@ -48,7 +53,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
         if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
             this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
         }
-        this.initTypeMapping();
+//        this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger3FeignSdkTypescriptParser(
                 packageMapStrategy,
@@ -75,5 +80,20 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractLoongCodegenB
                 this.enableFieldUnderlineStyle, null)
                 .otherCodegenClassMetas(otherCodegenClassMetas)
                 .taskWaiters(Collections.singletonList(codeFormatter));
+    }
+
+    @Override
+    protected void initAnnotationMetaFactory() {
+
+    }
+
+    @Override
+    protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
+        return null;
+    }
+
+    @Override
+    protected List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser) {
+        return null;
     }
 }

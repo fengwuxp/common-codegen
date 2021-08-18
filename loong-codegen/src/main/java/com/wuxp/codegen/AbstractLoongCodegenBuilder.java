@@ -8,16 +8,21 @@ import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
 import com.wuxp.codegen.core.macth.ExcludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.IncludeClassCodeGenMatcher;
 import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
+import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageParser;
+import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
+import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
-import com.wuxp.codegen.languages.AbstractLanguageParser;
+import com.wuxp.codegen.languages.*;
 import com.wuxp.codegen.languages.typescript.UmiModel;
 import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
+import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
+import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy;
 import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
 import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
@@ -30,6 +35,7 @@ import com.wuxp.codegen.model.TemplateFileVersion;
 import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
+import org.springframework.core.OrderComparator;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
@@ -341,7 +347,14 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
     }
 
-    protected void initTypeMapping() {
+    protected void initCodegenConfig(LanguageDescription languageDescription, ClientProviderType clientProviderType) {
+        if (this.languageDescription == null) {
+            this.languageDescription = languageDescription;
+        }
+        if (this.clientProviderType == null) {
+            this.clientProviderType = clientProviderType;
+        }
+
         CodegenConfig codegenConfig = CodegenConfigHolder.getConfig();
         if (codegenConfig == null) {
             codegenConfig = CodegenConfig.builder()
@@ -354,33 +367,57 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         }
         CodegenConfigHolder.setConfig(codegenConfig);
         initJsonSchemaExtensions();
-        Collection<CodeGenMatcher> codeGenMatchers = this.codeGenMatchers;
-        Optional<PackageNameCodeGenMatcher> optionalCodeGenMatcher = codeGenMatchers.stream()
-                .filter(codeGenMatcher -> codeGenMatcher instanceof PackageNameCodeGenMatcher)
-                .map(codeGenMatcher -> (PackageNameCodeGenMatcher) codeGenMatcher)
-                .findFirst();
-        if (optionalCodeGenMatcher.isPresent()) {
-            PackageNameCodeGenMatcher codeGenMatcher = optionalCodeGenMatcher.get();
-            codeGenMatcher.addIgnorePackages(ignorePackages);
-        } else {
-            PackageNameCodeGenMatcher codeGenMatcher = new PackageNameCodeGenMatcher();
-            codeGenMatcher.addIgnorePackages(ignorePackages);
-            codeGenMatchers.add(codeGenMatcher);
-        }
-        List<LanguageEnhancedProcessor> languageEnhancedProcessors = this.languageEnhancedProcessors;
-        boolean needAddUmiRequestEnhancedProcessor = !this.containsLanguageEnhancedProcessorType(UmiRequestEnhancedProcessor.class)
-                && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
-        if (needAddUmiRequestEnhancedProcessor) {
-            languageEnhancedProcessors.add(new UmiRequestEnhancedProcessor());
-        }
 
-        boolean needSetUmiModel = !this.sharedVariables.containsKey("umiModel") && ClientProviderType.UMI_REQUEST.equals(this.clientProviderType);
-        if (needSetUmiModel) {
-            this.sharedVariables.put("umiModel", UmiModel.OPEN_SOURCE);
-        }
         if (this.codeFormatter instanceof LanguageCodeFormatter) {
             ((LanguageCodeFormatter) this.codeFormatter).setLanguageDescription(languageDescription);
         }
+    }
+
+    protected abstract void initAnnotationMetaFactory();
+
+    protected TemplateStrategy<CommonCodeGenClassMeta> getTemplateStrategy() {
+        return new LoongSimpleTemplateStrategy(
+                this.getTemplateLoader(),
+                this.getOutPath(),
+                this.getLanguageDescription().getSuffixName(),
+                this.getIsDeletedOutputDirectory(),
+                this.getCodeFormatter());
+    }
+
+    protected void configureElementParsers(List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> elementDefinitionParsers) {
+        JavaTypeMapper javaTypeMapper = new JavaTypeMapper(customJavaTypeMapping);
+        elementDefinitionParsers.forEach(languageElementDefinitionParser -> {
+            if (languageElementDefinitionParser instanceof DelegateLanguagePublishParser) {
+                ((DelegateLanguagePublishParser) languageElementDefinitionParser).setJavaTypeMapper(javaTypeMapper);
+            }
+        });
+    }
+
+    protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getTypeDefinitionParser() {
+        LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypeDefinitionParser());
+        result.addElementDefinitionParsers(getElementDefinitionParsers(result));
+        result.addCodeGenElementMatchers(this.getCodeGenElementMatchers());
+        List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> postProcessors = this.getElementParsePostProcessors();
+        OrderComparator.sort(postProcessors);
+        result.addLanguageDefinitionPostProcessors(postProcessors);
+        return result;
+    }
+
+    protected abstract LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser();
+
+    protected abstract List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser);
+
+    protected LoongDefaultCodeGenerator createCodeGenerator() {
+        LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(getScanPackages(), getTypeDefinitionParser(), getTemplateStrategy());
+        codeGenerator.setIgnoreClasses(ignoreClasses);
+        codeGenerator.setIncludeClasses(includeClasses);
+        codeGenerator.setIgnorePackages(ignorePackages);
+        codeGenerator.setEnableFieldUnderlineStyle(enableFieldUnderlineStyle);
+        return codeGenerator;
+    }
+
+    protected CommonMethodDefinitionParser getLanguageMethodDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser) {
+        return new CommonMethodDefinitionParser(publishParser, this.packageMapStrategy);
     }
 
     /**

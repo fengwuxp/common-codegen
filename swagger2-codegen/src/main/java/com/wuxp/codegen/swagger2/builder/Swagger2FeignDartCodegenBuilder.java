@@ -1,6 +1,9 @@
 package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
+import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
+import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
@@ -12,6 +15,7 @@ import com.wuxp.codegen.disruptor.DartFeignCodeGenEventHandler;
 import com.wuxp.codegen.languages.AbstractDartParser;
 import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
+import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -75,7 +79,7 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
         if (this.clientProviderType == null) {
             this.clientProviderType = ClientProviderType.DART_FEIGN;
         }
-        this.initTypeMapping();
+//        this.initTypeMapping();
         this.codeGenMatchingStrategies.add(new Swagger2FeignSdkGenMatchingStrategy(this.ignoreMethods));
         if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
             this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
@@ -120,5 +124,20 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
                 new DisruptorCodeGenPublisher(dartFeignCodeGenEventHandler, -1))
                 .otherCodegenClassMetas(otherCodegenClassMetas)
                 .taskWaiters(Collections.singletonList(codeFormatter));
+    }
+
+    @Override
+    protected void initAnnotationMetaFactory() {
+
+    }
+
+    @Override
+    protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
+        return null;
+    }
+
+    @Override
+    protected List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser) {
+        return null;
     }
 }

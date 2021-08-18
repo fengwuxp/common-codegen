@@ -24,6 +24,7 @@ public class TypeScriptTypeVariableDefinitionParser implements LanguageTypeVaria
                 .setNeedImport(false)
                 .setTypeArgumentVariable(true)
                 .setGenericDescription(source.getName())
+                .setGenericDescription(source.getName())
                 .setName(source.getName());
         return result;
     }
