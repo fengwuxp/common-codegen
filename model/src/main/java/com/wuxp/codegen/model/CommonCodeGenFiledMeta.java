@@ -2,6 +2,7 @@ package com.wuxp.codegen.model;
 
 
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
+import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -24,6 +25,8 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
      * 原目标 Field
      */
     private Field source;
+
+    private JavaFieldMeta fieldMeta;
 
     private JavaClassMeta declaringClassMeta;
 

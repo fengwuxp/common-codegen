@@ -28,7 +28,7 @@ public final class CodegenConfig {
     /**
      * 不同语言默认的统一响应类型的默认值
      */
-    private static final Map<LanguageDescription, CommonCodeGenClassMeta> DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING = new HashMap<>();
+    private static final Map<LanguageDescription, CommonCodeGenClassMeta> DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING = new EnumMap<>(LanguageDescription.class);
 
     /**
      * 属于api 服务的注解
@@ -80,11 +80,12 @@ public final class CodegenConfig {
         return LanguageDescription.JAVA.equals(languageDescription) || LanguageDescription.JAVA_ANDROID.equals(languageDescription);
     }
 
-    public CommonCodeGenClassMeta getUnifiedResponseType() {
+    @SuppressWarnings("unchecked")
+    public <T extends CommonCodeGenClassMeta> T getUnifiedResponseType() {
         if (unifiedResponseType == null) {
-            return DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING.get(languageDescription);
+            return (T) DEFAULT_UNIFIED_RESPONSE_TYPE_MAPPING.get(languageDescription);
         }
-        return unifiedResponseType;
+        return (T) unifiedResponseType;
     }
 
     public Set<Class<? extends Annotation>> getApiMarkedAnnotations() {

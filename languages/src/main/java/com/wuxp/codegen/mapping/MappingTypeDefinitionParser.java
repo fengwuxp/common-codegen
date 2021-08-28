@@ -5,7 +5,6 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -29,7 +28,6 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
         throw new UnsupportedOperationException("MappingTypeDefinitionParser not support operation");
     }
 
-
     @Override
     public C parse(Class<?> source) {
         return Stream.of(source)
@@ -38,6 +36,10 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void putTypeMapping(Class<?> clazz, C mappingMeta) {
+        this.typeMappings.putIfAbsent(clazz, mappingMeta);
     }
 
     /**

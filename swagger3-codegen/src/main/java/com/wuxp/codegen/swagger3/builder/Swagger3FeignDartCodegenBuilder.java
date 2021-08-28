@@ -86,9 +86,9 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
             this.clientProviderType = ClientProviderType.DART_FEIGN;
         }
         this.codeGenMatchingStrategies.add(new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods));
-        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
-            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
-        }
+//        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
+//            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
+//        }
 //        this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger3FeignSdkDartParser(
@@ -96,7 +96,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
                 CombinationCodeGenMatchingStrategy.of(this.codeGenMatchingStrategies),
                 this.codeDetects,
                 this.ignoreFields);
-        initLanguageParser(languageParser);
+//        initLanguageParser(languageParser);
 
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());

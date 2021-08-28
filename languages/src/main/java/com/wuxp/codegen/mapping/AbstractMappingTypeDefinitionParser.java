@@ -31,4 +31,8 @@ public abstract class AbstractMappingTypeDefinitionParser<C extends CommonCodeGe
 
         return this.mappingTypeDefinitionParser.parse(source);
     }
+
+    public MappingTypeDefinitionParser<C> getMappingTypeDefinitionParser() {
+        return mappingTypeDefinitionParser;
+    }
 }

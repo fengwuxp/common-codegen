@@ -5,27 +5,22 @@ import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
-import com.wuxp.codegen.core.macth.ExcludeClassCodeGenMatcher;
-import com.wuxp.codegen.core.macth.IncludeClassCodeGenMatcher;
-import com.wuxp.codegen.core.macth.PackageNameCodeGenMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
-import com.wuxp.codegen.core.parser.LanguageParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
-import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
-import com.wuxp.codegen.core.parser.enhance.LanguageEnhancedProcessor;
 import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
-import com.wuxp.codegen.languages.*;
-import com.wuxp.codegen.languages.typescript.UmiModel;
-import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
+import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
+import com.wuxp.codegen.languages.DelegateLanguagePublishParser;
+import com.wuxp.codegen.languages.JavaTypeMapper;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
+import com.wuxp.codegen.loong.LoongUnifiedResponseExplorer;
 import com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy;
-import com.wuxp.codegen.mapping.AbstractLanguageTypeMapping;
-import com.wuxp.codegen.mapping.LanguageTypeMappingFactory;
+import com.wuxp.codegen.mapping.AbstractMappingTypeDefinitionParser;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationProvider;
 import com.wuxp.codegen.model.CommonBaseMeta;
@@ -130,6 +125,23 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     protected Map<Class<?>, String[]> ignoreMethods;
 
     /**
+     * 忽略的方法
+     *
+     * @key 类
+     * @value 方法名称
+     */
+    protected Map<Class<?>, List<String>> ignoreMethodNames = new HashMap<>();
+
+    /**
+     * 忽略的字段
+     *
+     * @key 类
+     * @value 字段名称
+     */
+    protected Map<Class<?>, List<String>> ignoreFieldNames = new HashMap<>();
+
+
+    /**
      * 包名映射策略
      */
     protected PackageNameConvertStrategy packageMapStrategy = new AgreedPackageMapStrategy();
@@ -183,11 +195,6 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      */
     protected Set<CommonCodeGenClassMeta> otherCodegenClassMetas = new HashSet<>();
 
-
-    /**
-     * 语言处理增强器
-     */
-    protected List<LanguageEnhancedProcessor> languageEnhancedProcessors = new ArrayList<>();
 
     /**
      * 被改注解标记的参数需要忽略
@@ -332,8 +339,13 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractLoongCodegenBuilder languageEnhancedProcessors(LanguageEnhancedProcessor... languageEnhancedProcessors) {
-        this.languageEnhancedProcessors.addAll(Arrays.asList(languageEnhancedProcessors));
+    public AbstractLoongCodegenBuilder ignoreMethodNames(Map<Class<?>/*类名*/, List<String>/*方法名称*/> ignoreMethodNames) {
+        this.ignoreMethodNames.putAll(ignoreMethodNames);
+        return this;
+    }
+
+    public AbstractLoongCodegenBuilder ignoreFieldNames(Map<Class<?>/*类名*/, List<String>/*字段名称*/> ignoreFieldNames) {
+        this.ignoreFieldNames.putAll(ignoreFieldNames);
         return this;
     }
 
@@ -393,7 +405,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         });
     }
 
-    protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getTypeDefinitionParser() {
+    protected LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> getTypeDefinitionParser() {
         LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypeDefinitionParser());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
         result.addCodeGenElementMatchers(this.getCodeGenElementMatchers());
@@ -408,12 +420,21 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     protected abstract List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser);
 
     protected LoongDefaultCodeGenerator createCodeGenerator() {
-        LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(getScanPackages(), getTypeDefinitionParser(), getTemplateStrategy());
+        LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> typeDefinitionParser = getTypeDefinitionParser();
+        LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(getScanPackages(), typeDefinitionParser, getTemplateStrategy(), getUnifiedResponseExplorer(typeDefinitionParser.getMappingTypeDefinitionParser()));
         codeGenerator.setIgnoreClasses(ignoreClasses);
         codeGenerator.setIncludeClasses(includeClasses);
         codeGenerator.setIgnorePackages(ignorePackages);
         codeGenerator.setEnableFieldUnderlineStyle(enableFieldUnderlineStyle);
         return codeGenerator;
+    }
+
+    private UnifiedResponseExplorer getUnifiedResponseExplorer(LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingTypeDefinitionParser) {
+        if (mappingTypeDefinitionParser instanceof AbstractMappingTypeDefinitionParser) {
+            AbstractMappingTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingParser = (AbstractMappingTypeDefinitionParser<? extends CommonCodeGenClassMeta>) mappingTypeDefinitionParser;
+            return new LoongUnifiedResponseExplorer(mappingParser.getMappingTypeDefinitionParser());
+        }
+        return null;
     }
 
     protected CommonMethodDefinitionParser getLanguageMethodDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser) {
@@ -430,43 +451,11 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return sharedVariables;
     }
 
-    protected void initLanguageParser(LanguageParser languageParser) {
-        languageParser.addCodeGenMatchers(ExcludeClassCodeGenMatcher.of(ignorePackages, ignoreClasses));
-        languageParser.addCodeGenMatchers(this.codeGenMatchers.toArray(new CodeGenMatcher[0]));
-        languageParser.setLanguageEnhancedProcessor(
-                CombineLanguageEnhancedProcessor.of(this.languageEnhancedProcessors.toArray(new LanguageEnhancedProcessor[0])));
-        if (!this.includePackages.isEmpty() || !includeClasses.isEmpty()) {
-            // include 模式
-            languageParser.addCodeGenMatchers(IncludeClassCodeGenMatcher.of(this.includePackages, includeClasses));
-        }
-        if (languageParser instanceof AbstractLanguageParser) {
-            AbstractLanguageParser<?, ?, ?> abstractLanguageParser = (AbstractLanguageParser<?, ?, ?>) languageParser;
-            AbstractLanguageTypeMapping languageTypeMapping = LanguageTypeMappingFactory.builder()
-                    .baseTypeMapping(this.baseTypeMapping)
-                    .customizeTypeMapping(this.customTypeMapping)
-                    .customizeJavaMapping(this.customJavaTypeMapping)
-                    .languageParser(languageParser)
-                    .languageDescription(languageDescription)
-                    .build()
-                    .factory();
-            abstractLanguageParser.setLanguageTypeMapping(languageTypeMapping);
-        }
-
-    }
-
-    protected boolean containsCollectionByType(Collection<?> objects, Class<?> clazz) {
-        return objects.stream().anyMatch(ob -> clazz.isAssignableFrom(ob.getClass()));
-    }
-
-    private boolean containsLanguageEnhancedProcessorType(Class<? extends LanguageEnhancedProcessor> clazz) {
-        return this.containsCollectionByType(languageEnhancedProcessors, clazz);
-    }
-
     private void initJsonSchemaExtensions() {
         JsonSchemaCodegenTypeLoader loader = new JsonSchemaCodegenTypeLoader(getJsonSchemaFiles(), languageDescription, packageMapStrategy);
         File file = new File(CODEGEN_TEMP_EXTENSIONS_DIR);
         if (file.exists()) {
-            file.mkdir();
+            Assert.isTrue(file.mkdir(), "创建代码生成结果目录失败");
         }
         try {
             loader.load().forEach(classMeta -> customTypeMapping(classMeta.getSource(), classMeta));
@@ -477,7 +466,6 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
                 tempdir.deleteOnExit();
             }
         }
-
     }
 
     private List<File> getJsonSchemaFiles() {

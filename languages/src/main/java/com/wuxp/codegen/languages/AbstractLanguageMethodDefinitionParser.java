@@ -59,6 +59,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         M result = parseMethodInner(methodMeta);
         result.setAnnotations(parseAnnotatedElement(methodMeta.getMethod()))
                 .setSource(methodMeta.getMethod())
+                .setJavaMethodMeta(methodMeta)
                 .setDeclaringClassMeta(methodMeta.getDeclaringClassMeta())
                 .setReturnTypes(getReturnTypes(methodMeta))
                 .setAccessPermission(methodMeta.getAccessPermission())

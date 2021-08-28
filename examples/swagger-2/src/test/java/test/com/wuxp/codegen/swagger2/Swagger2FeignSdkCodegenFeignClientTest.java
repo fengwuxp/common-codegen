@@ -3,8 +3,7 @@ package test.com.wuxp.codegen.swagger2;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.core.parser.enhance.CombineLanguageEnhancedProcessor;
-import com.wuxp.codegen.languages.java.SpringCloudFeignClientEnhancedProcessor;
+import com.wuxp.codegen.languages.java.SpringCloudFeignClientPostProcessor;
 import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
@@ -50,8 +49,6 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
 
         JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
         packageMapStrategy.setFileNamSuffix("FeignClient");
-        CombineLanguageEnhancedProcessor languageEnhancedProcessor = CombineLanguageEnhancedProcessor.of(
-                SpringCloudFeignClientEnhancedProcessor.builder().name("exampleService").url("${test.feign.url}").decode404(false).build());
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
                 .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
@@ -65,7 +62,13 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
-                .languageEnhancedProcessors(languageEnhancedProcessor)
+                .elementParsePostProcessors(
+                        SpringCloudFeignClientPostProcessor.builder()
+                                .name("exampleService")
+                                .url("${test.feign.url}")
+                                .decode404(false)
+                                .build()
+                )
                 .buildCodeGenerator()
                 .generate();
 

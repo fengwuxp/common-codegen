@@ -25,6 +25,7 @@ public abstract class AbstractMappingTypeDefinitionParserBuilder<C extends Commo
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public AbstractMappingTypeDefinitionParserBuilder<C> typeMapping(Map<Class<?>, ? extends CommonCodeGenClassMeta> typeMappings) {
         this.typeMappings.putAll((Map<Class<?>, ? extends C>) typeMappings);
         return this;

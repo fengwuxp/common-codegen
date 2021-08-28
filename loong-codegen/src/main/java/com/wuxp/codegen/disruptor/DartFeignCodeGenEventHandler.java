@@ -201,7 +201,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
      */
     @SuppressWarnings("rawtypes")
     private Set<DartBuiltValueFactoryModel> getBuilderFactories() {
-        // 将所有的built collections 集合和自定义的 泛型对象的组合返回
+        // 将所有的 built collections 集合和自定义的 泛型对象的组合返回
         Set<DartBuiltValueFactoryModel> factoryModels = this.feignClients.stream().map(item -> item.getMethodMetas())
                 .map(methodMetas -> Arrays.stream(methodMetas)
                         .map(methodMeta -> methodMeta.getReturnTypes()))

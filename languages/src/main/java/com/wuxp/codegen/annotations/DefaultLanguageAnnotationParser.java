@@ -44,7 +44,7 @@ public final class DefaultLanguageAnnotationParser implements LanguageAnnotation
                 .toArray(CommonCodeGenAnnotation[]::new);
     }
 
-    private List<CommonCodeGenAnnotation> getCommonCodeGenAnnotations(Annotation annotation, Object annotationOwner) {
+    private List<CommonCodeGenAnnotation> getCommonCodeGenAnnotations(Annotation annotation, AnnotatedElement annotationOwner) {
         Optional<AnnotationMetaFactory<AnnotationMate, Annotation>> annotationMetaFactory = AnnotationMetaFactoryHolder.getAnnotationMetaFactory(annotation);
         if (!annotationMetaFactory.isPresent()) {
             return Collections.emptyList();
@@ -53,6 +53,8 @@ public final class DefaultLanguageAnnotationParser implements LanguageAnnotation
         if (toAnnotation == null) {
             return Collections.emptyList();
         }
+        toAnnotation.setSource(annotation);
+        toAnnotation.setAnnotationOwner(annotationOwner);
         List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>();
         postProcess(toAnnotation);
         toAnnotations.add(toAnnotation);

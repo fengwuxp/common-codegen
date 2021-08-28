@@ -1,5 +1,6 @@
 package com.wuxp.codegen.loong;
 
+import com.wuxp.codegen.core.UnifiedResponseExplorer;
 import com.wuxp.codegen.core.event.CodeGenEventListener;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
@@ -50,8 +51,9 @@ public class LoongDefaultCodeGenerator extends AbstractLoongCodeGenerator {
 
     public LoongDefaultCodeGenerator(String[] scanPackages,
                                      LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> languageTypeDefinitionParser,
-                                     TemplateStrategy<CommonCodeGenClassMeta> templateStrategy) {
-        super(scanPackages, languageTypeDefinitionParser, templateStrategy, null);
+                                     TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                     UnifiedResponseExplorer unifiedResponseExplorer) {
+        super(scanPackages, languageTypeDefinitionParser, templateStrategy, unifiedResponseExplorer);
     }
 
 

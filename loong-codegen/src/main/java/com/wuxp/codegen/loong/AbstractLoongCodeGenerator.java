@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -164,9 +163,7 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
      * @param classes 需要生成的类列表
      */
     private CompletableFuture<Void> loopGenerate(Collection<Class<?>> classes) {
-        if (unifiedResponseExplorer != null) {
-            unifiedResponseExplorer.probe(classes);
-        }
+        unifiedResponseExplorer.probe(classes);
         Set<CommonCodeGenClassMeta> genClassMetas = parseCodegenMetas(classes);
         genClassMetas.addAll(getIncludeClassMetas());
         int generateCount = 0;

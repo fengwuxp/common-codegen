@@ -47,9 +47,9 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
             this.clientProviderType = ClientProviderType.SPRING_CLOUD_OPENFEIGN;
         }
         this.codeGenMatchingStrategies.add(new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods));
-        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
-            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
-        }
+//        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
+//            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
+//        }
 //        this.initTypeMapping();
         //实例化语言解析器
         LanguageParser languageParser = new Swagger3FeignSdkJavaParser(
@@ -59,7 +59,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractLoongCodegenBuilder
                 languageDescription,
                 Boolean.TRUE.equals(useRxJava),
                 Boolean.TRUE.equals(enabledAndroidSqliteSupport));
-        initLanguageParser(languageParser);
+//        initLanguageParser(languageParser);
         //实例化模板加载器
         TemplateLoader templateLoader = new FreemarkerTemplateLoader(clientProviderType, this.templateFileVersion, this.getSharedVariables());
 

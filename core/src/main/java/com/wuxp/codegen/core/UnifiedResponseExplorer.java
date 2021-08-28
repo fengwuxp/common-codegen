@@ -12,8 +12,8 @@ public interface UnifiedResponseExplorer {
     /**
      * 探测 统一下响应对象
      *
-     * @param classes 需要生成服务类
+     * @param apiClasses 需要生成服务类
      */
-    void probe(Collection<Class<?>> classes);
+   void probe(Collection<Class<?>> apiClasses);
 
 }

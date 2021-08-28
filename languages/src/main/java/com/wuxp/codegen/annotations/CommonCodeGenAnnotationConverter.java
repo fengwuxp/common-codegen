@@ -52,7 +52,7 @@ public class CommonCodeGenAnnotationConverter {
                 .toArray(CommonCodeGenAnnotation[]::new);
     }
 
-    private List<CommonCodeGenAnnotation> getCommonCodeGenAnnotations(Annotation annotation, Object annotationOwner) {
+    private List<CommonCodeGenAnnotation> getCommonCodeGenAnnotations(Annotation annotation, AnnotatedElement annotationOwner) {
         Optional<AnnotationMetaFactory<AnnotationMate, Annotation>> annotationMetaFactory = AnnotationMetaFactoryHolder.getAnnotationMetaFactory(annotation);
         if (!annotationMetaFactory.isPresent()) {
             return Collections.emptyList();
@@ -61,6 +61,8 @@ public class CommonCodeGenAnnotationConverter {
         if (toAnnotation == null) {
             return Collections.emptyList();
         }
+        toAnnotation.setSource(annotation);
+        toAnnotation.setAnnotationOwner(annotationOwner);
         List<CommonCodeGenAnnotation> toAnnotations = new ArrayList<>();
         toAnnotations.add(enhancedProcessingAnnotation(toAnnotation, annotation, annotationOwner));
         toAnnotations.addAll(getCommonCodeGenAnnotations(toAnnotation));

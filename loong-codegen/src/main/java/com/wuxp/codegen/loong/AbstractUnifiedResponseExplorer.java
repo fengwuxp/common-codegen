@@ -3,13 +3,10 @@ package com.wuxp.codegen.loong;
 import com.wuxp.codegen.core.UnifiedResponseExplorer;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.parser.JavaClassParser;
-import com.wuxp.codegen.core.parser.LanguageParser;
-import com.wuxp.codegen.languages.AbstractLanguageParser;
+import com.wuxp.codegen.mapping.MappingTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
-import com.wuxp.codegen.model.mapping.BaseTypeMapping;
-import com.wuxp.codegen.model.mapping.TypeMapping;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -28,26 +25,26 @@ public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponse
 
     private static final JavaClassParser CLASS_PARSER = JAVA_CLASS_ON_PUBLIC_PARSER;
 
-    private final LanguageParser languageParser;
+    private final MappingTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingTypeDefinitionParser;
 
-    public AbstractUnifiedResponseExplorer(LanguageParser languageParser) {
-        this.languageParser = languageParser;
+    protected AbstractUnifiedResponseExplorer(MappingTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingTypeDefinitionParser) {
+        this.mappingTypeDefinitionParser = mappingTypeDefinitionParser;
     }
 
     @Override
-    public void probe(Collection<Class<?>> classes) {
-        setBasePackage(classes);
-        setUnifiedResponseTypeMapping(classes);
-
+    public void probe(Collection<Class<?>> apiClasses) {
+        setBasePackage(apiClasses);
+        Class<?> unifiedResponseType = getUnifiedResponseType(apiClasses);
+        if (unifiedResponseType != null) {
+            mappingTypeDefinitionParser.putTypeMapping(unifiedResponseType, CodegenConfigHolder.getConfig().getUnifiedResponseType());
+        }
     }
 
     /**
      * 设置基础的包名，实现不太准确
-     *
-     * @param classes 扫描到类
      */
-    protected void setBasePackage(Collection<Class<?>> classes) {
-        Optional<String> optional = classes.stream()
+    protected void setBasePackage(Collection<Class<?>> apiClasses) {
+        Optional<String> optional = apiClasses.stream()
                 .map(Class::getPackage)
                 .filter(Objects::nonNull)
                 .map(Package::getName)
@@ -69,12 +66,8 @@ public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponse
      *
      * @param classes 扫描到类
      */
-    protected void setUnifiedResponseTypeMapping(Collection<Class<?>> classes) {
-        AbstractLanguageParser languageParser = (AbstractLanguageParser) this.languageParser;
-        TypeMapping typeMapping = languageParser.getLanguageTypeMapping().getCombineTypeMapping();
-        if (typeMapping == null) {
-            return;
-        }
+    protected Class<?> getUnifiedResponseType(Collection<Class<?>> classes) {
+
         List<? extends Class<?>> returnTypes = classes.stream()
                 .map(CLASS_PARSER::parse)
                 .map(JavaClassMeta::getMethodMetas)
@@ -86,20 +79,13 @@ public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponse
                 .distinct()
                 .collect(Collectors.toList());
         if (returnTypes.isEmpty()) {
-            return;
+            return null;
         }
         if (returnTypes.size() > 2) {
             log.warn("控制器的方法返回值的类型超过2个，type size={}", returnTypes.size());
-            return;
+            return null;
         }
-        if (typeMapping instanceof BaseTypeMapping) {
-            Class<?> unifiedResponseType = returnTypes.get(0);
-            CommonCodeGenClassMeta responseType = CodegenConfigHolder.getConfig().getUnifiedResponseType();
-            if (responseType != null) {
-                ((BaseTypeMapping<?>) typeMapping).tryAddTypeMapping(unifiedResponseType, responseType);
-            }
-        }
-
+        return returnTypes.get(0);
     }
 }
 

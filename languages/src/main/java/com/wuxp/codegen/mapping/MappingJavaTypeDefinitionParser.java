@@ -1,6 +1,5 @@
 package com.wuxp.codegen.mapping;
 
-import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import org.springframework.core.io.InputStreamResource;
@@ -60,7 +59,7 @@ public class MappingJavaTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     public static AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta> builder() {
-        return new AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta>( JAVA_BASE_MAPPINGS) {
+        return new AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta>(JAVA_BASE_MAPPINGS) {
             @Override
             public MappingJavaTypeDefinitionParser build() {
                 return new MappingJavaTypeDefinitionParser(this);
@@ -69,7 +68,7 @@ public class MappingJavaTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     private MappingJavaTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta> builder) {
-        super( new MappingTypeDefinitionParser<>(builder.getTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings()));
     }
 
 

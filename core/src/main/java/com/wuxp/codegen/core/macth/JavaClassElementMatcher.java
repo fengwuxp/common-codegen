@@ -12,8 +12,6 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
      */
     private static final List<String> DEFAULT_IGNORE_PATTERNS = new ArrayList<>();
 
-    // org.springframework.core.io.InputStreamResource
-
     static {
         DEFAULT_IGNORE_PATTERNS.add("org.springframework.");
         DEFAULT_IGNORE_PATTERNS.add("org.slf4j.");

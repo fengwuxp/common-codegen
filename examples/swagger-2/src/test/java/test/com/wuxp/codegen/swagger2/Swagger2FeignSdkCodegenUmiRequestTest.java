@@ -55,7 +55,6 @@ public class Swagger2FeignSdkCodegenUmiRequestTest {
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-                .languageEnhancedProcessors(new UmiRequestEnhancedProcessor())
                 .buildCodeGenerator()
                 .generate();
 

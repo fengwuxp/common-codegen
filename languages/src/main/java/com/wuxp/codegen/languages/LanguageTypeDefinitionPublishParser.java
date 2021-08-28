@@ -147,5 +147,7 @@ public class LanguageTypeDefinitionPublishParser<C extends CommonCodeGenClassMet
         this.codeGenElementMatchers.addAll(codeGenElementMatchers);
     }
 
-
+    public LanguageTypeDefinitionParser<C> getMappingTypeDefinitionParser() {
+        return mappingTypeDefinitionParser;
+    }
 }

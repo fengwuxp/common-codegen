@@ -177,7 +177,7 @@ public abstract class AbstractCodeGenerator implements CodeGenerator {
 
         this.enableFieldUnderlineStyle = enableFieldUnderlineStyle;
         this.codeGenPublisher = codeGenPublisher;
-        this.unifiedResponseExplorer = new LoongUnifiedResponseExplorer(languageParser);
+        this.unifiedResponseExplorer = new LoongUnifiedResponseExplorer(null);
 
         classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
         classPathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(RestController.class));

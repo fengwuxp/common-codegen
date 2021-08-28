@@ -3,6 +3,8 @@ package com.wuxp.codegen.swagger2.builder;
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.macth.ExcludeAnnotationCodeGenElementMatcher;
 import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
+import com.wuxp.codegen.core.macth.JavaFiledElementMatcher;
+import com.wuxp.codegen.core.macth.JavaMethodElementMatcher;
 import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
 import com.wuxp.codegen.languages.RemoveClientResponseTypePostProcessor;
 import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
@@ -35,7 +37,9 @@ public abstract class AbstractSwagger2CodegenBuilder extends AbstractLoongCodege
                         .includeClasses(this.getIncludeClasses())
                         .includePackages(this.getIgnorePackages())
                         .ignoreClasses(this.getIgnoreClasses())
-                        .build()
+                        .build(),
+                new JavaMethodElementMatcher(this.getIgnoreMethodNames()),
+                new JavaFiledElementMatcher(this.getIgnoreFieldNames())
         );
     }
 

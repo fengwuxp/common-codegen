@@ -34,6 +34,7 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
         F result = newElementInstance();
         result.setFiledTypes(filedTypes);
         result.setSource(fieldMeta.getField());
+        result.setFieldMeta(fieldMeta);
         result.setDeclaringClassMeta(fieldMeta.getDeclaringClassMeta());
         result.setName(fieldMeta.getName());
         result.setAccessPermission(fieldMeta.getAccessPermission());

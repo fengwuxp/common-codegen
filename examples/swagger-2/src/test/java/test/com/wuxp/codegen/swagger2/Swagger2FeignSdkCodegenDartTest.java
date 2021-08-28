@@ -1,7 +1,7 @@
 package test.com.wuxp.codegen.swagger2;
 
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.meta.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
@@ -58,7 +58,6 @@ public class Swagger2FeignSdkCodegenDartTest {
                 "/example_cms/get_**"
         });
         Swagger2FeignDartCodegenBuilder.builder()
-                .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTURE)
@@ -68,6 +67,7 @@ public class Swagger2FeignSdkCodegenDartTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
+                .ignoreFieldNames(ignoreFields)
                 .buildCodeGenerator()
                 .generate();
     }
