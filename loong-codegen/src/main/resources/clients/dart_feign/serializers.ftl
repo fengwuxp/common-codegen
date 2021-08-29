@@ -9,11 +9,11 @@ import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 import 'package:fengwuxp_dart_openfeign/src/built/date_time_serializer.dart';
 
-<#if dependencies??>
+<#if tags.dependencies??>
 <#--依赖导入处理-->
-    <#list dependencies as val >
+    <#list tags.dependencies as val >
         <#if !val.packagePath?starts_with("package:")>
-          import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
+            import '${customizeMethod.pathResolve(packagePath,val.packagePath)}.dart';
         </#if>
     </#list>
 </#if>
@@ -32,19 +32,17 @@ part 'serializers.g.dart';
 ///
 /// You usually only need to do this once per project.
 @SerializersFor(const [
-<#if dependencies??>
+<#if tags.dependencies??>
 <#--依赖导入处理-->
-    <#list dependencies as val >
+    <#list tags.dependencies as val >
         ${val.name},
     </#list>
 </#if>
 ])
 
 final Serializers serializers = (_$serializers.toBuilder()
-<#list builderFactories as factory>
-  ..addBuilderFactory(
-<#--                  const FullType(${factory[0].name}, [FullType(${factory[1].name})]),-->
-<#--                 () =>  ${customizeMethod.combineType(factory)}>())-->
+<#list tags.builderFactories as factory>
+    ..addBuilderFactory(
     ${factory.fullTypeCode},
     ${factory.functionCode}
 </#list>

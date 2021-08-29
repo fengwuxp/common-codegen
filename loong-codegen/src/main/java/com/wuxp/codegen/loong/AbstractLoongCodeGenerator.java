@@ -31,6 +31,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import static com.wuxp.codegen.core.event.CodeGenEventListener.EVENT_CODEGEN_META_TAG_NAME;
+
 /**
  * @author wuxp
  */
@@ -63,6 +65,7 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
 
     private final CodeGenerateAsyncTaskFuture codeGenerateAsyncTaskFuture;
 
+    private CodeGenEvent.CodeGenEventStatus codeGenEventStatus = CodeGenEvent.CodeGenEventStatus.SCAN_CODEGEN;
 
     protected AbstractLoongCodeGenerator(String[] scanPackages,
                                          LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> languageTypeDefinitionParser,
@@ -119,10 +122,8 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
             log.warn("没有获取到 CodeGenEventListener");
         } else {
             eventListener.onApplicationEvent((CodeGenEvent) event);
-
         }
     }
-
 
     private CompletableFuture<Void> asyncGenerate() {
         Set<Class<?>> classes = this.scanPackages();
@@ -168,7 +169,9 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
         genClassMetas.addAll(getIncludeClassMetas());
         int generateCount = 0;
         while (true) {
-            log.warn("循环生成，第{}次", generateCount);
+            if (log.isInfoEnabled()) {
+                log.info("循环生成，第{}次", generateCount);
+            }
             genClassMetas = generateAndReturnMetas(genClassMetas);
             if (genClassMetas.isEmpty() || generateCount > MAX_CODEGEN_LOOP_COUNT) {
                 break;
@@ -176,15 +179,29 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
             generateCount++;
         }
         // 广播生成完成事件
-        publishEvent(new CodeGenEvent(new CommonCodeGenClassMeta(), true));
+        this.codeGenEventStatus = CodeGenEvent.CodeGenEventStatus.SCAN_CODEGEN_DONE;
+        publishEvent(new CodeGenEvent(new CommonCodeGenClassMeta(), codeGenEventStatus));
+        // 生成完成后尝试生成通过事件聚合 Metas
+        this.codeGenEventStatus = CodeGenEvent.CodeGenEventStatus.EVENT_CODEGEN;
+        Set<CommonCodeGenClassMeta> completedEventMetas = getCompletedEventMetas();
+        generateAndReturnMetas(completedEventMetas);
+        this.codeGenEventStatus = CodeGenEvent.CodeGenEventStatus.COMPLETED;
         return codeGenerateAsyncTaskFuture.future();
+    }
+
+    private Set<CommonCodeGenClassMeta> getCompletedEventMetas() {
+        CodeGenEventListener codeGenEventListener = getCodeGenEventListener();
+        if (codeGenEventListener == null) {
+            return Collections.emptySet();
+        }
+        return codeGenEventListener.getEventCodeGenMetas();
     }
 
     private Set<CommonCodeGenClassMeta> generateAndReturnMetas(Set<CommonCodeGenClassMeta> genClassMetas) {
         return genClassMetas.stream()
                 .filter(Objects::nonNull)
                 .filter(CommonCodeGenClassMeta::getNeedGenerate)
-                .filter(this::hasExistMember)
+                .filter(this::canCodegen)
                 .map(this::renderTemplate)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
@@ -201,7 +218,7 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
         } catch (Exception exception) {
             throw new CodegenRuntimeException(exception);
         }
-        publishEvent(new CodeGenEvent(meta));
+        publishEvent(new CodeGenEvent(meta, this.codeGenEventStatus));
         return result;
     }
 
@@ -248,7 +265,8 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
                     }
                     // 属性重复了
                     return false;
-                }).toArray(CommonCodeGenFiledMeta[]::new);
+                })
+                .toArray(CommonCodeGenFiledMeta[]::new);
         meta.setFieldMetas(fieldMetas);
     }
 
@@ -319,34 +337,47 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
         return classes.stream()
                 .map(this.languageTypeDefinitionParser::parse)
                 .filter(Objects::nonNull)
-                .filter(this::hasExistMember)
+                .filter(this::canCodegen)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * 是否可以用于生成
+     *
+     * @param classMeta 用于生成代码的类描述对象
+     * @return <code>true</code> 存在成员（方法或字段）需要进行生成
+     */
+    private boolean canCodegen(CommonCodeGenClassMeta classMeta) {
+        if (Boolean.TRUE.equals(classMeta.getTag(EVENT_CODEGEN_META_TAG_NAME))) {
+            return true;
+        }
+        return hasExistMember(classMeta);
     }
 
     /**
      * 是否存在成员
      *
-     * @param commonCodeGenClassMeta 用于生成代码的类描述对象
+     * @param classMeta 用于生成代码的类描述对象
      * @return <code>true</code> 存在成员（方法或字段）需要进行生成
      */
-    private boolean hasExistMember(CommonCodeGenClassMeta commonCodeGenClassMeta) {
-        if (ClassType.ENUM.equals(commonCodeGenClassMeta.getClassType())) {
+    private boolean hasExistMember(CommonCodeGenClassMeta classMeta) {
+        if (ClassType.ENUM.equals(classMeta.getClassType())) {
             return true;
         }
-        if (Boolean.TRUE.equals(commonCodeGenClassMeta.getNeedGenerate())) {
+        if (Boolean.TRUE.equals(classMeta.getNeedGenerate())) {
             return true;
         }
-        boolean notMethod = commonCodeGenClassMeta.getMethodMetas() == null || commonCodeGenClassMeta.getMethodMetas().length == 0;
-        if (ClassType.INTERFACE.equals(commonCodeGenClassMeta.getClassType()) && notMethod) {
+        boolean notMethod = classMeta.getMethodMetas() == null || classMeta.getMethodMetas().length == 0;
+        if (ClassType.INTERFACE.equals(classMeta.getClassType()) && notMethod) {
             return false;
         }
 
-        boolean notFiled = commonCodeGenClassMeta.getFieldMetas() == null || commonCodeGenClassMeta.getFieldMetas().length == 0;
+        boolean notFiled = classMeta.getFieldMetas() == null || classMeta.getFieldMetas().length == 0;
         return !(notFiled && notMethod);
     }
 
     private boolean needImportDependencies(CommonCodeGenClassMeta val) {
-        return (val.isNeedImport() || this.hasExistMember(val)) && hasPackagePath(val);
+        return (val.isNeedImport() || this.canCodegen(val)) && hasPackagePath(val);
     }
 
     private boolean hasPackagePath(CommonCodeGenClassMeta commonCodeGenClassMeta) {

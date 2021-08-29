@@ -177,7 +177,6 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
         dependencies.addAll(dtos);
         data.put("dependencies", dependencies);
         data.put("sdkLibName", sdkIndexFileName);
-        // 遍历控制器所有的方法得到泛型的组合
         FileUtils.createDirectoryRecursively(output.substring(0, output.lastIndexOf(File.separator)));
         buildFile(template, output, data);
     }

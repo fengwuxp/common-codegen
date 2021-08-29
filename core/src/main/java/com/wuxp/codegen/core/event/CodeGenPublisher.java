@@ -14,11 +14,11 @@ import java.util.concurrent.locks.LockSupport;
 public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {
 
     /**
-     * 默认的最大的part nanos
+     * 默认的最大的 part nanos
      */
     long DEFAULT_MAX_PARK_NANOS = 10L * 1000 * 1000 * 100;
 
-    CodeGenPublisher NONE = new CodeGenPublisher() {
+    CodeGenPublisher<? extends CommonCodeGenClassMeta> NONE = new CodeGenPublisher<CommonCodeGenClassMeta>() {
         @Override
         public void sendCodeGen(CommonCodeGenClassMeta data) {
 
@@ -39,7 +39,6 @@ public interface CodeGenPublisher<T extends CommonCodeGenClassMeta> {
             return false;
         }
     };
-
 
     /**
      * 发送一次生成事件

@@ -49,18 +49,24 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
 
     @Override
     public Template load(String templateName) {
-
         try {
-            String templatePath = MessageFormat.format("{0}/{1}/{2}{3}",
-                    this.templateBaseDir,
-                    this.clientProviderType.name().toLowerCase(),
-                    StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("{0}/", this.templateFileVersion) : "",
-                    templateName);
-            return configuration.getTemplate(templatePath);
+            return configuration.getTemplate(buildTemplatePath(templateName));
         } catch (IOException e) {
             log.error("获取模板失败，模板名称：{}", templateName, e);
         }
         return null;
+    }
+
+    private String buildTemplatePath(String templateName) {
+        String templatePath = MessageFormat.format("{0}/{1}/{2}{3}",
+                this.templateBaseDir,
+                this.clientProviderType.name().toLowerCase(),
+                StringUtils.hasText(this.templateFileVersion) ? MessageFormat.format("{0}/", this.templateFileVersion) : "",
+                templateName);
+        if (!templatePath.endsWith(".ftl")) {
+            templatePath += ".ftl";
+        }
+        return templatePath;
     }
 
     public void setTemplateBaseDir(String templateBaseDir) {
@@ -98,8 +104,8 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
     private static Map<Object, Object> initCustomizeMethods() {
         Map<Object, Object> templateMethods = new HashMap<>();
         try {
-            templateMethods.put("combineType",  ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.CombineTypeMethod").newInstance());
-            templateMethods.put("pathResolve",  ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.PathResolveMethod").newInstance());
+            templateMethods.put("combineType", ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.CombineTypeMethod").newInstance());
+            templateMethods.put("pathResolve", ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.PathResolveMethod").newInstance());
             templateMethods.put("combineDartFullType", ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.DartFullTypeCombineMethod").newInstance());
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();

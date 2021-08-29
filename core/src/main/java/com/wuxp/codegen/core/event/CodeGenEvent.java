@@ -9,19 +9,30 @@ public class CodeGenEvent extends ApplicationEvent {
     private static final long serialVersionUID = -3007080900619401132L;
 
     @Getter
-    private final boolean done;
+    private final CodeGenEventStatus status;
 
     public CodeGenEvent(CommonCodeGenClassMeta source) {
-        this(source, false);
+        this(source, CodeGenEventStatus.SCAN_CODEGEN);
     }
 
-    public CodeGenEvent(CommonCodeGenClassMeta source, boolean done) {
+    public CodeGenEvent(CommonCodeGenClassMeta source, CodeGenEventStatus status) {
         super(source);
-        this.done = done;
+        this.status = status;
     }
 
     @Override
     public CommonCodeGenClassMeta getSource() {
         return (CommonCodeGenClassMeta) super.getSource();
+    }
+
+    public enum CodeGenEventStatus {
+
+        SCAN_CODEGEN,
+
+        SCAN_CODEGEN_DONE,
+
+        EVENT_CODEGEN,
+
+        COMPLETED
     }
 }

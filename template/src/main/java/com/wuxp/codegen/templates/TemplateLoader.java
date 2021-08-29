@@ -10,12 +10,11 @@ package com.wuxp.codegen.templates;
  */
 public interface TemplateLoader<T> {
 
-
-  /**
-   * 加载模板
-   *
-   * @param templateName
-   * @return
-   */
-  T load(String templateName);
+    /**
+     * 加载模板
+     *
+     * @param templateName 模板名称
+     * @return 模板对象
+     */
+    T load(String templateName);
 }

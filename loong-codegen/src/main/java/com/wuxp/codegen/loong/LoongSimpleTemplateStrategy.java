@@ -13,6 +13,7 @@ import com.wuxp.codegen.templates.TemplateLoader;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,6 +22,8 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+
+import static com.wuxp.codegen.core.event.CodeGenEventListener.TEMPLATE_PATH_TAG_NAME;
 
 
 /**
@@ -107,59 +110,62 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
     public void build(CommonCodeGenClassMeta data) throws Exception {
 
         //根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
-        String templateName = this.getTemplate(data);
-        Template template = this.templateLoader.load(templateName);
-        if (template == null) {
-            log.warn("没有找到模板{}", templateName);
+        String templatePath = this.getTemplatePath(data);
+        Template template = this.templateLoader.load(templatePath);
+        Assert.notNull(template, "获取模板失败，templatePath = " + templatePath);
+        String packagePath = this.fileNameGenerateStrategy.generateName(data.getPackagePath());
+        String outputPath = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, FileUtils.packageNameToFilePath(packagePath), extName)).toString();
+        // 如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
+        if (outputPath.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
+            log.warn("类{}，的生成输入路径有误,{}", data.getName(), outputPath);
+        }
+
+        if (fileIsCodegen(outputPath)) {
+            log.warn("文件{}在{}分钟内已经生成过，跳过生成", outputPath, LAST_MODIFIED_MINUTE);
             return;
         }
-
-        String packagePath = data.getPackagePath();
-        packagePath = this.fileNameGenerateStrategy.generateName(packagePath);
-        String output = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, FileUtils.packageNameToFilePath(packagePath), extName))
-                .toString();
-        //如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
-        if (output.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
-            log.warn("类{}，的生成输入路径有误,{}", data.getName(), output);
-        }
-
-        File file = new File(output);
-        if (file.exists()) {
-            if (System.currentTimeMillis() - file.lastModified() <= LAST_MODIFIED_MINUTE * ONE_MINUTE_MILLIS) {
-                log.warn("文件{}在{}分钟内已经生成过，跳过生成", output, LAST_MODIFIED_MINUTE);
-                return;
-            }
-        }
-        FileUtils.createDirectoryRecursively(output.substring(0, output.lastIndexOf(File.separator)));
+        FileUtils.createDirectoryRecursively(outputPath.substring(0, outputPath.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
-            log.info("生成类{}的文件，输出到{}目录", data.getName(), output);
+            log.info("生成类{}的文件，输出到{}目录", data.getName(), outputPath);
         }
         //输出
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(output), StandardCharsets.UTF_8)) {
-            //添加自定义方法
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputPath), StandardCharsets.UTF_8)) {
+            // 添加自定义方法
             template.process(data, writer);
         }
         // 格式化代码
-        codeFormatter.format(output);
+        codeFormatter.format(outputPath);
     }
 
-    protected String getTemplate(CommonCodeGenClassMeta data) {
-        String templateName;
+    private boolean fileIsCodegen(String output) {
+        File file = new File(output);
+        if (file.exists()) {
+            // 文件是否还有效
+            return System.currentTimeMillis() - file.lastModified() <= LAST_MODIFIED_MINUTE * ONE_MINUTE_MILLIS;
+        }
+        return false;
+    }
+
+    protected String getTemplatePath(CommonCodeGenClassMeta data) {
         CommonCodeGenMethodMeta[] methodMetas = data.getMethodMetas();
+        String templatePath = data.getTag(TEMPLATE_PATH_TAG_NAME);
+        if (StringUtils.hasText(templatePath)) {
+            return templatePath;
+        }
         if (methodMetas == null || methodMetas.length == 0) {
             //DTO or enum
             if (ClassType.ENUM.equals(data.getClassType())) {
-                templateName = FeignApiSdkTemplateName.API_ENUM_TEMPLATE_NAME;
+                templatePath = FeignApiSdkTemplateName.API_ENUM_TEMPLATE_NAME;
             } else {
                 //区分请求对象还是响应对象
-                templateName = FeignApiSdkTemplateName.API_REQUEST_TEMPLATE_NAME;
+                templatePath = FeignApiSdkTemplateName.API_REQUEST_TEMPLATE_NAME;
             }
         } else {
             //api 接口
-            templateName = FeignApiSdkTemplateName.API_SERVICE_TEMPLATE_NAME;
+            templatePath = FeignApiSdkTemplateName.API_SERVICE_TEMPLATE_NAME;
 
         }
-        return templateName;
+        return templatePath;
     }
 
 

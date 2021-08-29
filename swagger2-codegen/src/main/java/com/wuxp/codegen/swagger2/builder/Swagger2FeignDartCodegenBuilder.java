@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.languages.CommonFieldDefinitionParser;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.languages.dart.DartCodeGenEventListener;
 import com.wuxp.codegen.languages.dart.DartTypeDefinitionParser;
 import com.wuxp.codegen.languages.dart.DartTypeVariableDefinitionParser;
 import com.wuxp.codegen.mapping.MappingJavaTypeDefinitionParser;
@@ -28,14 +29,11 @@ import java.util.Map;
 public class Swagger2FeignDartCodegenBuilder extends AbstractSwagger2CodegenBuilder {
 
     /**
-     * sdk索引文件名称
-     */
-    private String sdkIndexFileName = "feign_sdk";
-
-    /**
      * 类型别名
      */
     private Map<DartClassMeta, List<String>> typeAlias = Collections.emptyMap();
+
+    private String feignSdkLibName;
 
     public static Swagger2FeignDartCodegenBuilder builder() {
         return new Swagger2FeignDartCodegenBuilder();
@@ -46,17 +44,17 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractSwagger2CodegenBuil
         return this;
     }
 
-    public Swagger2FeignDartCodegenBuilder sdkIndexFileName(String sdkIndexFileName) {
-        this.sdkIndexFileName = sdkIndexFileName;
+    public Swagger2FeignDartCodegenBuilder feignSdkLibName(String feignSdkLibName) {
+        this.feignSdkLibName = feignSdkLibName;
         return this;
     }
-
 
     @Override
     public CodeGenerator buildCodeGenerator() {
         initCodegenConfig(LanguageDescription.DART, ClientProviderType.DART_FEIGN);
         configParserPostProcessors(DartClassMeta.FUTURE);
         configCodeGenElementMatchers();
+        this.codeGenEventListeners(new DartCodeGenEventListener(feignSdkLibName, typeAlias));
         return createCodeGenerator();
     }
 

@@ -73,7 +73,7 @@ public final class FileUtils {
         if (!flag) {
             return false;
         }
-        //v删除当前目录
+        // 删除当前目录
         return dirFile.delete();
     }
 
@@ -84,17 +84,16 @@ public final class FileUtils {
      * @return 单个文件删除成功返回true，否则返回false
      */
     public static boolean deleteFile(String sPath) {
-        boolean flag = false;
         File file = new File(sPath);
         // 路径为文件且不为空则进行删除
         if (file.isFile() && file.exists()) {
-            flag = file.delete();
+            return file.delete();
         }
-        return flag;
+        return false;
     }
 
     public static String packageNameToFilePath(String packagePath) {
-        // 此处必须使用replaceAll
+        // 此处必须使用 replaceAll
         return packagePath.replaceAll("\\.", PathResolve.RIGHT_SLASH);
     }
 }

@@ -4,6 +4,8 @@ package com.wuxp.codegen;
 import com.wuxp.codegen.core.*;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.event.CodeGenEventListener;
+import com.wuxp.codegen.core.event.CombineCodeGenEventListener;
 import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
@@ -206,6 +208,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      */
     protected Map<String, Object> sharedVariables = new HashMap<>();
 
+    protected List<CodeGenEventListener> codeGenEventListeners = new ArrayList<>();
+
     protected AbstractLoongCodegenBuilder() {
     }
 
@@ -354,6 +358,11 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractLoongCodegenBuilder codeGenEventListeners(CodeGenEventListener... codeGenEventListeners) {
+        this.codeGenEventListeners.addAll(Arrays.asList(codeGenEventListeners));
+        return this;
+    }
+
     public FreemarkerTemplateLoader getTemplateLoader() {
         // 实例化模板加载器
         return new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
@@ -426,6 +435,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         codeGenerator.setIncludeClasses(includeClasses);
         codeGenerator.setIgnorePackages(ignorePackages);
         codeGenerator.setEnableFieldUnderlineStyle(enableFieldUnderlineStyle);
+        codeGenerator.setCodeGenEventListener(new CombineCodeGenEventListener(codeGenEventListeners));
         return codeGenerator;
     }
 
@@ -442,12 +452,9 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     }
 
     /**
-     * 获取模板的共享变量
-     *
-     * @return
+     * @return 模板全局共享变量
      */
     protected Map<String, Object> getSharedVariables() {
-        //全局共享变量
         return sharedVariables;
     }
 
