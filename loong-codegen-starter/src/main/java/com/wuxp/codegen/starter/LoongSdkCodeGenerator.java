@@ -9,7 +9,7 @@ import com.wuxp.codegen.loong.CodegenSdkUploader;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.starter.enums.OpenApiType;
-import com.wuxp.codegen.swagger2.builder.Swagger2FeignDartCodegenBuilder2;
+import com.wuxp.codegen.swagger2.builder.Swagger2FeignDartCodegenBuilder;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
@@ -138,7 +138,7 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
         }
         if (finallyClientProviderTypes.contains(ClientProviderType.DART_FEIGN)) {
             codeGenerators.add(
-                    Swagger2FeignDartCodegenBuilder2.builder()
+                    Swagger2FeignDartCodegenBuilder.builder()
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             .outPath(this.getCodegenOutputPath(ClientProviderType.DART_FEIGN))

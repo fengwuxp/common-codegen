@@ -71,7 +71,7 @@ public final class CodegenConfig {
 
     /**
      * 是否启用代码格式化
-     * 默认不启用
+     * 默认：false
      */
     private boolean enabledCodeFormatter;
 

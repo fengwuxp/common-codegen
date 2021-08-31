@@ -15,10 +15,10 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author wuxp
  */
-public interface CodeFormatter extends TaskWaiter {
+public interface CodeFormatter extends CodeGenerateAsyncTaskFuture {
 
     default CompletableFuture<Void> asyncFormat(String filepath) {
-        return CompletableFuture.completedFuture(null);
+        return CompletableFuture.runAsync(() -> format(filepath));
     }
 
     /**
@@ -48,9 +48,4 @@ public interface CodeFormatter extends TaskWaiter {
      * @return 格式化成功后的代码
      */
     String format(String sourcecode, final Charset charsetName);
-
-    @Override
-    default void waitTaskCompleted() {
-        // 默认不需要等待
-    }
 }

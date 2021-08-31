@@ -1,7 +1,7 @@
 package com.wuxp.codegen.format;
 
 import com.wuxp.codegen.core.CodeFormatter;
-import com.wuxp.codegen.core.TaskWaiter;
+import com.wuxp.codegen.core.CodeGenerateAsyncTaskFuture;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.format.dart.FlutterCodeFormatter;
 import com.wuxp.codegen.format.java.GoogleCodeFormatter;
@@ -13,6 +13,7 @@ import org.springframework.util.ConcurrentReferenceHashMap;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 通过识别语言，调用不同的语言的code formatter
@@ -34,7 +35,6 @@ public class LanguageCodeFormatter implements CodeFormatter {
     public LanguageCodeFormatter() {
         this(CodegenConfigHolder.getCurrentLanguageDescription());
     }
-
 
 
     @Override
@@ -92,10 +92,11 @@ public class LanguageCodeFormatter implements CodeFormatter {
     }
 
     @Override
-    public void waitTaskCompleted() {
+    public CompletableFuture<Void> future() {
         if (CodegenConfigHolder.isEnabledCodeFormatter()) {
-            Optional<CodeFormatter> optional = getFormatter();
-            optional.ifPresent(TaskWaiter::waitTaskCompleted);
+            return getFormatter().map(CodeGenerateAsyncTaskFuture::future)
+                    .orElse(CompletableFuture.completedFuture(null));
         }
+        return CompletableFuture.completedFuture(null);
     }
 }

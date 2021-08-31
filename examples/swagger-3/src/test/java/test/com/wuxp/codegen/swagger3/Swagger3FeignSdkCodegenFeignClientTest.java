@@ -60,9 +60,8 @@ public class Swagger3FeignSdkCodegenFeignClientTest {
                 .packageMapStrategy(packageMapStrategy)
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-                .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
+                .ignoreClasses(new Class<?>[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(false)
-                .languageEnhancedProcessors(languageEnhancedProcessor)
                 .buildCodeGenerator()
                 .generate();
 

@@ -1,7 +1,9 @@
 package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
+import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -34,6 +36,7 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
         DART_DEFAULT_BASE_MAPPING.put(Map.class, DartClassMeta.BUILT_MAP);
         DART_DEFAULT_BASE_MAPPING.put(Set.class, DartClassMeta.BUILT_SET);
         DART_DEFAULT_BASE_MAPPING.put(List.class, DartClassMeta.BUILT_LIST);
+        DART_DEFAULT_BASE_MAPPING.put(JavaArrayClassTypeMark.class, DartClassMeta.BUILT_LIST);
 
         // 由于built_collection 没有导出BuiltIterable 先转化为 BuiltList
         DART_DEFAULT_BASE_MAPPING.put(Collection.class, DartClassMeta.BUILT_LIST);
@@ -46,6 +49,18 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
 
         // TODO support rxDart、reactor
         DART_DEFAULT_BASE_MAPPING.put(Publisher.class, DartClassMeta.FUTURE);
+    }
+
+    @Override
+    public DartClassMeta parse(Class<?> source) {
+        if (JavaArrayClassTypeMark.class.equals(source)) {
+            // 标记的数据数组类型
+            DartClassMeta arrayType = new DartClassMeta();
+            BeanUtils.copyProperties(DartClassMeta.BUILT_LIST, arrayType);
+            return arrayType;
+        }
+
+        return super.parse(source);
     }
 
     public static AbstractMappingTypeDefinitionParserBuilder<DartClassMeta> builder() {

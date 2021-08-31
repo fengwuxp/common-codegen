@@ -9,7 +9,7 @@ import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.languages.dart.DartCodeGenEventListener;
 import com.wuxp.codegen.languages.dart.DartTypeDefinitionParser;
 import com.wuxp.codegen.languages.dart.DartTypeVariableDefinitionParser;
-import com.wuxp.codegen.mapping.MappingJavaTypeDefinitionParser;
+import com.wuxp.codegen.mapping.MappingDartTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -60,7 +60,7 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractSwagger2CodegenBuil
 
     @Override
     protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
-        return MappingJavaTypeDefinitionParser.builder()
+        return MappingDartTypeDefinitionParser.builder()
                 .typeMapping(baseTypeMapping)
                 .build();
     }

@@ -87,23 +87,22 @@ public abstract class AbstractCommandCodeFormatter implements CodeFormatter {
 
     @Override
     public String format(String sourcecode, Charset charsetName) {
+        // TODO 待支持
         return sourcecode;
     }
 
-    /**
-     * 等待所有的异步任务结束
-     */
     @Override
-    public void waitTaskCompleted() {
+    public CompletableFuture<Void> future() {
         if (CollectionUtils.isEmpty(futureTasks)) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
-        int taskTotal = syncCountFutureTaskTotal();
-        if (log.isInfoEnabled()) {
-            log.info("共执行的异步任务数量：{}", taskTotal);
-        }
-        futureTasks.clear();
-
+        return CompletableFuture.runAsync(() -> {
+            int taskTotal = syncCountFutureTaskTotal();
+            if (log.isInfoEnabled()) {
+                log.info("共执行的异步任务数量：{}", taskTotal);
+            }
+            futureTasks.clear();
+        });
     }
 
     private int syncCountFutureTaskTotal() {

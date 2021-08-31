@@ -102,29 +102,29 @@ public class UserController {
     }
 
     @RequestMapping(value = "/test5", method = RequestMethod.GET)
-    public Map<PageInfo<User>, List<PageInfo<User>>> test5(Long id) {
+    public Map<String, List<PageInfo<User>>> test5(Long id) {
         return null;
     }
 
     @RequestMapping(value = "/test6", method = RequestMethod.GET)
-    public Map<PageInfo<User[]>, List<PageInfo<User[]>>> test6(Long id) {
+    public Map<Sex, List<PageInfo<User[]>>> test6(Long id) {
         return null;
     }
 
     @RequestMapping(value = "/test7", method = RequestMethod.GET)
-    public Map<PageInfo<User[][]>, List<PageInfo<User[][]>>> test7(Long id) {
+    public Map<Integer, List<PageInfo<User[][]>>> test7(Long id) {
 
         return null;
     }
 
     @RequestMapping(value = "/test8", method = RequestMethod.GET)
-    public Map<String[], String[][][][]> test8(Long id) {
+    public Map<String, String[][][][]> test8(Long id) {
 
         return null;
     }
 
     @RequestMapping(value = "/test9", method = RequestMethod.GET)
-    public Map<String[][], String[]>[][][] test9(Long id) {
+    public Map<String, String[]>[][][] test9(Long id) {
 
         return null;
     }

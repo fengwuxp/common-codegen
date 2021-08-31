@@ -64,7 +64,6 @@ public class Swagger3FeignSdkCodegenDartTest {
         });
 
         Swagger3FeignDartCodegenBuilder.builder()
-                .ignoreFields(ignoreFields)
                 .typeAlias(typeAlias)
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTURE)
@@ -75,6 +74,7 @@ public class Swagger3FeignSdkCodegenDartTest {
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
+                .ignoreFieldNames(ignoreFields)
                 .buildCodeGenerator()
                 .generate();
 

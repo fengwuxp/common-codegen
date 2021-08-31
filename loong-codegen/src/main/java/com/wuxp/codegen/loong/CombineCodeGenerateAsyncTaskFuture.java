@@ -43,7 +43,7 @@ public class CombineCodeGenerateAsyncTaskFuture implements CodeGenerateAsyncTask
         }
     }
 
-    public void addFuture(CombineCodeGenerateAsyncTaskFuture taskFuture) {
+    public void addFuture(CodeGenerateAsyncTaskFuture taskFuture) {
         this.taskFutures.add(taskFuture);
     }
 }

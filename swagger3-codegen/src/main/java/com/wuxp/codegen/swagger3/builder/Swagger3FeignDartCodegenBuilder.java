@@ -1,32 +1,22 @@
 package com.wuxp.codegen.swagger3.builder;
 
-import com.wuxp.codegen.AbstractLoongCodegenBuilder;
-import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
-import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
-import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
-import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
-import com.wuxp.codegen.core.macth.IgnoreMethodParameterMatchingStrategy;
-import com.wuxp.codegen.core.parser.LanguageParser;
-import com.wuxp.codegen.core.strategy.TemplateStrategy;
-import com.wuxp.codegen.disruptor.DartFeignCodeGenEventHandler;
-import com.wuxp.codegen.languages.AbstractDartParser;
-import com.wuxp.codegen.loong.CombinationCodeGenMatchingStrategy;
-import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
+import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
+import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
+import com.wuxp.codegen.languages.CommonFieldDefinitionParser;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.languages.dart.DartCodeGenEventListener;
+import com.wuxp.codegen.languages.dart.DartTypeDefinitionParser;
+import com.wuxp.codegen.languages.dart.DartTypeVariableDefinitionParser;
+import com.wuxp.codegen.mapping.MappingDartTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
-import com.wuxp.codegen.swagger3.Swagger3CodeGenerator;
-import com.wuxp.codegen.swagger3.Swagger3FeignSdkGenMatchingStrategy;
-import com.wuxp.codegen.swagger3.languages.Swagger3FeignSdkDartParser;
-import com.wuxp.codegen.templates.FreemarkerTemplateLoader;
-import com.wuxp.codegen.templates.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,28 +26,17 @@ import java.util.Map;
  * @author wxup
  */
 @Slf4j
-public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder {
-
-    private Map<Class<?>, List<String>> ignoreFields;
-
-    /**
-     * sdk索引文件名称
-     */
-    private String sdkIndexFileName = "feign_sdk";
+public class Swagger3FeignDartCodegenBuilder extends AbstractSwagger3CodegenBuilder {
 
     /**
      * 类型别名
      */
     private Map<DartClassMeta, List<String>> typeAlias = Collections.emptyMap();
 
-    protected Swagger3FeignDartCodegenBuilder() {
-        super();
-    }
+    private String feignSdkLibName;
 
-
-    public Swagger3FeignDartCodegenBuilder ignoreFields(Map<Class<?>, List<String>> ignoreFields) {
-        this.ignoreFields = ignoreFields;
-        return this;
+    public static Swagger3FeignDartCodegenBuilder builder() {
+        return new Swagger3FeignDartCodegenBuilder();
     }
 
     public Swagger3FeignDartCodegenBuilder typeAlias(Map<DartClassMeta, List<String>> typeAlias) {
@@ -65,85 +44,36 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractLoongCodegenBuilder
         return this;
     }
 
-    public Swagger3FeignDartCodegenBuilder sdkIndexFileName(String sdkIndexFileName) {
-        this.sdkIndexFileName = sdkIndexFileName;
+    public Swagger3FeignDartCodegenBuilder feignSdkLibName(String feignSdkLibName) {
+        this.feignSdkLibName = feignSdkLibName;
         return this;
     }
 
-
-    public static Swagger3FeignDartCodegenBuilder builder() {
-        return new Swagger3FeignDartCodegenBuilder();
-    }
-
-
     @Override
     public CodeGenerator buildCodeGenerator() {
-
-        if (this.languageDescription == null) {
-            this.languageDescription = LanguageDescription.DART;
-        }
-        if (this.clientProviderType == null) {
-            this.clientProviderType = ClientProviderType.DART_FEIGN;
-        }
-        this.codeGenMatchingStrategies.add(new Swagger3FeignSdkGenMatchingStrategy(this.ignoreMethods));
-//        if (!this.containsCollectionByType(codeGenMatchingStrategies, IgnoreMethodParameterMatchingStrategy.class)) {
-//            this.codeGenMatchingStrategies.add(IgnoreMethodParameterMatchingStrategy.of(this.ignoreParamByAnnotations));
-//        }
-//        this.initTypeMapping();
-        //实例化语言解析器
-        LanguageParser languageParser = new Swagger3FeignSdkDartParser(
-                packageMapStrategy,
-                CombinationCodeGenMatchingStrategy.of(this.codeGenMatchingStrategies),
-                this.codeDetects,
-                this.ignoreFields);
-//        initLanguageParser(languageParser);
-
-        //实例化模板加载器
-        TemplateLoader templateLoader = new FreemarkerTemplateLoader(this.clientProviderType, this.templateFileVersion, this.getSharedVariables());
-
-        TemplateStrategy<CommonCodeGenClassMeta> templateStrategy = new LoongSimpleTemplateStrategy(
-                templateLoader,
-                this.outPath,
-                this.languageDescription.getSuffixName(),
-                this.isDeletedOutputDirectory,
-                filepath -> {
-                    if (StringUtils.hasText(filepath)) {
-                        return AbstractDartParser.dartFileNameConverter(filepath);
-                    }
-                    return filepath;
-                }, this.codeFormatter);
-
-        Thread currentThread = Thread.currentThread();
-        DartFeignCodeGenEventHandler dartFeignCodeGenEventHandler = new DartFeignCodeGenEventHandler(templateLoader, this.codeFormatter, this.outPath, currentThread);
-        dartFeignCodeGenEventHandler.setSdkIndexFileName(this.sdkIndexFileName);
-        dartFeignCodeGenEventHandler.setTypeAlias(this.typeAlias);
-        RequestMappingMetaFactory.setSupportAuthenticationType(true);
-
-        return new Swagger3CodeGenerator(
-                this.scanPackages,
-                this.ignorePackages,
-                this.includeClasses.toArray(new Class[0]),
-                this.ignoreClasses.toArray(new Class[0]),
-                languageParser,
-                templateStrategy,
-                this.enableFieldUnderlineStyle,
-                new DisruptorCodeGenPublisher<>(dartFeignCodeGenEventHandler, -1))
-                .otherCodegenClassMetas(otherCodegenClassMetas)
-                .taskWaiters(Collections.singletonList(codeFormatter));
-    }
-
-    @Override
-    protected void initAnnotationMetaFactory() {
-
+        initCodegenConfig(LanguageDescription.DART, ClientProviderType.DART_FEIGN);
+        configParserPostProcessors(DartClassMeta.FUTURE);
+        configCodeGenElementMatchers();
+        this.codeGenEventListeners(new DartCodeGenEventListener(feignSdkLibName, typeAlias));
+        return createCodeGenerator();
     }
 
     @Override
     protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
-        return null;
+        return MappingDartTypeDefinitionParser.builder()
+                .typeMapping(baseTypeMapping)
+                .build();
     }
 
     @Override
     protected List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser) {
-        return null;
+        List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ?>> parsers = Arrays.asList(
+                new DartTypeDefinitionParser(publishParser, this.getPackageMapStrategy()),
+                getLanguageMethodDefinitionParser(publishParser),
+                new CommonFieldDefinitionParser(publishParser),
+                new DartTypeVariableDefinitionParser()
+        );
+        configureElementParsers(parsers);
+        return parsers;
     }
 }

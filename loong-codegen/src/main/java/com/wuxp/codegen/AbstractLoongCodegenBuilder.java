@@ -18,6 +18,7 @@ import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
 import com.wuxp.codegen.languages.DelegateLanguagePublishParser;
 import com.wuxp.codegen.languages.JavaTypeMapper;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.loong.CombineCodeGenerateAsyncTaskFuture;
 import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.loong.LoongUnifiedResponseExplorer;
@@ -429,6 +430,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     protected abstract List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser);
 
     protected LoongDefaultCodeGenerator createCodeGenerator() {
+        CombineCodeGenerateAsyncTaskFuture.getInstance().addFuture(new LanguageCodeFormatter());
         LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> typeDefinitionParser = getTypeDefinitionParser();
         LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(getScanPackages(), typeDefinitionParser, getTemplateStrategy(), getUnifiedResponseExplorer(typeDefinitionParser.getMappingTypeDefinitionParser()));
         codeGenerator.setIgnoreClasses(ignoreClasses);

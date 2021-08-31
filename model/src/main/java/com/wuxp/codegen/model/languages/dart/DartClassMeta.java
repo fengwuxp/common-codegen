@@ -16,6 +16,7 @@ public class DartClassMeta extends CommonCodeGenClassMeta {
 
     public static final String BUILT_COLLECTION_PATH = "package:built_collection/built_collection.dart";
 
+
     /**
      * Object
      */

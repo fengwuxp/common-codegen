@@ -7,6 +7,8 @@ import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
+import com.wuxp.codegen.swagger3.example.maven.controller.HelloController;
+import com.wuxp.codegen.swagger3.example.maven.controller.OrderController;
 import com.wuxp.codegen.swagger3.example.maven.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.maven.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
@@ -53,18 +55,11 @@ public class Swagger3FeignSdkCodegenRetrofitTest {
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
-//                .ignoreClasses(new Class[]{HelloController.class, OrderController.class})
+                .ignoreClasses(new Class<?>[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(false)
                 .buildCodeGenerator()
                 .generate();
 
     }
 
-    @Test
-    public void testJavaParser() {
-
-        JavaClassMeta parse = new JavaClassParser(false).parse(ServiceResponse.class);
-
-        log.debug("{}", parse);
-    }
 }

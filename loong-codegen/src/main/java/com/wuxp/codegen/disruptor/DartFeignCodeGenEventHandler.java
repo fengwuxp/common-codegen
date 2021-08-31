@@ -95,7 +95,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
                 this.buildSkdReflectFile();
                 this.buildSdkIndexFile();
             }
-            codeFormatter.waitTaskCompleted();
+            codeFormatter.future().get();
             if (log.isInfoEnabled()) {
                 log.info("===生成完成，释放主线程===>");
             }
