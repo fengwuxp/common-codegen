@@ -1,7 +1,7 @@
 package com.wuxp.codegen.loong;
 
+import com.wuxp.codegen.core.ClassCodeGenerator;
 import com.wuxp.codegen.core.CodeGenerateAsyncTaskFuture;
-import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.UnifiedResponseExplorer;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenEvent;
@@ -37,7 +37,7 @@ import static com.wuxp.codegen.core.event.CodeGenEventListener.EVENT_CODEGEN_MET
  * @author wuxp
  */
 @Slf4j
-public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeGenEventPublisher {
+public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenerator, CodeGenEventPublisher {
 
     private static final int MAX_CODEGEN_LOOP_COUNT = 100;
 
@@ -67,10 +67,10 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
 
     private CodeGenEvent.CodeGenEventStatus codeGenEventStatus = CodeGenEvent.CodeGenEventStatus.SCAN_CODEGEN;
 
-    protected AbstractLoongCodeGenerator(String[] scanPackages,
-                                         LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> languageTypeDefinitionParser,
-                                         TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                         UnifiedResponseExplorer unifiedResponseExplorer) {
+    protected AbstractLoongClassCodeGenerator(String[] scanPackages,
+                                              LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> languageTypeDefinitionParser,
+                                              TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                              UnifiedResponseExplorer unifiedResponseExplorer) {
         this.scanPackages = scanPackages;
         this.languageTypeDefinitionParser = languageTypeDefinitionParser;
         this.templateStrategy = templateStrategy;
@@ -103,8 +103,13 @@ public abstract class AbstractLoongCodeGenerator implements CodeGenerator, CodeG
 
     @Override
     public void generate() {
+        generate(this.scanPackages());
+    }
+
+    @Override
+    public void generate(Collection<Class<?>> classes) {
         try {
-            asyncGenerate().get();
+            this.loopGenerate(classes).get();
         } catch (InterruptedException exception) {
             log.error("线程被中断，message={}", exception.getMessage(), exception);
             Thread.currentThread().interrupt();

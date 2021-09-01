@@ -90,18 +90,18 @@
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/generated-sources/java</outputDirectory>
-                            <processors>com.wuxp.codegen.meta.annotations.factories.SpringApiSdkCodegenProcessor</processors>
-                        </configuration>
-                    </execution>
-                </executions>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>process</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>target/generated-sources/java</outputDirectory>-->
+<!--                            <processors>com.wuxp.codegen.meta.annotations.factories.SpringApiSdkCodegenProcessor</processors>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
             </plugin>
         </plugins>
     </build>

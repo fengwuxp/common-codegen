@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Setter
-public class LoongDefaultCodeGenerator extends AbstractLoongCodeGenerator {
+public class LoongClassCodeGenerator extends AbstractLoongClassCodeGenerator {
 
     /**
      * 忽略的包
@@ -49,10 +49,10 @@ public class LoongDefaultCodeGenerator extends AbstractLoongCodeGenerator {
 
     private CodeGenEventListener codeGenEventListener;
 
-    public LoongDefaultCodeGenerator(String[] scanPackages,
-                                     LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> languageTypeDefinitionParser,
-                                     TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
-                                     UnifiedResponseExplorer unifiedResponseExplorer) {
+    public LoongClassCodeGenerator(String[] scanPackages,
+                                   LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> languageTypeDefinitionParser,
+                                   TemplateStrategy<CommonCodeGenClassMeta> templateStrategy,
+                                   UnifiedResponseExplorer unifiedResponseExplorer) {
         super(scanPackages, languageTypeDefinitionParser, templateStrategy, unifiedResponseExplorer);
     }
 

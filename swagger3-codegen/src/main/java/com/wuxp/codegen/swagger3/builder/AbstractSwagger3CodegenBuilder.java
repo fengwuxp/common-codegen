@@ -2,14 +2,10 @@ package com.wuxp.codegen.swagger3.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.macth.ExcludeAnnotationCodeGenElementMatcher;
-import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
-import com.wuxp.codegen.core.macth.JavaFiledElementMatcher;
-import com.wuxp.codegen.core.macth.JavaMethodElementMatcher;
 import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
-import com.wuxp.codegen.languages.RemoveClientResponseTypePostProcessor;
-import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
-import com.wuxp.codegen.meta.enums.EnumDefinitionPostProcessor;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.swagger3.Swagger3FieldMatcher;
+import com.wuxp.codegen.swagger3.Swagger3MethodMatcher;
+import com.wuxp.codegen.swagger3.Swagger3ParameterMatcher;
 import com.wuxp.codegen.swagger3.annotations.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,25 +32,14 @@ public abstract class AbstractSwagger3CodegenBuilder extends AbstractLoongCodege
         AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(Tag.class, new TagMetaFactory());
     }
 
+    @Override
     protected void configCodeGenElementMatchers() {
+        super.configCodeGenElementMatchers();
         this.codeGenElementMatchers(
                 new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(Hidden.class)),
-                JavaClassElementMatcher.builder()
-                        .includePackages(this.getIncludePackages())
-                        .includeClasses(this.getIncludeClasses())
-                        .includePackages(this.getIgnorePackages())
-                        .ignoreClasses(this.getIgnoreClasses())
-                        .build(),
-                new JavaMethodElementMatcher(this.getIgnoreMethodNames()),
-                new JavaFiledElementMatcher(this.getIgnoreFieldNames())
-        );
-    }
-
-    protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
-        this.elementParsePostProcessors(
-                new RemoveClientResponseTypePostProcessor(clientResponseType),
-                new EnumDefinitionPostProcessor(),
-                new EnumNamesPostProcessor()
+                new Swagger3MethodMatcher(),
+                new Swagger3FieldMatcher(),
+                new Swagger3ParameterMatcher()
         );
     }
 }

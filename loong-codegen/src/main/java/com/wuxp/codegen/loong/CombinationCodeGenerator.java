@@ -14,15 +14,14 @@ import java.util.Arrays;
 @Slf4j
 public class CombinationCodeGenerator implements CodeGenerator {
 
-  private final CodeGenerator[] codeGenerators;
+    private final CodeGenerator[] codeGenerators;
 
-  public CombinationCodeGenerator(CodeGenerator[] codeGenerators) {
-    this.codeGenerators = codeGenerators;
-  }
+    public CombinationCodeGenerator(CodeGenerator[] codeGenerators) {
+        this.codeGenerators = codeGenerators;
+    }
 
-  @Override
-  public void generate() {
-
-    Arrays.stream(codeGenerators).forEach(CodeGenerator::generate);
-  }
+    @Override
+    public void generate() {
+        Arrays.stream(codeGenerators).forEach(CodeGenerator::generate);
+    }
 }

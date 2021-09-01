@@ -7,25 +7,27 @@ import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenEventListener;
 import com.wuxp.codegen.core.event.CombineCodeGenEventListener;
 import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
+import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
+import com.wuxp.codegen.core.macth.JavaFieldMatcher;
+import com.wuxp.codegen.core.macth.JavaMethodMatcher;
+import com.wuxp.codegen.core.macth.JavaParameterMatcher;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
-import com.wuxp.codegen.core.strategy.CodeGenMatchingStrategy;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
-import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
-import com.wuxp.codegen.languages.DelegateLanguagePublishParser;
-import com.wuxp.codegen.languages.JavaTypeMapper;
-import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.languages.*;
+import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
 import com.wuxp.codegen.loong.CombineCodeGenerateAsyncTaskFuture;
-import com.wuxp.codegen.loong.LoongDefaultCodeGenerator;
+import com.wuxp.codegen.loong.LoongClassCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;
 import com.wuxp.codegen.loong.LoongUnifiedResponseExplorer;
 import com.wuxp.codegen.loong.strategy.AgreedPackageMapStrategy;
 import com.wuxp.codegen.mapping.AbstractMappingTypeDefinitionParser;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationProvider;
+import com.wuxp.codegen.meta.enums.EnumDefinitionPostProcessor;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -149,24 +151,9 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      */
     protected PackageNameConvertStrategy packageMapStrategy = new AgreedPackageMapStrategy();
 
-    /**
-     * 代码检测器
-     */
-    protected Collection<CodeDetect> codeDetects = new ArrayList<>();
-
-    /**
-     * 代码匹配器
-     */
-    protected Collection<CodeGenMatcher> codeGenMatchers = new ArrayList<>();
-
     protected List<CodeGenElementMatcher<?>> codeGenElementMatchers = new ArrayList<>();
 
     protected List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> elementParsePostProcessors = new ArrayList<>();
-
-    /**
-     * 代码生成匹配策略
-     */
-    protected Collection<CodeGenMatchingStrategy> codeGenMatchingStrategies = new ArrayList<>();
 
     /**
      * 代码格式化
@@ -263,22 +250,6 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     public AbstractLoongCodegenBuilder packageMapStrategy(PackageNameConvertStrategy packageMapStrategy) {
         Assert.notNull(packageMapStrategy, "package map strategy not null");
         this.packageMapStrategy = packageMapStrategy;
-        return this;
-    }
-
-    public AbstractLoongCodegenBuilder codeDetects(CodeDetect... codeDetects) {
-        this.codeDetects.addAll(Arrays.asList(codeDetects));
-        return this;
-    }
-
-    public AbstractLoongCodegenBuilder codeGenMatchers(CodeGenMatcher... codeGenMatchers) {
-        this.codeGenMatchers.addAll(Arrays.asList(codeGenMatchers));
-        return this;
-    }
-
-
-    public AbstractLoongCodegenBuilder codeGenMatchers(CodeGenMatchingStrategy... codeGenMatchingStrategies) {
-        this.codeGenMatchingStrategies.addAll(Arrays.asList(codeGenMatchingStrategies));
         return this;
     }
 
@@ -397,6 +368,29 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     protected abstract void initAnnotationMetaFactory();
 
+    protected void configCodeGenElementMatchers() {
+        this.codeGenElementMatchers(
+                JavaClassElementMatcher.builder()
+                        .includePackages(this.getIncludePackages())
+                        .includeClasses(this.getIncludeClasses())
+                        .includePackages(this.getIgnorePackages())
+                        .ignoreClasses(this.getIgnoreClasses())
+                        .build(),
+                new JavaMethodMatcher(this.getIgnoreMethodNames()),
+                new JavaFieldMatcher(this.getIgnoreFieldNames()),
+                new JavaParameterMatcher(this.ignoreParamByAnnotations)
+        );
+    }
+
+    protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
+        this.elementParsePostProcessors(
+                new RemoveClientResponseTypePostProcessor(clientResponseType),
+                new EnumDefinitionPostProcessor(),
+                new EnumNamesPostProcessor()
+        );
+    }
+
+
     protected TemplateStrategy<CommonCodeGenClassMeta> getTemplateStrategy() {
         return new LoongSimpleTemplateStrategy(
                 this.getTemplateLoader(),
@@ -429,10 +423,10 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     protected abstract List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser);
 
-    protected LoongDefaultCodeGenerator createCodeGenerator() {
+    protected LoongClassCodeGenerator createCodeGenerator() {
         CombineCodeGenerateAsyncTaskFuture.getInstance().addFuture(new LanguageCodeFormatter());
         LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> typeDefinitionParser = getTypeDefinitionParser();
-        LoongDefaultCodeGenerator codeGenerator = new LoongDefaultCodeGenerator(getScanPackages(), typeDefinitionParser, getTemplateStrategy(), getUnifiedResponseExplorer(typeDefinitionParser.getMappingTypeDefinitionParser()));
+        LoongClassCodeGenerator codeGenerator = new LoongClassCodeGenerator(getScanPackages(), typeDefinitionParser, getTemplateStrategy(), getUnifiedResponseExplorer(typeDefinitionParser.getMappingTypeDefinitionParser()));
         codeGenerator.setIgnoreClasses(ignoreClasses);
         codeGenerator.setIncludeClasses(includeClasses);
         codeGenerator.setIgnorePackages(ignorePackages);
@@ -463,8 +457,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     private void initJsonSchemaExtensions() {
         JsonSchemaCodegenTypeLoader loader = new JsonSchemaCodegenTypeLoader(getJsonSchemaFiles(), languageDescription, packageMapStrategy);
         File file = new File(CODEGEN_TEMP_EXTENSIONS_DIR);
-        if (file.exists()) {
-            Assert.isTrue(file.mkdir(), "创建代码生成结果目录失败");
+        if (!file.exists()) {
+            com.wuxp.codegen.meta.util.FileUtils.createDirectoryRecursively(CODEGEN_TEMP_EXTENSIONS_DIR);
         }
         try {
             loader.load().forEach(classMeta -> customTypeMapping(classMeta.getSource(), classMeta));

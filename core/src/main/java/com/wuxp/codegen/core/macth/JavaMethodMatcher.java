@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 方法是否支持生成
  */
-public class JavaMethodElementMatcher implements CodeGenElementMatcher<JavaMethodMeta> {
+public class JavaMethodMatcher implements CodeGenElementMatcher<JavaMethodMeta> {
 
     /**
      * @key 类对象
@@ -20,7 +20,7 @@ public class JavaMethodElementMatcher implements CodeGenElementMatcher<JavaMetho
      */
     private final Map<Class<?>, List<String>> ignoreMethodNames;
 
-    public JavaMethodElementMatcher(Map<Class<?>, List<String>> ignoreMethodNames) {
+    public JavaMethodMatcher(Map<Class<?>, List<String>> ignoreMethodNames) {
         this.ignoreMethodNames = ignoreMethodNames;
     }
 
@@ -30,7 +30,14 @@ public class JavaMethodElementMatcher implements CodeGenElementMatcher<JavaMetho
         if (method == null) {
             return true;
         }
+        if (isStaticOrNative(javaMethodMeta)){
+            return false;
+        }
         return isMatch(method, ignoreMethodNames.getOrDefault(method.getDeclaringClass(), Collections.emptyList()));
+    }
+
+    private boolean isStaticOrNative(JavaMethodMeta javaFieldMeta) {
+        return Boolean.TRUE.equals(javaFieldMeta.getIsStatic()) || Boolean.TRUE.equals(javaFieldMeta.getIsNative());
     }
 
     private boolean isMatch(Method method, List<String> ignoreNames) {

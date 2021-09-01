@@ -24,6 +24,6 @@ public interface LanguageDefinitionPostProcessor<C extends CommonBaseMeta> exten
 
     @Override
     default int getOrder() {
-        return Integer.MIN_VALUE;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 }

@@ -21,6 +21,7 @@ public abstract class AbstractMappingTypeDefinitionParser<C extends CommonCodeGe
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public C parse(Class<?> source) {
         if (JavaArrayClassTypeMark.class.equals(source)) {
             // 标记的数据数组类型

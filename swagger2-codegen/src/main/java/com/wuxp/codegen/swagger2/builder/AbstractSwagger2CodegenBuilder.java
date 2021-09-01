@@ -2,14 +2,10 @@ package com.wuxp.codegen.swagger2.builder;
 
 import com.wuxp.codegen.AbstractLoongCodegenBuilder;
 import com.wuxp.codegen.core.macth.ExcludeAnnotationCodeGenElementMatcher;
-import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
-import com.wuxp.codegen.core.macth.JavaFiledElementMatcher;
-import com.wuxp.codegen.core.macth.JavaMethodElementMatcher;
 import com.wuxp.codegen.languages.AnnotationMetaFactoryHolder;
-import com.wuxp.codegen.languages.RemoveClientResponseTypePostProcessor;
-import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
-import com.wuxp.codegen.meta.enums.EnumDefinitionPostProcessor;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.swagger2.Swagger2FieldMatcher;
+import com.wuxp.codegen.swagger2.Swagger2MethodMatcher;
+import com.wuxp.codegen.swagger2.Swagger2ParameterMatcher;
 import com.wuxp.codegen.swagger2.annotations.*;
 import io.swagger.annotations.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -29,26 +25,13 @@ public abstract class AbstractSwagger2CodegenBuilder extends AbstractLoongCodege
         AnnotationMetaFactoryHolder.registerAnnotationMetaFactory(ApiImplicitParams.class, new ApiImplicitParamsMetaFactory());
     }
 
+    @Override
     protected void configCodeGenElementMatchers() {
-        this.codeGenElementMatchers(
-                new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
-                JavaClassElementMatcher.builder()
-                        .includePackages(this.getIncludePackages())
-                        .includeClasses(this.getIncludeClasses())
-                        .includePackages(this.getIgnorePackages())
-                        .ignoreClasses(this.getIgnoreClasses())
-                        .build(),
-                new JavaMethodElementMatcher(this.getIgnoreMethodNames()),
-                new JavaFiledElementMatcher(this.getIgnoreFieldNames())
+        super.configCodeGenElementMatchers();
+        this.codeGenElementMatchers(new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(ApiIgnore.class)),
+                new Swagger2MethodMatcher(),
+                new Swagger2FieldMatcher(),
+                new Swagger2ParameterMatcher()
         );
     }
-
-    protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
-        this.elementParsePostProcessors(
-                new RemoveClientResponseTypePostProcessor(clientResponseType),
-                new EnumDefinitionPostProcessor(),
-                new EnumNamesPostProcessor()
-        );
-    }
-
 }

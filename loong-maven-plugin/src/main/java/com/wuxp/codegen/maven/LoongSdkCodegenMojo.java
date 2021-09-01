@@ -30,7 +30,7 @@ public class LoongSdkCodegenMojo extends AbstractSdkCodegenMojo {
     /**
      * 默认执行的sdk生成实现类类名
      */
-    private static final String LOONG_GENERATOR_CLASS_NAME = "com.wuxp.codegen.starter.LoongSdkCodeGenerator";
+    private static final String LOONG_GENERATOR_CLASS_NAME = "com.wuxp.codegen.starter.LoongCodeGenerator";
 
     @Override
     protected void invokeCodegen() {

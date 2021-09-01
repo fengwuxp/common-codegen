@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 字段是否支持生成
  */
-public class JavaFiledElementMatcher implements CodeGenElementMatcher<JavaFieldMeta> {
+public class JavaFieldMatcher implements CodeGenElementMatcher<JavaFieldMeta> {
 
     /**
      * @key 类对象
@@ -20,7 +20,7 @@ public class JavaFiledElementMatcher implements CodeGenElementMatcher<JavaFieldM
      */
     private final Map<Class<?>, List<String>> ignoreFieldNames;
 
-    public JavaFiledElementMatcher(Map<Class<?>, List<String>> ignoreFieldNames) {
+    public JavaFieldMatcher(Map<Class<?>, List<String>> ignoreFieldNames) {
         this.ignoreFieldNames = ignoreFieldNames;
     }
 
@@ -30,7 +30,18 @@ public class JavaFiledElementMatcher implements CodeGenElementMatcher<JavaFieldM
         if (field == null) {
             return true;
         }
+        if (isStaticOrTransient(javaFieldMeta)) {
+            return false;
+        }
         return isMatch(field, ignoreFieldNames.getOrDefault(field.getDeclaringClass(), Collections.emptyList()));
+    }
+
+    private boolean isStaticOrTransient(JavaFieldMeta javaFieldMeta) {
+        Class<?> declaringClass = javaFieldMeta.getField().getDeclaringClass();
+        if (!declaringClass.isEnum() && Boolean.TRUE.equals(javaFieldMeta.getIsStatic())) {
+            return true;
+        }
+        return Boolean.TRUE.equals(javaFieldMeta.getIsTransient());
     }
 
     private boolean isMatch(Field field, List<String> ignoreNames) {

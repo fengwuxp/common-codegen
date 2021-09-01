@@ -33,7 +33,7 @@ public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponse
 
     @Override
     public void probe(Collection<Class<?>> apiClasses) {
-        setBasePackage(apiClasses);
+        setBasePackages(apiClasses);
         Class<?> unifiedResponseType = getUnifiedResponseType(apiClasses);
         if (unifiedResponseType != null) {
             mappingTypeDefinitionParser.putTypeMapping(unifiedResponseType, CodegenConfigHolder.getConfig().getUnifiedResponseType());
@@ -43,22 +43,29 @@ public abstract class AbstractUnifiedResponseExplorer implements UnifiedResponse
     /**
      * 设置基础的包名，实现不太准确
      */
-    protected void setBasePackage(Collection<Class<?>> apiClasses) {
-        Optional<String> optional = apiClasses.stream()
+    protected void setBasePackages(Collection<Class<?>> apiClasses) {
+        Optional<String> apiBasePackages = tryGetApiBasePackages(apiClasses);
+        if (!apiBasePackages.isPresent()) {
+            return;
+        }
+        List<String> basePackages = CodegenConfigHolder.getConfig().getBasePackages();
+        if (basePackages.isEmpty()) {
+            String basePackage = apiBasePackages.get();
+            if (log.isInfoEnabled()) {
+                log.info("项目的基础包名为: {}", basePackage);
+            }
+            basePackages.add(basePackage);
+        }
+    }
+
+    private Optional<String> tryGetApiBasePackages(Collection<Class<?>> apiClasses) {
+        return apiClasses.stream()
                 .map(Class::getPackage)
                 .filter(Objects::nonNull)
                 .map(Package::getName)
                 .map(name -> name.split("\\."))
                 .findFirst()
                 .map(names -> String.join(".", Arrays.asList(names).subList(0, 3)));
-        if (optional.isPresent()) {
-            List<String> basePackages = CodegenConfigHolder.getConfig().getBasePackages();
-            if (basePackages.isEmpty()) {
-                String basePackage = optional.get();
-                log.info("项目的基础包名为: {}", basePackage);
-                basePackages.add(basePackage);
-            }
-        }
     }
 
     /**

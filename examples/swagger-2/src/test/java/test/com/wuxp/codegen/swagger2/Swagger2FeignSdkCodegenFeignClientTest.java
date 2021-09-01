@@ -1,7 +1,6 @@
 package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.macth.DefaultCodeGenImportMatcher;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.languages.java.SpringCloudFeignClientPostProcessor;
 import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
@@ -51,7 +50,6 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
         packageMapStrategy.setFileNamSuffix("FeignClient");
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
-                .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射

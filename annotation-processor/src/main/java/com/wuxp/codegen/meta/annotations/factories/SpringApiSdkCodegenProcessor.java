@@ -1,11 +1,13 @@
 package com.wuxp.codegen.meta.annotations.factories;
 
+import com.wuxp.codegen.core.ClassCodeGenerator;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.config.CodegenConfig;
+import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
-import com.wuxp.codegen.loong.AbstractCodeGenerator;
-import com.wuxp.codegen.starter.LoongSdkCodeGenerator;
 import com.wuxp.codegen.meta.util.FileUtils;
+import com.wuxp.codegen.starter.LoongCodeGenerator;
 
 import javax.annotation.processing.*;
 import javax.lang.model.element.Element;
@@ -14,6 +16,7 @@ import javax.tools.Diagnostic;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,14 +32,18 @@ import java.util.stream.Collectors;
 })
 public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
 
-    private final LoongSdkCodeGenerator loongSdkCodeGenerator = new LoongSdkCodeGenerator();
+    private final LoongCodeGenerator loongSdkCodeGenerator = new LoongCodeGenerator();
 
+    public SpringApiSdkCodegenProcessor() {
+        // TODO 初始化配置
+        CodegenConfigHolder.setConfig(CodegenConfig.builder().build());
+    }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         // 删除原本的输出目录
-        String baseOutPath = LoongSdkCodeGenerator.getBaseOutputPath();
+        String baseOutPath = LoongCodeGenerator.getBaseOutputPath();
         File file = new File(baseOutPath);
         if (file.exists() && file.isDirectory()) {
             FileUtils.deleteDirectory(baseOutPath);
@@ -82,8 +89,8 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
             return;
         }
         codeGenerators.forEach(codeGenerator -> {
-            if (codeGenerator instanceof AbstractCodeGenerator) {
-                ((AbstractCodeGenerator) codeGenerator).generateByClasses(aClass);
+            if (codeGenerator instanceof ClassCodeGenerator) {
+                ((ClassCodeGenerator) codeGenerator).generate(Collections.singletonList(aClass));
             }
         });
     }

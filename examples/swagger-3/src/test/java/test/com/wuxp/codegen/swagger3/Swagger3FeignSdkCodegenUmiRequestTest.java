@@ -1,7 +1,6 @@
 package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.languages.typescript.UmiRequestEnhancedProcessor;
 import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;

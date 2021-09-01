@@ -31,7 +31,7 @@ import java.util.*;
  * @author wuxp
  */
 @Slf4j
-public final class LoongSdkCodeGenerator implements CodeGenerator {
+public final class LoongCodeGenerator implements CodeGenerator {
 
     private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList("codegen-sdk", "loong");
 
@@ -43,13 +43,13 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
      * 忽略的包
      */
     @Setter
-    protected List<String> ignorePackages = new ArrayList<>();
+    private List<String> ignorePackages = new ArrayList<>();
 
     /**
      * 需要忽略的类
      */
     @Setter
-    protected List<Class<?>> ignoreClasses = new ArrayList<>();
+    private List<Class<?>> ignoreClasses = new ArrayList<>();
 
     /**
      * 默认输出路径为当前文件夹
@@ -64,19 +64,19 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
     private List<ClientProviderType> clientProviderTypes;
 
 
-    public LoongSdkCodeGenerator() {
+    public LoongCodeGenerator() {
         this(OpenApiTypeExplorer.getDefaultOpenApiType(), new String[0]);
     }
 
-    public LoongSdkCodeGenerator(OpenApiType openApiType) {
+    public LoongCodeGenerator(OpenApiType openApiType) {
         this(openApiType, new String[0]);
     }
 
-    public LoongSdkCodeGenerator(String... scanPackages) {
+    public LoongCodeGenerator(String... scanPackages) {
         this(OpenApiTypeExplorer.getDefaultOpenApiType(), scanPackages);
     }
 
-    public LoongSdkCodeGenerator(OpenApiType openApiType, String... scanPackages) {
+    public LoongCodeGenerator(OpenApiType openApiType, String... scanPackages) {
         this.scanPackages = scanPackages;
         this.openApiType = openApiType;
         if (log.isInfoEnabled()) {
@@ -117,7 +117,7 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
     }
 
 
-    protected Collection<CodegenBuilder> getCodeSwagger2GeneratorBuilders() {
+    private Collection<CodegenBuilder> getCodeSwagger2GeneratorBuilders() {
         Collection<ClientProviderType> finallyClientProviderTypes = getFinallyClientProviderTypes();
         List<CodegenBuilder> codeGenerators = new ArrayList<>(8);
         if (finallyClientProviderTypes.contains(ClientProviderType.TYPESCRIPT_FEIGN)) {
@@ -175,7 +175,7 @@ public final class LoongSdkCodeGenerator implements CodeGenerator {
         return codeGenerators;
     }
 
-    protected Collection<CodegenBuilder> getCodeSwagger3GeneratorBuilders() {
+    private Collection<CodegenBuilder> getCodeSwagger3GeneratorBuilders() {
         Collection<ClientProviderType> finallyClientProviderTypes = getFinallyClientProviderTypes();
         List<CodegenBuilder> codeGenerators = new ArrayList<>(8);
         if (finallyClientProviderTypes.contains(ClientProviderType.TYPESCRIPT_FEIGN)) {
