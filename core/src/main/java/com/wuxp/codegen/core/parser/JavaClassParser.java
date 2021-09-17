@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @author wuxp
  */
 @Slf4j
-public class JavaClassParser {
+public final class JavaClassParser {
 
     public static final JavaClassParser JAVA_CLASS_ON_PUBLIC_PARSER = new JavaClassParser(true);
 
@@ -41,14 +41,14 @@ public class JavaClassParser {
     /**
      * spring的方法参数发现者
      */
-    protected static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
     private static final Map<Class<?>, JavaClassMeta> PARSER_CACHES = new ConcurrentHashMap<>();
+
     /**
      * 是否只过滤public的方法
      */
-    protected final boolean onlyPublic;
-
+    private final boolean onlyPublic;
 
     public JavaClassParser(boolean onlyPublic) {
         this.onlyPublic = onlyPublic;
@@ -273,7 +273,7 @@ public class JavaClassParser {
             Parameter parameter = parameters[i];
             String parameterName = parameter.getName();
             if (parameterName.startsWith("arg")) {
-                //重新获取
+                // 重新获取
                 parameterName = parameterNames[i];
             }
             Assert.hasText(parameterName, MessageFormat.format("获取方法 {0} 的第 {1} 个参数名称失败", method.getName(), i));
@@ -285,11 +285,11 @@ public class JavaClassParser {
     private Map<String, Annotation[]> getParameterAnnotations(Method method) {
         // 方法参数列表
         Map<String/*参数名称*/, Annotation[]> paramAnnotations = new LinkedHashMap<>();
-        //参数列表
+        // 参数列表
         Parameter[] parameters = method.getParameters();
         String[] parameterNames = getParameterNames(method);
         for (int i = 0; i < parameterNames.length; i++) {
-            // 获取参数的上的注解
+            // 获取参数上的注解
             paramAnnotations.put(parameterNames[i], parameters[i].getAnnotations());
         }
         return paramAnnotations;
@@ -297,7 +297,7 @@ public class JavaClassParser {
 
     private String[] getParameterNames(Method method) {
         try {
-            //参数名称列表
+            // 参数名称列表
             String[] parameterNames = PARAMETER_NAME_DISCOVERER.getParameterNames(method);
             if (parameterNames != null) {
                 return parameterNames;
@@ -379,17 +379,15 @@ public class JavaClassParser {
         }
         return Arrays.stream(methods)
                 .map(this::getJavaMethodMeta)
-                .filter(Objects::nonNull)
                 .distinct()
                 .toArray(JavaMethodMeta[]::new);
 
     }
 
-
     /**
      * 获取类类型及其泛型
      */
-    protected Class<?>[] getGenericsAndClassType(ResolvableType resolvableType) {
+    private Class<?>[] getGenericsAndClassType(ResolvableType resolvableType) {
         ResolvableType[] generics = resolvableType.getGenerics();
         List<Class<?>> classes = new ArrayList<>();
         if (resolvableType.isArray()) {
@@ -417,14 +415,7 @@ public class JavaClassParser {
     /**
      * 获取该类的依赖列表
      */
-    public static Set<Class<?>> fetchClassMethodDependencies(Class<?> clazz, JavaMethodMeta[] methodMetas) {
-        return fetchDependencies(clazz, new JavaFieldMeta[0], methodMetas);
-    }
-
-    /**
-     * 获取该类的依赖列表
-     */
-    private static Set<Class<?>> fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
+    private Set<Class<?>> fetchDependencies(Class<?> clazz, JavaFieldMeta[] fieldMetas, JavaMethodMeta[] methodMetas) {
 
         Set<Class<?>> classSet = new HashSet<>();
 
@@ -436,23 +427,23 @@ public class JavaClassParser {
             }
         }
 
-        //方法的依赖
+        // 方法的依赖
         for (JavaMethodMeta methodMeta : methodMetas) {
             //返回值类型
             classSet.addAll(Arrays.asList(methodMeta.getReturnType()));
-            //参数类型
+            // 参数类型
             for (Map.Entry<String, Class<?>[]> entry : methodMeta.getParams().entrySet()) {
                 classSet.addAll(Arrays.asList(entry.getValue()));
             }
         }
 
-        //父类依赖
+        // 父类依赖
         Class<?> superclass = clazz.getSuperclass();
         if (superclass != null) {
             classSet.add(superclass);
         }
 
-        //接口依赖
+        // 接口依赖
         classSet.addAll(Arrays.asList(clazz.getInterfaces()));
 
         return classSet.stream()
