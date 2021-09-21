@@ -4,6 +4,7 @@ import com.lmax.disruptor.EventHandler;
 import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.event.DisruptorCodeGenPublisher;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
+import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.loong.path.PathResolve;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -80,7 +81,7 @@ public class DartFeignCodeGenEventHandler implements EventHandler<DisruptorCodeG
 
     public DartFeignCodeGenEventHandler(TemplateLoader<Template> templateLoader, CodeFormatter codeFormatter, String outputPath, Thread mainThread) {
         this.templateLoader = templateLoader;
-        this.outputPath = outputPath;
+        this.outputPath = PathResolveUtils.relative(outputPath,".");
         this.mainThread = mainThread;
         this.codeFormatter = codeFormatter;
     }
