@@ -12,7 +12,6 @@ public interface CodeGenEventListener extends ApplicationListener<CodeGenEvent> 
 
     String TEMPLATE_PATH_TAG_NAME = "codegenTemplatePath";
 
-
     default Set<CommonCodeGenClassMeta> getEventCodeGenMetas() {
         return Collections.emptySet();
     }

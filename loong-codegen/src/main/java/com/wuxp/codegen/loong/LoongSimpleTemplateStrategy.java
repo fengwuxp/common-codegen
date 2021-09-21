@@ -4,6 +4,7 @@ import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.meta.util.FileUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -82,7 +83,8 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
                                        FileNameGenerateStrategy fileNameGenerateStrategy,
                                        CodeFormatter codeFormatter) {
         this.templateLoader = templateLoader;
-        this.outputPath = outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator;
+        // 计算路径中的相对路径
+        this.outputPath = PathResolveUtils.relative(outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator, ".");
         this.extName = extName;
         this.fileNameGenerateStrategy = fileNameGenerateStrategy;
 

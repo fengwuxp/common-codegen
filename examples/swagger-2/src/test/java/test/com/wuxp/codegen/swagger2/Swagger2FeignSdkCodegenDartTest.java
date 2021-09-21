@@ -37,7 +37,15 @@ public class Swagger2FeignSdkCodegenDartTest {
         //其他类（DTO、VO等）所在的包
 
         String language = LanguageDescription.DART.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.DART_FEIGN.name().toLowerCase(), "swagger2", "lib",
+        String[] outPaths = {
+                "codegen-result",
+                "../",
+                ".",
+                "codegen-result",
+                language.toLowerCase(),
+                ClientProviderType.DART_FEIGN.name().toLowerCase(),
+                "swagger2",
+                "lib",
                 "src"};
 
         //要进行生成的源代码包名列表

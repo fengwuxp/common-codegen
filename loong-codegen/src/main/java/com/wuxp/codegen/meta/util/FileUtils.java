@@ -15,6 +15,7 @@ import java.util.Objects;
 public final class FileUtils {
 
     private FileUtils() {
+        throw new AssertionError();
     }
 
     /**
