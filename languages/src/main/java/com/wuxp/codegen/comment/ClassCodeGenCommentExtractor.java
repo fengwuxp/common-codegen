@@ -1,7 +1,7 @@
 package com.wuxp.codegen.comment;
 
 import com.wuxp.codegen.core.CodeGenCommentExtractor;
-import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 
 import java.lang.annotation.ElementType;
 import java.text.MessageFormat;

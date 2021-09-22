@@ -1,4 +1,4 @@
-package com.wuxp.codegen.model.mapping;
+package com.wuxp.codegen.model;
 
 /**
  * 标记类为数组

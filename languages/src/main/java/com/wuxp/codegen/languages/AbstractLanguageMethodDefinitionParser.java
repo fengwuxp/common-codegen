@@ -13,7 +13,7 @@ import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
-import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;

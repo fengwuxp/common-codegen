@@ -2,7 +2,7 @@ package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 

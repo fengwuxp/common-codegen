@@ -1,7 +1,7 @@
 package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
-import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;

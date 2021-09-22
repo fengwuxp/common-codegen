@@ -1,7 +1,7 @@
 package com.wuxp.codegen.mapping;
 
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
-import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import reactor.core.publisher.Flux;
