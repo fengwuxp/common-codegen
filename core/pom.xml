@@ -19,13 +19,6 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.lmax/disruptor -->
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
