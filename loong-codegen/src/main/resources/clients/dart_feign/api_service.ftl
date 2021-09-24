@@ -63,7 +63,7 @@ ${name}() : super() {
         ${customizeMethod.combineType(paramType.typeVariables)} ${paramName},
     </#list>
     <#assign returnType=returnTypes[0] />
-  [UIOptions feignOptions]) {
+  [UIOptions? feignOptions]) {
   return this.delegateInvoke<${customizeMethod.combineType(returnTypes)}>("${method.name}",
   [<#list params as paramName,paramType>${paramName},</#list>],
 <#--基础类型的不生成 serializer相关参数,目前最多支持到3个泛型变量 -->

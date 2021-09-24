@@ -48,11 +48,8 @@ factory ${serializerName}([Function(${serializerName}Builder${genericDesc}) upda
         <#list field.comments as cmment>
             /// ${cmment}
         </#list>
-        <#if !field.requered??>
-            @nullable
-        </#if>
         @BuiltValueField(wireName: '${field.name}')
-        ${customizeMethod.combineType(field.filedTypes)} get ${field.name};
+        ${customizeMethod.combineType(field.filedTypes)}<#if !field.requered??>?</#if> get ${field.name};
     </#list>
 </#if>
 
@@ -68,7 +65,7 @@ return json.encode(toMap());
 
 static Serializer<${serializerName}> get serializer => _${"$"}${serializerName?uncap_first}Serializer;
 
-static ${serializerName} formJson(String json) {
+static ${serializerName}? formJson(String json) {
 return serializers.deserializeWith(${serializerName}.serializer, jsonDecode(json));
 }
 
