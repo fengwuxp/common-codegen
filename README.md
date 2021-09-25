@@ -90,11 +90,10 @@
 ```text
     为了更方便使用codegen，提供vcs server模块从代码版本控制平台（git/svn）将代码拉取到本地，自动调用
  mvn插件进行代码生成。这个的前提是，被拉取的代码库需要集成codegen-maven-plugin
-    提供client端通过restful接口调用代码生成，在生成完成后下载到本地。
-    npm-codegen-cli
-    java-codegen-client-plugin
+    提供 client 通过 restful 接口调用代码生成，在生成完成后下载到本地。参见：
 ```
-
+- [codegen-npm-client](./loong-quick/codegen-npm-client)
+- [codegen-client-maven-plugin](./loong-quick/codegen-client-maven-plugin)
 - [loong-quick](./loong-quick)
 - codegen-server
 

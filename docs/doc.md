@@ -52,7 +52,8 @@
                 .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
-                .languageEnhancedProcessor(languageEnhancedProcessor)
+                // 后置增加处理器
+                .elementParsePostProcessors(elementParsePostProcessor)
                 .buildCodeGenerator()
                 .generate();
   
