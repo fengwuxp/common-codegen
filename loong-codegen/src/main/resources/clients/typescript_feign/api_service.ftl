@@ -1,4 +1,6 @@
 /* tslint:disable */
+/* eslint-disable */
+
 <#include "./inculdes/feign_imports.ftl">
 <#if dependencies??>
 <#--依赖导入处理-->

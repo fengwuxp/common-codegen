@@ -1,11 +1,10 @@
 ### Codegen 
-  为高效开发而生， 简单快捷、准确地生成Api sdk。
+  为高效开发而生，简单快捷、准确地生成 Api sdk。
 
 #### 代码生成转换工具
-
 - [生成例子说明](./docs/brief-description-of-the-code-generation-process.md)
 - [接入文档](./docs/doc.md)
-- [通过maven-plugin接入](./docs/doc.md#maven-plugin)
+- [通过 maven-plugin 接入](./docs/doc.md#maven-plugin)
 
 #### examples
 
@@ -113,8 +112,8 @@
 
 #### features
 
-- 代码生成插件增加将生成结果上传到codegen-server，codegen-client通过接口下载
-- gradle项目的支持
+- 代码生成插件增加将生成结果上传到 codegen-server，codegen-client 通过接口下载
+- gradle 项目的支持
 - 支持输出文档（openapi文档或自定义格式的文档）
 - 支持通过openApi文档生成
 - 对响应式编程的支持

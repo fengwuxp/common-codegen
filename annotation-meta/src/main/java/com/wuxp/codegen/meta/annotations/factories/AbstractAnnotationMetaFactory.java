@@ -1,11 +1,11 @@
 package com.wuxp.codegen.meta.annotations.factories;
 
 
-import com.wuxp.codegen.meta.annotations.ClientAnnotationProvider;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.meta.annotations.ClientAnnotationProvider;
 import com.wuxp.codegen.meta.transform.AnnotationCodeGenTransformer;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Enhancer;
@@ -137,17 +137,9 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
         @Override
         public Object intercept(Object annotationMate, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             //查找方法是否在注解
-
-            Optional<Method> optionalMethod = Arrays.stream(annotationMethods)
-                    .filter(m -> {
-                        boolean returnTypeIsEq = method.getReturnType().equals(m.getReturnType());
-                        boolean methodNameIsEq = method.getName().equals(m.getName());
-                        boolean parameterLenIsEq = m.getParameters().length == method.getParameters().length;
-                        return returnTypeIsEq && parameterLenIsEq && methodNameIsEq;
-                    })
-                    .findFirst();
+            Optional<Method> optionalMethod = matchMethodByAnnotations(method);
             if (optionalMethod.isPresent()) {
-                //注解中的方法
+                // 注解中的方法
                 return optionalMethod.get().invoke(annotation, args);
             }
 
@@ -167,6 +159,14 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
                         result);
             }
             return result;
+        }
+
+        private Optional<Method> matchMethodByAnnotations(Method method) {
+            return Arrays.stream(annotationMethods)
+                    .filter(m -> method.getReturnType().equals(m.getReturnType()))
+                    .filter(m -> method.getName().equals(m.getName()))
+                    .filter(m -> m.getParameters().length == method.getParameters().length)
+                    .findFirst();
         }
     }
 }

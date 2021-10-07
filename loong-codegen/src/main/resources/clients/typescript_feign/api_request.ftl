@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 
 <#if dependencies??>
 <#--依赖导入处理-->
