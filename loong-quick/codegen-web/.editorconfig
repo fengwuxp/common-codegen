@@ -1,4 +1,5 @@
-# http://editorconfig.org
+# 🎨 https://editorconfig.org/
+
 root = true
 
 [*]
@@ -9,8 +10,11 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.md]
-trim_trailing_whitespace = false
+[{*.less, *.css, *.sacc, *.scss}]
+indent_style = space
+indent_size = 2
 
-[Makefile]
-indent_style = tab
+[{*.json, .travis.yml, .stylelintrc}]
+indent_style = space
+indent_size = 2
+

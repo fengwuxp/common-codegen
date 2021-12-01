@@ -47,7 +47,7 @@ class ScmCodegenTaskProviderTest {
     void testCreate()throws Exception {
 
         CodegenTaskContextHolder.setScmCode("default");
-        String mainBranchName ="feature/codegen-restful-support"; //SourcecodeRepositoryType.GIT.getMainBranchName();
+        String mainBranchName ="master";
         String taskId = scmCodegenTaskProvider.create("common-codegen", mainBranchName);
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
         CountDownLatch countDownLatch=new CountDownLatch(1);

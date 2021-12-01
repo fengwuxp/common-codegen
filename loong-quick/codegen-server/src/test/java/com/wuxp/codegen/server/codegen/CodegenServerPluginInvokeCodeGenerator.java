@@ -7,6 +7,7 @@ import com.wuxp.codegen.starter.LoongCodeGenerator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -19,7 +20,7 @@ public class CodegenServerPluginInvokeCodeGenerator implements MavenPluginInvoke
         LoongCodeGenerator loongSdkCodeGenerator = new LoongCodeGenerator("com.wuxp.codegen.server.controller");
         loongSdkCodeGenerator.setOutputPath(output);
         loongSdkCodeGenerator.setClientProviderTypes(types);
-        loongSdkCodeGenerator.setIgnoreClasses(Arrays.asList(LoongCodegenController.class));
+        loongSdkCodeGenerator.setIgnoreClasses(Collections.singletonList(LoongCodegenController.class));
         loongSdkCodeGenerator.generate();
     }
 }

@@ -1,4 +1,4 @@
-import {Feign, FeignRequestOptions, GetMapping, PostMapping,} from 'fengwuxp-typescript-feign';
+import {Feign, FeignRequestOptions, GetMapping, HttpMediaType, PostMapping} from 'fengwuxp-typescript-feign';
 import {LoginReq} from '@/feign/user/req/LoginReq';
 import {LoginUserInfo} from '@/feign/user/info/LoginUserInfo';
 
@@ -9,35 +9,23 @@ import {LoginUserInfo} from '@/feign/user/info/LoginUserInfo';
 @Feign({
     value: '/',
 })
-class MockService {
+class UserService {
     @PostMapping({
-        value: '/login',
+        value: '/login', produces: [HttpMediaType.FORM_DATA]
     })
-    login: (
-        req: LoginReq,
-        option?: FeignRequestOptions,
-    ) => Promise<LoginUserInfo>;
+    login: (req: LoginReq, option?: FeignRequestOptions,
+    ) => Promise<void>;
 
     @PostMapping({
         value: '/logout',
     })
     logout: (req?, option?: FeignRequestOptions) => Promise<void>;
 
-    @PostMapping({
-        value: '/oak_user/refresh_token',
-    })
-    refreshToken: (req?, option?: FeignRequestOptions) => Promise<LoginUserInfo>;
 
     @GetMapping({
-        value: '/mobile/{userType}',
+        value: '/api/v1/authentication/details',
     })
-    getMobileCaptcha: (
-        req: {
-            mobilePhone: string;
-            userType: string;
-        },
-        option?: FeignRequestOptions,
-    ) => Promise<any>;
+    getCurrentUserDetails: (req?, option?: FeignRequestOptions) => Promise<LoginUserInfo>
 }
 
-export default new MockService();
+export default new UserService();

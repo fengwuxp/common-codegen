@@ -13,6 +13,6 @@ spring:
       ddl-auto: update
 logging:
   level:
-    org.springframework: info
+    org.springframework: debug
     org.hibernate: info
     com.wuxp: info

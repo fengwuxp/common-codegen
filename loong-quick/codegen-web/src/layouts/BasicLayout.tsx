@@ -1,111 +1,89 @@
-/**
- * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
- * You can view component api by:
- * https://github.com/ant-design/ant-design-pro-layout
- */
-import React, {useState} from 'react';
-import DefaultFooter from '@ant-design/pro-layout/es/Footer';
-import ProLayout, {BasicLayoutProps as ProLayoutProps,} from '@ant-design/pro-layout/es/BasicLayout';
-import {ProSettings} from '@ant-design/pro-layout/es/defaultSettings';
-import {MenuDataItem} from '@ant-design/pro-layout/es/typings';
-import SettingDrawer from '@ant-design/pro-layout/es/components/SettingDrawer/index';
-import AntdIcon from '@ant-design/icons/lib/components/AntdIcon';
-import defaultSettings from '../../config/defaultSettings';
-import logo from '../assets/logo.svg';
-import SvgIcon from '@/components/icon/SvgIcon';
-import AppRouter from '@/AppRouter';
-import RightContent from '@/components/globalheader/RightContent';
-import {Link} from 'umi';
+import {Breadcrumb, Layout, Menu} from 'antd';
+import {LaptopOutlined, NotificationOutlined, UserOutlined} from '@ant-design/icons';
+import React, {useEffect} from 'react';
+import Logo from '@/assets/logo.svg';
+import SvgIcon from "@/components/icon/SvgIcon";
+import styles from './basic.layout.module.less';
+import './basic.layout.less';
+import UserService from "@/feign/user/UserService";
 
-export interface BasicLayoutProps extends ProLayoutProps {
-    breadcrumbNameMap: {
-        [path: string]: MenuDataItem;
-    };
+const {SubMenu} = Menu;
+const {Header, Content, Sider} = Layout;
+
+export interface BasicLayoutProps {
+
 }
 
-export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
-    breadcrumbNameMap: {
-        [path: string]: MenuDataItem;
-    };
-};
+const BasicLayout = (props) => {
+    useEffect(() => {
+        UserService.getCurrentUserDetails().then((user) => {
 
-const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
-    const [collapsed, handleMenuCollapse] = useState<boolean>(false);
-    const [settings, setSettings] = useState<Partial<ProSettings>>({
-        ...defaultSettings,
-        fixSiderbar: true,
-        fixedHeader: true,
-    });
-    console.log('props', props);
-    return (
-        <>
-            <ProLayout
-                logo={logo}
-                menuHeaderRender={(logoDom, titleDom) => (
-                    <Link to="/">
-                        {logoDom}
-                        {titleDom}
-                    </Link>
-                )}
-                breakpoint={false}
-                onCollapse={handleMenuCollapse}
-                breadcrumbRender={(routers = []) => [
-                    {
-                        path: '/',
-                        breadcrumbName: '首页',
-                    },
-                    ...routers,
-                ]}
-                itemRender={(route, params, routes, paths) => {
-                    const first = routes.indexOf(route) === 0;
-                    return first ? (
-                        <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-                    ) : (
-                        <span>{route.breadcrumbName}</span>
-                    );
-                }}
-                menuItemRender={(menuItemProps, defaultDom) => {
-                    const icon = menuItemProps.icon as any;
-                    const item = (
-                        <span>
-              {icon != null && (
-                  <span>
-                  {typeof icon === 'string' ? (
-                      <SvgIcon className="anticon" src={icon}/>
-                  ) : (
-                      <AntdIcon icon={icon}/>
-                  )}
-                </span>
-              )}
-                            {menuItemProps.name}
-            </span>
-                    );
-                    return menuItemProps.isUrl ? (
-                        item
-                    ) : (
-                        <Link className="qixian-menuItem" to={menuItemProps.path || '/'}>
-                            {item}
-                        </Link>
-                    );
-                }}
-                rightContentRender={() => <RightContent layout={settings.layout}/>}
-                footerRender={() => <DefaultFooter/>}
-                collapsed={collapsed}
-                onMenuHeaderClick={() => AppRouter.push('/')}
-                {...props}
-                {...settings}
-            >
-                {props.children}
-            </ProLayout>
-            <SettingDrawer
-                // hideLoading
-                // hideCopyButton
-                // hideHintAlert
-                settings={settings}
-                onSettingChange={(config) => setSettings(config)}
-            />
-        </>
-    );
-};
+        });
+        return () => {
+        }
+    }, [])
+
+    const {children, history} = props;
+    return <Layout>
+        <Header className="header flex-view flex-row">
+            <i className={styles.basicLayoutHeaderLogo}>
+                <SvgIcon src={Logo} size={50} color={"#ff0000"}/>
+            </i>
+            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+                <Menu.Item key="1">nav 1</Menu.Item>
+                <Menu.Item key="2">nav 2</Menu.Item>
+                <Menu.Item key="3">nav 3</Menu.Item>
+            </Menu>
+        </Header>
+        <Layout>
+            <Sider width={200} className="site-layout-background">
+                <Menu
+                    mode="inline"
+                    defaultSelectedKeys={['1']}
+                    defaultOpenKeys={['sub1']}
+                    style={{height: '100%', borderRight: 0}}>
+                    <SubMenu key="sub1" icon={<UserOutlined/>} title="dmeo">
+                        <Menu.Item key="1" onClick={() => {
+                            history.push("/demo/list")
+                        }}>demo list</Menu.Item>
+                        <Menu.Item key="2" onClick={() => {
+                            history.push("/i18n")
+                        }}>i18n demo</Menu.Item>
+                        <Menu.Item key="3">option3</Menu.Item>
+                        <Menu.Item key="4">option4</Menu.Item>
+                    </SubMenu>
+                    <SubMenu key="sub2" icon={<LaptopOutlined/>} title="subnav 2">
+                        <Menu.Item key="5">option5</Menu.Item>
+                        <Menu.Item key="6">option6</Menu.Item>
+                        <Menu.Item key="7">option7</Menu.Item>
+                        <Menu.Item key="8">option8</Menu.Item>
+                    </SubMenu>
+                    <SubMenu key="sub3" icon={<NotificationOutlined/>} title="subnav 3">
+                        <Menu.Item key="9">option9</Menu.Item>
+                        <Menu.Item key="10">option10</Menu.Item>
+                        <Menu.Item key="11">option11</Menu.Item>
+                        <Menu.Item key="12">option12</Menu.Item>
+                    </SubMenu>
+                </Menu>
+            </Sider>
+            <Layout style={{padding: '0 24px 24px'}}>
+                <Breadcrumb style={{margin: '16px 0'}}>
+                    <Breadcrumb.Item>Home</Breadcrumb.Item>
+                    <Breadcrumb.Item>List</Breadcrumb.Item>
+                    <Breadcrumb.Item>App</Breadcrumb.Item>
+                </Breadcrumb>
+                <Content
+                    className="site-layout-background"
+                    style={{
+                        padding: 24,
+                        margin: 0,
+                        minHeight: 280,
+                    }}>
+                    {children}
+                </Content>
+            </Layout>
+        </Layout>
+    </Layout>
+}
 
 export default BasicLayout;

@@ -9,14 +9,32 @@ logger.level = 'info';
 
 export interface DownloadCodegenSdkOptions {
 
+    /**
+     * 代码保存的服务器地址
+     */
     loongCodegenServer: string;
 
+    /**
+     * 项目名称
+     */
     projectName: string;
 
-    branch: string;
+    /**
+     * 分支名称
+     * 默认：master
+     */
+    branch?: string;
 
+    /**
+     * 需要生成的模块名称
+     * 默认：web
+     */
     moduleName: string;
 
+    /**
+     * 生成的 sdk 类型
+     * 默认: typescript_feign
+     */
     type: "spring_cloud_openfeign" | "retrofit" | "dart_feign" | "typescript_feign" | "umi_request";
 
     /**

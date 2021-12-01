@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "build/dist",
     "module": "esnext",
     "target": "esnext",
     "lib": [
@@ -29,29 +28,23 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/spring/*": [
-        "./.spring/*"
-      ],
       "@/*": [
         "./src/*"
       ],
-      "@@/*": [
-        "./src/.umi/*"
-      ]
     }
   },
   "include": [
     "./src/**/*",
     "./.spring/**/*",
     "./test/**/*",
-    "typings.d.ts"
+    "./typings/**/*",
+    "./typings.d.ts"
   ],
   "exclude": [
     "node_modules",
     "build",
     "dist",
     "scripts",
-    "src/.umi/*",
     "webpack",
     "jest",
     "acceptance-tests",
