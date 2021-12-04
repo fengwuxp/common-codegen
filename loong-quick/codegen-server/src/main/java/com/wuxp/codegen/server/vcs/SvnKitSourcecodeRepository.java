@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
 
-    public SvnKitSourcecodeRepository(SourcecodeRepositoryProperties properties) {
+    public SvnKitSourcecodeRepository(SourceCodeRepositoryAccessProperties properties) {
         super(properties);
     }
 
@@ -45,7 +45,7 @@ public class SvnKitSourcecodeRepository extends AbstractSourcecodeRepository {
     }
 
     @Override
-    protected void downloadByScm(String projectName, String branch, File workingDirectory) throws SVNException {
+    protected void clone(String projectName, String branch, File workingDirectory) throws SVNException {
         String id = this.checkout(workingDirectory, projectName);
         if (log.isDebugEnabled()) {
             log.debug("svn checkout id：{}", id);

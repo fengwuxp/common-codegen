@@ -2,19 +2,18 @@ package com.wuxp.codegen.server.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.wuxp.codegen.server.CodegenJpaAuditorAware;
+import com.wuxp.codegen.server.codegen.SdkCodeManager;
+import com.wuxp.codegen.server.codegen.TemporaryFileSdkCodeManager;
 import com.wuxp.codegen.server.enums.SourcecodeRepositoryType;
 import com.wuxp.codegen.server.plugins.CodegenPluginExecuteStrategy;
 import com.wuxp.codegen.server.plugins.MavenCodegenPluginExecuteStrategy;
-import com.wuxp.codegen.server.repositories.ScmInfoRepository;
+import com.wuxp.codegen.server.repositories.CodeVersionControlConfigRepository;
 import com.wuxp.codegen.server.scope.CodegenTaskContextHolder;
-import com.wuxp.codegen.server.task.CodegenFileManageStrategy;
-import com.wuxp.codegen.server.task.CodegenTaskProvider;
-import com.wuxp.codegen.server.task.ScmCodegenTaskProvider;
-import com.wuxp.codegen.server.task.ZipCodegenFileManageStrategy;
-import com.wuxp.codegen.server.vcs.JGitSourcecodeRepository;
-import com.wuxp.codegen.server.vcs.ScmAccessorPropertiesProvider;
-import com.wuxp.codegen.server.vcs.SourcecodeRepository;
-import com.wuxp.codegen.server.vcs.SvnKitSourcecodeRepository;
+import com.wuxp.codegen.server.task.CodegenTaskException;
+import com.wuxp.codegen.server.task.CodegenTaskService;
+import com.wuxp.codegen.server.task.SourceCodeManagerTaskService;
+import com.wuxp.codegen.server.vcs.*;
+import org.apache.logging.log4j.util.Supplier;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,6 @@ import org.springframework.util.ConcurrentReferenceHashMap;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 @EnableCaching
-public class CodegenConfig implements DisposableBean {
+public class LoongCodegenConfig implements DisposableBean {
 
     public static final String REPOSITORY_PREFIX = "loong.codegen";
 
@@ -54,14 +52,10 @@ public class CodegenConfig implements DisposableBean {
 
     private final Map<String, SourcecodeRepository> sourcecodeRepositoryCaches = new ConcurrentReferenceHashMap<>(8);
 
-    private ScmAccessorPropertiesProvider scmAccessorPropertiesProvider;
-
     @Bean
-    public ScmAccessorPropertiesProvider scmAccessorPropertiesProvider(ScmInfoRepository scmInfoRepository, SourcecodeRepositoryPropertiesConfig repositoryPropertiesConfig) {
-        this.scmAccessorPropertiesProvider = new ScmAccessorPropertiesProvider(scmInfoRepository, repositoryPropertiesConfig);
-        return scmAccessorPropertiesProvider;
+    public SourceCodeRepositoryAccessPropertiesSupplier scmAccessorPropertiesProvider(CodeVersionControlConfigRepository codeVersionControlConfigRepository, LoongCodegenProperties codegenProperties) {
+        return new SourceCodeRepositoryAccessPropertiesSupplier(codeVersionControlConfigRepository, codegenProperties.getRepositories());
     }
-
 
     /**
      * 注册自定义thread scope bean
@@ -69,7 +63,7 @@ public class CodegenConfig implements DisposableBean {
      * @return
      */
     @Bean
-    public CustomScopeConfigurer threadScope() {
+    public CustomScopeConfigurer customThreadScope() {
         CustomScopeConfigurer customScopeConfigurer = new CustomScopeConfigurer();
         customScopeConfigurer.addScope(THREAD_SCOPE_BEAN_NAME, new SimpleThreadScope());
         return customScopeConfigurer;
@@ -77,10 +71,10 @@ public class CodegenConfig implements DisposableBean {
 
     @Scope(value = THREAD_SCOPE_BEAN_NAME, proxyMode = ScopedProxyMode.TARGET_CLASS)
     @Bean
-    public SourcecodeRepository sourcecodeRepository() {
-        SourcecodeRepositoryProperties properties = getCurrentSourcecodeRepositoryProperties();
+    public SourcecodeRepository sourcecodeRepository(Supplier<List<SourceCodeRepositoryAccessProperties>> supplier) {
+        SourceCodeRepositoryAccessProperties properties = getCurrentSourceCodeRepositoryAccessProperties(supplier);
         Assert.notNull(properties, "not found current request properties");
-        return sourcecodeRepositoryCaches.computeIfAbsent(properties.getCode(), key -> {
+        return sourcecodeRepositoryCaches.computeIfAbsent(properties.getName(), key -> {
             if (SourcecodeRepositoryType.GIT.equals(properties.getType())) {
                 return new JGitSourcecodeRepository(properties);
             }
@@ -116,13 +110,13 @@ public class CodegenConfig implements DisposableBean {
         threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         threadPoolTaskExecutor.setTaskDecorator(runnable -> {
             // 在线程发生切换的时候，在2个线程间传递scmCode
-            Optional<String> optional = CodegenTaskContextHolder.getScmCode();
+            String code = CodegenTaskContextHolder.getSourceCodeRepositoryName();
             return () -> {
-                optional.ifPresent(CodegenTaskContextHolder::setScmCode);
+                CodegenTaskContextHolder.setSourceCodeRepositoryName(code);
                 try {
                     runnable.run();
                 } finally {
-                    CodegenTaskContextHolder.removeScmCode();
+                    CodegenTaskContextHolder.removeSourceCodeRepositoryName();
                 }
             };
         });
@@ -130,10 +124,10 @@ public class CodegenConfig implements DisposableBean {
     }
 
     @Bean
-    public CodegenTaskProvider codegenTaskProvider(SourcecodeRepository sourcecodeRepository,
-                                                   CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
-                                                   @Qualifier(value = CODEGEN_TASK_EXECUTOR_BEAN_NAME) AsyncTaskExecutor taskExecutor) {
-        return new ScmCodegenTaskProvider(sourcecodeRepository, codegenPluginExecuteStrategy, taskExecutor);
+    public CodegenTaskService codegenTaskService(SourcecodeRepository sourcecodeRepository,
+                                                 CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
+                                                 @Qualifier(value = CODEGEN_TASK_EXECUTOR_BEAN_NAME) AsyncTaskExecutor taskExecutor) {
+        return new SourceCodeManagerTaskService(sourcecodeRepository, codegenPluginExecuteStrategy, taskExecutor);
     }
 
     @Bean
@@ -142,10 +136,10 @@ public class CodegenConfig implements DisposableBean {
     }
 
     @Bean
-    public CodegenFileManageStrategy zipCodegenFileManageStrategy(SourcecodeRepository sourcecodeRepository,
-                                                                  CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
-                                                                  @Value("${loong.codegen.sdk.tempdir:${java.io.tmpdir}codegen/sdk/temp}") String uploadTempDir) {
-        return new ZipCodegenFileManageStrategy(sourcecodeRepository, codegenPluginExecuteStrategy, uploadTempDir);
+    public SdkCodeManager zipCodegenFileManageStrategy(SourcecodeRepository sourcecodeRepository,
+                                                       CodegenPluginExecuteStrategy codegenPluginExecuteStrategy,
+                                                       @Value("${loong.codegen.sdk.tempdir:${java.io.tmpdir}codegen/sdk/temp}") String uploadTempDir) {
+        return new TemporaryFileSdkCodeManager(sourcecodeRepository, codegenPluginExecuteStrategy, uploadTempDir);
     }
 
     @Bean
@@ -158,17 +152,13 @@ public class CodegenConfig implements DisposableBean {
         sourcecodeRepositoryCaches.clear();
     }
 
-    private SourcecodeRepositoryProperties getCurrentSourcecodeRepositoryProperties() {
-        Optional<String> optional = CodegenTaskContextHolder.getScmCode();
-        List<SourcecodeRepositoryProperties> repositories = scmAccessorPropertiesProvider.getRepositoryProperties();
-        if (!optional.isPresent()) {
-            return repositories.isEmpty() ? new SourcecodeRepositoryProperties() : repositories.get(0);
-        }
-        String repositoryCode = optional.get();
-        return repositories.stream()
-                .filter(properties -> repositoryCode.equals(properties.getCode()))
+    private SourceCodeRepositoryAccessProperties getCurrentSourceCodeRepositoryAccessProperties(Supplier<List<SourceCodeRepositoryAccessProperties>> supplier) {
+        String name = CodegenTaskContextHolder.getSourceCodeRepositoryName();
+        return supplier.get()
+                .stream()
+                .filter(properties -> name.equals(properties.getName()))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new CodegenTaskException(String.format("not found name = %s 的源代码仓库配置", name)));
     }
 
 

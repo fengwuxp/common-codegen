@@ -13,10 +13,10 @@ import java.util.List;
  * @author wuxp
  */
 @Configuration
-@ConfigurationProperties(prefix = CodegenConfig.REPOSITORY_PREFIX)
+@ConfigurationProperties(prefix = LoongCodegenConfig.REPOSITORY_PREFIX)
 @Getter
 @Setter
-public class SourcecodeRepositoryPropertiesConfig {
+public class LoongCodegenProperties {
 
     private List<SourcecodeRepositoryProperties> repositories;
 }

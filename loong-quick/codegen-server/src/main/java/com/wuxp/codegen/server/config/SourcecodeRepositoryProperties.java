@@ -1,10 +1,13 @@
 package com.wuxp.codegen.server.config;
 
 import com.wuxp.codegen.server.enums.SourcecodeRepositoryType;
-import com.wuxp.codegen.server.vcs.support.AbstractScmAccessorProperties;
+import com.wuxp.codegen.server.vcs.SourceCodeRepositoryAccessProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.core.Ordered;
+
+import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_REPOSITORY_NANE;
 
 /**
  * 源代码仓储的配置
@@ -12,25 +15,29 @@ import lombok.ToString;
  * @author wuxp
  */
 @Data
-@EqualsAndHashCode(callSuper = true,of = "code")
+@EqualsAndHashCode()
 @ToString(callSuper = true)
-public class SourcecodeRepositoryProperties extends AbstractScmAccessorProperties {
+public class SourcecodeRepositoryProperties implements SourceCodeRepositoryAccessProperties {
 
+    private String name = DEFAULT_REPOSITORY_NANE;
 
-    /**
-     * 仓库唯一标识
-     * 没有设置或只有一个仓库则使用默认值
-     */
-    private String code = "default";
-
-    /**
-     * 仓库类型
-     */
     private SourcecodeRepositoryType type = SourcecodeRepositoryType.GIT;
 
-    /**
-     * 主分支名称
-     */
-    private String masterBranchName = SourcecodeRepositoryType.GIT.getMainBranchName();
+    private String uri;
+
+    private String basedir;
+
+    private String masterBranchName = type.getMainBranchName();
+
+    private String username;
+
+    private String password;
+
+    private String passphrase;
+
+    private boolean strictHostKeyChecking = true;
+
+    private int order = Ordered.LOWEST_PRECEDENCE;
+
 
 }

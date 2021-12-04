@@ -1,6 +1,7 @@
 package com.wuxp.codegen.server.plugins;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -27,8 +28,22 @@ public interface CodegenPluginExecuteStrategy {
      *
      * @param projectBaseDir 项目根目录 不能为null
      * @param modelName      执行插件的模块名称 可以为null
-     * @return pom.xml文件或者gradle文件路径
+     * @return pom.xml 文件或者 gradle 文件路径
      */
     List<String> findModuleFiles(@NotNull String projectBaseDir, String modelName);
+
+    /**
+     * @param projectBaseDir
+     * @param modelName
+     * @return 模块所在的文件路径
+     */
+    default String findModuleFilepath(@NotNull String projectBaseDir, String modelName) {
+        List<String> moduleFiles = findModuleFiles(projectBaseDir, modelName);
+        Assert.isTrue(!moduleFiles.isEmpty(), String.format("project = %s 未找到 modelName = %s", projectBaseDir, modelName));
+        Assert.isTrue(moduleFiles.size() == 1,
+                String.format("project = %s 找到了 %d 个 modelName = %s 的模块", projectBaseDir, moduleFiles.size(), modelName));
+        String path = moduleFiles.get(0);
+        return path.substring(0, path.lastIndexOf("."));
+    }
 
 }

@@ -1,6 +1,6 @@
 package com.wuxp.codegen.server.repositories;
 
-import com.wuxp.codegen.server.entities.ScmInfo;
+import com.wuxp.codegen.server.entities.CodeVersionControlConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import java.util.List;
 
 @Import(CodegenJpaAuditorAwareConfig.class)
 @DataJpaTest(properties = {"spring.profiles.active=test"})
-class ScmInfoRepositoryTest {
+class SourceCodeRepositoryRepositoryTestConfiguration {
 
     @Autowired
-    private ScmInfoRepository scmInfoRepository;
+    private CodeVersionControlConfigRepository codeVersionControlConfigRepository;
 
     @Test
     void testFinAll() {
-        List<ScmInfo> list = scmInfoRepository.findAll();
+        List<CodeVersionControlConfig> list = codeVersionControlConfigRepository.findAll();
         Assertions.assertTrue(list.isEmpty());
     }
 }

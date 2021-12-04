@@ -4,9 +4,9 @@ import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
 import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
-import com.wuxp.codegen.meta.util.FileUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.ClassType;
@@ -90,9 +90,9 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
 
         if (isDeletedOutputDirectory) {
             //删除原本的目录
-            boolean r = FileUtils.deleteDirectory(this.outputPath);
+            CodegenFileUtils.deleteDirectory(this.outputPath);
             if (log.isInfoEnabled()) {
-                log.info("删除原本的输出目录{}，删除{}", this.outputPath, r ? "成功" : "失败");
+                log.info("删除原本的输出目录 = {}", this.outputPath);
             }
         }
         if (codeFormatter == null) {
@@ -116,7 +116,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
         Template template = this.templateLoader.load(templatePath);
         Assert.notNull(template, "获取模板失败，templatePath = " + templatePath);
         String packagePath = this.fileNameGenerateStrategy.generateName(data.getPackagePath());
-        String outputPath = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, FileUtils.packageNameToFilePath(packagePath), extName)).toString();
+        String outputPath = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, CodegenFileUtils.packageNameToFilePath(packagePath), extName)).toString();
         // 如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
         if (outputPath.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
             log.warn("类{}，的生成输入路径有误,{}", data.getName(), outputPath);
@@ -126,7 +126,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
             log.warn("文件{}在{}分钟内已经生成过，跳过生成", outputPath, LAST_MODIFIED_MINUTE);
             return;
         }
-        FileUtils.createDirectoryRecursively(outputPath.substring(0, outputPath.lastIndexOf(File.separator)));
+        CodegenFileUtils.createDirectoryRecursively(outputPath.substring(0, outputPath.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
             log.info("生成类{}的文件，输出到{}目录", data.getName(), outputPath);
         }

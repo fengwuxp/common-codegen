@@ -1,6 +1,6 @@
 import {Feign, FeignRequestOptions, GetMapping, HttpMediaType, PostMapping} from 'fengwuxp-typescript-feign';
 import {LoginReq} from '@/feign/user/req/LoginReq';
-import {LoginUserInfo} from '@/feign/user/info/LoginUserInfo';
+import {UserDetails} from '@/feign/user/info/UserDetails';
 
 /**
  * 类：例子服务
@@ -25,7 +25,7 @@ class UserService {
     @GetMapping({
         value: '/api/v1/authentication/details',
     })
-    getCurrentUserDetails: (req?, option?: FeignRequestOptions) => Promise<LoginUserInfo>
+    getCurrentUserDetails: (req?, option?: FeignRequestOptions) => Promise<UserDetails>
 }
 
 export default new UserService();

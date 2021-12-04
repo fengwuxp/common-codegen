@@ -16,6 +16,7 @@ import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
+import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.languages.*;
 import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
@@ -458,7 +459,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         JsonSchemaCodegenTypeLoader loader = new JsonSchemaCodegenTypeLoader(getJsonSchemaFiles(), languageDescription, packageMapStrategy);
         File file = new File(CODEGEN_TEMP_EXTENSIONS_DIR);
         if (!file.exists()) {
-            com.wuxp.codegen.meta.util.FileUtils.createDirectoryRecursively(CODEGEN_TEMP_EXTENSIONS_DIR);
+            CodegenFileUtils.createDirectoryRecursively(CODEGEN_TEMP_EXTENSIONS_DIR);
         }
         try {
             loader.load().forEach(classMeta -> customTypeMapping(classMeta.getSource(), classMeta));

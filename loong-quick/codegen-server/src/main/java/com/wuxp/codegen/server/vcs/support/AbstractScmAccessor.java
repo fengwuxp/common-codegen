@@ -16,6 +16,7 @@
 
 package com.wuxp.codegen.server.vcs.support;
 
+import com.wuxp.codegen.server.vcs.SourceCodeRepositoryAccessProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -25,16 +26,15 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.FileSystemUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.util.ResourceUtils.FILE_URL_PREFIX;
 
@@ -90,39 +90,39 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
 
-    protected AbstractScmAccessor(AbstractScmAccessorProperties properties) {
+    protected AbstractScmAccessor(SourceCodeRepositoryAccessProperties properties) {
         this.setBasedir(properties.getBasedir() == null ? createBaseDir()
                 : properties.getBasedir());
         this.passphrase = properties.getPassphrase();
         this.password = properties.getPassword();
-        this.searchPaths = properties.getSearchPaths();
         this.strictHostKeyChecking = properties.isStrictHostKeyChecking();
         this.uri = properties.getUri();
         this.username = properties.getUsername();
     }
 
     @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
     protected String createBaseDir() {
         try {
-            final Path basedir = Files.createTempDirectory("source_code");
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        FileSystemUtils.deleteRecursively(basedir);
-                    } catch (IOException e) {
-                        log.warn("Failed to delete temporary directory on exit: ", e);
-                    }
-                }
-            });
-            return basedir.toString();
+            Path tempDirectory = Files.createTempDirectory("source_code");
+            addDeleteHook(tempDirectory);
+            return tempDirectory.toString();
         } catch (IOException e) {
             throw new IllegalStateException("Cannot create temp dir", e);
         }
+    }
+
+    private void addDeleteHook(Path tempDirectory) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                FileSystemUtils.deleteRecursively(tempDirectory);
+            } catch (IOException e) {
+                log.warn("Failed to delete temporary directory on exit: ", e);
+            }
+        }));
     }
 
     public String getUri() {
@@ -189,9 +189,7 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
         this.strictHostKeyChecking = strictHostKeyChecking;
     }
 
-
     protected File getWorkingDirectory(String projectName, String branch) {
-        String uri = this.uri;
         Assert.notNull(uri, "source repository uri must not null");
         if (uri.startsWith(FILE_URL_PREFIX)) {
             try {
@@ -205,58 +203,23 @@ public abstract class AbstractScmAccessor implements ResourceLoaderAware {
         return new File(this.getLocalRepositoryUrl(this.basedir, projectName, branch));
     }
 
-
-    protected String[] getSearchLocations(File dir, String projectName, String branch) {
-        String[] locations = this.searchPaths;
-        if (locations == null || locations.length == 0) {
-            locations = AbstractScmAccessorProperties.DEFAULT_LOCATIONS;
-        } else if (locations != AbstractScmAccessorProperties.DEFAULT_LOCATIONS) {
-            locations = StringUtils.concatenateStringArrays(
-                    AbstractScmAccessorProperties.DEFAULT_LOCATIONS, locations);
-        }
-        Collection<String> output = new LinkedHashSet<>();
-        for (String location : locations) {
-            String[] branches = new String[]{branch};
-            if (branch != null) {
-                branches = StringUtils.commaDelimitedListToStringArray(branch);
-            }
-            String[] apps = new String[]{projectName};
-            if (projectName != null) {
-                apps = StringUtils.commaDelimitedListToStringArray(projectName);
-            }
-            for (String branchName : branches) {
-                for (String app : apps) {
-                    String value = location;
-                    if (app != null) {
-                        value = value.replace("{projectName}", app);
-                    }
-                    if (branchName != null) {
-                        value = value.replace("{branch}", branchName);
-                    }
-                    if (!value.endsWith("/")) {
-                        value = value + "/";
-                    }
-                    output.addAll(matchingDirectories(dir, value));
-                }
-            }
-        }
-        return output.toArray(new String[0]);
-    }
-
     private List<String> matchingDirectories(File dir, String value) {
-        List<String> output = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         try {
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
                     this.resourceLoader);
             String path = new File(dir, value).toURI().toString();
             for (Resource resource : resolver.getResources(path)) {
                 if (resource.getFile().isDirectory()) {
-                    output.add(resource.getURI().toString());
+                    result.add(resource.getURI().toString());
                 }
             }
         } catch (IOException e) {
+            if (log.isInfoEnabled()) {
+                log.debug("path match failure", e);
+            }
         }
-        return output;
+        return result;
     }
 
     private String getLocalRepositoryUrl(String basedir, String projectName, String branch) {

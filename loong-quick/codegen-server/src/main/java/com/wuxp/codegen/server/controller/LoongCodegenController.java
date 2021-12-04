@@ -1,47 +1,48 @@
 package com.wuxp.codegen.server.controller;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.server.task.CodegenFileManageStrategy;
-import com.wuxp.codegen.server.task.CodegenTaskProgressInfo;
-import com.wuxp.codegen.server.task.CodegenTaskProvider;
+import com.wuxp.codegen.server.codegen.SdkCodeDescriptor;
+import com.wuxp.codegen.server.codegen.SdkCodeManager;
+import com.wuxp.codegen.server.codegen.VcsSdkCodeDescriptor;
+import com.wuxp.codegen.server.task.CodegenTaskInfo;
+import com.wuxp.codegen.server.task.CodegenTaskService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
-import static com.wuxp.codegen.server.task.CodegenFileManageStrategy.DEFAULT_MODULE_NAME;
+import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_MODULE_NAME;
+import static com.wuxp.codegen.server.constant.WebApiConstants.WEB_API_V1_PREFIX;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 /**
  * @author wuxp
  */
-@Tag(name = "loong codegen", description = "代码生成restful接口")
+@Tag(name = "loong codegen", description = "代码生成 restful 接口")
 @Slf4j
 @RestController
-@RequestMapping("/loong")
+@RequestMapping(WEB_API_V1_PREFIX + "/loong/")
 public class LoongCodegenController {
 
+    private final CodegenTaskService codegenTaskService;
 
-    private final CodegenTaskProvider codegenTaskProvider;
+    private final SdkCodeManager sdkCodeManager;
 
-    private final CodegenFileManageStrategy codegenFileManageStrategy;
-
-    public LoongCodegenController(CodegenTaskProvider codegenTaskProvider, CodegenFileManageStrategy codegenFileManageStrategy) {
-        this.codegenTaskProvider = codegenTaskProvider;
-        this.codegenFileManageStrategy = codegenFileManageStrategy;
+    public LoongCodegenController(CodegenTaskService codegenTaskService, SdkCodeManager sdkCodeManager) {
+        this.codegenTaskService = codegenTaskService;
+        this.sdkCodeManager = sdkCodeManager;
     }
 
     /**
@@ -55,9 +56,9 @@ public class LoongCodegenController {
      * @return 返回一个全局唯一任务标识
      */
     @Operation(description = "创建一个代码生成的任务，返回一个全局唯一任务标识")
-    @PostMapping("/task/{project}/{branch}")
-    public String codegenTask(@PathVariable("project") String project, @PathVariable("branch") String branch) {
-        return codegenTaskProvider.create(project, branch);
+    @PostMapping("/task/{project}")
+    public String codegenTask(@PathVariable("project") String project, @RequestParam(value = "branch", required = false) String branch) {
+        return codegenTaskService.create(project, branch);
     }
 
     /**
@@ -65,9 +66,9 @@ public class LoongCodegenController {
      * @return 任务状态
      */
     @Operation(description = "通过代码任务id获取任务处理状态")
-    @PostMapping("/task/{task}/progress}")
-    public HttpEntity<CodegenTaskProgressInfo> getCodegenTaskStatusInfo(@RequestParam("taskId") String taskId) {
-        return ResponseEntity.of(codegenTaskProvider.getTaskProgress(taskId));
+    @GetMapping("/task/{taskId}")
+    public HttpEntity<CodegenTaskInfo> getCodegenTaskStatusInfo(@PathVariable("taskId") String taskId) {
+        return ResponseEntity.ok(codegenTaskService.getTask(taskId));
     }
 
     @Operation(description = "上传已经生成的sdk代码")
@@ -76,42 +77,40 @@ public class LoongCodegenController {
                                  @RequestParam(value = "branch") String branch,
                                  @RequestParam("type") ClientProviderType type,
                                  @RequestParam(value = "moduleName", required = false, defaultValue = DEFAULT_MODULE_NAME) String moduleName,
-                                 @RequestParam(value = "file") MultipartFile file) {
-        codegenFileManageStrategy.upload(projectName, branch, moduleName, type, file);
+                                 @RequestParam(value = "file") MultipartFile file) throws IOException {
+        SdkCodeDescriptor descriptor = new VcsSdkCodeDescriptor(projectName, type, branch, moduleName);
+        sdkCodeManager.storage(descriptor, file.getInputStream());
+    }
+
+    @Operation(description = "下载生成的sdk,1：通过代码任务id和ClientProviderType下载代码生成结果，2：通过项目和分支名称下载")
+    @GetMapping(value = "/sdk_code/{taskId}", produces = {APPLICATION_OCTET_STREAM_VALUE})
+    @Hidden
+    public HttpEntity<InputStreamResource> downloadSdkCodeByTask(@PathVariable(value = "taskId") String taskId,
+                                                                 @RequestParam("type") ClientProviderType type) throws IOException {
+        CodegenTaskInfo taskInfo = codegenTaskService.getTask(taskId);
+        return downloadSdkCode(taskInfo.getProjectName(), taskInfo.getBranch(), null, type);
     }
 
     @Operation(description = "下载生成的sdk,1：通过代码任务id和ClientProviderType下载代码生成结果，2：通过项目和分支名称下载")
     @GetMapping(value = "/sdk_code", produces = {APPLICATION_OCTET_STREAM_VALUE})
     @Hidden
-    public HttpEntity<InputStreamResource> downloadTaskResult(@RequestParam(value = "taskId", required = false) String taskId,
-                                                              @RequestParam("type") ClientProviderType type,
-                                                              @RequestParam(value = "projectName", required = false) String projectName,
-                                                              @RequestParam(value = "branch", required = false) String branch,
-                                                              @RequestParam(value = "moduleName", required = false) String moduleName) throws IOException {
-        if (StringUtils.hasText(taskId)) {
-            Optional<File> optionalFile = codegenTaskProvider.getTaskProgress(taskId)
-                    .map(progressInfo -> codegenFileManageStrategy.download(progressInfo.getProjectName(), progressInfo.getBranch(), moduleName, type))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get);
-            return downloadResult(optionalFile);
-        }
-        Optional<File> optionalFile = codegenFileManageStrategy.download(projectName, branch, moduleName, type);
-        return downloadResult(optionalFile);
-
+    public HttpEntity<InputStreamResource> downloadSdkCode(@RequestParam(value = "projectName") String projectName,
+                                                           @RequestParam(value = "branch", required = false) String branch,
+                                                           @RequestParam(value = "moduleName", required = false) String moduleName,
+                                                           @RequestParam("type") ClientProviderType type) throws IOException {
+        SdkCodeDescriptor descriptor = new VcsSdkCodeDescriptor(projectName, type, branch, moduleName);
+        return writeSdkCode(sdkCodeManager.get(descriptor));
     }
 
-    private HttpEntity<InputStreamResource> downloadResult(Optional<File> optional) throws IOException {
-        if (!optional.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        FileSystemResource downloadResource = new FileSystemResource(optional.get());
+    private HttpEntity<InputStreamResource> writeSdkCode(File file) throws IOException {
+        Resource resource = new FileSystemResource(file);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", downloadResource.getFilename()));
+        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", resource.getFilename()));
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .contentLength(downloadResource.contentLength())
-                .body(new InputStreamResource(downloadResource.getInputStream()));
+                .contentLength(resource.contentLength())
+                .body(new InputStreamResource(resource.getInputStream()));
 
     }
 }

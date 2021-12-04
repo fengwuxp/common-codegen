@@ -24,12 +24,17 @@ export const routes: Array<AuthenticatedRouteConfig> = [
         path: '/',
         exact: false,
         requiredAuthentication: true,
-        component: AsyncLoading(() => import('@/layouts/BasicLayout')),
+        component: AsyncLoading(() => import('@/layouts/MainLayout')),
         routes: [
             {
-                path: "home",
+                path: "/home",
                 exact: true,
                 component: AsyncLoading(() => import("@/views/home/index"))
+            },
+            {
+                path: "/code_repositories",
+                exact: true,
+                component: AsyncLoading(() => import("@/views/repositories/CodeRepositoriesListView"))
             },
             {
                 path: "*",

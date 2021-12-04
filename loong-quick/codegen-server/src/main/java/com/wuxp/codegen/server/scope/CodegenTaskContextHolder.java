@@ -1,53 +1,60 @@
 package com.wuxp.codegen.server.scope;
 
+import com.wuxp.codegen.server.task.CodegenTaskException;
+import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 /**
  * 用于从线程上下文或者{@link RequestAttributes}请求上下文中获取 scm_code
+ *
  * @author wuxp
  */
 public final class CodegenTaskContextHolder {
 
     /**
-     * 参考代码标识请求头
+     * 仓库代码标识请求头
      */
-    private static final String REPOSITORY_HEADER_NAME = "X-Repository-Code";
+    private static final String REPOSITORY_HEADER_NAME = "Loong-Codegen-Repository-Name";
 
-    private static final ThreadLocal<String> SCM_CODE_HOLDER = new ThreadLocal<>();
+    /**
+     * 源代码仓库 code
+     */
+    private static final ThreadLocal<String> SOURCE_CODE_REPOSITORY_NAME_HOLDER = new ThreadLocal<>();
 
     private CodegenTaskContextHolder() {
+        throw new AssertionError();
     }
 
-
-    public static void setScmCode(String scmCode) {
-        SCM_CODE_HOLDER.set(scmCode);
+    public static void setSourceCodeRepositoryName(String name) {
+        SOURCE_CODE_REPOSITORY_NAME_HOLDER.set(name);
     }
 
-    public static Optional<String> getScmCode() {
-        String taskId = SCM_CODE_HOLDER.get();
-        if (taskId == null) {
+    public static String getSourceCodeRepositoryName() {
+        String code = SOURCE_CODE_REPOSITORY_NAME_HOLDER.get();
+        if (code == null) {
             // 如果不存在在尝试从请求头中获取
-            getHttpServletRequest().ifPresent(request -> setScmCode(request.getHeader(REPOSITORY_HEADER_NAME)));
-            taskId = SCM_CODE_HOLDER.get();
+            HttpServletRequest httpServletRequest = getHttpServletRequest();
+            setSourceCodeRepositoryName(httpServletRequest.getHeader(REPOSITORY_HEADER_NAME));
+            code = SOURCE_CODE_REPOSITORY_NAME_HOLDER.get();
         }
-        return Optional.ofNullable(taskId);
+        if (code == null) {
+            throw new CodegenTaskException("获取 scm code 失败");
+        }
+        return code;
     }
 
-    public static void removeScmCode() {
-        SCM_CODE_HOLDER.remove();
+    public static void removeSourceCodeRepositoryName() {
+        SOURCE_CODE_REPOSITORY_NAME_HOLDER.remove();
     }
 
-    private static Optional<HttpServletRequest> getHttpServletRequest() {
+    private static HttpServletRequest getHttpServletRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes == null) {
-            return Optional.empty();
-        }
-        return Optional.of(((ServletRequestAttributes) requestAttributes).getRequest());
+        Assert.notNull(requestAttributes, "获取 RequestAttributes 失败");
+        return ((ServletRequestAttributes) requestAttributes).getRequest();
     }
 
 }

@@ -48,7 +48,12 @@ const RouteDocumentTitleProvider = (props) => {
     </>
 }
 
+
 const generatePath = (path1: string, path2: string): string => {
+    if (path1.endsWith("/") && path2.startsWith("/")) {
+        // 避免路径出现双斜杠
+        return `${path1}${path2.substr(1)}`;
+    }
     return `${path1}${path2}`;
 }
 
@@ -62,19 +67,14 @@ const getPathParts = (path: string | string[]): string[] => {
     return path;
 }
 
-const connectParentRoutePath = (path: string | string[], parent: string | string []): string | string[] | undefined => {
+const connectParentRoutePaths = (path: string | string[], parent: string | string []): string[] => {
     const pathParts1 = getPathParts(parent);
     const pathParts2 = getPathParts(path);
-    const result = pathParts1.map(path1 => {
+    return pathParts1.map(path1 => {
         return pathParts2.map(path2 => {
             return generatePath(path1, path2);
         })
     }).flatMap(items => [...items]);
-
-    if (result.length <= 1) {
-        return result[0];
-    }
-    return result;
 }
 
 
@@ -85,7 +85,7 @@ const renderRouteComponent = (enableTrace: boolean, route: AuthenticatedRouteCon
             requiredAuthentication,
             ...childRoute,
             // 拼接父路由的 path
-            path: connectParentRoutePath(childRoute.path, path)
+            path: connectParentRoutePaths(childRoute.path, path)
         }
     })
     return (props: RouteComponentProps) => {

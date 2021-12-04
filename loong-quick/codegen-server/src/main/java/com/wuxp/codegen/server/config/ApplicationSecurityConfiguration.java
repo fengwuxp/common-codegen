@@ -55,7 +55,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
     private void handleUnAuthorized(HttpServletResponse response) throws IOException {
         Map<String, String> resp = new HashMap<>();
         resp.put("message", "登录失败");
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.getWriter().println(objectMapper.writeValueAsString(resp));
     }

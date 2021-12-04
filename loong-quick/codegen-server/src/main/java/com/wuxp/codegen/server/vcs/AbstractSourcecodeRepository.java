@@ -1,5 +1,6 @@
 package com.wuxp.codegen.server.vcs;
 
+import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.server.config.SourcecodeRepositoryProperties;
 import com.wuxp.codegen.server.vcs.support.AbstractScmAccessor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,28 +15,27 @@ public abstract class AbstractSourcecodeRepository extends AbstractScmAccessor i
 
     protected final String masterBranchName;
 
-    protected AbstractSourcecodeRepository(SourcecodeRepositoryProperties properties) {
+    protected AbstractSourcecodeRepository(SourceCodeRepositoryAccessProperties properties) {
         super(properties);
         this.masterBranchName = properties.getMasterBranchName();
     }
 
     @Override
-    public String download(String projectName, String branch) {
+    public String checkout(String projectName, String branch) {
         File workingDirectory = this.getWorkingDirectory(projectName, branch);
         synchronized (this) {
             if (workingDirectory.exists()) {
                 // TODO 做更新？
-                // 如果存在则直接返回
-                return workingDirectory.getAbsolutePath();
-            } else {
-                boolean mkdir = workingDirectory.mkdir();
-                if (mkdir) {
-                    log.info("创建本地仓库目录：{}", workingDirectory.getAbsolutePath());
-                }
+                CodegenFileUtils.deleteDirectory(workingDirectory.getAbsolutePath());
+            }
+            boolean mkdir = workingDirectory.mkdir();
+            if (mkdir) {
+                log.info("创建本地仓库目录：{}", workingDirectory.getAbsolutePath());
             }
         }
+
         try {
-            this.downloadByScm(projectName, branch, workingDirectory);
+            this.clone(projectName, branch, workingDirectory);
         } catch (Exception exception) {
             workingDirectory.deleteOnExit();
             log.error("从源代码平台{}拉取代码失败，项目名称：{}，分支：{}，message：{}", getUri(), projectName, branch, exception.getMessage(), exception);
@@ -73,7 +73,7 @@ public abstract class AbstractSourcecodeRepository extends AbstractScmAccessor i
      * @param workingDirectory 本地仓库目录
      * @throws Exception
      */
-    protected abstract void downloadByScm(String projectName, String branch, File workingDirectory) throws Exception;
+    protected abstract void clone(String projectName, String branch, File workingDirectory) throws Exception;
 
     /**
      * 更新项目

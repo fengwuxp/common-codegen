@@ -5,15 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.Transient;
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 任务进度信息
+ * 任务信息
  *
  * @author wuxp
  */
 @Slf4j
 @Data
-public class CodegenTaskProgressInfo implements Serializable {
+public class CodegenTaskInfo implements Serializable {
 
     private static final long serialVersionUID = -3495142387275328243L;
 
@@ -45,7 +46,7 @@ public class CodegenTaskProgressInfo implements Serializable {
     /**
      * 已重试的次数
      */
-    private volatile int retries;
+    private final AtomicInteger retries;
 
     /**
      * 最后抛出的异常
@@ -55,29 +56,37 @@ public class CodegenTaskProgressInfo implements Serializable {
     /**
      * 任务被复用的次数
      */
-    private volatile int taskReferenceCount;
+    private final AtomicInteger taskReferenceCount;
 
-    public CodegenTaskProgressInfo(String taskId, String projectName, String branch, String repositoryCode) {
+    public CodegenTaskInfo(String taskId, String projectName, String branch, String repositoryCode) {
         this.taskId = taskId;
         this.projectName = projectName;
         this.branch = branch;
         this.repositoryCode = repositoryCode;
-        status = CodegenTaskStatus.CLONE_CODE;
-        retries = 0;
-        taskReferenceCount = 0;
+        this.status = CodegenTaskStatus.CLONE_CODE;
+        this.retries = new AtomicInteger(0);
+        this.taskReferenceCount = new AtomicInteger(0);
     }
 
-    public synchronized void increase() {
-        this.taskReferenceCount++;
+    public void increase() {
+        this.taskReferenceCount.incrementAndGet();
     }
 
-    public synchronized void release() {
-        this.taskReferenceCount--;
+    public void release() {
+        this.taskReferenceCount.decrementAndGet();
     }
 
     @Transient
     public Exception getLastException() {
         return lastException;
+    }
+
+    public int getRetries() {
+        return retries.get();
+    }
+
+    public int getTaskReferenceCount() {
+        return taskReferenceCount.get();
     }
 }
 

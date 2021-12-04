@@ -2,6 +2,9 @@ package com.wuxp.codegen.server.enums;
 
 import lombok.Getter;
 
+import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_GIT_BRANCH_NAME;
+import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_SVN_BRANCH_NAME;
+
 /**
  * @author wuxp
  */
@@ -11,12 +14,12 @@ public enum SourcecodeRepositoryType {
     /**
      * git
      */
-    GIT("master"),
+    GIT(DEFAULT_GIT_BRANCH_NAME),
 
     /**
      * svn
      */
-    SVN("main");
+    SVN(DEFAULT_SVN_BRANCH_NAME);
 
     private final String mainBranchName;
 

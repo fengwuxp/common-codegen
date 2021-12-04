@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @see com.wuxp.codegen.core.util.PathResolveUtils
  */
 @Slf4j
-public class PathResolve {
+public final class PathResolve {
 
 
     /**

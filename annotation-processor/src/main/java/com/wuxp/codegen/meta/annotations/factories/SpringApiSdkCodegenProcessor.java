@@ -6,14 +6,13 @@ import com.wuxp.codegen.core.CodegenBuilder;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
-import com.wuxp.codegen.meta.util.FileUtils;
+import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.starter.LoongCodeGenerator;
 
 import javax.annotation.processing.*;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,10 +43,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
         super.init(processingEnv);
         // 删除原本的输出目录
         String baseOutPath = LoongCodeGenerator.getBaseOutputPath();
-        File file = new File(baseOutPath);
-        if (file.exists() && file.isDirectory()) {
-            FileUtils.deleteDirectory(baseOutPath);
-        }
+        CodegenFileUtils.deleteDirectory(baseOutPath);
     }
 
     @Override

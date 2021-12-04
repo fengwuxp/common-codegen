@@ -11,9 +11,9 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +37,6 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
      * 代码生成的maven插件 名称
      */
     private static final String CODEGEN_MAVEN_PLUGIN_ARTIFACT_ID = "wuxp-codegen-loong-maven-plugin";
-
 
     private static final String MODULE_FILE_NAME = "pom.xml";
 
@@ -60,6 +58,7 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
 
     @Override
     public void executeCodegenPlugin(String projectBaseDir, String modelName, ClientProviderType type) {
+        Assert.hasText(projectBaseDir, "projectBaseDir must has text");
         String rootPom = String.format("%s%s%s", projectBaseDir, File.separator, MODULE_FILE_NAME);
         try {
             this.invokeCompile(rootPom);
@@ -81,42 +80,39 @@ public class MavenCodegenPluginExecuteStrategy implements CodegenPluginExecuteSt
         boolean filterByModelName = StringUtils.hasText(modelName);
         return pomFiles.stream()
                 .filter(file -> {
-                    Optional<Model> optional = this.parsePom(file);
-                    if (!optional.isPresent()) {
-                        return false;
-                    }
-                    Model model = optional.get();
+                    Model model = this.parsePom(file);
                     if (filterByModelName) {
                         return modelName.equals(model.getArtifactId()) || modelName.equals(model.getName());
                     } else {
-                        return findCodegenPlugin(model).isPresent();
+                        return findCodegenPlugin(model);
                     }
                 })
                 .map(File::getAbsolutePath)
                 .collect(Collectors.toList());
     }
 
-    private Optional<Plugin> findCodegenPlugin(Model model) {
+    private boolean findCodegenPlugin(Model model) {
         Build build = model.getBuild();
         if (build == null) {
-            return Optional.empty();
+            return false;
         }
-        List<Plugin> plugins = build.getPlugins();
-        return plugins.stream().filter(plugin -> CODEGEN_MAVEN_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId())).findFirst();
+        return build.getPlugins()
+                .stream()
+                .anyMatch(plugin -> CODEGEN_MAVEN_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId()));
     }
 
-    private Optional<Model> parsePom(File pom) {
+    private Model parsePom(File pom) {
         //pom 为 pom.xml 路径
         try {
             try (InputStream inputStream = new FileInputStream(pom)) {
                 MavenXpp3Reader reader = new MavenXpp3Reader();
                 //  最后得到的model就是pom.xml解析后对应的Java模型。
-                return Optional.of(reader.read(inputStream));
+                return reader.read(inputStream);
             }
         } catch (IOException | XmlPullParserException exception) {
             log.error("解析pom文件：{}失败：{}", pom.getAbsolutePath(), exception.getMessage(), exception);
+            throw new CodegenRuntimeException(exception);
         }
-        return Optional.empty();
     }
 
     /**

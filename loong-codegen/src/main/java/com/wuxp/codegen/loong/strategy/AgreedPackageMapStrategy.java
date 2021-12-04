@@ -4,7 +4,7 @@ import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.loong.path.PathResolve;
-import com.wuxp.codegen.meta.util.FileUtils;
+import com.wuxp.codegen.core.util.CodegenFileUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -104,7 +104,7 @@ public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
         if (isJava) {
             return String.format(packageFormat, outPackage, className);
         }
-        String path = FileUtils.packageNameToFilePath(outPackage.replace(groupId, ""));
+        String path = CodegenFileUtils.packageNameToFilePath(outPackage.replace(groupId, ""));
         return String.format("%s%s%s%s", PathResolve.RIGHT_SLASH, path, PathResolve.RIGHT_SLASH, className);
     }
 

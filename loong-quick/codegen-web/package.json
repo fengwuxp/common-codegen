@@ -31,10 +31,10 @@
     "react-helmet": "^6.1.0"
   },
   "devDependencies": {
-    "@ant-design/icons": "^4.6.2",
+    "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-layout": "^6.31.0",
-    "@ant-design/pro-table": "^2.58.1",
-    "antd": "^4.16.1",
+    "@ant-design/pro-table": "^2.59.0",
+    "antd": "^4.17.0",
     "babel-plugin-dynamic-import-chunk-name": "^1.0.0",
     "fengwuxp-codegen-client": "^1.0.0",
     "i18next": "^20.3.1",

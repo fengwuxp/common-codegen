@@ -2,6 +2,8 @@ package com.wuxp.codegen.server.vcs;
 
 import java.util.List;
 
+import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_GIT_BRANCH_NAME;
+
 /**
  * 源代码仓库
  * 用于从源代码管理平台拉取代码
@@ -15,25 +17,27 @@ public interface SourcecodeRepository {
 
 
     /**
-     * 使用默认分支，下载项目
+     * 使用默认分支，checkout
+     *
      * @param projectName 项目名称
-     * @return 下载项目的本地目录
+     * @return checkout 项目的本地目录
      */
-    default String download(String projectName) {
-        return download(projectName, this.getMasterBranchName());
+    default String checkout(String projectName) {
+        return checkout(projectName, this.getMasterBranchName());
     }
 
     /**
-     * 下载项目
+     * checkout
      *
      * @param projectName 项目名称
      * @param branch      分支名称
-     * @return 下载项目的本地目录
+     * @return checkout 项目的本地目录
      */
-    String download(String projectName, String branch);
+    String checkout(String projectName, String branch);
 
     /**
      * 获取项目的分支列表
+     *
      * @param projectName 项目名称
      * @return 分支列表
      */
@@ -67,11 +71,12 @@ public interface SourcecodeRepository {
      * @return 默认分支的名称
      */
     default String getMasterBranchName() {
-        return "master";
+        return DEFAULT_GIT_BRANCH_NAME;
     }
 
     /**
      * 获取本地的工作路径
+     *
      * @param projectName 项目名称
      * @param branch      分支名称
      * @return 本地仓库的工作路径

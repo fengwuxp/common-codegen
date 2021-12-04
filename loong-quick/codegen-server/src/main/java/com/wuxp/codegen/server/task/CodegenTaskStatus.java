@@ -7,7 +7,6 @@ package com.wuxp.codegen.server.task;
  */
 public enum CodegenTaskStatus {
 
-
     /**
      * 下载源代码
      */

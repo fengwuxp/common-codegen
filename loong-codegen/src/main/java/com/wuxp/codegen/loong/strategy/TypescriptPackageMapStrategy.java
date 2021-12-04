@@ -2,7 +2,7 @@ package com.wuxp.codegen.loong.strategy;
 
 import com.wuxp.codegen.core.strategy.AbstractPackageMapStrategy;
 import com.wuxp.codegen.loong.path.PathResolve;
-import com.wuxp.codegen.meta.util.FileUtils;
+import com.wuxp.codegen.core.util.CodegenFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -41,7 +41,7 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
       return clazz.getSimpleName();
     }
 
-    String convertClassName = FileUtils.packageNameToFilePath(this.controllerToService(path));
+    String convertClassName = CodegenFileUtils.packageNameToFilePath(this.controllerToService(path));
     if (convertClassName.startsWith(PathResolve.RIGHT_SLASH)) {
       return convertClassName;
     }

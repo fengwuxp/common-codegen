@@ -35,7 +35,7 @@ public class JGitSourcecodeRepository extends AbstractSourcecodeRepository {
 
     private final ProgressMonitor progressMonitor;
 
-    public JGitSourcecodeRepository(SourcecodeRepositoryProperties properties) {
+    public JGitSourcecodeRepository(SourceCodeRepositoryAccessProperties properties) {
         super(properties);
         gitFactory = new JGitFactory(false);
         progressMonitor = new TextProgressMonitor(new PrintWriter(System.out));
@@ -72,7 +72,7 @@ public class JGitSourcecodeRepository extends AbstractSourcecodeRepository {
     }
 
     @Override
-    protected void downloadByScm(String projectName, String branch, File workingDirectory) throws GitAPIException {
+    protected void clone(String projectName, String branch, File workingDirectory) throws GitAPIException {
         String remoteRepositoryUrl = this.getRemoteRepositoryUrl(projectName);
         if (log.isDebugEnabled()) {
             log.debug("Checking out {} to: {}", remoteRepositoryUrl, workingDirectory.getAbsolutePath());

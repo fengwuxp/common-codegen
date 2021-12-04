@@ -1,23 +1,22 @@
 package com.wuxp.codegen.server.task;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
- * 代码生成任务提供者
+ * 代码生成任务服务
  *
  * @author wuxp
  */
-public interface CodegenTaskProvider {
-
+public interface CodegenTaskService {
 
     /**
-     * 创建任务
+     * 创建代码生成任务
      *
      * @param projectName 项目名称
      * @param branch      分支名称
      * @return 任务id
      */
-    String create(String projectName, String branch);
+    String create(String projectName, @Nullable String branch);
 
     /**
      * 通过任务id获取任务进度信息
@@ -25,7 +24,7 @@ public interface CodegenTaskProvider {
      * @param taskId 任务id
      * @return 任务进度信息
      */
-    Optional<CodegenTaskProgressInfo> getTaskProgress(String taskId);
+    CodegenTaskInfo getTask(String taskId);
 
     /**
      * 释放任务
