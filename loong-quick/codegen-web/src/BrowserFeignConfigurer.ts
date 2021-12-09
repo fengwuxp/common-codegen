@@ -2,6 +2,7 @@ import {
     ClientHttpRequestInterceptorFunction,
     CodecFeignClientExecutorInterceptor,
     DateEncoder,
+    FeignRequestOptions,
     HttpErrorResponseEventPublisherExecutorInterceptor,
     HttpMediaType,
     HttpResponse,
@@ -9,25 +10,30 @@ import {
     NetworkClientHttpRequestInterceptor,
     RoutingClientHttpRequestInterceptor,
     SimpleNetworkStatusListener,
-    stringDateConverter
+    SmartHttpResponseEventListener,
+    stringDateConverter,
 } from 'fengwuxp-typescript-feign'
-import {
-    ClientHttpInterceptorRegistry,
-    FeignClientInterceptorRegistry,
-    FeignConfigurationAdapter,
-} from 'feign-boot-starter'
+import {ClientHttpInterceptorRegistry, FeignClientInterceptorRegistry, FeignConfigurer,} from 'feign-boot-starter'
 import {BrowserHttpAdapter, BrowserNetworkStatusListener} from 'feign-boot-browser-starter'
 import {message} from 'antd';
 
 import {API_ENTRY_ADDRESS, LANGUAGE_HEADER_NAME} from "@/env/EvnVariable";
 import {AppStorage} from "@/AppStorage";
+import {AppRouter} from "@/AppRouter";
 
 const I18nClientHttpRequestInterceptor: ClientHttpRequestInterceptorFunction = (req) => {
     req.headers[LANGUAGE_HEADER_NAME] = AppStorage.getLocaleNameSync();
     return Promise.resolve(req);
 }
 
-export default class BrowserFeignConfigurationAdapter implements FeignConfigurationAdapter {
+export const registerHttpResponseEventListener = (eventListener: SmartHttpResponseEventListener) => {
+    eventListener.onUnAuthorized((response) => {
+        console.log("onUnAuthorized", response);
+        AppRouter.login();
+    });
+}
+
+export default class BrowserFeignConfigurer implements FeignConfigurer {
 
     public defaultProduce = () => HttpMediaType.APPLICATION_JSON;
 
@@ -51,7 +57,7 @@ export default class BrowserFeignConfigurationAdapter implements FeignConfigurat
             ],
         ));
 
-        const unifiedFailureToast = (response: HttpResponse | string) => {
+        const unifiedFailureToast = (request: FeignRequestOptions, response: HttpResponse) => {
             console.log('======response====>', response);
             message.error(this.getRespErrorMessage(response) ?? "系统错误", 1.5);
         };
@@ -59,24 +65,17 @@ export default class BrowserFeignConfigurationAdapter implements FeignConfigurat
         interceptorRegistry.addInterceptor(new HttpErrorResponseEventPublisherExecutorInterceptor(unifiedFailureToast))
     };
 
-    private getRespErrorMessage = (response: HttpResponse<any> | string): string => {
-        if (typeof response === "object") {
-            if (response.statusCode === HttpStatus.GATEWAY_TIMEOUT) {
-                return response.statusText;
-            } else {
-                const data = response.data;
-                if (data != null) {
-                    return data.message;
-                }
+    private getRespErrorMessage = (response: HttpResponse): string => {
+        if (response.statusCode === HttpStatus.GATEWAY_TIMEOUT) {
+            return response.statusText;
+        } else {
+            const data = response.data;
+            if (data == null) {
+                return response.statusText || "请求失败";
             }
+            return data.message || "请求出现错误";
         }
-        return response as string;
     }
-
-
-    public feignUIToast = () => (text: string) => {
-        message.error(text || "系统错误")
-    };
 }
 
 

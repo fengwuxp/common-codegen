@@ -1,23 +1,19 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 import {I18nextProvider} from 'react-i18next';
-import BrowserFeignConfigurationAdapter from "@/BrowserFeignConfigurationAdapter";
+import BrowserFeignConfigurer, {registerHttpResponseEventListener} from "@/BrowserFeignConfigurer";
 import App from "@/App";
 import {Spin} from "antd";
-import {feignConfigurationInitializer} from "feign-boot-starter";
+import {feignConfigurationInitialize} from "feign-boot-starter";
 import {setDefaultLoadingComponent} from "@/components/loading/AsyncLoading";
 import i18n from '@/i18n';
-import {AppRouter} from "@/AppRouter";
+
+// 设置默认组件加载 loading
+setDefaultLoadingComponent(Spin);
 
 //  注册feign 代理
-const feignConfig = feignConfigurationInitializer(new BrowserFeignConfigurationAdapter());
-
-feignConfig.getHttpResponseEventListener().onUnAuthorized((response) => {
-    console.log("onUnAuthorized", response);
-    AppRouter.login();
-})
-
-setDefaultLoadingComponent(Spin)
+const feignConfig = feignConfigurationInitialize(new BrowserFeignConfigurer());
+registerHttpResponseEventListener(feignConfig.getHttpResponseEventListener())
 
 // Render the top-level React component
 ReactDOM.render(

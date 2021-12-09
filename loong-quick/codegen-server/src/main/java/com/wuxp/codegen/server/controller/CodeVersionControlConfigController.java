@@ -7,8 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.wuxp.codegen.server.constant.WebApiConstants.WEB_API_V1_PREFIX;
@@ -20,6 +22,7 @@ import static com.wuxp.codegen.server.constant.WebApiConstants.WEB_API_V1_PREFIX
 @Slf4j
 @RestController
 @RequestMapping(WEB_API_V1_PREFIX + "/vcs-configs")
+@Validated
 public class CodeVersionControlConfigController {
 
     private final CodeVersionControlConfigRepository codeVersionControlConfigRepository;
@@ -42,7 +45,7 @@ public class CodeVersionControlConfigController {
 
     @Operation(description = "保存源代仓库配置")
     @PostMapping()
-    public void save(@RequestBody CodeVersionControlConfig req) {
+    public void save(@Valid @RequestBody CodeVersionControlConfig req) {
         codeVersionControlConfigRepository.save(req);
     }
 
