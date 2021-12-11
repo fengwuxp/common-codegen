@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 
 import static com.wuxp.codegen.core.event.CodeGenEventListener.TEMPLATE_PATH_TAG_NAME;
@@ -116,7 +115,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
         Template template = this.templateLoader.load(templatePath);
         Assert.notNull(template, "获取模板失败，templatePath = " + templatePath);
         String packagePath = this.fileNameGenerateStrategy.generateName(data.getPackagePath());
-        String outputPath = Paths.get(MessageFormat.format("{0}{1}.{2}", this.outputPath, CodegenFileUtils.packageNameToFilePath(packagePath), extName)).toString();
+        String outputPath = getFileOutputPath(data, packagePath);
         // 如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
         if (outputPath.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
             log.warn("类{}，的生成输入路径有误,{}", data.getName(), outputPath);
@@ -128,7 +127,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
         }
         CodegenFileUtils.createDirectoryRecursively(outputPath.substring(0, outputPath.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
-            log.info("生成类{}的文件，输出到{}目录", data.getName(), outputPath);
+            log.info("生成类 {} 的文件，输出到{}目录", data.getName(), outputPath);
         }
         //输出
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputPath), StandardCharsets.UTF_8)) {
@@ -137,6 +136,15 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
         }
         // 格式化代码
         codeFormatter.format(outputPath);
+    }
+
+    private String getFileOutputPath(CommonCodeGenClassMeta data, String packagePath) {
+        if (packagePath.startsWith(".")) {
+            // 计算相对路径
+            return MessageFormat.format("{0}.{1}", PathResolveUtils.relative(this.outputPath, data.getPackagePath()), extName);
+        } else {
+            return MessageFormat.format("{0}{1}.{2}", this.outputPath, CodegenFileUtils.packageNameToFilePath(packagePath), extName);
+        }
     }
 
     private boolean fileIsCodegen(String output) {
