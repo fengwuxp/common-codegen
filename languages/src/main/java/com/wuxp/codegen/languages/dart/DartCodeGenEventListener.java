@@ -124,7 +124,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
         tags.put(SDK_LIB_TAG_NAME, feignSdkLibName);
         result.setTags(tags);
         tags.put(TEMPLATE_PATH_TAG_NAME, "feign_sdk");
-        result.setPackagePath("/" + feignSdkLibName);
+        result.setPackagePath(String.format("/%s", feignSdkLibName));
         return result;
     }
 
