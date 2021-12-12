@@ -1,9 +1,11 @@
 package com.wuxp.codegen.types;
 
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -32,14 +34,6 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         }
         int length = codeGenClassMetas.length;
         CommonCodeGenClassMeta genClassMeta = codeGenClassMetas[0];
-//    CommonCodeGenClassMeta lastCodeMeta = codeGenClassMetas[codeGenClassMetas.length - 1];
-//    String metaName = genClassMeta.getName();
-//        if (lastCodeMeta.getName().endsWith(CommonCodeGenClassMeta.ARRAY_TYPE_NAME_PREFIX)) {
-//            //合并数组的类型
-//            CommonCodeGenClassMeta[] typeVariables = genClassMeta.getTypeVariables();
-//            return metaName.replace("T", typeVariables[0].getName());
-//        }
-
         String finallyGenericDescription = genClassMeta.getFinallyGenericDescription();
         if (length == 1) {
             if (!StringUtils.hasText(finallyGenericDescription)) {
@@ -52,7 +46,6 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         String genericDescription = genClassMeta.getFinallyGenericDescription();
         if (!StringUtils.hasText(genericDescription)) {
             log.warn("泛型描述不存在，基础类型{}，期望获取泛型的类型{}", genClassMeta.getName(), finallyGenericDescription);
-
             return finallyGenericDescription;
         }
 
@@ -64,6 +57,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             log.debug("生成的泛型描述为：{}", genericDescription);
         }
 
+        Assert.hasText(genericDescription, () -> "生成的泛型描述不能为 null or empty, types = {} " + Arrays.stream(codeGenClassMetas).map(CommonCodeGenClassMeta::getName).collect(Collectors.joining(",")));
         return genericDescription;
     }
 
@@ -110,14 +104,10 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
                 if (typeVariableTempStack.size() == 1) {
                     return typeVariableTempStack.pop();
                 }
-            } else {
-                // 不存在
-
             }
         }
 
         return null;
-
     }
 
 
@@ -132,18 +122,15 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         List<String> descriptors = GrabGenericVariablesHelper.matchGenericDescriptors(typeVariableName);
         if (descriptors.isEmpty()) {
             // 没有有泛型描述变量
-            throw new RuntimeException("match generic descriptor failure");
+            throw new CodegenRuntimeException("match generic descriptor failure");
         }
         if (typeVariableNames.size() < descriptors.size()) {
             // 类型变量的长度小于泛型描述符
-//            throw new RuntimeException("type variable name size error");
             log.error("type variable name size error");
             return "";
         }
         List<String> names = new ArrayList<>();
-        descriptors.forEach(s -> {
-            names.add(typeVariableNames.pop());
-        });
+        descriptors.forEach(s -> names.add(typeVariableNames.pop()));
 
         return this.replaceGenericDescCode(typeVariableName, descriptors, names);
     }

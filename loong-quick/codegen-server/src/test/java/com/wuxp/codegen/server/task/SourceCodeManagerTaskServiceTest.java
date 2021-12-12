@@ -6,9 +6,8 @@ import com.wuxp.codegen.server.config.LoongCodegenProperties;
 import com.wuxp.codegen.server.scope.CodegenTaskContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -44,7 +43,8 @@ class SourceCodeManagerTaskServiceTest {
      * 该测试用例仅支持手动调用
      */
     @Test
-    @EnabledOnOs({OS.MAC})
+//    @EnabledOnOs({OS.MAC})
+    @Disabled
     void testCreate() throws Exception {
         CodegenTaskContextHolder.setSourceCodeRepositoryName(DEFAULT_REPOSITORY_NANE);
         String mainBranchName = "master";

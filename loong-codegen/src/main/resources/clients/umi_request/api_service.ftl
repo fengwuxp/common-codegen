@@ -21,7 +21,7 @@
     <#include "../../commons/api_method_comments.ftl">
     <#include "../typescript_feign/inculdes/method_prams_required.ftl">
 
-export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${methodParam.name},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
+export const  ${method.name}=  (<#if method.isRequiredParameter(methodParamName)>req<#if method.isOptionalParameter(methodParamName)>?</#if>: ${method.getParameterTypeName(methodParamName)},</#if> options?: RequestOptionsInit): Promise<${customizeMethod.combineType(method.returnTypes)}> =>{
     <#assign tags=method.tags/>
     <#assign reqParamName="req"/>
     <#if (tags['needDeleteParams']?size>0)>
@@ -35,7 +35,6 @@ export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFile
         <#--    设置请求头  -->
         const headers:Record<string,any>={};
         <#list tags['requestHeaderNames'] as requestHeaderName>
-<#--            const headerParam=req.${requestHeaderName};-->
             if(${requestHeaderName}!=null){
               headers['${requestHeaderName}']=Array.isArray(${requestHeaderName})?${requestHeaderName}.join(";"):${requestHeaderName};
             }
@@ -50,11 +49,11 @@ export const  ${method.name}=  (<#if methodParamRequired>req<#if methodParamFile
         <#if tags['requestType']??>
           requestType: '${tags['requestType']}',
         </#if>
-        <#if methodParamRequired>
-          data: ${reqParamName}<#if methodParamFileldAllNotRequired> || {}</#if>,
+        <#if method.isRequiredParameter(methodParamName)>
+          data: ${reqParamName}<#if method.isOptionalParameter(methodParamName)> || {}</#if>,
          </#if>
-    <#elseif methodParamRequired>
-      params: ${reqParamName}<#if methodParamFileldAllNotRequired> || {}</#if>,
+    <#elseif method.isRequiredParameter(methodParamName)>
+      params: ${reqParamName}<#if method.isOptionalParameter(methodParamName)> || {}</#if>,
     </#if>
     <#if tags['responseType']??>
       responseType: '${tags['responseType']}',

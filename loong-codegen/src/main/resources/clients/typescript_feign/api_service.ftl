@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 <#include "./inculdes/feign_imports.ftl">
-<#if dependencies??>
+<#if X??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
       import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
