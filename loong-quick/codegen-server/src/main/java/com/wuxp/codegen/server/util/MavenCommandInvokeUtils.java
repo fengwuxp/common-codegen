@@ -2,17 +2,19 @@ package com.wuxp.codegen.server.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.shared.invoker.*;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Objects;
 
 /**
  * 调用maven命令
  * <p>
- *   增加从系统的环境变量中获取{@link #MAVEN_HOME}和{@link #JAVA_HOME}
+ * 增加从系统的环境变量中获取{@link #MAVEN_HOME}和{@link #JAVA_HOME}
  * </p>
+ *
  * @author wuxp
  */
 @Slf4j
@@ -35,6 +37,8 @@ public final class MavenCommandInvokeUtils {
     static {
         MAVEN_HOME = getSystemEnv("MAVEN_HOME", "MVN_HOME");
         JAVA_HOME = getSystemEnv("JAVA_HOME", "JAVA8_HOME");
+        Assert.hasText(MAVEN_HOME, "maven home 获取失败");
+        Assert.hasText(JAVA_HOME, "java home 获取失败");
     }
 
 
@@ -80,13 +84,15 @@ public final class MavenCommandInvokeUtils {
     }
 
     private static String getSystemEnv(String... names) {
-        return Arrays.stream(names).map(name -> {
-            String env = System.getenv(name);
-            if (env == null) {
-                env = System.getProperty(name);
-            }
-            return env;
-        }).filter(Objects::nonNull)
-                .findFirst().orElse(null);
+        return Arrays.stream(names)
+                .map(name -> {
+                    String env = System.getenv(name);
+                    if (!StringUtils.hasText(env)) {
+                        env = System.getProperty(name);
+                    }
+                    return env;
+                }).filter(StringUtils::hasText)
+                .findFirst()
+                .orElse(null);
     }
 }
