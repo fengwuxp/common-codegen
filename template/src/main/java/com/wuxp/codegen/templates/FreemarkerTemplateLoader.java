@@ -1,7 +1,6 @@
 package com.wuxp.codegen.templates;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
@@ -80,11 +79,11 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         configuration.setObjectWrapper(objectWrapper);
         //这个一定要设置，不然在生成的页面中 会乱码
         configuration.setDefaultEncoding("UTF-8");
-
-        //支持从jar中加载模板
+        // 支持从jar中加载模板
         configuration.setClassForTemplateLoading(FreemarkerTemplateLoader.class, "/");
         if (sharedVariables == null) {
-            throw new CodegenRuntimeException("sharedVariables is null");
+            log.warn("sharedVariables is null");
+            sharedVariables = new HashMap<>();
         }
         Map<Object, Object> templateMethods = initCustomizeMethods();
         sharedVariables.put("customizeMethod", templateMethods);
