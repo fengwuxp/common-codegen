@@ -53,6 +53,7 @@ class SourceCodeManagerTaskServiceTest {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         CodegenTaskStatus status = waitTaskStatus(scheduledExecutorService, taskId);
         Assertions.assertNotNull(status);
+        codegenTaskService.release(taskId);
 
     }
 

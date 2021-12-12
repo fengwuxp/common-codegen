@@ -21,6 +21,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SourceCodeManagerTaskService implements CodegenTaskService {
 
+    /**
+     * 最大重试次数
+     */
+    private static final int MAX_RETRIES = 5;
+
     private final Cache<String, CodegenTaskInfo> taskProgressCaches;
 
     private final SourcecodeRepository sourcecodeRepository;
@@ -66,7 +71,7 @@ public class SourceCodeManagerTaskService implements CodegenTaskService {
 
     private String getBranchOrDefault(String branch) {
         if (StringUtils.hasText(branch)) {
-          return branch;
+            return branch;
         }
         return sourcecodeRepository.getMasterBranchName();
     }
@@ -96,15 +101,18 @@ public class SourceCodeManagerTaskService implements CodegenTaskService {
         }
         taskInfo.release();
         int taskReferenceCount = taskInfo.getTaskReferenceCount();
-        if (taskReferenceCount == 0) {
+        if (taskReferenceCount <= 0) {
             // 移除任务信息
             taskProgressCaches.invalidate(taskId);
+            // 删除代码仓库
+            sourcecodeRepository.deleteLocalRepository(taskInfo.getProjectName(), taskInfo.getBranch());
         }
     }
 
     private void submitTask(String projectName, String branch, CodegenTaskInfo taskProgressInfo) {
-        if (taskProgressInfo.getRetries() >= 5) {
-            log.warn("项目：{}，分支：{}任务：{}已达到最大重试次数", projectName, branch, taskProgressInfo);
+        if (taskProgressInfo.getRetries() >= MAX_RETRIES) {
+            log.error("项目：{}，分支：{} 任务：{} 已达到最大重试次数，任务失败原因：{}", projectName, branch, taskProgressInfo.getTaskId(),
+                    taskProgressInfo.getExceptionCause());
             taskProgressInfo.setStatus(CodegenTaskStatus.FAILURE);
             return;
         }
@@ -112,8 +120,8 @@ public class SourceCodeManagerTaskService implements CodegenTaskService {
             taskProgressInfo.setStatus(downloadCode(projectName, branch, taskProgressInfo));
             String projectFilepath = sourcecodeRepository.getLocalDirectory(projectName, branch);
             taskProgressInfo.setStatus(executeCodegenPlugin(taskProgressInfo, projectFilepath));
-            if (!CodegenTaskStatus.SUCCESS.equals(taskProgressInfo.getStatus())) {
-                // 重试
+            if (!taskProgressInfo.getStatus().isCompleted()) {
+                // 任务为完成
                 submitTask(projectName, branch, taskProgressInfo);
             }
         });
@@ -138,6 +146,8 @@ public class SourceCodeManagerTaskService implements CodegenTaskService {
                 return CodegenTaskStatus.SUCCESS;
             } catch (Exception exception) {
                 taskProgressInfo.setLastException(exception);
+                // 插件执行失败，不做重试
+                taskProgressInfo.setStatus(CodegenTaskStatus.FAILURE);
             }
         }
         return taskProgressInfo.getStatus();

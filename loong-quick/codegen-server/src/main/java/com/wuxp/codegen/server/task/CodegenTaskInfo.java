@@ -81,6 +81,10 @@ public class CodegenTaskInfo implements Serializable {
         return lastException;
     }
 
+    public String getExceptionCause() {
+        return lastException == null ? "" : lastException.getMessage();
+    }
+
     public int getRetries() {
         return retries.get();
     }

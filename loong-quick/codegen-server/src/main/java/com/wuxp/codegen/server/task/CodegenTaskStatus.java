@@ -25,6 +25,11 @@ public enum CodegenTaskStatus {
     /**
      * 成功失败
      */
-    FAILURE
+    FAILURE;
+
+
+    boolean isCompleted() {
+        return this == SUCCESS || this == FAILURE;
+    }
 
 }
