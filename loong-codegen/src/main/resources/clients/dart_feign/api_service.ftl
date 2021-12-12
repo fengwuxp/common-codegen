@@ -58,7 +58,7 @@ ${name}() : super() {
             <#assign annotation= paramAnnotation[0]/>
             <#assign len=annotation.namedArguments?size />
             <#assign currentIndex=0 />
-          @${annotation.name}(<#list annotation.namedArguments as name,val>${name} = ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
+          @${annotation.name}(<#list annotation.namedArguments as name,val>${name}: ${val!""} <#if currentIndex<len-1>,</#if><#assign currentIndex=currentIndex+1 /></#list>)
         </#if>
         ${customizeMethod.combineType(paramType.typeVariables)} ${paramName},
     </#list>
