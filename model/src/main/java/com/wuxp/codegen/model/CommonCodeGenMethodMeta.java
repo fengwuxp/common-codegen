@@ -6,12 +6,15 @@ import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
- * 通用的代码生成method元数据
+ * 通用的代码生成 method 元数据
  *
  * @author wuxp
  */
@@ -53,4 +56,53 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
      */
     private CommonCodeGenAnnotation[] annotations;
 
+
+    /**
+     * @param name 参数名称
+     * @return 是否需要该参数
+     */
+    public boolean isRequiredParameter(String name) {
+        CommonCodeGenClassMeta parameter = getParameter(name);
+        if (parameter == null) {
+            return false;
+        }
+        return !ObjectUtils.isEmpty(parameter.getFieldMetas());
+    }
+
+    /**
+     * @param name 参数名称
+     * @return 是否为可选参数
+     */
+    public boolean isOptionalParameter(String name) {
+        CommonCodeGenClassMeta parameter = getParameter(name);
+        if (parameter == null) {
+            return false;
+        }
+        // 参数中所有的字段都不是必填
+        return Arrays.stream(parameter.getFieldMetas())
+                .noneMatch(filedMeta -> Boolean.TRUE.equals(filedMeta.getRequired()));
+    }
+
+    /**
+     * @param name 参数名称
+     * @return 参数类型名称
+     */
+    public String getParameterTypeName(String name) {
+        CommonCodeGenClassMeta parameter = getParameter(name);
+        if (parameter == null) {
+            return "";
+        }
+        return parameter.getName();
+    }
+
+    private CommonCodeGenClassMeta getParameter(String name) {
+        if (CollectionUtils.isEmpty(params)) {
+            return null;
+        }
+        CommonCodeGenClassMeta classMeta = params.get(name);
+        if (classMeta == null || ObjectUtils.isEmpty(classMeta.getFieldMetas())) {
+            return null;
+        }
+        return classMeta;
+    }
 }

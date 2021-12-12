@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 @Accessors(chain = true)
 public class CommonCodeGenFiledMeta extends CommonBaseMeta {
 
-
     /**
      * 原目标 Field
      */
@@ -54,4 +53,9 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
      * 枚举的内部字段值
      */
     private String[] enumFiledValues;
+
+    /**
+     * 是否必填
+     */
+    private Boolean required = false;
 }

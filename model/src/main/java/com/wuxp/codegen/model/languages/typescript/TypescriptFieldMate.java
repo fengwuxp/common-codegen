@@ -15,10 +15,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public final class TypescriptFieldMate extends CommonCodeGenFiledMeta {
 
-    /**
-     * 是否必填
-     */
-    private Boolean required = false;
 
     public TypescriptFieldMate() {
     }
@@ -26,6 +22,6 @@ public final class TypescriptFieldMate extends CommonCodeGenFiledMeta {
     public TypescriptFieldMate(String name, TypescriptClassMeta[] filedTypes, boolean required) {
         this.name = name;
         this.filedTypes = filedTypes;
-        this.required = required;
+        this.setRequired(required);
     }
 }

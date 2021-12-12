@@ -30,7 +30,7 @@ class ${name}{
       })
     </#list>
     <#include "./inculdes/method_prams_required.ftl">
-    ${method.name}!:(<#if methodParamRequired>req<#if methodParamFileldAllNotRequired>?</#if>: ${methodParam.name}<#else >req?: null | undefined</#if>, option?: FeignRequestOptions) => Promise<${customizeMethod.combineType(method.returnTypes)}>;
+    ${method.name}!:(<#if method.isRequiredParameter(methodParamName)>req<#if method.isOptionalParameter(methodParamName)>?</#if>: ${method.getParameterTypeName(methodParamName)}<#else >req?: null | undefined</#if>, option?: FeignRequestOptions) => Promise<${customizeMethod.combineType(method.returnTypes)}>;
 </#list>
 }
 
