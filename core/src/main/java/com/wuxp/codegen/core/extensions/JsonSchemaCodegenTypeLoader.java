@@ -245,7 +245,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
         String name = file.getName();
         SchemaCodegenModel model = null;
         try {
-            model = JSON.parseObject(FileUtils.readFileToString(file, StandardCharsets.UTF_8), SchemaCodegenModel.class);
+            model = JSON.parseObject(FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()), SchemaCodegenModel.class);
             model.setSource(Thread.currentThread().getContextClassLoader().loadClass(name.substring(0, name.lastIndexOf("."))));
         } catch (IOException exception) {
             if (log.isDebugEnabled()) {
