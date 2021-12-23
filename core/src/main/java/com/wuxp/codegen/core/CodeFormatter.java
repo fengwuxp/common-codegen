@@ -32,8 +32,8 @@ public interface CodeFormatter extends CodeGenerateAsyncTaskFuture {
             File sourceFile = new File(filepath);
             Assert.isTrue(sourceFile.exists(), String.format("filepath = %s 的文件不存在", filepath));
             Assert.isTrue(sourceFile.canRead(), String.format("filepath = %s 的文件不可读", filepath));
-            String sourcecode = FileUtils.readFileToString(sourceFile, charset);
-            FileUtils.write(sourceFile, format(sourcecode, charset), charset);
+            String sourcecode = FileUtils.readFileToString(sourceFile, charset.name());
+            FileUtils.write(sourceFile, format(sourcecode, charset), charset.name());
         } catch (Exception exception) {
             throw new CodegenRuntimeException(exception);
         }
