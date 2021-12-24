@@ -38,7 +38,6 @@ public final class LoongCodeGenerator implements CodeGenerator {
     @Setter
     private String[] scanPackages;
 
-    @Setter
     private OpenApiType openApiType;
 
     /**
@@ -81,6 +80,10 @@ public final class LoongCodeGenerator implements CodeGenerator {
     public LoongCodeGenerator(OpenApiType openApiType, String... scanPackages) {
         this.scanPackages = scanPackages;
         this.openApiType = openApiType;
+    }
+
+    public void setOpenApiType(String openApiType) {
+        this.openApiType = OpenApiType.valueOf(openApiType);
     }
 
     @Override

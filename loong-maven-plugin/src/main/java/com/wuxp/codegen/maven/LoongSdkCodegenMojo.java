@@ -91,10 +91,11 @@ public class LoongSdkCodegenMojo extends AbstractSdkCodegenMojo {
 
         if (openApiType != null) {
             try {
+                //解决跨类加载器问题
                 findMethod(newInstance.getClass(), "setOpenApiType")
-                        .invoke(newInstance, openApiType);
+                        .invoke(newInstance, openApiType.name());
             } catch (Exception e) {
-                this.getLog().error("设置 OpenApiType 类型失败 " + openApiType, e);
+                this.getLog().error("设置 OpenApiType 类型失败 " + openApiType , e);
             }
         }
 
