@@ -94,7 +94,7 @@ public class LoongSdkCodegenMojo extends AbstractSdkCodegenMojo {
                         .getMethod("setOpenApiType", OpenApiType.class)
                         .invoke(newInstance, openApiType);
             } catch (Exception e) {
-                this.getLog().error("设置 OpenApiType 类型失败 " + openApiType);
+                this.getLog().error("设置 OpenApiType 类型失败 " + openApiType, e);
             }
         }
 

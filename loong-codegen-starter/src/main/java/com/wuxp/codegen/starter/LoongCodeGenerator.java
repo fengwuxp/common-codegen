@@ -81,14 +81,15 @@ public final class LoongCodeGenerator implements CodeGenerator {
     public LoongCodeGenerator(OpenApiType openApiType, String... scanPackages) {
         this.scanPackages = scanPackages;
         this.openApiType = openApiType;
-        if (log.isInfoEnabled()) {
-            log.info("sdk codegen args: openApiType={},scanPackages={}", openApiType, scanPackages);
-        }
     }
-
 
     @Override
     public void generate() {
+
+        if (log.isInfoEnabled()) {
+            log.info("sdk codegen args: openApiType={},scanPackages={}", openApiType, scanPackages);
+        }
+
         Collection<CodegenBuilder> codeGeneratorBuilders = getCodeGeneratorBuilders();
         if (log.isInfoEnabled()) {
             log.info("codeGeneratorBuilders：{}", codeGeneratorBuilders);
@@ -103,10 +104,13 @@ public final class LoongCodeGenerator implements CodeGenerator {
     }
 
     public Collection<CodegenBuilder> getCodeGeneratorBuilders() {
+
         Collection<ClientProviderType> finallyClientProviderTypes = getFinallyClientProviderTypes();
+
         if (log.isInfoEnabled()) {
             log.info("finallyClientProviderTypes：{}", finallyClientProviderTypes);
         }
+
         switch (openApiType) {
             case SWAGGER_2:
                 return getCodeSwagger2GeneratorBuilders();
