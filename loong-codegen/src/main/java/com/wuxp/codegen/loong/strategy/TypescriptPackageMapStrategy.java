@@ -41,7 +41,7 @@ public class TypescriptPackageMapStrategy extends AbstractPackageMapStrategy {
       return clazz.getSimpleName();
     }
 
-    String convertClassName = CodegenFileUtils.packageNameToFilePath(this.controllerToService(path));
+    String convertClassName = CodegenFileUtils.toFilepathPart(this.controllerToService(path));
     if (convertClassName.startsWith(PathResolve.RIGHT_SLASH)) {
       return convertClassName;
     }

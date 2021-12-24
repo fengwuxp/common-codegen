@@ -1,7 +1,6 @@
 package test.com.wuxp.codegen.swagger2;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.loong.CodegenSdkUploader;
 import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
@@ -12,6 +11,7 @@ import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
@@ -111,4 +111,5 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
         System.out.println(s);
 
     }
+
 }

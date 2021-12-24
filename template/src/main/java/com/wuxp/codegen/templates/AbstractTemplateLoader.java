@@ -18,11 +18,11 @@ public abstract class AbstractTemplateLoader<T> implements TemplateLoader<T> {
 
   protected final String templateFileVersion;
 
-  public AbstractTemplateLoader(ClientProviderType clientProviderType) {
+  protected AbstractTemplateLoader(ClientProviderType clientProviderType) {
     this(clientProviderType, TemplateFileVersion.DEFAULT.getVersion());
   }
 
-  public AbstractTemplateLoader(ClientProviderType clientProviderType, String templateFileVersion) {
+  protected AbstractTemplateLoader(ClientProviderType clientProviderType, String templateFileVersion) {
     this.clientProviderType = clientProviderType;
     this.templateFileVersion = templateFileVersion;
   }

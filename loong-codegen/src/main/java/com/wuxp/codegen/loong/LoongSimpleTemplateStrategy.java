@@ -2,6 +2,7 @@ package com.wuxp.codegen.loong;
 
 import com.wuxp.codegen.core.CodeFormatter;
 import com.wuxp.codegen.core.constant.FeignApiSdkTemplateName;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.FileNameGenerateStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.core.util.CodegenFileUtils;
@@ -13,6 +14,7 @@ import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.templates.TemplateLoader;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -109,33 +111,32 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
 
     @Override
     public void build(CommonCodeGenClassMeta data) throws Exception {
-
-        //根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
+        // 根据是否为接口类型的元数据还是dto的类型的元数据加载不同的模板
         String templatePath = this.getTemplatePath(data);
         Template template = this.templateLoader.load(templatePath);
         Assert.notNull(template, "获取模板失败，templatePath = " + templatePath);
         String packagePath = this.fileNameGenerateStrategy.generateName(data.getPackagePath());
-        String outputPath = getFileOutputPath(data, packagePath);
-        // 如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName的格式
-        if (outputPath.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
-            log.warn("类{}，的生成输入路径有误,{}", data.getName(), outputPath);
+        String filepath = FilenameUtils.normalize(getFileOutputPath(data, packagePath));
+        // 如果生成的文件没有文件名称，即输出如今形如 /a/b/.extName 的格式
+        if (filepath.contains(MessageFormat.format("{0}.{1}", File.separator, extName))) {
+            throw new CodegenRuntimeException("类：" + data.getName() + "，的生成输入路径有误： " + filepath);
         }
 
-        if (fileIsCodegen(outputPath)) {
-            log.warn("文件{}在{}分钟内已经生成过，跳过生成", outputPath, LAST_MODIFIED_MINUTE);
+        if (fileIsCodegen(filepath)) {
+            log.warn("文件{}在{}分钟内已经生成过，跳过生成", filepath, LAST_MODIFIED_MINUTE);
             return;
         }
-        CodegenFileUtils.createDirectoryRecursively(outputPath.substring(0, outputPath.lastIndexOf(File.separator)));
+        CodegenFileUtils.createDirectoryRecursively(filepath.substring(0, filepath.lastIndexOf(File.separator)));
         if (log.isInfoEnabled()) {
-            log.info("生成类 {} 的文件，输出到{}目录", data.getName(), outputPath);
+            log.info("生成类 {} 的文件，输出到 {} 目录", data.getName(), filepath);
         }
         //输出
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputPath), StandardCharsets.UTF_8)) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(filepath), StandardCharsets.UTF_8)) {
             // 添加自定义方法
             template.process(data, writer);
         }
         // 格式化代码
-        codeFormatter.format(outputPath);
+        codeFormatter.format(filepath);
     }
 
     private String getFileOutputPath(CommonCodeGenClassMeta data, String packagePath) {
@@ -143,7 +144,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
             // 计算相对路径
             return MessageFormat.format("{0}.{1}", PathResolveUtils.relative(this.outputPath, data.getPackagePath()), extName);
         } else {
-            return MessageFormat.format("{0}{1}.{2}", this.outputPath, CodegenFileUtils.packageNameToFilePath(packagePath), extName);
+            return MessageFormat.format("{0}{1}.{2}", this.outputPath, CodegenFileUtils.toFilepathPart(packagePath), extName);
         }
     }
 

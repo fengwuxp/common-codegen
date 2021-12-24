@@ -53,8 +53,13 @@ public final class CodegenFileUtils {
         }
     }
 
-    public static String packageNameToFilePath(String packagePath) {
-        // 此处必须使用 replaceAll
-        return packagePath.replaceAll("\\.", "/");
+    /**
+     * 将包名转换为路径
+     *
+     * @param packageName 包名
+     * @return 文件路径 part
+     */
+    public static String toFilepathPart(String packageName) {
+        return packageName.replace(".", File.separator);
     }
 }

@@ -104,7 +104,7 @@ public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
         if (isJava) {
             return String.format(packageFormat, outPackage, className);
         }
-        String path = CodegenFileUtils.packageNameToFilePath(outPackage.replace(groupId, ""));
+        String path = CodegenFileUtils.toFilepathPart(outPackage.replace(groupId, ""));
         return String.format("%s%s%s%s", PathResolve.RIGHT_SLASH, path, PathResolve.RIGHT_SLASH, className);
     }
 
