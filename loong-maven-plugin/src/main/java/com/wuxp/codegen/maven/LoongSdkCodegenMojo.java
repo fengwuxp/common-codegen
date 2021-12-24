@@ -1,7 +1,6 @@
 package com.wuxp.codegen.maven;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.starter.enums.OpenApiType;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.springframework.util.StringUtils;
@@ -88,10 +87,11 @@ public class LoongSdkCodegenMojo extends AbstractSdkCodegenMojo {
             return;
         }
 
+        getLog().info(newInstance.getClass().getName() + ":" + Arrays.asList(newInstance.getClass().getMethods()));
+
         if (openApiType != null) {
             try {
-                newInstance.getClass()
-                        .getMethod("setOpenApiType", OpenApiType.class)
+                findMethod(newInstance.getClass(), "setOpenApiType")
                         .invoke(newInstance, openApiType);
             } catch (Exception e) {
                 this.getLog().error("设置 OpenApiType 类型失败 " + openApiType, e);
@@ -112,6 +112,14 @@ public class LoongSdkCodegenMojo extends AbstractSdkCodegenMojo {
             this.getLog().error(String.format("代码生成生成执行失败 %s", exception.getMessage()), exception);
             logger.error("代码生成生成执行失败，{}，exception：{}", exception.getMessage(), exception.getClass().getName(), exception);
         }
+    }
+
+
+    private static Method findMethod(Class type, String name) throws NoSuchMethodException {
+        return Arrays.stream(type.getDeclaredMethods())
+                .filter(method -> method.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchMethodException(name));
     }
 
     /**
