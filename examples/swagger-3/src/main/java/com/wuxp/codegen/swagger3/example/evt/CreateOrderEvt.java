@@ -1,7 +1,7 @@
-package com.wuxp.codegen.swagger3.example.maven.evt;
+package com.wuxp.codegen.swagger3.example.evt;
 
 
-import com.wuxp.codegen.swagger3.example.maven.enums.Sex;
+import com.wuxp.codegen.swagger3.example.enums.Sex;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

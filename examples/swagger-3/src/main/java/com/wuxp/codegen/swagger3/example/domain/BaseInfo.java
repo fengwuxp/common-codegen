@@ -1,4 +1,4 @@
-package com.wuxp.codegen.swagger3.example.maven.domain;
+package com.wuxp.codegen.swagger3.example.domain;
 
 import lombok.Data;
 

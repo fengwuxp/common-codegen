@@ -30,7 +30,6 @@ public class SchemaMetaFactory extends AbstractAnnotationMetaFactory<Schema, Sch
 
     public abstract static class OperationMate implements AnnotationMate, Schema {
 
-
         @Override
         public String toComment(AnnotatedElement element) {
             String defaultValue = defaultValue();
@@ -44,7 +43,5 @@ public class SchemaMetaFactory extends AbstractAnnotationMetaFactory<Schema, Sch
             }
             return String.format("名称：%s，属性说明：%s，默认值：%s，示例输入：%s", name, description(), defaultValue, this.example());
         }
-
-
     }
 }

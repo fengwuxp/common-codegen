@@ -1,4 +1,4 @@
-package com.wuxp.codegen.swagger3.example.maven.controller;
+package com.wuxp.codegen.swagger3.example.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.RequestMapping;

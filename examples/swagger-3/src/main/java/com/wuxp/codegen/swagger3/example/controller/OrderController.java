@@ -1,15 +1,15 @@
-package com.wuxp.codegen.swagger3.example.maven.controller;
+package com.wuxp.codegen.swagger3.example.controller;
 
 
-import com.wuxp.codegen.swagger3.example.maven.domain.Order;
-import com.wuxp.codegen.swagger3.example.maven.domain.User;
-import com.wuxp.codegen.swagger3.example.maven.evt.CreateOrderEvt;
-import com.wuxp.codegen.swagger3.example.maven.evt.ExampleDTO;
-import com.wuxp.codegen.swagger3.example.maven.evt.QueryOrderEvt;
-import com.wuxp.codegen.swagger3.example.maven.resp.PageInfo;
-import com.wuxp.codegen.swagger3.example.maven.resp.ServiceQueryResponse;
-import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
-import com.wuxp.codegen.swagger3.example.maven.services.UserService;
+import com.wuxp.codegen.swagger3.example.domain.Order;
+import com.wuxp.codegen.swagger3.example.domain.User;
+import com.wuxp.codegen.swagger3.example.evt.CreateOrderEvt;
+import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
+import com.wuxp.codegen.swagger3.example.evt.QueryOrderEvt;
+import com.wuxp.codegen.swagger3.example.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
+import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.example.services.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;

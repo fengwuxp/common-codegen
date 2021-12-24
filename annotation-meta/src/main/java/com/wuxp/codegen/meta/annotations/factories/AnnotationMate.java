@@ -78,7 +78,6 @@ public interface AnnotationMate extends AnnotationCodeGenCommentExtractor, Annot
      * @return 参数名称
      */
     default String getParameterName(Parameter annotationOwner) {
-
         return getParameterName(annotationOwner, null);
     }
 
@@ -90,11 +89,9 @@ public interface AnnotationMate extends AnnotationCodeGenCommentExtractor, Annot
      * @return 参数名称
      */
     default String getParameterName(Parameter annotationOwner, String markName) {
-
         if (StringUtils.hasText(markName)) {
             return markName;
         }
-
         return JavaClassParser.getParameterName(annotationOwner);
     }
 }

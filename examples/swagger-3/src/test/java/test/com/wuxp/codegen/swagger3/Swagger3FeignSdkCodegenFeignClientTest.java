@@ -1,16 +1,15 @@
 package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.CodeGenElementMatcher;
 import com.wuxp.codegen.languages.ResetOnlyImportMetaPostProcessor;
 import com.wuxp.codegen.loong.strategy.JavaPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignJavaCodegenBuilder;
-import com.wuxp.codegen.swagger3.example.maven.evt.QueryOrderEvt;
-import com.wuxp.codegen.swagger3.example.maven.resp.PageInfo;
-import com.wuxp.codegen.swagger3.example.maven.resp.ServiceQueryResponse;
-import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.example.evt.QueryOrderEvt;
+import com.wuxp.codegen.swagger3.example.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
+import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;

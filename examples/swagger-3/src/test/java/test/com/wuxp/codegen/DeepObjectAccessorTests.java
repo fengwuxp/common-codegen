@@ -1,7 +1,7 @@
 package test.com.wuxp.codegen;
 
-import com.wuxp.codegen.swagger3.example.maven.domain.Order;
-import com.wuxp.codegen.swagger3.example.maven.domain.User;
+import com.wuxp.codegen.swagger3.example.domain.Order;
+import com.wuxp.codegen.swagger3.example.domain.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

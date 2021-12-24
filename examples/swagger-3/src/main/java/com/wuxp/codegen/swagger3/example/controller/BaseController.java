@@ -1,4 +1,4 @@
-package com.wuxp.codegen.swagger3.example.maven.controller;
+package com.wuxp.codegen.swagger3.example.controller;
 
 public class BaseController<T> {
 

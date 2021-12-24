@@ -1,11 +1,11 @@
-package com.wuxp.codegen.swagger3.example.maven.controller;
+package com.wuxp.codegen.swagger3.example.controller;
 
 
-import com.wuxp.codegen.swagger3.example.maven.domain.Order;
-import com.wuxp.codegen.swagger3.example.maven.domain.User;
-import com.wuxp.codegen.swagger3.example.maven.enums.Sex;
-import com.wuxp.codegen.swagger3.example.maven.resp.PageInfo;
-import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
+import com.wuxp.codegen.swagger3.example.domain.Order;
+import com.wuxp.codegen.swagger3.example.domain.User;
+import com.wuxp.codegen.swagger3.example.enums.Sex;
+import com.wuxp.codegen.swagger3.example.resp.PageInfo;
+import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;

@@ -365,6 +365,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         if (this.codeFormatter instanceof LanguageCodeFormatter) {
             ((LanguageCodeFormatter) this.codeFormatter).setLanguageDescription(languageDescription);
         }
+        this.initAnnotationMetaFactory();
     }
 
     protected abstract void initAnnotationMetaFactory();

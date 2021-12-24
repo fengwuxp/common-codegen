@@ -1,7 +1,7 @@
-package com.wuxp.codegen.swagger3.example.maven.controller;
+package com.wuxp.codegen.swagger3.example.controller;
 
 import com.wuxp.codegen.swagger3.example.ExampleDto;
-import com.wuxp.codegen.swagger3.example.maven.evt.ExampleDTO;
+import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

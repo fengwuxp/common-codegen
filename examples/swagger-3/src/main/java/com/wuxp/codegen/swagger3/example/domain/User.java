@@ -1,7 +1,7 @@
-package com.wuxp.codegen.swagger3.example.maven.domain;
+package com.wuxp.codegen.swagger3.example.domain;
 
 
-import com.wuxp.codegen.swagger3.example.maven.enums.Sex;
+import com.wuxp.codegen.swagger3.example.enums.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
