@@ -1,6 +1,7 @@
 package com.wuxp.codegen.maven;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.starter.enums.OpenApiType;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.springframework.util.StringUtils;
@@ -86,6 +87,17 @@ public class LoongSdkCodegenMojo extends AbstractSdkCodegenMojo {
         if (newInstance == null) {
             return;
         }
+
+        if (openApiType != null) {
+            try {
+                newInstance.getClass()
+                        .getMethod("setOpenApiType", OpenApiType.class)
+                        .invoke(newInstance, openApiType);
+            } catch (Exception e) {
+                this.getLog().error("设置 OpenApiType 类型失败 " + openApiType);
+            }
+        }
+
         setCodegenOutPath(newInstance);
         setCodegenClientProviderTypes(newInstance);
         try {

@@ -35,9 +35,11 @@ public final class LoongCodeGenerator implements CodeGenerator {
 
     private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList("codegen-sdk", "loong");
 
-    private final String[] scanPackages;
+    @Setter
+    private String[] scanPackages;
 
-    private final OpenApiType openApiType;
+    @Setter
+    private OpenApiType openApiType;
 
     /**
      * 忽略的包

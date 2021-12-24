@@ -3,6 +3,7 @@ package com.wuxp.codegen.maven;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.loong.CodegenSdkUploader;
+import com.wuxp.codegen.starter.enums.OpenApiType;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.maven.artifact.Artifact;
@@ -52,6 +53,11 @@ public abstract class AbstractSdkCodegenMojo extends AbstractMojo {
     @Parameter(property = "scan.packages")
     protected String[] scanPackages;
 
+    /**
+     * 设置OpenApi类型
+     */
+    @Parameter
+    protected OpenApiType openApiType;
 
     /**
      * 代码生成输出路径
