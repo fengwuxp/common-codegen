@@ -94,8 +94,15 @@ public final class ReflectUtils {
      * Grok the bytecode to get the declared order
      */
     public static Method[] getDeclaredMethodsInOrder(Class<?> clazz) {
+
         ClassLoader classLoader = clazz.getClassLoader();
+
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+
         Assert.notNull(classLoader, clazz.getName() + " class loader must not null");
+
         Method[] methods = null;
         try {
             String resource = clazz.getName().replace('.', '/') + ".class";
