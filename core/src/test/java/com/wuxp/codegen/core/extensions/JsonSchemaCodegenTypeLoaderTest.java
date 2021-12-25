@@ -33,7 +33,6 @@ class JsonSchemaCodegenTypeLoaderTest {
 
     @Test
     void testLoadTypescript() {
-
         JsonSchemaCodegenTypeLoader jsonSchemaCodegenTypeLoader = new JsonSchemaCodegenTypeLoader(dirPath, LanguageDescription.TYPESCRIPT, packageMapStrategy);
         List<CommonCodeGenClassMeta> genClassMetas = jsonSchemaCodegenTypeLoader.load();
         Assertions.assertEquals(3, genClassMetas.size());

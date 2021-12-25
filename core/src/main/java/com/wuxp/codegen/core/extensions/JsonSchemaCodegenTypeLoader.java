@@ -1,7 +1,9 @@
 package com.wuxp.codegen.core.extensions;
 
-import com.alibaba.fastjson.JSON;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
+import com.wuxp.codegen.core.util.ClassLoaderUtils;
+import com.wuxp.codegen.core.util.JacksonUtils;
 import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.extensions.*;
@@ -100,8 +102,8 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
 
     @Override
     public List<CommonCodeGenClassMeta> load() {
-
-        return jsonFiles.stream().map(this::transformToCodegenModel)
+        return jsonFiles.stream()
+                .map(this::transformToCodegenModel)
                 .filter(Objects::nonNull)
                 .sorted((o1, o2) -> o2.getOrder() - o1.getOrder())
                 .map(this::converterCodegenClassMeta)
@@ -131,9 +133,9 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
         classMeta.setAccessPermission(AccessPermission.PUBLIC);
         List<SchemaCodegenModelTypeVariable> typeVariables = model.getTypeVariables();
         if (!CollectionUtils.isEmpty(typeVariables)) {
-            String text = JSON.toJSONString(typeVariables);
+            String text = JacksonUtils.toJson(typeVariables);
             Class<? extends CommonCodeGenClassMeta> codegenClass = CODEGEN_CLASSES.get(language);
-            classMeta.setTypeVariables(JSON.parseArray(text, codegenClass).toArray(new CommonCodeGenClassMeta[0]));
+            classMeta.setTypeVariables(JacksonUtils.parseCollections(text, codegenClass).toArray(new CommonCodeGenClassMeta[0]));
         } else {
             classMeta.setTypeVariables(new CommonCodeGenClassMeta[0]);
         }
@@ -162,6 +164,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
         return filed;
     }
 
+    @SuppressWarnings("unchecked")
     private CommonCodeGenClassMeta[] getFiledTypes(SchemaCodegenModelFieldMeta meta, CommonCodeGenClassMeta classMeta) {
         String type = meta.getType();
         boolean isArray = meta.isArray();
@@ -242,24 +245,26 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     }
 
     private SchemaCodegenModel transformToCodegenModel(File file) {
-        String name = file.getName();
-        SchemaCodegenModel model = null;
-        try {
-            model = JSON.parseObject(FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()), SchemaCodegenModel.class);
-            model.setSource(Thread.currentThread().getContextClassLoader().loadClass(name.substring(0, name.lastIndexOf("."))));
-        } catch (IOException exception) {
-            if (log.isDebugEnabled()) {
-                log.debug("加载codegen class meta 失败，{}", exception.getMessage(), exception);
-            }
-        } catch (ClassNotFoundException exception) {
-            if (log.isTraceEnabled()) {
-                log.trace("加载codegen class meta 失败，{}", exception.getMessage(), exception);
-            }
-            return null;
-        }
-        return model;
+        SchemaCodegenModel result = parseSchemaModel(file);
+        result.setSource(loadClass(file.getName()));
+        return result;
     }
 
+    private Class<?> loadClass(String name) {
+        try {
+            return ClassLoaderUtils.loadClass(name.substring(0, name.lastIndexOf(".")));
+        } catch (ClassNotFoundException exception) {
+            throw new CodegenRuntimeException("加载 codegen class meta 失败", exception);
+        }
+    }
+
+    private SchemaCodegenModel parseSchemaModel(File file) {
+        try {
+            return JacksonUtils.parse(FileUtils.readFileToString(file, StandardCharsets.UTF_8.name()), SchemaCodegenModel.class);
+        } catch (IOException exception) {
+            throw new CodegenRuntimeException("加载 codegen class meta 失败", exception);
+        }
+    }
 
     private static List<File> getJsonFiles(String filepath) {
         File file = new File(filepath);
