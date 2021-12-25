@@ -9,12 +9,11 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger2.example.domain.User;
-import com.wuxp.codegen.swagger2.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
@@ -23,11 +22,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public class Swagger2FeignSdkCodegenFeignClientTest {
+class Swagger2FeignSdkCodegenFeignClientTest {
 
 
     @Test
-    public void testCodeGenFeignClientByStater() {
+    void testCodeGenFeignClientByStater() {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -73,10 +72,8 @@ public class Swagger2FeignSdkCodegenFeignClientTest {
     }
 
     @Test
-    public void testJavaParser() {
-
+    void testJavaParser() {
         JavaClassMeta parse = new JavaClassParser(false).parse(User.class);
-
         log.debug("{}", parse);
     }
 }

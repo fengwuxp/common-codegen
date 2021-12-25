@@ -12,18 +12,18 @@ import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.*;
 
 @Slf4j
-public class Swagger2FeignSdkCodegenDartTest {
+class Swagger2FeignSdkCodegenDartTest {
 
 
     @Test
-    public void testCodeGenDartApiByStater() {
+    void testCodeGenDartApiByStater() {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();

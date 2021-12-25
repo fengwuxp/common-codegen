@@ -1,9 +1,9 @@
 package test.com.wuxp.codegen.swagger3;
 
-import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.meta.enums.AuthenticationType;
 import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignDartCodegenBuilder;
@@ -13,7 +13,7 @@ import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -23,11 +23,11 @@ import java.util.*;
  * 测试swagger 生成  dart的 feign api sdk
  */
 @Slf4j
-public class Swagger3FeignSdkCodegenDartTest {
+class Swagger3FeignSdkCodegenDartTest {
 
 
     @Test
-    public void testCodeGenDartApiSdk() {
+    void testCodeGenDartApiSdk() {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();

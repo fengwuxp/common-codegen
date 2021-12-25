@@ -13,7 +13,7 @@ import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.File;
@@ -23,11 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-public class Swagger2FeignSdkCodegenRetrofitTest {
-
+class Swagger2FeignSdkCodegenRetrofitTest {
 
     @Test
-    public void testCodeGenRetrofitApiByStater() {
+    void testCodeGenRetrofitApiByStater() {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();

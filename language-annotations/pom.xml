@@ -5,28 +5,24 @@
     <parent>
         <artifactId>wuxp-codegen</artifactId>
         <groupId>com.wuxp.codegen</groupId>
-         <version>${revision}</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>wuxp-codegen-language-annotations</artifactId>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>retrofit</artifactId>
-            <version>2.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
-             <artifactId>wuxp-codegen-annotation-meta</artifactId>
-             <version>${revision}</version>
-            <scope>compile</scope>
+            <artifactId>wuxp-codegen-annotation-meta</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
     </dependencies>
 

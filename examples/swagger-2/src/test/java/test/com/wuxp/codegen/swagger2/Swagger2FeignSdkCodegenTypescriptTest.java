@@ -11,9 +11,8 @@ import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
@@ -29,13 +28,13 @@ import java.util.regex.Pattern;
  * 测试swagger 生成  typescript的 feign api sdk
  */
 @Slf4j
-public class Swagger2FeignSdkCodegenTypescriptTest {
+ class Swagger2FeignSdkCodegenTypescriptTest {
 
 
     protected PathMatcher pathMatcher = new AntPathMatcher();
 
     @Test
-    public void testCodeGenTypescriptApiByStater() {
+     void testCodeGenTypescriptApiByStater() {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -74,7 +73,7 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
     }
 
     @Test
-    public void testAntPathMatcher() {
+     void testAntPathMatcher() {
         String name = BaseController.class.getName();
         String name1 = BaseEvt.class.getName();
 
@@ -85,15 +84,11 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
         Map<String, String> map = pathMatcher.extractUriTemplateVariables("com.wuxp.codegen.swagger2.**.controller**", name);
         Comparator<String> patternComparator = pathMatcher.getPatternComparator("com.wuxp.codegen.swagger2.**.controller**");
         boolean b2 = pathMatcher.match("com.wuxp.codegen.swagger2.**.controller**", name1);
-        Assert.assertTrue(b);
-        Assert.assertFalse(b2);
+        Assertions.assertTrue(b);
+        Assertions.assertFalse(b2);
 
-        //com.wuxp.codegen.swagger2\.+?(\w*)\.controller
         System.out.println(name);
         Pattern pattern1 = Pattern.compile("com.wuxp.codegen.swagger2\\.+?(.*)\\.controller");
-//        Pattern pattern1=Pattern.compile("com.wuxp.codegen.swagger2\\.+?(.*)\\.controller");
-//        Pattern pattern1=Pattern.compile("com.wuxp.codegen.swagger2\\.+?(\\w*)\\.controller\\w*");
-//        Pattern pattern1=Pattern.compile("com.wuxp.codegen.swagger2.(\\w*?).controller");
 
         Matcher matcher = pattern1.matcher(name);
         System.out.println(matcher.groupCount());
@@ -101,8 +96,7 @@ public class Swagger2FeignSdkCodegenTypescriptTest {
             String group = matcher.group();
             System.out.println(group);
         }
-//        String[] split = pattern1.split(name);
-//        System.out.println(split);
+
 
         String[] strings = "com.wuxp.codegen.swagger2.**.controller**".split("\\*\\*");
 

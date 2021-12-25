@@ -11,21 +11,14 @@
 
     <artifactId>wuxp-codegen-code-formatter</artifactId>
 
-    <properties>
-        <google.format.version>1.5</google.format.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.google.googlejavaformat</groupId>
             <artifactId>google-java-format</artifactId>
-            <version>${google.format.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-core</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

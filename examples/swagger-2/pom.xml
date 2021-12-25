@@ -10,53 +10,35 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>wuxp-codegen-examples-swagger-2</artifactId>
-    <properties>
-        <io.swagger2.models.version>1.6.2</io.swagger2.models.version>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger2.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger2.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-models</artifactId>
-            <version>${io.swagger2.models.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-annotation-meta</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-annotation-processor</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-swagger2</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-loong-starter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
         </dependency>
     </dependencies>
 
@@ -90,18 +72,6 @@
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>process</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <outputDirectory>target/generated-sources/java</outputDirectory>-->
-<!--                            <processors>com.wuxp.codegen.meta.annotations.factories.SpringApiSdkCodegenProcessor</processors>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
             </plugin>
         </plugins>
     </build>

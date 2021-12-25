@@ -11,7 +11,7 @@ import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -23,11 +23,11 @@ import java.util.Map;
  * 测试swagger 生成  typescript的 feign api sdk
  */
 @Slf4j
-public class Swagger3FeignSdkCodegenTypescriptTest {
+class Swagger3FeignSdkCodegenTypescriptTest {
 
 
     @Test
-    public void testCodeGenTypescriptApiByStater() {
+    void testCodeGenTypescriptApiByStater() {
 
         //设置基础数据类型的映射关系
         Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();

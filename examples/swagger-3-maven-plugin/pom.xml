@@ -12,22 +12,16 @@
     <artifactId>wuxp-codegen-examples-swagger-3-maven-plugin</artifactId>
 
     <dependencies>
-
-        <!--spring doc open api-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webmvc-core</artifactId>
-            <version>${springdoc.version}</version>
+            <scope>compile</scope>
         </dependency>
-
-        <!--swagger ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc.version}</version>
+            <scope>compile</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
         <dependency>
             <groupId>io.github.classgraph</groupId>
             <artifactId>classgraph</artifactId>
@@ -35,13 +29,11 @@
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-swagger3</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-loong-starter</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

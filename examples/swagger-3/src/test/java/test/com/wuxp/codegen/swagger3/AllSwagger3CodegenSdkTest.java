@@ -1,13 +1,12 @@
 package test.com.wuxp.codegen.swagger3;
 
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
         Swagger3FeignSdkCodegenDartTest.class,
         Swagger3FeignSdkCodegenFeignClientTest.class,
         Swagger3FeignSdkCodegenRetrofitTest.class,

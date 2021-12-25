@@ -12,35 +12,23 @@
     <artifactId>wuxp-codegen-swagger3</artifactId>
 
     <dependencies>
-
         <!--spring doc open api-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webmvc-core</artifactId>
-            <version>${springdoc.version}</version>
-            <scope>provided</scope>
         </dependency>
         <!--swagger ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc.version}</version>
-            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
              <artifactId>wuxp-codegen-annotation-meta</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-loong</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
         </dependency>
-
     </dependencies>
 </project>
