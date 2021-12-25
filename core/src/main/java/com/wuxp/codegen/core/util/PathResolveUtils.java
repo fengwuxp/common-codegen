@@ -3,6 +3,7 @@ package com.wuxp.codegen.core.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -49,18 +50,17 @@ public final class PathResolveUtils {
      * @return 2个路径的相对路径
      */
     public static String relative(String path, String ref, String separator) {
-        if (ref == null) {
+        if (!StringUtils.hasText(ref)) {
             return path;
         }
 
         boolean unixSeparator = "/".equals(separator);
-        path = FilenameUtils.normalizeNoEndSeparator(path, unixSeparator);
         if (!ref.startsWith(".")) {
             ref = FilenameUtils.normalizeNoEndSeparator(ref, unixSeparator);
         }
 
-        boolean isOther = ref.startsWith(".") || ref.startsWith(separator);
-        if (!isOther) {
+        path = FilenameUtils.normalizeNoEndSeparator(path, unixSeparator);
+        if (isSubdirectory(ref, separator)) {
             return FilenameUtils.normalizeNoEndSeparator(path + separator + ref, unixSeparator);
         }
 
@@ -68,35 +68,51 @@ public final class PathResolveUtils {
         String[] paths = splitPaths(path, separator);
         String[] refs = splitPaths(ref, separator);
         Deque<String> results = new ArrayDeque<>();
-        int noEqIndex = 0;
-        for (int i = 0; i < refs.length; i++) {
-            if (paths.length <= i || !paths[i].equals(refs[i])) {
-                break;
-            }
-            noEqIndex++;
-        }
+        int equalsPartIndex = computeEqualsPartIndex(paths, refs);
 
-        // push paths in stack
-        for (int k = paths.length - 1; k >= noEqIndex; k--) {
+        // 将相等的 part push   stack
+        for (int k = paths.length - 1; k >= equalsPartIndex; k--) {
             pushLeftPaths(results, paths[k]);
         }
 
+        boolean hasEqualsPart = equalsPartIndex > 0;
         // push refs in stack
-        if (noEqIndex > 0) {
-            for (int k = noEqIndex; k < refs.length; k++) {
-                String part = refs[k];
+        for (int k = equalsPartIndex; k < refs.length; k++) {
+            String part = refs[k];
+            if (hasEqualsPart) {
                 pushRefsOnEq(results, part);
-            }
-        } else {
-            for (int k = noEqIndex; k < refs.length; k++) {
-                String part = refs[k];
+            } else {
                 pushRefsNotEq(results, part);
             }
         }
+
         if (results.isEmpty()) {
             return ".";
         }
         return String.join(separator, results);
+    }
+
+    /**
+     * 计算 2 个路径相等的 part index
+     *
+     * @param paths 基础路径
+     * @param refs  相对路径
+     * @return 路径相等的 part index
+     */
+    private static int computeEqualsPartIndex(String[] paths, String[] refs) {
+        int result = 0;
+        for (int i = 0; i < refs.length; i++) {
+            if (paths.length <= i || !paths[i].equals(refs[i])) {
+                break;
+            }
+            result++;
+        }
+        return result;
+    }
+
+    private static boolean isSubdirectory(String ref, String separator) {
+        // 不是以 . 或 / 开头，说明是子目录
+        return !(ref.startsWith(".") || ref.startsWith(separator));
     }
 
     /**
@@ -122,7 +138,7 @@ public final class PathResolveUtils {
     /**
      * 目标路径和当前路径存在相同的路径
      *
-     * @param paths 保存路径内容的Stack
+     * @param paths 保存路径内容的 Stack
      * @param part  大于相同路径的每个路径组成部分
      */
     private static void pushRefsOnEq(Deque<String> paths, String part) {
@@ -141,7 +157,7 @@ public final class PathResolveUtils {
     /**
      * 目标路径和当前路径不存在相同的路径
      *
-     * @param paths 保存路径内容的Stack
+     * @param paths 保存路径内容的 Stack
      * @param part  大于相同路径的每个路径组成部分
      */
     private static void pushRefsNotEq(Deque<String> paths, String part) {
