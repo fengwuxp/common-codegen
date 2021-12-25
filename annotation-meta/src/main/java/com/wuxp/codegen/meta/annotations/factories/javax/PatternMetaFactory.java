@@ -43,7 +43,7 @@ public class PatternMetaFactory extends AbstractAnnotationMetaFactory<Pattern, P
         @Override
         public String toComment(Field annotationOwner) {
 
-            return MessageFormat.format("属性：{0}匹配的规则为：{1}", annotationOwner.getName(), this.regexp());
+            return MessageFormat.format("{0} 约束条件：匹配正则表达式{1}", annotationOwner.getName(), this.regexp());
         }
     }
 }

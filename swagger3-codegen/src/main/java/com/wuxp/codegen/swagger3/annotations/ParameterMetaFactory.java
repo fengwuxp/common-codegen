@@ -40,7 +40,7 @@ public class ParameterMetaFactory extends AbstractAnnotationMetaFactory<Paramete
             if (element instanceof java.lang.reflect.Parameter) {
                 name = getParameterName((java.lang.reflect.Parameter) element, name);
             }
-            return String.format("属性名称：%s，属性说明：%s，默认值：%s，示例输入：%s", name, defaultValue,  this.description(), this.example());
+            return String.format("%s %s，默认值：%s，示例输入：%s", name,  this.description(),defaultValue,   this.example());
         }
 
 

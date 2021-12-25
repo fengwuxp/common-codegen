@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,13 +37,16 @@ public interface CodeGenCommentExtractor {
      * @return 从element得到的注释列表
      */
     default List<String> toComments(AnnotatedElement element) {
+
         String comment = toComment(element);
+
         if (comment == null) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
+
         return Arrays.stream(comment.split(MULTILINE_COMMENT_TAG))
-                .filter(StringUtils::hasLength)
-                .distinct()
+                .filter(StringUtils::hasText)
+//                .distinct()
                 .collect(Collectors.toList());
     }
 

@@ -17,7 +17,6 @@ import java.lang.reflect.Parameter;
  */
 public interface AnnotationMate extends AnnotationCodeGenCommentExtractor, Annotation {
 
-
     /**
      * 注解转换
      *

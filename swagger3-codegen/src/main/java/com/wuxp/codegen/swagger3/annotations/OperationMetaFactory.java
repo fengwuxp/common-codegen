@@ -15,14 +15,12 @@ import java.lang.reflect.Method;
  */
 public class OperationMetaFactory extends AbstractAnnotationMetaFactory<Operation, OperationMetaFactory.OperationMate> {
 
-
     @Override
     public OperationMate factory(Operation annotation) {
         return this.newProxyMate(annotation, OperationMate.class);
     }
 
     public abstract static class OperationMate implements AnnotationMate, Operation {
-
 
         @Override
         public String toComment(Class<?> annotationOwner) {
@@ -35,7 +33,7 @@ public class OperationMetaFactory extends AbstractAnnotationMetaFactory<Operatio
         }
 
         private String getDescription() {
-            return this.description();
+            return this.summary() + "\n" + this.description();
         }
     }
 }

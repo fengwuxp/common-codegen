@@ -43,7 +43,8 @@ public class CombineCodeGenCommentExtractor implements CodeGenCommentExtractor {
 
     @Override
     public String toComment(AnnotatedElement element) {
-        return String.join(",", toComments(element));
+        return String.join("\n", toComments(element));
+//        return String.join(",", toComments(element));
     }
 
     @Override
