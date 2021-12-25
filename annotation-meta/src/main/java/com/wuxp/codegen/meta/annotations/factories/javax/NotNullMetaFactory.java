@@ -41,7 +41,7 @@ public class NotNullMetaFactory extends AbstractAnnotationMetaFactory<NotNull, N
         @Override
         public String toComment(Field annotationOwner) {
 
-            return MessageFormat.format("属性：{0}为必填项，不能为空", annotationOwner.getName());
+            return MessageFormat.format("{0} 约束条件：为必填项，不能为空", annotationOwner.getName());
         }
     }
 }

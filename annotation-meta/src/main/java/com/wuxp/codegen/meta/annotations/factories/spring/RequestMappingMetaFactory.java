@@ -136,7 +136,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
         @Override
         public String toComment(Method annotationOwner) {
-            return MessageFormat.format("接口方法：{0}", this.getRequestMethod().name());
+            return MessageFormat.format("Http请求方法：{0}", this.getRequestMethod().name());
         }
 
 

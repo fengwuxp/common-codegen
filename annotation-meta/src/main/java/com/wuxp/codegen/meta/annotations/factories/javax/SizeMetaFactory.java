@@ -42,7 +42,7 @@ public class SizeMetaFactory extends AbstractAnnotationMetaFactory<Size, SizeMet
         @Override
         public String toComment(Field annotationOwner) {
 
-            return MessageFormat.format("属性：{0}输入字符串的最小长度为：{1}，输入字符串的最大长度为：{2}", annotationOwner.getName(), this.min(), this.max());
+            return MessageFormat.format("{0} 约束条件：输入字符串的最小长度为：{1}，输入字符串的最大长度为：{2}", annotationOwner.getName(), this.min(), this.max());
         }
     }
 }
