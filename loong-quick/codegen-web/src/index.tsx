@@ -4,7 +4,7 @@ import {I18nextProvider} from 'react-i18next';
 import BrowserFeignConfigurer, {registerHttpResponseEventListener} from "@/BrowserFeignConfigurer";
 import App from "@/App";
 import {Spin} from "antd";
-import {feignConfigurationInitialize} from "feign-boot-starter";
+import {feignHttpConfigurationInitialize} from "feign-boot-starter";
 import {setDefaultLoadingComponent} from "@/components/loading/AsyncLoading";
 import i18n from '@/i18n';
 import {Log4jLevel} from "fengwuxp-typescript-feign";
@@ -13,7 +13,7 @@ import {Log4jLevel} from "fengwuxp-typescript-feign";
 setDefaultLoadingComponent(Spin);
 
 //  注册feign 代理
-const feignConfig = feignConfigurationInitialize(new BrowserFeignConfigurer());
+const feignConfig = feignHttpConfigurationInitialize(new BrowserFeignConfigurer());
 registerHttpResponseEventListener(feignConfig.getHttpResponseEventListener())
 // 日志级别设置
 feignConfig.setLoggerLevel(Log4jLevel.INFO);

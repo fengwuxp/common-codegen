@@ -13,7 +13,7 @@ import {
     SmartHttpResponseEventListener,
     stringDateConverter,
 } from 'fengwuxp-typescript-feign'
-import {ClientHttpInterceptorRegistry, FeignClientInterceptorRegistry, FeignConfigurer,} from 'feign-boot-starter'
+import {ClientHttpInterceptorRegistry, FeignClientInterceptorRegistry, FeignHttpConfigurer} from 'feign-boot-starter'
 import {BrowserHttpAdapter, BrowserNetworkStatusListener} from 'feign-boot-browser-starter'
 import {message} from 'antd';
 
@@ -33,7 +33,7 @@ export const registerHttpResponseEventListener = (eventListener: SmartHttpRespon
     });
 }
 
-export default class BrowserFeignConfigurer implements FeignConfigurer {
+export default class BrowserFeignConfigurer implements FeignHttpConfigurer {
 
     public defaultProduce = () => HttpMediaType.APPLICATION_JSON;
 
@@ -46,6 +46,13 @@ export default class BrowserFeignConfigurer implements FeignConfigurer {
         interceptorRegistry.addInterceptor(new RoutingClientHttpRequestInterceptor(API_ENTRY_ADDRESS));
         interceptorRegistry.addInterceptor(I18nClientHttpRequestInterceptor);
     };
+
+    public getDefaultFeignRequestContextOptions = () => {
+        return {
+            // 默认过滤无效值
+            filterNoneValue: true
+        }
+    }
 
     public registryFeignClientExecutorInterceptors = (interceptorRegistry: FeignClientInterceptorRegistry) => {
 
