@@ -153,27 +153,31 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * @return 获取最终的泛型描述
      */
     public String getFinallyGenericDescription() {
-        if (this.typeVariables != null && this.typeVariables.length > 0) {
-            String typeDesc = Arrays.stream(this.typeVariables)
-                    .map(CommonCodeGenClassMeta::getFinallyGenericDescription)
-                    .collect(Collectors.joining(","));
-            return getTypeIdent() + "<" + typeDesc + ">";
-        }
-        if (StringUtils.hasText(genericDescription)) {
-            return genericDescription;
+        if (this.typeVariables == null || this.typeVariables.length == 0) {
+            if (StringUtils.hasText(genericDescription)) {
+                return genericDescription;
+            }
+            return getTypeIdent();
         }
 
-        return getTypeIdent();
+        String typeDesc = Arrays.stream(this.typeVariables)
+                .map(CommonCodeGenClassMeta::getFinallyGenericDescription)
+                .collect(Collectors.joining(","));
+
+        if (typeDesc.equals(getTypeIdent())) {
+            // hack 泛型描述和类名相同
+            return getTypeIdent();
+        }
+        return getTypeIdent() + "<" + typeDesc + ">";
+
+
     }
 
     /**
      * 获取最终的类名称，合并了泛型描述 形如：A<String,Long> or A<K,V>
      */
     public String getFinallyClassName() {
-        if (this.typeVariables != null && this.typeVariables.length > 0) {
-            return this.getFinallyGenericDescription();
-        }
-        return getTypeIdent();
+        return getFinallyGenericDescription();
     }
 
     public String getTypeIdent() {

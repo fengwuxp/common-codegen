@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,6 +53,11 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
      * @value 参数类型描述
      */
     private Map<String, CommonCodeGenClassMeta> params;
+
+    /**
+     * 方法依赖的类对象
+     */
+    private List<CommonCodeGenClassMeta> dependencies;
 
     /**
      * 参数上定义的注解

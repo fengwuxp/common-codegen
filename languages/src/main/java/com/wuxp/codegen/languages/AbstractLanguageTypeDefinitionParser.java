@@ -252,7 +252,6 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         Map<String, CommonCodeGenClassMeta> result = new LinkedHashMap<>();
         result.putAll(getFieldMetaDependencies(meta));
         result.putAll(getMethodMetaDependencies(meta));
-        result.putAll(getMethodParameterDependencies(meta));
         result.putAll(getTypeVariablesDependencies(meta));
         result.putAll(getSupperTypeVariablesDependencies(meta));
         result.putAll(flatMapDependencies(result));
@@ -270,15 +269,11 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
     }
 
     private Map<String, ? extends CommonCodeGenClassMeta> getMethodMetaDependencies(C meta) {
-        return resolveDependencies(Arrays.stream(meta.getMethodMetas())
-                .map(CommonCodeGenMethodMeta::getReturnTypes));
-    }
-
-    private Map<String, ? extends CommonCodeGenClassMeta> getMethodParameterDependencies(C meta) {
+        if (ObjectUtils.isEmpty(meta.getMethodMetas())) {
+            return Collections.emptyMap();
+        }
         return collectDependencies(Arrays.stream(meta.getMethodMetas())
-                .map(CommonCodeGenMethodMeta::getParams)
-                .filter(Objects::nonNull)
-                .map(Map::values)
+                .map(CommonCodeGenMethodMeta::getDependencies)
                 .flatMap(Collection::stream));
     }
 

@@ -5,6 +5,7 @@ import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
@@ -57,6 +58,7 @@ public class PathVariableMetaFactory extends AbstractAnnotationMetaFactory<PathV
             List<String> positionArguments = new LinkedList<>(arguments.values());
             annotation.setNamedArguments(arguments)
                     .setPositionArguments(positionArguments);
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
 

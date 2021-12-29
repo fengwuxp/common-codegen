@@ -16,15 +16,7 @@
     **/
 </#if>
 
-<#if annotations??>
-    <#list annotations as annotation>
-        @${annotation.name}({
-        <#list annotation.namedArguments as name,val>
-            ${name}:${val},
-        </#list>
-        })
-    </#list>
-</#if>
+
 export interface  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
 <#if fieldMetas??>

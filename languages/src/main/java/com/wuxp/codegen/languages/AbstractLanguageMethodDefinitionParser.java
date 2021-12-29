@@ -6,18 +6,15 @@ import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
-import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.*;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
-import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,6 +62,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 .setAccessPermission(methodMeta.getAccessPermission())
                 .setComments(extractComments(methodMeta))
                 .setName(methodMeta.getName());
+        result.setDependencies(getDependencies(result));
         return result;
     }
 
@@ -83,6 +81,15 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         }
     }
 
+    private List<CommonCodeGenClassMeta> getDependencies(M result) {
+        List<CommonCodeGenClassMeta> dependencies = new ArrayList<>();
+        result.getParams().values().forEach(classMeta -> dependencies.add(this.publishParse(classMeta.getSource())));
+        dependencies.addAll(Arrays.asList(result.getReturnTypes()));
+        if (!ObjectUtils.isEmpty(result.getTypeVariables())) {
+            dependencies.addAll(Arrays.asList(result.getTypeVariables()));
+        }
+        return dependencies;
+    }
 
     /**
      * 方法参数处理流程

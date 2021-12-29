@@ -7,6 +7,7 @@ import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import org.springframework.web.bind.annotation.*;
 import retrofit2.http.*;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
             annotation.setName(Body.class.getSimpleName());
             annotation.setNamedArguments(Collections.emptyMap());
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
     }
@@ -50,6 +52,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
             annotation.setName(Header.class.getSimpleName());
             removeNameToValue(annotation.getNamedArguments());
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
     }
@@ -81,6 +84,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             if (isSupportBody) {
                 annotation.setName(Field.class.getSimpleName());
             }
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
     }
@@ -96,6 +100,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
             annotation.setName(Path.class.getSimpleName());
             removeNameToValue(annotation.getNamedArguments());
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
     }
@@ -115,6 +120,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             // 需要接入方实现
             String value = "cookie@" + namedArguments.get("value");
             namedArguments.put("value", value);
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
     }

@@ -21,6 +21,7 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.*;
@@ -143,25 +144,27 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
         @Override
         public CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner) {
 
-            CommonCodeGenAnnotation codeGenAnnotation = this.genAnnotation(annotationOwner);
-            if (codeGenAnnotation == null) {
+            CommonCodeGenAnnotation annotation = this.genAnnotation(annotationOwner);
+            if (annotation == null) {
                 return null;
             }
-            codeGenAnnotation.getPositionArguments().remove("method");
-            return codeGenAnnotation;
+            annotation.getPositionArguments().remove("method");
+            annotation.setElementType(ElementType.TYPE);
+            return annotation;
         }
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Method annotationOwner) {
-            CommonCodeGenAnnotation codeGenAnnotation = this.genAnnotation(annotationOwner);
+            CommonCodeGenAnnotation annotation = this.genAnnotation(annotationOwner);
             if (!supportAuthenticationType) {
-                return codeGenAnnotation;
+                return annotation;
             }
-            trySetAuthenicationType(annotationOwner, codeGenAnnotation);
-            return codeGenAnnotation;
+            trySetAuthenticationType(annotationOwner, annotation);
+            annotation.setElementType(ElementType.METHOD);
+            return annotation;
         }
 
-        private void trySetAuthenicationType(Method annotationOwner, CommonCodeGenAnnotation codeGenAnnotation) {
+        private void trySetAuthenticationType(Method annotationOwner, CommonCodeGenAnnotation codeGenAnnotation) {
             if (AUTHENTICATION_TYPE_PATHS.isEmpty()) {
                 return ;
             }

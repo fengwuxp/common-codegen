@@ -5,6 +5,7 @@ import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,6 +40,7 @@ public class RequestBodyMetaFactory extends AbstractAnnotationMetaFactory<Reques
             List<String> positionArguments = new LinkedList<>(namedArguments.values());
             annotation.setNamedArguments(namedArguments)
                     .setPositionArguments(positionArguments);
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
 

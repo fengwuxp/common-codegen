@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,11 @@ public class CommonCodeGenAnnotation extends CommonBaseMeta {
     private Annotation source;
 
     /**
+     * 支持的类型
+     */
+    private ElementType elementType;
+
+    /**
      * 原始注解持有者
      */
     private AnnotatedElement annotationOwner;
@@ -43,7 +49,6 @@ public class CommonCodeGenAnnotation extends CommonBaseMeta {
      * 由于将java相关注解转换为其他注解的时候可能需要装换成多个次要的注解放在这个字段中
      */
     private List<CommonCodeGenAnnotation> associatedAnnotations;
-
 
     @Override
     public boolean equals(Object o) {

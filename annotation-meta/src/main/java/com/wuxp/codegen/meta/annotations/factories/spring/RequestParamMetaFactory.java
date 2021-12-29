@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ValueConstants;
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
@@ -59,6 +60,7 @@ public class RequestParamMetaFactory extends AbstractAnnotationMetaFactory<Reque
             List<String> positionArguments = new LinkedList<>(arguments.values());
             annotation.setNamedArguments(arguments)
                     .setPositionArguments(positionArguments);
+            annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }
 

@@ -41,10 +41,10 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
         result.setEnumConstant(fieldMeta.getIsEnumConstant());
         result.setComments(extractComments(fieldMeta));
         result.setAnnotations(parseAnnotatedElement(fieldMeta.getField()));
-
-        log.info("*** field " + fieldMeta.getField() + "  " + Arrays.asList(result.getComments()));
-
         result.setTypeVariables(getFieldTypeVariables(fieldMeta).toArray(new CommonCodeGenClassMeta[0]));
+        if (log.isInfoEnabled()) {
+            log.info("*** field {}  {}", fieldMeta.getField(), Arrays.asList(result.getComments()));
+        }
         return result;
     }
 
