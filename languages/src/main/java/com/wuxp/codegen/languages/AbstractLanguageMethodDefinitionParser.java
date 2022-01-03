@@ -38,6 +38,8 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
      */
     private static final String DEFAULT_MARGE_PARAMS_NAME = "req";
 
+    private static final String MARGE_PARAMS_TAG_NAME = "margeParams";
+
     /**
      * 包名映射策略
      */
@@ -83,7 +85,14 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
     private List<CommonCodeGenClassMeta> getDependencies(M result) {
         List<CommonCodeGenClassMeta> dependencies = new ArrayList<>();
-        result.getParams().values().forEach(classMeta -> dependencies.add(this.publishParse(classMeta.getSource())));
+        result.getParams().values().forEach(classMeta -> {
+            if (Boolean.TRUE.equals(classMeta.getTag(MARGE_PARAMS_TAG_NAME))) {
+                // 合并参数
+                dependencies.add(classMeta);
+            } else {
+                dependencies.add(this.publishParse(classMeta.getSource()));
+            }
+        });
         dependencies.addAll(Arrays.asList(result.getReturnTypes()));
         if (!ObjectUtils.isEmpty(result.getTypeVariables())) {
             dependencies.addAll(Arrays.asList(result.getTypeVariables()));
@@ -159,7 +168,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
         argsClassMeta.setDependencies(resolveCodegenDependencies(filedMetas));
         argsClassMeta.setNeedGenerate(true);
         argsClassMeta.setNeedImport(true);
-
+        argsClassMeta.getTags().put(MARGE_PARAMS_TAG_NAME, true);
 
         LinkedHashMap<String, CommonCodeGenClassMeta> params = new LinkedHashMap<>();
         //请求参数名称，固定为req
