@@ -10,6 +10,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefinitionParser<DartClassMeta> {
 
@@ -73,6 +74,6 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     private MappingDartTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<DartClassMeta> builder) {
-        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings(), DartClassMeta::new));
     }
 }

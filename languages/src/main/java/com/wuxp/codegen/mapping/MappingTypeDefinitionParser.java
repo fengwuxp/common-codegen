@@ -4,9 +4,11 @@ import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -17,15 +19,18 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
      */
     private final Map<Class<?>, C> typeMappings;
 
+    private final Supplier<C> elementInstanceSupllier;
 
-    public MappingTypeDefinitionParser(Map<Class<?>, C> typeMappings) {
+
+    public MappingTypeDefinitionParser(Map<Class<?>, C> typeMappings, Supplier<C> elementInstanceSupllier) {
         this.typeMappings = typeMappings;
+        this.elementInstanceSupllier = elementInstanceSupllier;
     }
 
 
     @Override
     public C newElementInstance() {
-        throw new UnsupportedOperationException("MappingTypeDefinitionParser not support operation");
+        return this.elementInstanceSupllier.get();
     }
 
     @Override
@@ -50,12 +55,17 @@ public class MappingTypeDefinitionParser<C extends CommonCodeGenClassMeta> imple
      */
     private C mappingType(Class<?> clazz) {
         Assert.isTrue(!clazz.isArray(), String.format("not support array type,class name=%s", clazz.getName()));
-        C result = mappingTypeDefinition(clazz).orElseGet(() -> mappingUpConversionType(clazz));
-        if (result == null) {
+        C meta = mappingTypeDefinition(clazz).orElseGet(() -> mappingUpConversionType(clazz));
+        if (meta == null) {
             log.warn("Not Found clazz {} mapping type", clazz.getName());
+            return null;
         }
+        C result = newElementInstance();
+        BeanUtils.copyProperties(meta, result);
+        result.setSource(clazz);
         return result;
     }
+
 
     private C mappingUpConversionType(Class<?> clazz) {
         return this.tryUpConversionType(clazz).flatMap(this::mappingTypeDefinition).orElse(null);

@@ -216,8 +216,8 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
         filedNameUnderlineStyle(meta);
         filterDuplicateFields(meta);
         Collection<? extends CommonCodeGenClassMeta> result = meta.getDependencies().values();
-        filterNoneImportDependencies(meta);
         filterInvalidDependencies(meta);
+        filterNoneImportDependencies(meta);
         try {
             this.templateStrategy.build(meta);
         } catch (Exception exception) {
@@ -284,15 +284,15 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
         Set<Class<?>> effectiveDependencies = new HashSet<>();
         // 移除无效的依赖
         if (meta.getFieldMetas() != null) {
-            CommonCodeGenFiledMeta[] fieldMetas = meta.getFieldMetas();
-            effectiveDependencies.addAll(Arrays.stream(fieldMetas)
+            Set<? extends Class<?>> classes = Arrays.stream(meta.getFieldMetas())
                     .map(CommonCodeGenFiledMeta::getFiledTypes)
                     .filter(Objects::nonNull)
                     .map(Arrays::asList)
                     .flatMap(Collection::stream)
                     .map(CommonCodeGenClassMeta::getSource)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toSet());
+            effectiveDependencies.addAll(classes);
         }
         if (meta.getMethodMetas() != null) {
             effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
@@ -304,12 +304,9 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet()));
             effectiveDependencies.addAll(Arrays.stream(meta.getMethodMetas())
-                    .map(CommonCodeGenMethodMeta::getParams)
+                    .map(CommonCodeGenMethodMeta::getDependencies)
+                    .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
-                    .map(Arrays::asList)
-                    .flatMap(Collection::stream)
-                    .map(Map::values)
-                    .flatMap(Collection::stream)
                     .map(CommonCodeGenClassMeta::getSource)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet()));

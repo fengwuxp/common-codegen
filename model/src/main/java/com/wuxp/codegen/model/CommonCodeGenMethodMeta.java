@@ -3,6 +3,7 @@ package com.wuxp.codegen.model;
 
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -78,6 +79,10 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
         if (parameter == null) {
             return false;
         }
+        if (isCollectionMapParams(parameter)) {
+            return true;
+        }
+
         return !ObjectUtils.isEmpty(parameter.getFieldMetas());
     }
 
@@ -88,8 +93,17 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
     public boolean isOptionalParameter(String name) {
         CommonCodeGenClassMeta parameter = getParameter(name);
         if (parameter == null) {
+            return true;
+        }
+
+        if (isCollectionMapParams(parameter)) {
             return false;
         }
+
+        if (ObjectUtils.isEmpty(parameter.getFieldMetas())) {
+            return true;
+        }
+
         // 参数中所有的字段都不是必填
         return Arrays.stream(parameter.getFieldMetas())
                 .noneMatch(filedMeta -> Boolean.TRUE.equals(filedMeta.getRequired()));
@@ -104,17 +118,26 @@ public class CommonCodeGenMethodMeta extends CommonBaseMeta {
         if (parameter == null) {
             return "";
         }
-        return parameter.getName();
+        return parameter.getFinallyClassName();
     }
 
     private CommonCodeGenClassMeta getParameter(String name) {
         if (CollectionUtils.isEmpty(params)) {
             return null;
         }
-        CommonCodeGenClassMeta classMeta = params.get(name);
-        if (classMeta == null || ObjectUtils.isEmpty(classMeta.getFieldMetas())) {
-            return null;
-        }
-        return classMeta;
+        return params.get(name);
     }
+
+
+    /**
+     * 是否为 集合 或 Map 参数
+     */
+    private boolean isCollectionMapParams(CommonCodeGenClassMeta parameter) {
+        Class<?> clazz = parameter.getSource();
+        if (clazz == null) {
+            return false;
+        }
+        return JavaTypeUtils.isCollection(clazz) || JavaTypeUtils.isArrayMark(clazz) || JavaTypeUtils.isMap(clazz);
+    }
+
 }

@@ -68,7 +68,7 @@ public class MappingJavaTypeDefinitionParser extends AbstractMappingTypeDefiniti
     }
 
     private MappingJavaTypeDefinitionParser(AbstractMappingTypeDefinitionParserBuilder<JavaCodeGenClassMeta> builder) {
-        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings()));
+        super(new MappingTypeDefinitionParser<>(builder.getTypeMappings(), JavaCodeGenClassMeta::new));
     }
 
 

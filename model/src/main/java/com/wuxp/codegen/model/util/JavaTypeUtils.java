@@ -1,5 +1,6 @@
 package com.wuxp.codegen.model.util;
 
+import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
@@ -267,6 +268,9 @@ public final class JavaTypeUtils {
 
 
     public static boolean isAssignableFrom(Class<?> clazz, Class<?> superClazz) {
+        if(superClazz==null || clazz ==null){
+            return false;
+        }
         return superClazz.isAssignableFrom(clazz);
     }
 
@@ -280,5 +284,9 @@ public final class JavaTypeUtils {
         return CommonsMultipartFile.class.equals(clazz);
     }
 
+
+    public static boolean isArrayMark(Class<?> clazz){
+        return clazz== JavaArrayClassTypeMark.class;
+    }
 
 }
