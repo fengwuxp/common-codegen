@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author wuxp
  */
 @Data
-@EqualsAndHashCode(exclude = {"superClass", "interfaces", "annotations", "dependencies"}, callSuper = true)
+@EqualsAndHashCode(exclude = {"superClass", "interfaces", "annotations", "dependencies", "source"}, callSuper = true)
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
 

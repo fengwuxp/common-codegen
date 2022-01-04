@@ -7,9 +7,14 @@ import com.wuxp.codegen.model.util.JavaTypeUtils;
 
 import java.util.Arrays;
 
+/**
+ * 移除重复的 client 统一响应类型
+ */
 public class RemoveClientResponseTypePostProcessor implements LanguageDefinitionPostProcessor<CommonCodeGenMethodMeta> {
 
-
+    /**
+     * client 统一响应类型
+     */
     private final CommonCodeGenClassMeta clientResponseType;
 
     public RemoveClientResponseTypePostProcessor(CommonCodeGenClassMeta clientResponseType) {
