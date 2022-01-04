@@ -25,6 +25,8 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static com.wuxp.codegen.core.constant.Constants.DEFAULT_CODEGEN_DIR;
+
 /**
  * 按照约定的规则和自动探测，创建{@link com.wuxp.codegen.core.CodeGenerator}对象
  *
@@ -33,7 +35,7 @@ import java.util.*;
 @Slf4j
 public final class LoongCodeGenerator implements CodeGenerator {
 
-    private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList("codegen-sdk", "loong");
+    private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList(DEFAULT_CODEGEN_DIR, "loong");
 
     @Setter
     private String[] scanPackages;

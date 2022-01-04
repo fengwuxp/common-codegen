@@ -85,7 +85,7 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
                                        CodeFormatter codeFormatter) {
         this.templateLoader = templateLoader;
         // 计算路径中的相对路径
-        this.outputPath = PathResolveUtils.relative(outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator, ".");
+        this.outputPath = PathResolveUtils.relative(outputPath.endsWith(File.separator) ? outputPath : outputPath + File.separator, ".") + File.separator;
         this.extName = extName;
         this.fileNameGenerateStrategy = fileNameGenerateStrategy;
 

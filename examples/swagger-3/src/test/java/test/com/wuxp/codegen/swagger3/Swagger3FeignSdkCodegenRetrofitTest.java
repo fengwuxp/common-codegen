@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,7 +22,7 @@ class Swagger3FeignSdkCodegenRetrofitTest {
 
 
     @Test
-    void testCodeGenRetrofitApiByStater() {
+    void testCodeGenRetrofitApiByStater() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -35,28 +33,31 @@ class Swagger3FeignSdkCodegenRetrofitTest {
         String basePackageName = "com.wuxp.codegen.swagger3";
         packageMap.put("com.wuxp.codegen.swagger3.example", basePackageName);
 
-        String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.RETROFIT.name().toLowerCase(), "swagger3", "src"};
 
         //要进行生成的源代码包名列表
-        String[] packagePaths = {"com.wuxp.codegen.swagger3.example.maven.controller"};
+        String[] packagePaths = {"com.wuxp.codegen.swagger3.example.controller"};
+
+        LanguageDescription language = LanguageDescription.JAVA_ANDROID;
+        ClientProviderType clientProviderType = ClientProviderType.RETROFIT;
 
         Swagger3FeignJavaCodegenBuilder.builder()
                 .useRxJava(true)
                 .build()
-                .languageDescription(LanguageDescription.JAVA_ANDROID)
-                .clientProviderType(ClientProviderType.RETROFIT)
+                .languageDescription(language)
+                .clientProviderType(clientProviderType)
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .ignoreClasses(new Class<?>[]{HelloController.class, OrderController.class})
                 .isDeletedOutputDirectory(false)
                 .buildCodeGenerator()
                 .generate();
+
+        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
 
     }
 

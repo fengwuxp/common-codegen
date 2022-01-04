@@ -2,7 +2,6 @@ package test.com.wuxp.codegen.swagger3;
 
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
-import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.swagger3.builder.Swagger3FeignTypescriptCodegenBuilder;
@@ -13,8 +12,6 @@ import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,33 +24,17 @@ class Swagger3FeignSdkCodegenTypescriptTest {
 
 
     @Test
-    void testCodeGenTypescriptApiByStater() {
-
-        //设置基础数据类型的映射关系
-        Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new HashMap<>();
-        baseTypeMapping.put(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
-        baseTypeMapping.put(ServiceResponse.class, TypescriptClassMeta.PROMISE);
-
-        //自定义的类型映射
-        Map<Class<?>, Class<?>[]> customTypeMapping = new HashMap<>();
-        customTypeMapping.put(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class});
+    void testCodeGenTypescriptApiByStater() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
 
-        //控制器的包所在
-//        packageMap.put("com.wuxp.codegen.swagger3.controller", "services");
         packageMap.put("com.wuxp.codegen.swagger3.**.controller", "{0}services");
         packageMap.put("com.wuxp.codegen.swagger3.**.evt", "evt");
         packageMap.put("com.wuxp.codegen.swagger3.**.domain", "domain");
         packageMap.put("com.wuxp.codegen.swagger3.**.resp", "resp");
         packageMap.put("com.wuxp.codegen.swagger3.**.enums", "enums");
-        //其他类（DTO、VO等）所在的包
-//        packageMap.put("com.wuxp.codegen.swagger3.example", "");
 
-        String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.TYPESCRIPT_FEIGN.name().toLowerCase(), "swagger3",
-                "src", "api"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
@@ -61,20 +42,25 @@ class Swagger3FeignSdkCodegenTypescriptTest {
         Map<String, Object> classNameTransformers = new HashMap<>();
         classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
 
+        LanguageDescription language = LanguageDescription.TYPESCRIPT;
+        ClientProviderType clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
+
         Swagger3FeignTypescriptCodegenBuilder.builder()
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                .languageDescription(language)
+                .clientProviderType(clientProviderType)
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
                 .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
                 .buildCodeGenerator()
                 .generate();
+
+        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
 
     }
 

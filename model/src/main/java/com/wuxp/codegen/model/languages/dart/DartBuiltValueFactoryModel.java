@@ -16,8 +16,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class DartBuiltValueFactoryModel implements Serializable {
+public class DartBuiltValueFactoryModel implements Serializable, Comparable<DartBuiltValueFactoryModel> {
 
+    private static final long serialVersionUID = -3359935455859198968L;
 
     /**
      * fullType code
@@ -29,4 +30,9 @@ public class DartBuiltValueFactoryModel implements Serializable {
      * function code
      */
     private String functionCode;
+
+    @Override
+    public int compareTo(DartBuiltValueFactoryModel o) {
+        return this.fullTypeCode.compareTo(o.fullTypeCode);
+    }
 }

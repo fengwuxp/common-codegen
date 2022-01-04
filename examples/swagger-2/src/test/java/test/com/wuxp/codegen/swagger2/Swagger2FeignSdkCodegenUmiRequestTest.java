@@ -11,8 +11,6 @@ import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,10 +18,10 @@ import java.util.Map;
  * 测试swagger 生成  typescript的 umi request  sdk
  */
 @Slf4j
-public class Swagger2FeignSdkCodegenUmiRequestTest {
+class Swagger2FeignSdkCodegenUmiRequestTest {
 
     @Test
-    void testCodeGenTypescriptApiByStater() {
+    void testCodeGenTypescriptApiByStater() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -36,26 +34,27 @@ public class Swagger2FeignSdkCodegenUmiRequestTest {
         packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
         packageMap.put("test.com.wuxp.codegen.typescript", "enums");
 
-        String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.UMI_REQUEST.name().toLowerCase(), "swagger2", "src",
-                "api"};
-
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
 
+        LanguageDescription language = LanguageDescription.TYPESCRIPT;
+        ClientProviderType clientProviderType = ClientProviderType.UMI_REQUEST;
+
         Swagger2FeignTypescriptCodegenBuilder.builder()
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.UMI_REQUEST)
+                .languageDescription(language)
+                .clientProviderType(clientProviderType)
                 // 基础类型映射
                 .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
                 .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
                 // 自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger2AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .buildCodeGenerator()
                 .generate();
+
+        Swagger2AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
 
     }
 

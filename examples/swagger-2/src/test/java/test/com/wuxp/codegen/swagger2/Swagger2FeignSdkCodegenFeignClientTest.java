@@ -13,11 +13,10 @@ import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ class Swagger2FeignSdkCodegenFeignClientTest {
 
 
     @Test
-    void testCodeGenFeignClientByStater() {
+    void testCodeGenFeignClientByStater() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -35,28 +34,27 @@ class Swagger2FeignSdkCodegenFeignClientTest {
         packageMap.put("com.wuxp.codegen.swagger2.example.controller", "com.wuxp.codegen.swagger2.clients");
         //其他类（DTO、VO等）所在的包
         String basePackageName = "com.wuxp.codegen.swagger2";
-//        packageMap.put("com.wuxp.codegen.swagger2.example.evt", "com.wuxp.codegen.swagger2.example.evt");
         packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
-
-        String language = LanguageDescription.JAVA_ANDROID.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.SPRING_CLOUD_OPENFEIGN.name().toLowerCase(),
-                "swagger2", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
 
         JavaPackageMapStrategy packageMapStrategy = new JavaPackageMapStrategy(packageMap, basePackageName);
         packageMapStrategy.setFileNamSuffix("FeignClient");
+
+        LanguageDescription language = LanguageDescription.JAVA;
+        ClientProviderType clientProviderType = ClientProviderType.SPRING_CLOUD_OPENFEIGN;
+
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
-                .languageDescription(LanguageDescription.JAVA_ANDROID)
-                .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
+                .languageDescription(language)
+                .clientProviderType(clientProviderType)
                 .packageMapStrategy(packageMapStrategy)
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger2AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(false)
                 .elementParsePostProcessors(
@@ -69,11 +67,13 @@ class Swagger2FeignSdkCodegenFeignClientTest {
                 .buildCodeGenerator()
                 .generate();
 
+        Swagger2AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+
     }
 
     @Test
     void testJavaParser() {
-        JavaClassMeta parse = new JavaClassParser(false).parse(User.class);
-        log.debug("{}", parse);
+        JavaClassMeta result = new JavaClassParser(false).parse(User.class);
+        Assertions.assertNotNull(result);
     }
 }

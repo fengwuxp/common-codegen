@@ -6,6 +6,10 @@ package com.wuxp.codegen.core.constant;
  */
 public final class FeignApiSdkTemplateName {
 
+    private FeignApiSdkTemplateName() {
+        throw new AssertionError();
+    }
+
     /**
      * api 接口的模板名称
      */
@@ -25,4 +29,6 @@ public final class FeignApiSdkTemplateName {
      * 枚举对象的模板名称
      */
     public static final String API_ENUM_TEMPLATE_NAME = "api_enum.ftl";
+
+
 }

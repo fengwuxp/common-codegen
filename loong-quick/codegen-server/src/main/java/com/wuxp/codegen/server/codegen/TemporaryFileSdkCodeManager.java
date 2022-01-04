@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import static com.wuxp.codegen.core.constant.Constants.DEFAULT_CODEGEN_DIR;
+
 /**
  * 基于基于 temp file 管理 sdk 代码
  *
@@ -27,7 +29,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class TemporaryFileSdkCodeManager implements SdkCodeManager {
 
-    private static final String OUTPUT_DIR = String.join(File.separator, "target", "codegen-sdk", "loong");
+    private static final String OUTPUT_DIR = String.join(File.separator, "target", DEFAULT_CODEGEN_DIR, "loong");
 
     private final SourcecodeRepository sourcecodeRepository;
 

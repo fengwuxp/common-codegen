@@ -7,10 +7,7 @@ import lombok.experimental.Accessors;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -84,7 +81,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * @key {@link CommonCodeGenClassMeta#getName}
      * @value {@link  CommonCodeGenClassMeta}
      */
-    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new LinkedHashMap<>();
+    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new TreeMap<>();;
 
     /**
      * 在有泛型时候的描述 例如 Set<T>,Map<K,V> 等

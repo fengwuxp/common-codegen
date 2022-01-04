@@ -16,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,52 +26,48 @@ import java.util.regex.Pattern;
  * 测试swagger 生成  typescript的 feign api sdk
  */
 @Slf4j
- class Swagger2FeignSdkCodegenTypescriptTest {
-
-
-    protected PathMatcher pathMatcher = new AntPathMatcher();
+class Swagger2FeignSdkCodegenTypescriptTest {
 
     @Test
-     void testCodeGenTypescriptApiByStater() {
+    void testCodeGenTypescriptApiByStater() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
 
-        //控制器的包所在
-//        packageMap.put("com.wuxp.codegen.swagger2.controller", "services");
         packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");
         packageMap.put("com.wuxp.codegen.swagger2.**.evt", "evt");
         packageMap.put("com.wuxp.codegen.swagger2.**.domain", "domain");
         packageMap.put("com.wuxp.codegen.swagger2.**.resp", "resp");
         packageMap.put("com.wuxp.codegen.swagger2.**.enums", "enums");
-        //其他类（DTO、VO等）所在的包
-//        packageMap.put("com.wuxp.codegen.swagger2.example", "");
-
-        String language = LanguageDescription.TYPESCRIPT.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.TYPESCRIPT_FEIGN.name().toLowerCase(), "swagger2",
-                "src", "api"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
 
+        LanguageDescription language = LanguageDescription.TYPESCRIPT;
+        ClientProviderType clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
+
         Swagger2FeignTypescriptCodegenBuilder.builder()
-                .languageDescription(LanguageDescription.TYPESCRIPT)
-                .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
+                .languageDescription(language)
+                .clientProviderType(clientProviderType)
                 // 自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 // 基础类型映射
                 .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
                 .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger2AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .buildCodeGenerator()
                 .generate();
 
+        Swagger2AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+
     }
 
     @Test
-     void testAntPathMatcher() {
+    void testAntPathMatcher() {
+        PathMatcher pathMatcher = new AntPathMatcher();
+
         String name = BaseController.class.getName();
         String name1 = BaseEvt.class.getName();
 

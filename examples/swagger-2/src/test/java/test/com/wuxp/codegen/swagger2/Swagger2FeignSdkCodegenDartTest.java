@@ -6,7 +6,6 @@ import com.wuxp.codegen.meta.enums.AuthenticationType;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignDartCodegenBuilder;
-import com.wuxp.codegen.swagger2.example.controller.OrderController;
 import com.wuxp.codegen.swagger2.example.evt.BaseQueryEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
@@ -14,57 +13,34 @@ import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 class Swagger2FeignSdkCodegenDartTest {
 
 
     @Test
-    void testCodeGenDartApiByStater() {
-
-        //包名映射关系
-        Map<String, String> packageMap = new LinkedHashMap<>();
-
-        //控制器的包所在
-        packageMap.put("com.wuxp.codegen.swagger2.controller", "com.wuxp.codegen.swagger2.services");
-        //其他类（DTO、VO等）所在的包
-        String basePackageName = "com.wuxp.codegen.swagger2";
-        packageMap.put("com.wuxp.codegen.swagger2.example.controller", basePackageName + ".clients");
-        packageMap.put("com.wuxp.codegen.swagger2.example", basePackageName);
-        //其他类（DTO、VO等）所在的包
-
-        String language = LanguageDescription.DART.getName();
-        String[] outPaths = {
-                "codegen-result",
-                "../",
-                ".",
-                "codegen-result",
-                language.toLowerCase(),
-                ClientProviderType.DART_FEIGN.name().toLowerCase(),
-                "swagger2",
-                "lib",
-                "src"};
+    void testCodeGenDartApiByStater() throws Exception {
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
 
-        Map<String, Object> classNameTransformers = new HashMap<>();
-        classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
+        Map<Class<?>, List<String>> ignoreFields = new HashMap<>();
+        ignoreFields.put(BaseQueryEvt.class, Collections.singletonList("queryPage"));
 
-        Map<Class<?>, List<String>> ignoreFields = new HashMap<Class<?>, List<String>>() {{
-            put(BaseQueryEvt.class, Collections.singletonList("queryPage"));
-        }};
-
-        Map<DartClassMeta, List<String>> typeAlias = new HashMap<DartClassMeta, List<String>>() {{
-            put(DartClassMeta.BUILT_LIST, Collections.singletonList("PageInfo"));
-        }};
+        Map<DartClassMeta, List<String>> typeAlias = new HashMap<>();
+        typeAlias.put(DartClassMeta.BUILT_LIST, Collections.singletonList("PageInfo"));
 
         RequestMappingMetaFactory.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
+
+        LanguageDescription language = LanguageDescription.DART;
+        ClientProviderType clientProviderType = ClientProviderType.DART_FEIGN;
+
         Swagger2FeignDartCodegenBuilder.builder()
                 .typeAlias(typeAlias)
                 //设置基础数据类型的映射关系
@@ -72,12 +48,14 @@ class Swagger2FeignSdkCodegenDartTest {
                 .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTURE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger2AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
                 .ignoreFieldNames(ignoreFields)
                 .buildCodeGenerator()
                 .generate();
+
+        Swagger2AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
     }
 
 

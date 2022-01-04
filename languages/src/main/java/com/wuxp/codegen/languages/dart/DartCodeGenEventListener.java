@@ -11,6 +11,7 @@ import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.table.TableRowSorter;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,13 +52,16 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
     private final Map<DartClassMeta, List<String>> typeAlias;
 
 
-    private final Set<CommonCodeGenClassMeta> eventCodeGenMetas = new HashSet<>();
+    /**
+     * 使用 {@link SortedSet} 保证同样的文件输出的顺序是一致的
+     */
+    private final Set<CommonCodeGenClassMeta> eventCodeGenMetas = new TreeSet<>();
 
     // dto 对象
-    private final Set<CommonCodeGenClassMeta> dtoMetas = new HashSet<>();
+    private final Set<CommonCodeGenClassMeta> dtoMetas = new TreeSet<>();
 
     // feign client 对象
-    private final Set<CommonCodeGenClassMeta> feignClientMetas = new HashSet<>();
+    private final Set<CommonCodeGenClassMeta> feignClientMetas = new TreeSet<>();
 
     private final CombineTypeDescStrategy simpleCombineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
 
@@ -65,7 +69,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
 
     public DartCodeGenEventListener(String feignSdkLibName, Map<DartClassMeta, List<String>> typeAlias) {
         this.feignSdkLibName = feignSdkLibName == null ? "feign_sdk" : feignSdkLibName;
-        this.typeAlias = typeAlias;
+        this.typeAlias = new TreeMap<>(typeAlias);
     }
 
     @Override
@@ -117,7 +121,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
     private DartClassMeta buildSkdReflectMeta() {
         DartClassMeta result = new DartClassMeta();
         Map<String, Object> tags = new HashMap<>();
-        Set<CommonCodeGenClassMeta> dependencies = new HashSet<>();
+        Set<CommonCodeGenClassMeta> dependencies = new TreeSet<>();
         dependencies.addAll(feignClientMetas);
         dependencies.addAll(dtoMetas);
         tags.put(DEPENDENCIES_TAG_NAME, dependencies);
@@ -132,7 +136,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
     private DartClassMeta buildSdkIndexMeta() {
         DartClassMeta result = new DartClassMeta();
         Map<String, Object> tags = new HashMap<>();
-        Set<CommonCodeGenClassMeta> dependencies = new HashSet<>();
+        Set<CommonCodeGenClassMeta> dependencies = new TreeSet<>();
         dependencies.addAll(feignClientMetas);
         dependencies.addAll(dtoMetas);
         tags.put(DEPENDENCIES_TAG_NAME, dependencies);
@@ -165,7 +169,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
                 .flatMap(Collection::stream)
                 .map(this::buildBuiltValueFactoryModel)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     private List<CommonCodeGenClassMeta[]> flatMetaReturnTypes(CommonCodeGenMethodMeta[] methodMetas) {

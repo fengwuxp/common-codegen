@@ -15,8 +15,6 @@ import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -27,23 +25,16 @@ class Swagger3FeignSdkCodegenDartTest {
 
 
     @Test
-    void testCodeGenDartApiSdk() {
+    void testCodeGenDartApiSdk() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
 
-        //控制器的包所在
-//        packageMap.put("com.wuxp.codegen.swagger3.controller", "services");
         packageMap.put("com.wuxp.codegen.swagger3.**.controller", "{0}services");
         packageMap.put("com.wuxp.codegen.swagger3.**.evt", "evt");
         packageMap.put("com.wuxp.codegen.swagger3.**.domain", "domain");
         packageMap.put("com.wuxp.codegen.swagger3.**.resp", "resp");
         packageMap.put("com.wuxp.codegen.swagger3.**.enums", "enums");
-        //其他类（DTO、VO等）所在的包
-//        packageMap.put("com.wuxp.codegen.swagger3.example", "");
-
-        String language = LanguageDescription.DART.getName();
-        String[] outPaths = {"codegen-result", language.toLowerCase(), ClientProviderType.DART_FEIGN.name().toLowerCase(), "swagger3", "lib", "src"};
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger3.**.controller"};
@@ -51,17 +42,18 @@ class Swagger3FeignSdkCodegenDartTest {
         Map<String, Object> classNameTransformers = new HashMap<>();
         classNameTransformers.put(OrderController.class.getSimpleName(), "OrderFeignClient");
 
-        Map<Class<?>, List<String>> ignoreFields = new HashMap<Class<?>, List<String>>() {{
-            put(BaseQueryEvt.class, Arrays.asList("queryPage"));
-        }};
+        Map<Class<?>, List<String>> ignoreFields = new HashMap<>();
+        ignoreFields.put(BaseQueryEvt.class, Collections.singletonList("queryPage"));
 
-        Map<DartClassMeta, List<String>> typeAlias = new HashMap<DartClassMeta, List<String>>() {{
-            put(DartClassMeta.BUILT_LIST, Arrays.asList("PageInfo"));
-        }};
+        Map<DartClassMeta, List<String>> typeAlias = new HashMap<>();
+        typeAlias.put(DartClassMeta.BUILT_LIST, Collections.singletonList("PageInfo"));
 
         RequestMappingMetaFactory.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
+
+        LanguageDescription language = LanguageDescription.DART;
+        ClientProviderType clientProviderType = ClientProviderType.DART_FEIGN;
 
         Swagger3FeignDartCodegenBuilder.builder()
                 .typeAlias(typeAlias)
@@ -71,13 +63,14 @@ class Swagger3FeignSdkCodegenDartTest {
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
-                .outPath(Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, outPaths)).toString())
+                .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
                 .ignoreFieldNames(ignoreFields)
                 .buildCodeGenerator()
                 .generate();
 
+        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
     }
 
 

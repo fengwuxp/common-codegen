@@ -4,8 +4,8 @@ import com.wuxp.codegen.model.enums.AccessPermission;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -16,7 +16,6 @@ import java.util.Map;
 @Data
 @Accessors(chain = true)
 public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
-
 
     /**
      * 如果是类则为类的simple名(不含包名) 如果为属性或方法则为name
@@ -46,7 +45,7 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
     /**
      * 其他的描述信息
      */
-    protected Map<String, Object> tags = new HashMap<>();
+    protected Map<String, Object> tags = new TreeMap<>();
 
 
     public CommonBaseMeta() {
@@ -76,7 +75,10 @@ public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
 
     @Override
     public int compareTo(CommonBaseMeta o) {
-        return this.hashCode() - o.hashCode();
+        if (this.name == null || o.getName() == null) {
+            return this.tags.size() - o.getTags().size();
+        }
+        return this.getName().compareTo(o.getName());
     }
 
 }
