@@ -63,7 +63,6 @@ public class OrderController extends BaseController<String> {
         return new PageInfo<Order>();
     }
 
-
     @PostMapping(value = {"queryOrder_2"}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ServiceQueryResponse<Order> queryOrder_2(@RequestParam(name = "order_id", required = false) Long oderId, String sn) {
 
@@ -83,15 +82,8 @@ public class OrderController extends BaseController<String> {
         return new ServiceResponse<>();
     }
 
-
     @PostMapping(value = {"hello"})
     public ServiceResponse hello() {
-
-        return new ServiceResponse<>();
-    }
-
-    //    @PostMapping(value = {"hello"})
-    public ServiceResponse public_hello() {
 
         return new ServiceResponse<>();
     }
@@ -101,11 +93,5 @@ public class OrderController extends BaseController<String> {
 
         return new ServiceResponse<>();
     }
-
-//    @PostMapping(value = {"private_hello"})
-//    private ServiceResponse private_hello() {
-//
-//        return new ServiceResponse<>();
-//    }
 
 }

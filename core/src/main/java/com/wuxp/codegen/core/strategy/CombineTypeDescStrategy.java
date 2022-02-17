@@ -12,8 +12,8 @@ public interface CombineTypeDescStrategy {
     /**
      * 合并类型
      *
-     * @param codeGenClassMetas
+     * @param classMetas 类型列表
      * @return 不同语言的泛型字符串描述
      */
-    String combine(CommonCodeGenClassMeta[] codeGenClassMetas);
+    String combine(CommonCodeGenClassMeta[] classMetas);
 }

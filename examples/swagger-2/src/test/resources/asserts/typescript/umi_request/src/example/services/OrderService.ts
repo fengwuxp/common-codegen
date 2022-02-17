@@ -70,7 +70,7 @@ export const  getOrder32=  (req?: OrderServiceGetOrder32Req, options?: RequestOp
      **/
 
 export const  queryOrder=  (req?: QueryOrderEvt, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
-  return request<PageInfo<Order>>(`/order`, {
+  return request<PageInfo<Order>>(`/order/queryOrder`, {
       method: 'get',
       params: req || {},
       responseType: 'json',

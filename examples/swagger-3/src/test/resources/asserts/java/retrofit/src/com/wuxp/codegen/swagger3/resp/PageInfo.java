@@ -15,13 +15,13 @@ public class  PageInfo<T> {
               *字段在java中的类型为：List
               *字段在java中的类型为：Object
           **/
-         List<T> records;
+        private List<T> records;
           /**
               *字段在java中的类型为：Integer
           **/
-         Integer queryPage;
+        private Integer queryPage;
           /**
               *字段在java中的类型为：Integer
           **/
-         Integer querySize;
+        private Integer querySize;
 }

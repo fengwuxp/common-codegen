@@ -6,6 +6,7 @@ import com.wuxp.codegen.helper.GrabGenericVariablesHelper;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -25,15 +26,14 @@ import static com.wuxp.codegen.model.CommonCodeGenClassMeta.ARRAY_TYPE_GENERIC_D
 @Slf4j
 public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
-
     @Override
-    public String combine(CommonCodeGenClassMeta[] codeGenClassMetas) {
+    public String combine(CommonCodeGenClassMeta[] classMetas) {
 
-        if (codeGenClassMetas == null || codeGenClassMetas.length == 0) {
+        if (classMetas == null || classMetas.length == 0) {
             return null;
         }
-        int length = codeGenClassMetas.length;
-        CommonCodeGenClassMeta genClassMeta = codeGenClassMetas[0];
+        int length = classMetas.length;
+        CommonCodeGenClassMeta genClassMeta = classMetas[0];
         String finallyGenericDescription = genClassMeta.getFinallyGenericDescription();
         if (length == 1) {
             if (!StringUtils.hasText(finallyGenericDescription)) {
@@ -49,7 +49,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             return finallyGenericDescription;
         }
 
-        genericDescription = this.combineTypes(Arrays.stream(codeGenClassMetas)
+        genericDescription = this.combineTypes(Arrays.stream(classMetas)
                 .map(codeGenClassMeta -> this.combine(new CommonCodeGenClassMeta[]{codeGenClassMeta}))
                 .collect(Collectors.toList()));
 
@@ -57,7 +57,7 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             log.debug("生成的泛型描述为：{}", genericDescription);
         }
 
-        Assert.hasText(genericDescription, () -> "生成的泛型描述不能为 null or empty, types = {} " + Arrays.stream(codeGenClassMetas).map(CommonCodeGenClassMeta::getName).collect(Collectors.joining(",")));
+        Assert.hasText(genericDescription, () -> "生成的泛型描述不能为 null or empty, types = {} " + Arrays.stream(classMetas).map(CommonCodeGenClassMeta::getName).collect(Collectors.joining(",")));
         return genericDescription;
     }
 
@@ -74,16 +74,15 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
      * @return 完整的泛型描述
      */
     public String combineTypes(List<String> names) {
-        int size = names.size();
-        if (size == 0) {
+        if (ObjectUtils.isEmpty(names)) {
             return null;
         }
-        if (size == 1) {
+        if (names.size() == 1) {
             return names.get(0);
         }
 
         // 使用从后向前合并的方式
-        //例如 ：List<T>,Map<K,PageInfo<T>>,String,User
+        // 例如：List<T>,Map<K,PageInfo<T>>,String,User
         // ==> List<Map<K,PageInfo<T>>>,String,User
         // ==> List<Map<String,PageInfo<T>>>,User
         // ==> List<Map<String,PageInfo<User>>>
@@ -110,12 +109,11 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         return null;
     }
 
-
     /**
      * 替换泛型描述符
      *
-     * @param typeVariableNames
-     * @return
+     * @param typeVariableNames 类型变量名称
+     * @return 泛型描述
      */
     private String replaceGenericDescriptor(final Stack<String> typeVariableNames) {
         String typeVariableName = typeVariableNames.pop();
@@ -135,7 +133,6 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
         return this.replaceGenericDescCode(typeVariableName, descriptors, names);
     }
 
-
     /**
      * 替换泛型描述代码
      *
@@ -150,9 +147,8 @@ public class SimpleCombineTypeDescStrategy implements CombineTypeDescStrategy {
             // 处理数组的泛型合并
             return typeVariables.get(0) + "[]";
         }
-        //精确匹配<T>
+        // 精确匹配<T>
         return genericDescription.replaceAll("<" + String.join(",", descriptors) + ">", "<" + String.join(",", typeVariables) + ">");
-
     }
 
 

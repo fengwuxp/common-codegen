@@ -86,8 +86,8 @@ export const  getMap2=  ( options?: RequestOptionsInit): Promise<Record<string,A
      **/
 
 export const  getMap3=  (req?: ExampleServiceGetMap3Req, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
-        const {test_id,...reqData} = req;
-        const url =`/example_cms/get_map_3/${test_id}`;
+        const {id,...reqData} = req;
+        const url =`/example_cms/get_map_3/${id}`;
   return request<Record<string,Array<boolean>>>(url, {
       method: 'get',
       params: reqData || {},
@@ -105,7 +105,7 @@ export const  getMap3=  (req?: ExampleServiceGetMap3Req, options?: RequestOption
      **/
 
 export const  getMap4=  (req?: ExampleDTO, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
-  return request<Record<string,Array<boolean>>>(`/example_cms/get_map_4/{test_id}`, {
+  return request<Record<string,Array<boolean>>>(`/example_cms/get_map_/`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -122,7 +122,7 @@ export const  getMap4=  (req?: ExampleDTO, options?: RequestOptionsInit): Promis
      **/
 
 export const  getMap5=  (req?: ExampleDto, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
-  return request<Record<string,Array<boolean>>>(`/example_cms/get_map_5/{test_id}`, {
+  return request<Record<string,Array<boolean>>>(`/example_cms/get_map_5`, {
       method: 'get',
       params: req || {},
       responseType: 'json',

@@ -27,7 +27,6 @@ public class Swagger2 implements WebMvcConfigurer {
 
     @Bean
     public Docket createRestApi() {
-
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
@@ -36,12 +35,6 @@ public class Swagger2 implements WebMvcConfigurer {
                 .build();
     }
 
-//    @Bean
-////    @Primary()
-//    public static ObjectMapperConfigurer objectMapperConfigurer() {
-//        return new MyObjectMapperConfigurer();
-//    }
-
     /**
      * 统一输出风格 See {@link com.fasterxml.jackson.databind.PropertyNamingStrategy.SnakeCaseStrategy} for details.
      *
@@ -49,8 +42,7 @@ public class Swagger2 implements WebMvcConfigurer {
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        for (int i = 0; i < converters.size(); i++) {
-            HttpMessageConverter<?> httpMessageConverter = converters.get(i);
+        for (HttpMessageConverter<?> httpMessageConverter : converters) {
             if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter) {
                 // 统一返回数据的输出风格
                 MappingJackson2HttpMessageConverter converter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
@@ -63,7 +55,6 @@ public class Swagger2 implements WebMvcConfigurer {
             }
         }
     }
-
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()

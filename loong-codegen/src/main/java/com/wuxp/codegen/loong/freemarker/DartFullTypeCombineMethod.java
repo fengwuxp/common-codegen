@@ -7,6 +7,7 @@ import freemarker.template.DefaultArrayAdapter;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -16,23 +17,20 @@ import java.util.List;
  * @author wxup
  */
 @Slf4j
-public class DartFullTypeCombineMethod implements TemplateMethodModelEx {
+public final class DartFullTypeCombineMethod implements TemplateMethodModelEx {
 
+    private final CombineTypeDescStrategy combineTypeDescStrategy = new DartFullTypeCombineTypeDescStrategy();
 
-  protected CombineTypeDescStrategy combineTypeDescStrategy = new DartFullTypeCombineTypeDescStrategy();
-
-  @Override
-  public Object exec(List arguments) throws TemplateModelException {
-    if (arguments.size() == 0) {
-      throw new RuntimeException("arguments size is 0");
+    @Override
+    public Object exec(List arguments) throws TemplateModelException {
+        Assert.notEmpty(arguments, "arguments is null or is empty");
+        DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.get(0);
+        CommonCodeGenClassMeta[] commonCodeGenClassMetas = (CommonCodeGenClassMeta[]) arrayAdapter
+                .getAdaptedObject(CommonCodeGenClassMeta.class);
+        String combine = this.combineTypeDescStrategy.combine(commonCodeGenClassMetas);
+        if (log.isInfoEnabled()) {
+            log.info("Built Value FullType: {}", combine);
+        }
+        return combine;
     }
-    DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.get(0);
-
-    CommonCodeGenClassMeta[] commonCodeGenClassMetas = (CommonCodeGenClassMeta[]) arrayAdapter
-        .getAdaptedObject(CommonCodeGenClassMeta.class);
-
-    String combine = this.combineTypeDescStrategy.combine(commonCodeGenClassMetas);
-    log.info("Built Value FullType: {}", combine);
-    return combine;
-  }
 }

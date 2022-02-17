@@ -16,4 +16,8 @@ public class ServiceResponse<T> {
 
     @ApiModelProperty("响应数据")
     T data;
+
+    public T getData() {
+        return data;
+    }
 }

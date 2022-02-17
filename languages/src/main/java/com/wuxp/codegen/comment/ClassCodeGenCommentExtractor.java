@@ -17,7 +17,6 @@ public class ClassCodeGenCommentExtractor implements CodeGenCommentExtractor {
         this.elementType = elementType;
     }
 
-
     @Override
     public String toComment(Class<?> clazz) {
         String simpleName = clazz.equals(JavaArrayClassTypeMark.class) ? "数组" : clazz.getSimpleName();
@@ -36,6 +35,4 @@ public class ClassCodeGenCommentExtractor implements CodeGenCommentExtractor {
                 return "";
         }
     }
-
-
 }

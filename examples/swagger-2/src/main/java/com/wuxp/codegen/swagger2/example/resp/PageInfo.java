@@ -16,4 +16,8 @@ public class PageInfo<T> {
 
     @ApiModelProperty("查询大小")
     Integer querySize;
+
+    public List<T> getRecords() {
+        return records;
+    }
 }

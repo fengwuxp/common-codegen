@@ -49,7 +49,6 @@ public final class CodeGenCommentExtractorFactory {
         return new ClassCodeGenCommentExtractor(elementType);
     }
 
-
     public void addCommentExtractor(CodeGenCommentExtractor... extractors) {
         codeGenCommentExtractors.addAll(Arrays.asList(extractors));
     }

@@ -11,9 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Swagger2ExampleApplication {
 
     public static void main(String[] args) {
-
         SpringApplication.run(Swagger2ExampleApplication.class, args);
-
     }
 
 }

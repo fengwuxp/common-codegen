@@ -24,9 +24,9 @@ public class DartFullTypeCombineTypeDescStrategy implements CombineTypeDescStrat
 
 
     @Override
-    public String combine(CommonCodeGenClassMeta[] codeGenClassMetas) {
+    public String combine(CommonCodeGenClassMeta[] classMetas) {
         //取泛型描述
-        String genericDesc = this.combineTypeDescStrategy.combine(codeGenClassMetas);
+        String genericDesc = this.combineTypeDescStrategy.combine(classMetas);
         String fullTypeCode = this.getFullTypeCode(genericDesc);
         log.info("合并dart FullType {}", fullTypeCode);
 

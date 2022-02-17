@@ -97,9 +97,9 @@ ExampleService() : super() {
       /// 3:返回值在java中的类型为：String
       /// 4:返回值在java中的类型为：List
       /// 5:返回值在java中的类型为：Boolean
-          @GetMapping(value:"get_map_3/{test_id}",)
+          @GetMapping(value:"get_map_3/{id}",)
   Future<BuiltMap<String,BuiltList<bool>>>  getMap3(
-          @PathVariable(name: "test_id" ,required: true )
+          @PathVariable(name: "id" ,required: true )
         String id,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltMap<String,BuiltList<bool>>>("getMap3",
@@ -117,7 +117,7 @@ ExampleService() : super() {
       /// 3:返回值在java中的类型为：String
       /// 4:返回值在java中的类型为：List
       /// 5:返回值在java中的类型为：Boolean
-          @GetMapping(value:"get_map_4/{test_id}",)
+          @GetMapping(value:"get_map_/",)
   Future<BuiltMap<String,BuiltList<bool>>>  getMap4(
         ExampleDTO dto,
   [UIOptions? feignOptions]) {
@@ -136,7 +136,7 @@ ExampleService() : super() {
       /// 3:返回值在java中的类型为：String
       /// 4:返回值在java中的类型为：List
       /// 5:返回值在java中的类型为：Boolean
-          @GetMapping(value:"get_map_5/{test_id}",)
+          @GetMapping(value:"get_map_5",)
   Future<BuiltMap<String,BuiltList<bool>>>  getMap5(
         ExampleDto dto,
   [UIOptions? feignOptions]) {

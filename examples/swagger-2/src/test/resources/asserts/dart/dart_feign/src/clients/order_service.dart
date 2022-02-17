@@ -69,7 +69,7 @@ OrderService() : super() {
       /// 2:Http请求方法：GET
       /// 3:返回值在java中的类型为：PageInfo
       /// 4:返回值在java中的类型为：Order
-          @GetMapping()
+          @GetMapping(value:"/queryOrder",)
   Future<PageInfo<Order>>  queryOrder(
         QueryOrderEvt evt,
   [UIOptions? feignOptions]) {

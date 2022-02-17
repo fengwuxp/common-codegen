@@ -13,3 +13,7 @@ server:
 #  level:
 #    org.springframework: debug
 #    com.wuxp: debug
+
+springdoc:
+  api-docs:
+    enabled: true

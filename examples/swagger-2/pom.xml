@@ -21,10 +21,6 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.wuxp.codegen</groupId>
             <artifactId>wuxp-codegen-annotation-meta</artifactId>
         </dependency>

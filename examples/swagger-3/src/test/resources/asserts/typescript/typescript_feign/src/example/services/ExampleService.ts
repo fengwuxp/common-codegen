@@ -78,7 +78,7 @@ class ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GetMapping({
-            value:"get_map_3/{test_id}",
+            value:"get_map_3/{id}",
       })
     getMap3!:(req?: ExampleServiceGetMap3Req, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
     /**
@@ -89,7 +89,7 @@ class ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GetMapping({
-            value:"get_map_4/{test_id}",
+            value:"get_map_/",
       })
     getMap4!:(req?: ExampleDTO, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
     /**
@@ -100,7 +100,7 @@ class ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GetMapping({
-            value:"get_map_5/{test_id}",
+            value:"get_map_5",
       })
     getMap5!:(req?: ExampleDto, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
 }

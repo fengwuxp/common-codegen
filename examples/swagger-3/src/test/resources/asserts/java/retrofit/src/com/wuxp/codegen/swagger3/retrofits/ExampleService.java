@@ -60,9 +60,9 @@ public interface ExampleService{
       * 4:返回值在java中的类型为：List
       * 5:返回值在java中的类型为：Boolean
      **/
-      @GET(value = "/example_cms/get_map_3/{test_id}" )
+      @GET(value = "/example_cms/get_map_3/{id}" )
     Map<String,List<Boolean>>  getMap3 (
-          @Path(required = true ,value = "test_id" )  String id
+          @Path(required = true ,value = "id" )  String id
   );
     /**
       * 1:Http请求方法：GET
@@ -71,7 +71,7 @@ public interface ExampleService{
       * 4:返回值在java中的类型为：List
       * 5:返回值在java中的类型为：Boolean
      **/
-      @GET(value = "/example_cms/get_map_4/{test_id}" )
+      @GET(value = "/example_cms/get_map_/" )
     Map<String,List<Boolean>>  getMap4 (
   ExampleDTO dto
   );
@@ -82,7 +82,7 @@ public interface ExampleService{
       * 4:返回值在java中的类型为：List
       * 5:返回值在java中的类型为：Boolean
      **/
-      @GET(value = "/example_cms/get_map_5/{test_id}" )
+      @GET(value = "/example_cms/get_map_5" )
     Map<String,List<Boolean>>  getMap5 (
   ExampleDto dto
   );

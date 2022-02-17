@@ -1,10 +1,10 @@
 package com.wuxp.codegen.loong.freemarker;
 
-import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.loong.path.PathResolve;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,23 +16,26 @@ import java.util.stream.Collectors;
  * @author wuxp
  */
 @Slf4j
-public class PathResolveMethod implements TemplateMethodModelEx {
+public final class PathResolveMethod implements TemplateMethodModelEx {
+
+    private static final String DEFAULT_PATH = "api";
 
     private final PathResolve pathResolve = new PathResolve();
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object exec(List arguments) {
-        if (arguments.isEmpty()) {
-            throw new CodegenRuntimeException("arguments size is 0");
-        }
+        Assert.notEmpty(arguments, "arguments is null or is empty");
         List<String> paths = ((List<Object>) arguments).stream()
                 .filter(Objects::nonNull)
-                .map(a -> ((SimpleScalar) a).getAsString())
+                .map(SimpleScalar.class::cast)
+                .map(SimpleScalar::getAsString)
                 .collect(Collectors.toList());
 
-        String path = "api";
+        String path = DEFAULT_PATH;
         int size = paths.size();
         if (size == 3) {
+            // 路径组成等于 3 则做分隔
             path = paths.get(0);
             paths = paths.subList(1, size);
         }

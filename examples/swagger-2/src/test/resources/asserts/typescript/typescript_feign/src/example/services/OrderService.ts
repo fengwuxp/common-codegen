@@ -66,6 +66,7 @@ class OrderService{
       * 4:返回值在java中的类型为：Order
      **/
       @GetMapping({
+            value:"/queryOrder",
       })
     queryOrder!:(req?: QueryOrderEvt, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**

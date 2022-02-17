@@ -56,7 +56,7 @@ public interface OrderFeignClient{
       * 3:返回值在java中的类型为：PageInfo
       * 4:返回值在java中的类型为：Order
      **/
-      @GetMapping()
+      @GetMapping(value = "/queryOrder" )
     PageInfo<Order>  queryOrder (
           @SpringQueryMap(value = true )  QueryOrderEvt evt
   );

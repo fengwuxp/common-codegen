@@ -48,7 +48,7 @@ public interface OrderRetrofitClient{
       * 3:返回值在java中的类型为：PageInfo
       * 4:返回值在java中的类型为：Order
      **/
-      @GET(value = "/order" )
+      @GET(value = "/order/queryOrder" )
     PageInfo<Order>  queryOrder (
   QueryOrderEvt evt
   );

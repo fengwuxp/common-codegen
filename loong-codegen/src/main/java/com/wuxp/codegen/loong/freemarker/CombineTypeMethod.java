@@ -17,16 +17,16 @@ import java.util.List;
  * @author wxup
  */
 @Slf4j
-public class CombineTypeMethod implements TemplateMethodModelEx {
+public final class CombineTypeMethod implements TemplateMethodModelEx {
 
     /**
      * 泛型合并策略
      */
-    protected CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
+    private final CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
 
     @Override
     public Object exec(List arguments) throws TemplateModelException {
-        Assert.isTrue(!CollectionUtils.isEmpty(arguments), "arguments is null or is empty");
+        Assert.notEmpty(arguments, "arguments is null or is empty");
         DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.get(0);
         CommonCodeGenClassMeta[] classMetas = (CommonCodeGenClassMeta[]) arrayAdapter.getAdaptedObject(CommonCodeGenClassMeta.class);
         Assert.isTrue(!ObjectUtils.isEmpty(classMetas), "combine type  classMetas is null or is empty");

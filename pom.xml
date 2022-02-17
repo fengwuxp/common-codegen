@@ -53,9 +53,7 @@
 
         <spring.version>5.3.3</spring.version>
         <swagger2.version>3.0.0</swagger2.version>
-        <io.swagger2.models.version>1.6.2</io.swagger2.models.version>
-        <swagger3.version>2.1.6</swagger3.version>
-        <springdoc.version>1.5.3</springdoc.version>
+        <springdoc.version>1.6.6</springdoc.version>
         <javaparser.version>3.18.0</javaparser.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <zip4j.version>2.7.0</zip4j.version>
@@ -198,11 +196,6 @@
 
             <!--  swagger  -->
             <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger3.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${swagger2.version}</version>
@@ -212,12 +205,6 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger2.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>${io.swagger2.models.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

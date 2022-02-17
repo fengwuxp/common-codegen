@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * 用于将 {@link Class<?>} 对象解析为代码生成的模型对象
+ * 用于将 {@param S} 对象解析为代码生成的模型对象
  *
  * @author wuxp
  */
@@ -29,7 +29,7 @@ public interface LanguageElementDefinitionParser<C extends CommonBaseMeta, S>
      * @see #parseOfNullable
      */
     @Nullable
-    C  parse(S source);
+    C parse(S source);
 
     /**
      * @param source 待解析 {@link S} 类型 的 element

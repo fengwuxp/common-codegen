@@ -52,21 +52,21 @@ public class ExampleController {
         return map;
     }
 
-    @GetMapping("get_map_3/{test_id}")
-    public Map<String, List<Boolean>> getMap3(@PathVariable("test_id") String id) {
+    @GetMapping("get_map_3/{id}")
+    public Map<String, List<Boolean>> getMap3(@PathVariable("id") String id) {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
         return map;
     }
 
-    @GetMapping("get_map_4/{test_id}")
+    @GetMapping("get_map_/")
     public Map<String, List<Boolean>> getMap4(ExampleDTO dto) {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
         return map;
     }
 
-    @GetMapping("get_map_5/{test_id}")
+    @GetMapping("get_map_5")
     public Map<String, List<Boolean>> getMap5(ExampleDto dto) {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
