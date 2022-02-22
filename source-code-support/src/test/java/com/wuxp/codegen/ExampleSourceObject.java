@@ -25,6 +25,5 @@ public class ExampleSourceObject {
      * @param name 名称
      */
     public void setName(String name) {
-        return;
     }
 }
