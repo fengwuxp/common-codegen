@@ -5,10 +5,7 @@ import com.wuxp.codegen.meta.annotations.factories.spring.*;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.*;
-import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.Header;
-import retrofit2.http.Query;
+import retrofit2.http.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
@@ -93,7 +90,10 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
-            removeNameToValue(annotation.getNamedArguments());
+            annotation.setName(Path.class.getSimpleName());
+            Map<String, String> namedArguments = annotation.getNamedArguments();
+            namedArguments.remove("required");
+            removeNameToValue(namedArguments);
             return annotation;
         }
     }

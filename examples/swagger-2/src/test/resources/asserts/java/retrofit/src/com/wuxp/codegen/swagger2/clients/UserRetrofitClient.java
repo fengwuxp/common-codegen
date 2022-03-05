@@ -48,7 +48,7 @@ public interface UserRetrofitClient{
      **/
       @GET(value = "/users/{id}" )
     User  getUser (
-          @PathVariable(value = "id" )  Long id
+          @Path(value = "id" )  Long id
   );
     /**
       * 1:更新用户详细信息
@@ -62,7 +62,7 @@ public interface UserRetrofitClient{
      **/
       @PUT(value = "/users/{id}" )
     String  putUser (
-          @PathVariable(required = false ,value = "id" )  Long id,
+          @Path(value = "id" )  Long id,
           @Body()  User user
   );
     /**
@@ -73,7 +73,7 @@ public interface UserRetrofitClient{
      **/
       @DELETED(value = "/users/{id}" )
     String  deleteUser (
-          @PathVariable(value = "id" )  Long id,
+          @Path(value = "id" )  Long id,
   String name
   );
     /**

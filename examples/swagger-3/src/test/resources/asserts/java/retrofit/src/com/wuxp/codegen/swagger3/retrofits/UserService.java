@@ -25,7 +25,7 @@ public interface UserService{
      **/
       @GET(value = "/users/{id}" )
     User  getUser (
-          @PathVariable(value = "id" )  Long id
+          @Path(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：PUT
@@ -33,7 +33,7 @@ public interface UserService{
      **/
       @PUT(value = "/users/{id}" )
     String  putUser (
-          @PathVariable(value = "id" )  Long id,
+          @Path(value = "id" )  Long id,
           @Body()  User user,
           @Body()  Order order
   );
@@ -43,7 +43,7 @@ public interface UserService{
      **/
       @DELETED(value = "/users/{id}" )
     String  deleteUser (
-          @PathVariable(value = "id" )  Long id,
+          @Path(value = "id" )  Long id,
   String name
   );
     /**

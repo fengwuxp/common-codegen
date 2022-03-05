@@ -62,7 +62,7 @@ public interface ExampleService{
      **/
       @GET(value = "/example_cms/get_map_3/{id}" )
     Map<String,List<Boolean>>  getMap3 (
-          @PathVariable(value = "id" )  String id
+          @Path(value = "id" )  String id
   );
     /**
       * 1:Http请求方法：GET
