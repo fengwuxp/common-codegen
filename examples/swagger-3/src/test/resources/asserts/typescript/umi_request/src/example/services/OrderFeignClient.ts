@@ -23,7 +23,7 @@
       * 3:返回值在java中的类型为：Order
      **/
 
-export const  getOrder=  (req?: OrderFeignClientGetOrderReq, options?: RequestOptionsInit): Promise<Array<Order>> =>{
+export const  getOrder=  (req: OrderFeignClientGetOrderReq, options?: RequestOptionsInit): Promise<Array<Order>> =>{
         const {ids,...reqData} = req;
         const headers:Record<string,any>={};
             if(ids!=null){
@@ -32,7 +32,7 @@ export const  getOrder=  (req?: OrderFeignClientGetOrderReq, options?: RequestOp
   return request<Array<Order>>(`/order/getOrder`, {
       method: 'get',
         headers,
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -123,11 +123,11 @@ export const  queryOrder5=  (req: Record<string,QueryOrderEvt>, options?: Reques
       * 3:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder6=  (req?: OrderFeignClientQueryOrder6Req, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
+export const  queryOrder6=  (req: OrderFeignClientQueryOrder6Req, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
   return request<PageInfo<Order>>(`/order/queryOrder6`, {
       method: 'post',
           requestType: 'json',
-          data: req || {},
+          data: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -172,10 +172,10 @@ export const  queryPage=  (req?: OrderFeignClientQueryPageReq, options?: Request
       * 3:返回值在java中的类型为：Long
      **/
 
-export const  createOrder=  (req?: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
+export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
   return request<string>(`/order/createOrder`, {
       method: 'get',
-      params: req || {},
+      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

@@ -34,7 +34,7 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
     private static final Map<ClientProviderType, ClientAnnotationProvider> ANNOTATION_PROVIDERS = new ConcurrentHashMap<>(8);
 
     /**
-     * client provider type和AnnotationCodeGenTransformer的对应关系
+     * {@link ClientProviderType 和 {@link AnnotationCodeGenTransformer} 的对应关系
      *
      * @key ClientProviderType
      * @value {
@@ -74,7 +74,6 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
             return (T) enhancer.create();
         }
         return (T) enhancer.create(new Class[]{annotation.annotationType()}, new Object[]{annotation});
-
     }
 
     private Class<? extends AnnotationMate> tryGetAnnotationType(Annotation annotation, Class<? extends AnnotationMate> clazz) {

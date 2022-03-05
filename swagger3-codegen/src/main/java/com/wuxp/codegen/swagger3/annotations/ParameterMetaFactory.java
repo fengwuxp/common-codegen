@@ -7,9 +7,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.Optional;
-
-import static com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
 
 
 /**
@@ -31,18 +28,13 @@ public class ParameterMetaFactory extends AbstractAnnotationMetaFactory<Paramete
 
         @Override
         public String toComment(AnnotatedElement element) {
-            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(element);
-            String defaultValue = "";
-            if (requestParam.isPresent()) {
-                defaultValue = getRequestAnnotationDesc(defaultValue);
-            }
+            String defaultValue = RequestMappingUtils.findRequestParam(element).map(RequestParam::defaultValue).orElse("");
             String name = name();
             if (element instanceof java.lang.reflect.Parameter) {
                 name = getParameterName((java.lang.reflect.Parameter) element, name);
             }
-            return String.format("%s %s，默认值：%s，示例输入：%s", name,  this.description(),defaultValue,   this.example());
+            return String.format("%s %s，默认值：%s，示例输入：%s", name, this.description(), defaultValue, this.example());
         }
-
 
     }
 }

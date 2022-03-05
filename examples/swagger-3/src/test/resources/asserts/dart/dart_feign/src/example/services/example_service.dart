@@ -99,7 +99,7 @@ ExampleService() : super() {
       /// 5:返回值在java中的类型为：Boolean
           @GetMapping(value:"get_map_3/{id}",)
   Future<BuiltMap<String,BuiltList<bool>>>  getMap3(
-          @PathVariable(name: "id" ,required: true )
+          @PathVariable(name: "id" )
         String id,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltMap<String,BuiltList<bool>>>("getMap3",

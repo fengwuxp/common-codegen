@@ -29,7 +29,7 @@ public interface ListParamsTestFeignClient{
      **/
       @PostMapping()
     String  test1 (
-          @RequestBody(required = true )  List<User> users
+          @RequestBody()  List<User> users
   );
     /**
       * 1:Http请求方法：GET
@@ -53,7 +53,7 @@ public interface ListParamsTestFeignClient{
      **/
       @PostMapping(value = "test_4" )
     String  test4 (
-          @RequestBody(required = true )  Set<User> users
+          @RequestBody()  Set<User> users
   );
     /**
       * 1:Http请求方法：POST
@@ -61,7 +61,7 @@ public interface ListParamsTestFeignClient{
      **/
       @PostMapping(value = "test_5" )
     String  test5 (
-          @RequestBody(required = true )  Collection<User> users
+          @RequestBody()  Collection<User> users
   );
     /**
       * 1:Http请求方法：POST
@@ -69,6 +69,6 @@ public interface ListParamsTestFeignClient{
      **/
       @PostMapping(value = "test_6" )
     String  test6 (
-          @RequestBody(required = true )  Set<User> users
+          @RequestBody()  Set<User> users
   );
 }

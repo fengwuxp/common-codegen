@@ -56,7 +56,7 @@ class UserService{
      **/
       @PostMapping({
       })
-    postUser!:(req?: UserServicePostUserReq, option?: FeignRequestOptions) => Promise<string>;
+    postUser!:(req: UserServicePostUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:获取用户详细信息
       * 2:属性名称：id，属性说明：用户ID，默认值：，示例输入：
@@ -66,7 +66,7 @@ class UserService{
       @GetMapping({
             value:"/{id}",
       })
-    getUser!:(req?: UserServiceGetUserReq, option?: FeignRequestOptions) => Promise<User>;
+    getUser!:(req: UserServiceGetUserReq, option?: FeignRequestOptions) => Promise<User>;
     /**
       * 1:更新用户详细信息
       * <pre>
@@ -80,7 +80,7 @@ class UserService{
       @PutMapping({
             value:"/{id}",
       })
-    putUser!:(req?: UserServicePutUserReq, option?: FeignRequestOptions) => Promise<string>;
+    putUser!:(req: UserServicePutUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:删除用户
       * 2:属性名称：id，属性说明：用户ID，默认值：，示例输入：
@@ -90,7 +90,7 @@ class UserService{
       @DeleteMapping({
             value:"/{id}",
       })
-    deleteUser!:(req?: UserServiceDeleteUserReq, option?: FeignRequestOptions) => Promise<string>;
+    deleteUser!:(req: UserServiceDeleteUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:sample
       * 2:属性名称：id，属性说明：用户ID，默认值：，示例输入：

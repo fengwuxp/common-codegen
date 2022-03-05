@@ -13,5 +13,5 @@ export interface  OrderServiceGetOrder32Req {
                 *字段在java中的类型为：数组
                 *字段在java中的类型为：String
             **/
-        names?: string[];
+        names: string[];
 }

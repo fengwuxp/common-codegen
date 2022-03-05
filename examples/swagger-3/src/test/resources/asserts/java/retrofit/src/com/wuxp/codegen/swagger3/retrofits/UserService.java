@@ -25,7 +25,7 @@ public interface UserService{
      **/
       @GET(value = "/users/{id}" )
     User  getUser (
-          @Path(required = true ,value = "id" )  Long id
+          @PathVariable(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：PUT
@@ -33,7 +33,7 @@ public interface UserService{
      **/
       @PUT(value = "/users/{id}" )
     String  putUser (
-          @Path(required = true ,value = "id" )  Long id,
+          @PathVariable(value = "id" )  Long id,
           @Body()  User user,
           @Body()  Order order
   );
@@ -43,7 +43,7 @@ public interface UserService{
      **/
       @DELETED(value = "/users/{id}" )
     String  deleteUser (
-          @Path(required = true ,value = "id" )  Long id,
+          @PathVariable(value = "id" )  Long id,
   String name
   );
     /**
@@ -86,7 +86,7 @@ public interface UserService{
      **/
       @POST(value = "/users/uploadFile" )
     void  uploadFile (
-          @Field(required = true ,value = "file" )  File commonsMultipartFile
+          @Field(value = "file" )  File commonsMultipartFile
   );
     /**
       * 1:Http请求方法：GET

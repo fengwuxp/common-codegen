@@ -23,7 +23,7 @@ factory QueryOrderEvt([Function(QueryOrderEvtBuilder) updates]) = _$QueryOrderEv
             /// sn 约束条件：输入字符串的最小长度为：0，输入字符串的最大长度为：50
             /// 字段在java中的类型为：String
         @BuiltValueField(wireName: 'sn')
-        String? get sn;
+        String get sn;
             /// 属性说明：id列表，示例输入：
             /// 字段在java中的类型为：数组
             /// 字段在java中的类型为：int

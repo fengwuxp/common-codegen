@@ -1,16 +1,11 @@
 package com.wuxp.codegen.meta.annotations.factories.spring;
 
+import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
-import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wxup
@@ -27,22 +22,7 @@ public class RequestBodyMetaFactory extends AbstractAnnotationMetaFactory<Reques
     }
 
 
-    public abstract static class RequestBodyMate implements NamedAnnotationMate, RequestBody {
-
-
-        @Override
-        public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
-            CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(RequestBody.class.getSimpleName());
-            Map<String, String> namedArguments = new HashMap<>();
-            namedArguments.put("required", this.required() + "");
-            //注解位置参数
-            List<String> positionArguments = new LinkedList<>(namedArguments.values());
-            annotation.setNamedArguments(namedArguments)
-                    .setPositionArguments(positionArguments);
-            annotation.setElementType(ElementType.PARAMETER);
-            return annotation;
-        }
+    public abstract static class RequestBodyMate extends AbstractAnnotationMate implements AnnotationMate, RequestBody {
 
         @Override
         public String toComment(Parameter annotationOwner) {

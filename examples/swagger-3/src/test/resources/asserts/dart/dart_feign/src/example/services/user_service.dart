@@ -28,7 +28,7 @@ UserService() : super() {
       /// 2:返回值在java中的类型为：User
           @GetMapping(value:"/{id}",)
   Future<User>  getUser(
-          @PathVariable(name: "id" ,required: true )
+          @PathVariable(name: "id" )
         int id,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<User>("getUser",
@@ -45,11 +45,11 @@ UserService() : super() {
       /// 2:返回值在java中的类型为：String
           @PutMapping(value:"/{id}",)
   Future<String>  putUser(
-          @PathVariable(name: "id" ,required: true )
+          @PathVariable(name: "id" )
         int id,
-          @RequestBody(required: true )
+          @RequestBody()
         User user,
-          @RequestBody(required: true )
+          @RequestBody()
         Order order,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<String>("putUser",
@@ -66,7 +66,7 @@ UserService() : super() {
       /// 2:返回值在java中的类型为：String
           @DeleteMapping(value:"/{id}",)
   Future<String>  deleteUser(
-          @PathVariable(name: "id" ,required: true )
+          @PathVariable(name: "id" )
         int id,
         String name,
   [UIOptions? feignOptions]) {
@@ -142,7 +142,7 @@ UserService() : super() {
       /// 2:返回值在java中的类型为：void
           @PostMapping(produces:[HttpMediaType.MULTIPART_FORM_DATA],)
   Future<void>  uploadFile(
-          @RequestParam(name: "file" ,required: true )
+          @RequestParam(name: "file" )
         File commonsMultipartFile,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<void>("uploadFile",

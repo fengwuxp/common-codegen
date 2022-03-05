@@ -49,7 +49,7 @@ factory ${serializerName}([Function(${serializerName}Builder${genericDesc}) upda
             /// ${cmment}
         </#list>
         @BuiltValueField(wireName: '${field.name}')
-        ${customizeMethod.combineType(field.filedTypes)}<#if !field.requered??>?</#if> get ${field.name};
+        ${customizeMethod.combineType(field.filedTypes)}<#if field.required?string('true', 'false')=='false'>?</#if> get ${field.name};
     </#list>
 </#if>
 

@@ -31,8 +31,9 @@ OrderService() : super() {
           @GetMapping(value:"get_order",)
   Future<BuiltList<Order>>  getOrder(
         String text,
-          @RequestHeader(name: "names" ,required: true )
+          @RequestHeader(name: "names" )
         BuiltList<String> names,
+          @CookieValue(name: "ids" )
         BuiltList<int> ids,
         BuiltSet<Order> moneys,
   [UIOptions? feignOptions]) {
@@ -52,7 +53,7 @@ OrderService() : super() {
       /// 4:返回值在java中的类型为：Order
           @GetMapping(value:"get_order_32",)
   Future<BuiltList<Order>>  getOrder32(
-          @RequestParam(name: "names" ,required: true )
+          @RequestParam(name: "names" )
         BuiltList<String> names,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltList<Order>>("getOrder32",
@@ -111,6 +112,7 @@ OrderService() : super() {
           @RequestParam(name: "order_id" ,required: false )
         int oderId,
         String sn,
+          @CookieValue(name: "memberId" )
         int memberId,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder2",
@@ -158,7 +160,7 @@ OrderService() : super() {
       /// 8:返回值在java中的类型为：Long
           @PostMapping()
   Future<int>  createOrder(
-          @RequestBody(required: true )
+          @RequestBody()
         CreateOrderEvt evt,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<int>("createOrder",
@@ -190,7 +192,7 @@ OrderService() : super() {
       /// 4:返回值在java中的类型为：Object
           @PostMapping(value:"hello_2",)
   Future<PageInfo<Object>>  hello2(
-          @RequestParam(name: "name" ,required: false )
+          @RequestParam(defaultValue: "test" ,name: "name" ,required: false )
         String name,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Object>>("hello2",

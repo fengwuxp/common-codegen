@@ -12,5 +12,5 @@ export interface  ExampleServiceGetMap3Req {
             /**
                 *字段在java中的类型为：String
             **/
-        id?: string;
+        id: string;
 }

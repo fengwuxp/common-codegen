@@ -67,7 +67,7 @@ public interface ExampleFeignClient{
      **/
       @GetMapping(value = "get_map_3/{id}" )
     Map<String,List<Boolean>>  getMap3 (
-          @PathVariable(name = "id" ,required = true )  String id
+          @PathVariable(name = "id" )  String id
   );
     /**
       * 1:Http请求方法：GET

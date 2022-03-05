@@ -70,7 +70,7 @@ public final class RequestMappingUtils {
 
 
     public static Optional<PathVariable> findPathVariable(Annotation[] annotations) {
-        return findAnnotations(annotations, PathVariable.class);
+        return CodegenAnnotationUtils.findAnnotations(annotations, PathVariable.class);
     }
 
     public static Optional<RequestParam> findRequestParam(Object annotationOwner) {
@@ -82,24 +82,14 @@ public final class RequestMappingUtils {
     }
 
     public static Optional<RequestParam> findRequestParam(Annotation[] annotations) {
-        return findAnnotations(annotations, RequestParam.class);
+        return CodegenAnnotationUtils.findAnnotations(annotations, RequestParam.class);
     }
 
     public static Optional<RequestHeader> findRequestHeader(Annotation[] annotations) {
-        return findAnnotations(annotations, RequestHeader.class);
+        return CodegenAnnotationUtils.findAnnotations(annotations, RequestHeader.class);
     }
 
     public static Optional<RequestBody> findRequestBody(Annotation[] annotations) {
-        return findAnnotations(annotations, RequestBody.class);
-    }
-
-    private static <T> Optional<T> findAnnotations(Annotation[] annotations, Class<T> annotationType) {
-        if (annotations == null) {
-            return Optional.empty();
-        }
-        return Arrays.stream(annotations)
-                .filter(annotation -> annotationType.equals(annotation.annotationType()))
-                .map(annotation -> (T) annotation)
-                .findFirst();
+        return CodegenAnnotationUtils.findAnnotations(annotations, RequestBody.class);
     }
 }

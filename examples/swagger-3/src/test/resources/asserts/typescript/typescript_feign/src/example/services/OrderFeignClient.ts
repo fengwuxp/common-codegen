@@ -39,7 +39,7 @@ class OrderFeignClient{
      **/
       @GetMapping({
       })
-    getOrder!:(req?: OrderFeignClientGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
+    getOrder!:(req: OrderFeignClientGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：PageInfo
@@ -87,7 +87,7 @@ class OrderFeignClient{
      **/
       @PostMapping({
       })
-    queryOrder6!:(req?: OrderFeignClientQueryOrder6Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryOrder6!:(req: OrderFeignClientQueryOrder6Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:Http请求方法：POST
       * 2:返回值在java中的类型为：ServiceQueryResponse
@@ -113,7 +113,7 @@ class OrderFeignClient{
      **/
       @GetMapping({
       })
-    createOrder!:(req?: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
+    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:Http请求方法：POST
       * 2:返回值在java中的类型为：ServiceResponse

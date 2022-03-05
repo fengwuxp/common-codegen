@@ -1,22 +1,21 @@
 package com.wuxp.codegen.swagger3.resp;
 
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
-
-
-
+import javax.validation.constraints.*;
 
 @Data
 public class  ServiceResponse<T> {
 
-          /**
-              *字段在java中的类型为：String
+            /**
+                *字段在java中的类型为：String
             **/
          String message;
-          /**
-              *字段在java中的类型为：Integer
+
+            /**
+                *字段在java中的类型为：Integer
             **/
          Integer code;
+
          T data;
+
 }

@@ -31,7 +31,7 @@
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  getOrder=  (req?: OrderServiceGetOrderReq, options?: RequestOptionsInit): Promise<Array<Order>> =>{
+export const  getOrder=  (req: OrderServiceGetOrderReq, options?: RequestOptionsInit): Promise<Array<Order>> =>{
         const {names,...reqData} = req;
         const headers:Record<string,any>={};
             if(names!=null){
@@ -40,7 +40,7 @@ export const  getOrder=  (req?: OrderServiceGetOrderReq, options?: RequestOption
   return request<Array<Order>>(`/order/get_order`, {
       method: 'get',
         headers,
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -53,10 +53,10 @@ export const  getOrder=  (req?: OrderServiceGetOrderReq, options?: RequestOption
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  getOrder32=  (req?: OrderServiceGetOrder32Req, options?: RequestOptionsInit): Promise<Array<Order>> =>{
+export const  getOrder32=  (req: OrderServiceGetOrder32Req, options?: RequestOptionsInit): Promise<Array<Order>> =>{
   return request<Array<Order>>(`/order/get_order_32`, {
       method: 'get',
-      params: req || {},
+      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -69,10 +69,10 @@ export const  getOrder32=  (req?: OrderServiceGetOrder32Req, options?: RequestOp
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder=  (req?: QueryOrderEvt, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
+export const  queryOrder=  (req: QueryOrderEvt, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
   return request<PageInfo<Order>>(`/order/queryOrder`, {
       method: 'get',
-      params: req || {},
+      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -85,10 +85,10 @@ export const  queryOrder=  (req?: QueryOrderEvt, options?: RequestOptionsInit): 
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  pageBySpringData=  (req?: QueryOrderEvt, options?: RequestOptionsInit): Promise<Order> =>{
+export const  pageBySpringData=  (req: QueryOrderEvt, options?: RequestOptionsInit): Promise<Order> =>{
   return request<Order>(`/order`, {
       method: 'get',
-      params: req || {},
+      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -144,11 +144,11 @@ export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: RequestOpti
       * 8:返回值在java中的类型为：Long
      **/
 
-export const  createOrder=  (req?: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
+export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
   return request<string>(`/order/createOrder`, {
       method: 'post',
           requestType: 'json',
-          data: req || {},
+          data: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

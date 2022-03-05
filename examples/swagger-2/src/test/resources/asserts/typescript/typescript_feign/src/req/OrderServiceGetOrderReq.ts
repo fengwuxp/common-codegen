@@ -29,12 +29,12 @@ export interface  OrderServiceGetOrderReq {
                 *字段在java中的类型为：数组
                 *字段在java中的类型为：String
             **/
-        names?: string[];
+        names: string[];
             /**
                 *字段在java中的类型为：List
                 *字段在java中的类型为：Integer
             **/
-        ids?: Array<number>;
+        ids: Array<number>;
             /**
                 *字段在java中的类型为：Set
                 *字段在java中的类型为：Order

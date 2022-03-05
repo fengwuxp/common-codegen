@@ -1,17 +1,11 @@
 package com.wuxp.codegen.meta.annotations.factories.spring;
 
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AbstractNamedAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import org.springframework.web.bind.annotation.RequestPart;
 
-import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
-import java.text.MessageFormat;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wxup
@@ -28,39 +22,7 @@ public class RequestPartMetaFactory extends AbstractAnnotationMetaFactory<Reques
     }
 
 
-    public abstract static class RequestPartMate implements NamedAnnotationMate, RequestPart {
-
-        private final RequestPart requestPart;
-
-        protected RequestPartMate(RequestPart requestPart) {
-            this.requestPart = requestPart;
-        }
-
-        @Override
-        public String name() {
-            return requestPart.name();
-        }
-
-        @Override
-        public String value() {
-            return requestPart.value();
-        }
-
-        @Override
-        public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
-            CommonCodeGenAnnotation annotation = new CommonCodeGenAnnotation();
-            annotation.setName(RequestPart.class.getSimpleName());
-            Map<String, String> arguments = new LinkedHashMap<>();
-            String value = this.getParameterName(annotationOwner);
-            arguments.put("name", MessageFormat.format("\"{0}\"", value));
-            arguments.put("required", this.required() + "");
-            //注解位置参数
-            List<String> positionArguments = new LinkedList<>(arguments.values());
-            annotation.setNamedArguments(arguments)
-                    .setPositionArguments(positionArguments);
-            annotation.setElementType(ElementType.PARAMETER);
-            return annotation;
-        }
+    public abstract static class RequestPartMate extends AbstractNamedAnnotationMate implements NamedAnnotationMate, RequestPart {
 
         @Override
         public String toComment(Parameter annotationOwner) {

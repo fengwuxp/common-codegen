@@ -48,7 +48,7 @@ class OrderService{
       @GetMapping({
             value:"get_order",
       })
-    getOrder!:(req?: OrderServiceGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
+    getOrder!:(req: OrderServiceGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**
       * 1:获取订单列表
       * 2:Http请求方法：GET
@@ -58,7 +58,7 @@ class OrderService{
       @GetMapping({
             value:"get_order_32",
       })
-    getOrder32!:(req?: OrderServiceGetOrder32Req, option?: FeignRequestOptions) => Promise<Array<Order>>;
+    getOrder32!:(req: OrderServiceGetOrder32Req, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**
       * 1:获取订单列表
       * 2:Http请求方法：GET
@@ -68,7 +68,7 @@ class OrderService{
       @GetMapping({
             value:"/queryOrder",
       })
-    queryOrder!:(req?: QueryOrderEvt, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryOrder!:(req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:获取订单列表
       * 2:Http请求方法：GET
@@ -77,7 +77,7 @@ class OrderService{
      **/
       @GetMapping({
       })
-    pageBySpringData!:(req?: QueryOrderEvt, option?: FeignRequestOptions) => Promise<Order>;
+    pageBySpringData!:(req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<Order>;
     /**
       * 1:获取订单列表
       * 2:Http请求方法：POST
@@ -114,7 +114,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    createOrder!:(req?: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
+    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:test hello
       * 2:Http请求方法：POST

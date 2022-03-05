@@ -46,11 +46,11 @@ export const  getUserList=  ( options?: RequestOptionsInit): Promise<Array<User>
       * 6:返回值在java中的类型为：Long
      **/
 
-export const  postUser=  (req?: UserServicePostUserReq, options?: RequestOptionsInit): Promise<string> =>{
+export const  postUser=  (req: UserServicePostUserReq, options?: RequestOptionsInit): Promise<string> =>{
   return request<string>(`/users`, {
       method: 'post',
           requestType: 'json',
-          data: req || {},
+          data: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -63,12 +63,12 @@ export const  postUser=  (req?: UserServicePostUserReq, options?: RequestOptions
       * 4:返回值在java中的类型为：User
      **/
 
-export const  getUser=  (req?: UserServiceGetUserReq, options?: RequestOptionsInit): Promise<User> =>{
+export const  getUser=  (req: UserServiceGetUserReq, options?: RequestOptionsInit): Promise<User> =>{
         const {id,...reqData} = req;
         const url =`/users/${id}`;
   return request<User>(url, {
       method: 'get',
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -85,13 +85,13 @@ export const  getUser=  (req?: UserServiceGetUserReq, options?: RequestOptionsIn
       * 8:返回值在java中的类型为：String
      **/
 
-export const  putUser=  (req?: UserServicePutUserReq, options?: RequestOptionsInit): Promise<string> =>{
+export const  putUser=  (req: UserServicePutUserReq, options?: RequestOptionsInit): Promise<string> =>{
         const {id,...reqData} = req;
         const url =`/users${id==null?'':'/'+id}`;
   return request<string>(url, {
       method: 'put',
           requestType: 'json',
-          data: reqData || {},
+          data: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -104,12 +104,12 @@ export const  putUser=  (req?: UserServicePutUserReq, options?: RequestOptionsIn
       * 4:返回值在java中的类型为：String
      **/
 
-export const  deleteUser=  (req?: UserServiceDeleteUserReq, options?: RequestOptionsInit): Promise<string> =>{
+export const  deleteUser=  (req: UserServiceDeleteUserReq, options?: RequestOptionsInit): Promise<string> =>{
         const {id,...reqData} = req;
         const url =`/users/${id}`;
   return request<string>(url, {
       method: 'delete',
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

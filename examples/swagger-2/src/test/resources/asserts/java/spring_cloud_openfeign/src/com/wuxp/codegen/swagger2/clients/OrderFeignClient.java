@@ -36,8 +36,8 @@ public interface OrderFeignClient{
       @GetMapping(value = "get_order" )
     List<Order>  getOrder (
   String text,
-          @RequestHeader(name = "names" ,required = true )  String[] names,
-  List<Integer> ids,
+          @RequestHeader(name = "names" )  String[] names,
+          @CookieValue(name = "ids" )  List<Integer> ids,
   Set<Order> moneys
   );
     /**
@@ -48,7 +48,7 @@ public interface OrderFeignClient{
      **/
       @GetMapping(value = "get_order_32" )
     List<Order>  getOrder32 (
-          @RequestParam(name = "names" ,required = true )  String[] names
+          @RequestParam(name = "names" )  String[] names
   );
     /**
       * 1:获取订单列表
@@ -80,7 +80,7 @@ public interface OrderFeignClient{
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
           @RequestParam(name = "order_id" ,required = false )  Long oderId,
   String sn,
-  Long memberId
+          @CookieValue(name = "memberId" )  Long memberId
   );
     /**
       * 1:查询分页
@@ -109,7 +109,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     ServiceResponse<Long>  createOrder (
-          @RequestBody(required = true )  CreateOrderEvt evt
+          @RequestBody()  CreateOrderEvt evt
   );
     /**
       * 1:test hello
@@ -128,7 +128,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping(value = "hello_2" )
     ServiceResponse<PageInfo<Object>>  hello2 (
-          @RequestParam(name = "name" ,required = false )  String name
+          @RequestParam(defaultValue = "test" ,name = "name" ,required = false )  String name
   );
     /**
       * 1:test hello

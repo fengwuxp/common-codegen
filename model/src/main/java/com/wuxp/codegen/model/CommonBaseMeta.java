@@ -18,7 +18,7 @@ import java.util.TreeMap;
 public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
 
     /**
-     * 如果是类则为类的simple名(不含包名) 如果为属性或方法则为name
+     * 如果是类则为类的 simple 名(不含包名) 如果为属性或方法则为name
      */
     protected String name;
 

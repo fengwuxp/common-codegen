@@ -45,7 +45,7 @@ public interface UserFeignClient{
      **/
       @PostMapping()
     Long  postUser (
-          @RequestBody(required = true )  User user,
+          @RequestBody()  User user,
   Order order
   );
     /**
@@ -56,7 +56,7 @@ public interface UserFeignClient{
      **/
       @GetMapping(value = "/{id}" )
     User  getUser (
-          @PathVariable(name = "id" ,required = true )  Long id
+          @PathVariable(name = "id" )  Long id
   );
     /**
       * 1:更新用户详细信息
@@ -71,7 +71,7 @@ public interface UserFeignClient{
       @PutMapping(value = "/{id}" )
     String  putUser (
           @PathVariable(name = "id" ,required = false )  Long id,
-          @RequestBody(required = true )  User user
+          @RequestBody()  User user
   );
     /**
       * 1:删除用户
@@ -81,7 +81,7 @@ public interface UserFeignClient{
      **/
       @DeleteMapping(value = "/{id}" )
     String  deleteUser (
-          @PathVariable(name = "id" ,required = true )  Long id,
+          @PathVariable(name = "id" )  Long id,
   String name
   );
     /**
@@ -117,7 +117,7 @@ public interface UserFeignClient{
      **/
       @PostMapping(produces = {MediaType.MULTIPART_FORM_DATA_VALUE} )
     void  uploadFile (
-          @RequestParam(name = "file" ,required = true )  File commonsMultipartFile
+          @RequestParam(name = "file" )  File commonsMultipartFile
   );
     /**
       * 1:test3

@@ -12,7 +12,7 @@ export interface  UserServiceDeleteUserReq {
             /**
                 *字段在java中的类型为：Long
             **/
-        id?: string;
+        id: string;
             /**
                 *字段在java中的类型为：String
             **/

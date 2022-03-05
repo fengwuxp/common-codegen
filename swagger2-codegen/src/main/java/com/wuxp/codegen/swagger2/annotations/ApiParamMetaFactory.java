@@ -11,8 +11,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import static com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory.getRequestAnnotationDesc;
-
 /**
  * swagger2 注解处理
  *
@@ -33,9 +31,8 @@ public class ApiParamMetaFactory extends AbstractAnnotationMetaFactory<ApiParam,
         @Override
         public String toComment(AnnotatedElement element) {
             String defaultValue = defaultValue();
-            Optional<RequestParam> requestParam = RequestMappingUtils.findRequestParam(element);
-            if (requestParam.isPresent() && !StringUtils.hasText(defaultValue)) {
-                defaultValue = getRequestAnnotationDesc(defaultValue);
+            if (!StringUtils.hasText(defaultValue)) {
+                defaultValue = RequestMappingUtils.findRequestParam(element).map(RequestParam::defaultValue).orElse("");
             }
             String name = name();
             if (element instanceof Parameter) {

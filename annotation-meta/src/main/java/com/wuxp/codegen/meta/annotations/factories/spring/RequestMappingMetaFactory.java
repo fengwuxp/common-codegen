@@ -1,22 +1,24 @@
 package com.wuxp.codegen.meta.annotations.factories.spring;
 
-import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
+import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.meta.enums.AuthenticationType;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import com.wuxp.codegen.meta.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.meta.transform.spring.DartRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.JavaRetrofitRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.SpringRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.TypeScriptRequestMappingTransformer;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.model.constant.MappingAnnotationPropNameConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,9 +113,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
         RequestMappingMetaFactory.supportAuthenticationType = supportAuthenticationType;
     }
 
-
     public abstract static class RequestMappingMate implements AnnotationMate, RequestMapping {
-
 
         public String[] getPath() {
             String[] value = this.value();
@@ -127,10 +127,8 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
             return new String[]{};
         }
 
-
         @Override
         public String toComment(Class<?> annotationOwner) {
-
             return MessageFormat.format("接口：{0}", this.getRequestMethod().name());
         }
 
@@ -143,7 +141,6 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
         @Override
         public CommonCodeGenAnnotation toAnnotation(Class<?> annotationOwner) {
-
             CommonCodeGenAnnotation annotation = this.genAnnotation(annotationOwner);
             if (annotation == null) {
                 return null;
@@ -166,7 +163,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
         private void trySetAuthenticationType(Method annotationOwner, CommonCodeGenAnnotation codeGenAnnotation) {
             if (AUTHENTICATION_TYPE_PATHS.isEmpty()) {
-                return ;
+                return;
             }
             assert codeGenAnnotation != null;
             Map<String, String> namedArguments = codeGenAnnotation.getNamedArguments();
@@ -176,14 +173,11 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
                     .filter(pattern -> PATH_MATCHER.match(pattern, requestUri))
                     .findFirst()
                     .ifPresent(matchResult -> {
-                        String type = "AuthenticationType." + key.name();
-                        if (!namedArguments.containsKey(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE)) {
-                            namedArguments.put(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE, type);
-                            codeGenAnnotation.getPositionArguments().add(type);
-                        } else {
-                            // TODO
-                            log.error("路径匹配到多种认证类型,path = {}", requestUri);
-                        }
+                        Assert.isTrue(!namedArguments.containsKey(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE),
+                                "路径匹配到多种认证类型,path = " + requestUri);
+                        String type = String.format("AuthenticationType.%s", key.name());
+                        namedArguments.put(MappingAnnotationPropNameConstant.AUTHENTICATION_TYPE, type);
+                        codeGenAnnotation.getPositionArguments().add(type);
                     }));
         }
 
@@ -194,9 +188,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
          * @return http 请求方法
          */
         public RequestMethod getRequestMethod() {
-
             RequestMethod[] requestMethods = this.method();
-
             if (requestMethods.length == 0) {
                 return RequestMethod.GET;
             } else {
@@ -206,8 +198,6 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
         /**
          * 是否为 GET 请求
-         *
-         * @return
          */
         public boolean isGetMethod() {
             return RequestMethod.GET.equals(getRequestMethod());
@@ -235,9 +225,10 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
     public abstract static class GetMappingMate extends RequestMappingMate {
 
-        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.GET};
+        private final RequestMethod[] methods = new RequestMethod[]{RequestMethod.GET};
 
         @Override
+        @NonNull
         public RequestMethod[] method() {
             return methods;
         }
@@ -246,9 +237,10 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
     public abstract static class PostMappingMate extends RequestMappingMate {
 
-        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.POST};
+        private final RequestMethod[] methods = new RequestMethod[]{RequestMethod.POST};
 
         @Override
+        @NonNull
         public RequestMethod[] method() {
             return methods;
         }
@@ -256,9 +248,10 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
     public abstract static class DeleteMappingMate extends RequestMappingMate {
 
-        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.DELETE};
+        private final RequestMethod[] methods = new RequestMethod[]{RequestMethod.DELETE};
 
         @Override
+        @NonNull
         public RequestMethod[] method() {
             return methods;
         }
@@ -267,9 +260,10 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
     public abstract static class PutMappingMate extends RequestMappingMate {
 
-        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.PUT};
+        private final RequestMethod[] methods = new RequestMethod[]{RequestMethod.PUT};
 
         @Override
+        @NonNull
         public RequestMethod[] method() {
             return methods;
         }
@@ -278,9 +272,10 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
     public abstract static class PatchMappingMate extends RequestMappingMate {
 
-        protected RequestMethod[] methods = new RequestMethod[]{RequestMethod.PATCH};
+        private final RequestMethod[] methods = new RequestMethod[]{RequestMethod.PATCH};
 
         @Override
+        @NonNull
         public RequestMethod[] method() {
             return methods;
         }

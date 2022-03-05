@@ -28,9 +28,9 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：Order
           @GetMapping()
   Future<BuiltList<Order>>  getOrder(
-          @RequestParam(name: "names" ,required: true )
+          @RequestParam(name: "names" )
         BuiltList<String> names,
-          @RequestHeader(name: "ids" ,required: true )
+          @RequestHeader(name: "ids" )
         BuiltList<int> ids,
         BuiltSet<Order> moneys,
   [UIOptions? feignOptions]) {
@@ -67,7 +67,7 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：Order
           @PostMapping()
   Future<PageInfo<Order>>  queryOrder(
-          @RequestBody(required: true )
+          @RequestBody()
         QueryOrderEvt evt,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder",
@@ -86,7 +86,7 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：Order
           @PostMapping()
   Future<PageInfo<Order>>  queryOrder3(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltList<QueryOrderEvt> evt,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder3",
@@ -105,7 +105,7 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：Order
           @PostMapping()
   Future<PageInfo<Order>>  queryOrder4(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltSet<QueryOrderEvt> evt,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder4",
@@ -124,7 +124,7 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：Order
           @PostMapping()
   Future<PageInfo<Order>>  queryOrder5(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltMap<String,QueryOrderEvt> evt,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder5",
@@ -143,7 +143,7 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：Order
           @PostMapping()
   Future<PageInfo<Order>>  queryOrder6(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltList<QueryOrderEvt> evt,
         int memberId,
   [UIOptions? feignOptions]) {

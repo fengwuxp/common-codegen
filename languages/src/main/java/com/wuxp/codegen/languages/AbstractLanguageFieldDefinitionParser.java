@@ -2,6 +2,7 @@ package com.wuxp.codegen.languages;
 
 import com.wuxp.codegen.comment.LanguageCommentDefinitionDescriber;
 import com.wuxp.codegen.core.parser.LanguageFieldDefinitionParser;
+import com.wuxp.codegen.meta.util.CodegenAnnotationUtils;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
@@ -9,17 +10,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.util.ObjectUtils;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author wuxp
  */
 @Slf4j
 public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCodeGenFiledMeta> extends DelegateLanguagePublishParser implements LanguageFieldDefinitionParser<F> {
+
+    private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATION_TYPES = new HashSet<>(
+            Arrays.asList(NotNull.class, NotBlank.class, NotEmpty.class)
+    );
 
     protected AbstractLanguageFieldDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishSourceParser) {
         super(publishSourceParser);
@@ -45,6 +51,7 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
         if (log.isInfoEnabled()) {
             log.info("*** field {}  {}", fieldMeta.getField(), Arrays.asList(result.getComments()));
         }
+        result.setRequired(isRequired(fieldMeta));
         return result;
     }
 
@@ -75,4 +82,12 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
         return parseTypes(Arrays.asList(fieldMeta.getTypeVariables()));
     }
 
+    @SuppressWarnings("unchecked")
+    private boolean isRequired(JavaFieldMeta filedMeta) {
+        if (ObjectUtils.isEmpty(filedMeta.getAnnotations())) {
+            return false;
+        }
+        return CodegenAnnotationUtils.existAnnotations(filedMeta.getAnnotations(), NOT_NULL_ANNOTATION_TYPES.toArray(new Class[0]))
+                || CodegenAnnotationUtils.matchAnnotationsAttribute(filedMeta.getAnnotations(), "required", true);
+    }
 }

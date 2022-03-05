@@ -33,7 +33,7 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @GetMapping(value = {"get_order"})
-    public List<Order> getOrder(@ModelAttribute("text") String text, @RequestHeader String[] names, List<Integer> ids, Set<Order> moneys) {
+    public List<Order> getOrder(@ModelAttribute("text") String text, @RequestHeader String[] names, @CookieValue("my_ids") List<Integer> ids, Set<Order> moneys) {
         return Collections.EMPTY_LIST;
     }
 
@@ -62,7 +62,7 @@ public class OrderController extends BaseController<String> {
     public ServiceQueryResponse<Order> queryOrder2(@ApiParam("订单id")
                                                    @RequestParam(name = "order_id", required = false) Long oderId,
                                                    @ApiParam(value = "订单号", required = false) String sn,
-                                                   @ApiParam(value = "用户id", hidden = true) Long memberId) {
+                                                   @ApiParam(value = "用户id", hidden = true) @CookieValue Long memberId) {
 
         return new ServiceQueryResponse<>();
     }

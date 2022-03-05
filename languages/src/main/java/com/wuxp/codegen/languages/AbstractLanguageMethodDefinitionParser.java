@@ -332,7 +332,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 .map(Optional::get)
                 .filter(NamedAnnotationMate.class::isInstance)
                 .map(NamedAnnotationMate.class::cast)
-                .map(NamedAnnotationMate::finalyName)
+                .map(NamedAnnotationMate::name)
                 .filter(StringUtils::hasText)
                 .findFirst()
                 .orElse(defaultName);

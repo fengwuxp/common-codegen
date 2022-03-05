@@ -81,5 +81,5 @@ export interface  UserServicePutUserReq {
             /**
                 *字段在java中的类型为：User
             **/
-        user?: User;
+        user: User;
 }

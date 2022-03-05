@@ -19,7 +19,7 @@ export interface  OrderFeignClientQueryOrder6Req {
                 *字段在java中的类型为：List
                 *字段在java中的类型为：QueryOrderEvt
             **/
-        evt?: Array<QueryOrderEvt>;
+        evt: Array<QueryOrderEvt>;
             /**
                 *字段在java中的类型为：Long
             **/

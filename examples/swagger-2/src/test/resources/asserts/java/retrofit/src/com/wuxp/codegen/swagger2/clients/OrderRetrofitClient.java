@@ -28,8 +28,8 @@ public interface OrderRetrofitClient{
       @GET(value = "/order/get_order" )
     List<Order>  getOrder (
   String text,
-          @Header(required = true ,value = "names" )  String[] names,
-  List<Integer> ids,
+          @Header(value = "names" )  String[] names,
+          @Header(value = cookie@"ids" )  List<Integer> ids,
   Set<Order> moneys
   );
     /**
@@ -40,7 +40,7 @@ public interface OrderRetrofitClient{
      **/
       @GET(value = "/order/get_order_32" )
     List<Order>  getOrder32 (
-          @Query(required = true ,value = "names" )  String[] names
+          @Query(value = "names" )  String[] names
   );
     /**
       * 1:获取订单列表
@@ -73,7 +73,7 @@ public interface OrderRetrofitClient{
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
           @Field(required = false ,value = "order_id" )  Long oderId,
   String sn,
-  Long memberId
+          @Header(value = cookie@"memberId" )  Long memberId
   );
     /**
       * 1:查询分页
@@ -122,7 +122,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/hello_2" )
     ServiceResponse<PageInfo<Object>>  hello2 (
-          @Field(required = false ,value = "name" )  String name
+          @Field(defaultValue = "test" ,required = false ,value = "name" )  String name
   );
     /**
       * 1:test hello

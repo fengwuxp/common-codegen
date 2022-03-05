@@ -30,12 +30,12 @@
       * 2:返回值在java中的类型为：User
      **/
 
-export const  getUser=  (req?: UserServiceGetUserReq, options?: RequestOptionsInit): Promise<User> =>{
+export const  getUser=  (req: UserServiceGetUserReq, options?: RequestOptionsInit): Promise<User> =>{
         const {id,...reqData} = req;
         const url =`/users/${id}`;
   return request<User>(url, {
       method: 'get',
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -46,13 +46,13 @@ export const  getUser=  (req?: UserServiceGetUserReq, options?: RequestOptionsIn
       * 2:返回值在java中的类型为：String
      **/
 
-export const  putUser=  (req?: UserServicePutUserReq, options?: RequestOptionsInit): Promise<string> =>{
+export const  putUser=  (req: UserServicePutUserReq, options?: RequestOptionsInit): Promise<string> =>{
         const {id,...reqData} = req;
         const url =`/users/${id}`;
   return request<string>(url, {
       method: 'put',
           requestType: 'json',
-          data: reqData || {},
+          data: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
@@ -63,12 +63,12 @@ export const  putUser=  (req?: UserServicePutUserReq, options?: RequestOptionsIn
       * 2:返回值在java中的类型为：String
      **/
 
-export const  deleteUser=  (req?: UserServiceDeleteUserReq, options?: RequestOptionsInit): Promise<string> =>{
+export const  deleteUser=  (req: UserServiceDeleteUserReq, options?: RequestOptionsInit): Promise<string> =>{
         const {id,...reqData} = req;
         const url =`/users/${id}`;
   return request<string>(url, {
       method: 'delete',
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

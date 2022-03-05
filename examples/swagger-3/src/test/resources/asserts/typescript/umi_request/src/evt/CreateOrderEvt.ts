@@ -10,9 +10,10 @@ export interface  CreateOrderEvt extends BaseEvt {
 
             /**
                 *sn 约束条件：输入字符串的最小长度为：0，输入字符串的最大长度为：50
+                *  ，默认值：，示例输入：
                 *字段在java中的类型为：String
             **/
-        sn?: string;
+        sn: string;
             /**
                 *字段在java中的类型为：Map
                 *字段在java中的类型为：Sex

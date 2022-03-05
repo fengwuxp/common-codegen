@@ -80,7 +80,7 @@ class ExampleService{
       @GetMapping({
             value:"get_map_3/{id}",
       })
-    getMap3!:(req?: ExampleServiceGetMap3Req, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
+    getMap3!:(req: ExampleServiceGetMap3Req, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：Map

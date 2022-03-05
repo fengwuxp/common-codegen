@@ -47,7 +47,7 @@ class UserService{
       @GetMapping({
             value:"/{id}",
       })
-    getUser!:(req?: UserServiceGetUserReq, option?: FeignRequestOptions) => Promise<User>;
+    getUser!:(req: UserServiceGetUserReq, option?: FeignRequestOptions) => Promise<User>;
     /**
       * 1:Http请求方法：PUT
       * 2:返回值在java中的类型为：String
@@ -55,7 +55,7 @@ class UserService{
       @PutMapping({
             value:"/{id}",
       })
-    putUser!:(req?: UserServicePutUserReq, option?: FeignRequestOptions) => Promise<string>;
+    putUser!:(req: UserServicePutUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:Http请求方法：DELETE
       * 2:返回值在java中的类型为：String
@@ -63,7 +63,7 @@ class UserService{
       @DeleteMapping({
             value:"/{id}",
       })
-    deleteUser!:(req?: UserServiceDeleteUserReq, option?: FeignRequestOptions) => Promise<string>;
+    deleteUser!:(req: UserServiceDeleteUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：String

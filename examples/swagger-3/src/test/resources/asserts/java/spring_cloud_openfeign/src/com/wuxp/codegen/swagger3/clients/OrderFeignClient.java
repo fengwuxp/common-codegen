@@ -30,8 +30,8 @@ public interface OrderFeignClient{
      **/
       @GetMapping()
     List<Order>  getOrder (
-          @RequestParam(name = "names" ,required = true )  String[] names,
-          @RequestHeader(name = "ids" ,required = true )  List<Integer> ids,
+          @RequestParam(name = "names" )  String[] names,
+          @RequestHeader(name = "ids" )  List<Integer> ids,
   Set<Order> moneys
   );
     /**
@@ -50,7 +50,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     PageInfo<Order>  queryOrder (
-          @RequestBody(required = true )  QueryOrderEvt evt
+          @RequestBody()  QueryOrderEvt evt
   );
     /**
       * 1:Http请求方法：POST
@@ -59,7 +59,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     PageInfo<Order>  queryOrder3 (
-          @RequestBody(required = true )  QueryOrderEvt[] evt
+          @RequestBody()  QueryOrderEvt[] evt
   );
     /**
       * 1:Http请求方法：POST
@@ -68,7 +68,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     PageInfo<Order>  queryOrder4 (
-          @RequestBody(required = true )  Set<QueryOrderEvt> evt
+          @RequestBody()  Set<QueryOrderEvt> evt
   );
     /**
       * 1:Http请求方法：POST
@@ -77,7 +77,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     PageInfo<Order>  queryOrder5 (
-          @RequestBody(required = true )  Map<String,QueryOrderEvt> evt
+          @RequestBody()  Map<String,QueryOrderEvt> evt
   );
     /**
       * 1:Http请求方法：POST
@@ -86,7 +86,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     PageInfo<Order>  queryOrder6 (
-          @RequestBody(required = true )  List<QueryOrderEvt> evt,
+          @RequestBody()  List<QueryOrderEvt> evt,
   Long memberId
   );
     /**

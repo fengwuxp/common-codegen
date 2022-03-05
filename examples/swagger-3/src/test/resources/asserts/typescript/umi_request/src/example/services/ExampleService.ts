@@ -85,12 +85,12 @@ export const  getMap2=  ( options?: RequestOptionsInit): Promise<Record<string,A
       * 5:返回值在java中的类型为：Boolean
      **/
 
-export const  getMap3=  (req?: ExampleServiceGetMap3Req, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
+export const  getMap3=  (req: ExampleServiceGetMap3Req, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
         const {id,...reqData} = req;
         const url =`/example_cms/get_map_3/${id}`;
   return request<Record<string,Array<boolean>>>(url, {
       method: 'get',
-      params: reqData || {},
+      params: reqData,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

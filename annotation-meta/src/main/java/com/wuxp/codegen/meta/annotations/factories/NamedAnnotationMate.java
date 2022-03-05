@@ -16,14 +16,6 @@ public interface NamedAnnotationMate extends AnnotationMate {
         return "";
     }
 
-    default String value() {
-        return "";
-    }
-
-    default String finalyName() {
-        return StringUtils.hasText(value()) ? value() : name();
-    }
-
     /**
      * 获取参数的名称
      *
@@ -32,13 +24,10 @@ public interface NamedAnnotationMate extends AnnotationMate {
      */
     @Override
     default String getParameterName(Parameter parameter) {
-        String value = this.value();
-        if (!StringUtils.hasText(value)) {
-            value = this.name();
+        String name = this.name();
+        if (StringUtils.hasText(name)) {
+            return name;
         }
-        if (!StringUtils.hasText(value)) {
-            value = JavaClassParser.getParameterName(parameter);
-        }
-        return value;
+        return JavaClassParser.getParameterName(parameter);
     }
 }

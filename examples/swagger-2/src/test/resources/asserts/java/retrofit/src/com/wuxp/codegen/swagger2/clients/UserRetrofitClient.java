@@ -48,7 +48,7 @@ public interface UserRetrofitClient{
      **/
       @GET(value = "/users/{id}" )
     User  getUser (
-          @Path(required = true ,value = "id" )  Long id
+          @PathVariable(value = "id" )  Long id
   );
     /**
       * 1:更新用户详细信息
@@ -62,7 +62,7 @@ public interface UserRetrofitClient{
      **/
       @PUT(value = "/users/{id}" )
     String  putUser (
-          @Path(required = false ,value = "id" )  Long id,
+          @PathVariable(required = false ,value = "id" )  Long id,
           @Body()  User user
   );
     /**
@@ -73,7 +73,7 @@ public interface UserRetrofitClient{
      **/
       @DELETED(value = "/users/{id}" )
     String  deleteUser (
-          @Path(required = true ,value = "id" )  Long id,
+          @PathVariable(value = "id" )  Long id,
   String name
   );
     /**
@@ -109,7 +109,7 @@ public interface UserRetrofitClient{
      **/
       @POST(value = "/users/uploadFile" )
     void  uploadFile (
-          @Field(required = true ,value = "file" )  File commonsMultipartFile
+          @Field(value = "file" )  File commonsMultipartFile
   );
     /**
       * 1:test3

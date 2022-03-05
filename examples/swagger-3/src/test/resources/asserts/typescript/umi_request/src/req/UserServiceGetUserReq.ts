@@ -12,5 +12,5 @@ export interface  UserServiceGetUserReq {
             /**
                 *字段在java中的类型为：Long
             **/
-        id?: string;
+        id: string;
 }

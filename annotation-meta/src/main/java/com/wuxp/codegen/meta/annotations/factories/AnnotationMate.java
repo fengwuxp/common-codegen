@@ -17,6 +17,12 @@ import java.lang.reflect.Parameter;
  */
 public interface AnnotationMate extends AnnotationCodeGenCommentExtractor, Annotation {
 
+    static String ANNOTATION_VALUE_KEY = "value";
+
+    static String ANNOTATION_DEFAULT_VALUE_KEY = "defaultValue";
+
+    static String ANNOTATION_NAME_KEY = "name";
+
     /**
      * 注解转换
      *

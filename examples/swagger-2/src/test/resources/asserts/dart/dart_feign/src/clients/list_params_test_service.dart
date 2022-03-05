@@ -23,7 +23,7 @@ ListParamsTestService() : super() {
       /// 2:返回值在java中的类型为：String
           @PostMapping()
   Future<String>  test1(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltList<User> users,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<String>("test1",
@@ -72,7 +72,7 @@ ListParamsTestService() : super() {
       /// 2:返回值在java中的类型为：String
           @PostMapping(value:"test_4",)
   Future<String>  test4(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltSet<User> users,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<String>("test4",
@@ -89,7 +89,7 @@ ListParamsTestService() : super() {
       /// 2:返回值在java中的类型为：String
           @PostMapping(value:"test_5",)
   Future<String>  test5(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltList<User> users,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<String>("test5",
@@ -106,7 +106,7 @@ ListParamsTestService() : super() {
       /// 2:返回值在java中的类型为：String
           @PostMapping(value:"test_6",)
   Future<String>  test6(
-          @RequestBody(required: true )
+          @RequestBody()
         BuiltSet<User> users,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<String>("test6",

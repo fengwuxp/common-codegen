@@ -23,12 +23,12 @@ factory CreateOrderEvt([Function(CreateOrderEvtBuilder) updates]) = _$CreateOrde
             /// sn 约束条件：输入字符串的最小长度为：0，输入字符串的最大长度为：50
             /// 字段在java中的类型为：String
         @BuiltValueField(wireName: 'sn')
-        String? get sn;
+        String get sn;
             /// 属性说明：订单总价，示例输入：
             /// totalAmount 约束条件：为必填项，不能为空
             /// 字段在java中的类型为：Integer
         @BuiltValueField(wireName: 'totalAmount')
-        int? get totalAmount;
+        int get totalAmount;
 
 @override
 Map<String, dynamic> toMap() {
