@@ -6,7 +6,6 @@ import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
-import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.dart.DartBuiltValueFactoryModel;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
@@ -26,17 +25,6 @@ import static com.wuxp.codegen.model.CommonCodeGenClassMeta.TYPE_VARIABLE_NAME;
  */
 @Slf4j
 public class DartCodeGenEventListener implements CodeGenEventListener {
-
-    /**
-     * Page 分页对象的标记
-     */
-    public static final DartClassMeta PAGE_REF = new DartClassMeta("Page", "Page<T>", ClassType.CLASS, true, null, null);
-
-    private static final List<DartClassMeta> SUPPORT_ALIAS_TYPES = Arrays.asList(
-            DartClassMeta.BUILT_LIST,
-            DartClassMeta.BUILT_MAP,
-            DartClassMeta.BUILT_SET
-    );
 
     private static final List<DartClassMeta> BUILT_COLLECTION_TYPES = Arrays.asList(
             DartClassMeta.BUILT_LIST,
@@ -129,7 +117,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
         tags.put(DEPENDENCIES_TAG_NAME, dependencies);
         tags.put(SDK_LIB_TAG_NAME, feignSdkLibName);
         result.setTags(tags);
-        tags.put(TEMPLATE_PATH_TAG_NAME, "feign_sdk");
+        tags.put(TEMPLATE_PATH_TAG_NAME, SDK_NAME);
         // 生成到 lib 目录下
         result.setPackagePath(String.format("../%s", feignSdkLibName));
         return result;
@@ -173,7 +161,6 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
                 .flatMap(Collection::stream)
                 .map(this::buildBuiltValueFactoryModel)
                 .filter(Objects::nonNull)
-                .distinct()
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
