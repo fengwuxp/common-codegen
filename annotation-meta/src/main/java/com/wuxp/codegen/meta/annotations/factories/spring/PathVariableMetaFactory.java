@@ -17,7 +17,6 @@ public class PathVariableMetaFactory extends AbstractAnnotationMetaFactory<PathV
 
     @Override
     public PathVariableMetaFactory.PathVariableMate factory(PathVariable annotation) {
-
         return super.newProxyMate(annotation, PathVariableMetaFactory.PathVariableMate.class);
     }
 

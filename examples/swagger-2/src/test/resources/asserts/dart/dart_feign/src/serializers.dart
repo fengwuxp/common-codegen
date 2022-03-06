@@ -56,6 +56,9 @@ final Serializers serializers = (_$serializers.toBuilder()
     const FullType(BuiltList,[FullType(Order)]),
      () => ListBuilder<Order>())
     ..addBuilderFactory(
+    const FullType(BuiltList,[FullType(String)]),
+     () => ListBuilder<String>())
+    ..addBuilderFactory(
     const FullType(BuiltList,[FullType(User)]),
      () => ListBuilder<User>())
     ..addBuilderFactory(
@@ -79,6 +82,9 @@ final Serializers serializers = (_$serializers.toBuilder()
     ..addBuilderFactory(
     const FullType(PageInfo,[FullType(Order)]),
      () => PageInfoBuilder<Order>())
+    ..addBuilderFactory(
+    const FullType(PageInfo,[FullType(String)]),
+     () => PageInfoBuilder<String>())
 ..addPlugin(StandardJsonPlugin())
 ..add(DateTimeMillisecondsSerializer()))
 .build();

@@ -31,9 +31,6 @@ class Swagger2FeignSdkCodegenDartTest {
         Map<Class<?>, List<String>> ignoreFields = new HashMap<>();
         ignoreFields.put(BaseQueryEvt.class, Collections.singletonList("queryPage"));
 
-        Map<DartClassMeta, List<String>> typeAlias = new HashMap<>();
-        typeAlias.put(DartClassMeta.BUILT_LIST, Collections.singletonList("PageInfo"));
-
         RequestMappingMetaFactory.addAuthenticationTypePaths(AuthenticationType.NONE, new String[]{
                 "/example_cms/get_**"
         });
@@ -42,7 +39,6 @@ class Swagger2FeignSdkCodegenDartTest {
         ClientProviderType clientProviderType = ClientProviderType.DART_FEIGN;
 
         Swagger2FeignDartCodegenBuilder.builder()
-                .typeAlias(typeAlias)
                 //设置基础数据类型的映射关系
                 .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTURE)
                 .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTURE)

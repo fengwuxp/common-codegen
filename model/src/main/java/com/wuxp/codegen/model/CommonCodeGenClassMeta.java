@@ -7,7 +7,10 @@ import lombok.experimental.Accessors;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(exclude = {"superClass", "interfaces", "annotations", "dependencies", "source"}, callSuper = true)
 @Accessors(chain = true)
 public class CommonCodeGenClassMeta extends CommonBaseMeta {
+
+    public static final String TYPE_VARIABLE_NAME = "T";
 
     /**
      * 数组类型的名称前缀
@@ -39,7 +44,7 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
     /**
      * type variable 类型变量
      */
-    public static final CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta("T", "T", ClassType.CLASS, false, null, null, false,
+    public static final CommonCodeGenClassMeta TYPE_VARIABLE = new CommonCodeGenClassMeta(TYPE_VARIABLE_NAME, TYPE_VARIABLE_NAME, ClassType.CLASS, false, null, null, false,
             false);
 
     /**
@@ -81,7 +86,8 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * @key {@link CommonCodeGenClassMeta#getName}
      * @value {@link  CommonCodeGenClassMeta}
      */
-    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new TreeMap<>();;
+    protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new TreeMap<>();
+    ;
 
     /**
      * 在有泛型时候的描述 例如 Set<T>,Map<K,V> 等

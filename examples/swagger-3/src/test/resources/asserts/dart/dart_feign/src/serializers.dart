@@ -58,14 +58,8 @@ final Serializers serializers = (_$serializers.toBuilder()
     const FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(String)])])])])]),
      () => ListBuilder<BuiltList<BuiltList<BuiltMap<String,BuiltList<String>>>>>())
     ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltList,[FullType(User)])])]),
-     () => ListBuilder<BuiltList<BuiltList<User>>>())
-    ..addBuilderFactory(
     const FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(String)])])])]),
      () => ListBuilder<BuiltList<BuiltMap<String,BuiltList<String>>>>())
-    ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(BuiltList,[FullType(User)])]),
-     () => ListBuilder<BuiltList<User>>())
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(User)])])]),
      () => ListBuilder<BuiltMap<String,BuiltList<User>>>())
@@ -87,9 +81,6 @@ final Serializers serializers = (_$serializers.toBuilder()
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(String)]),
      () => ListBuilder<String>())
-    ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(User)]),
-     () => ListBuilder<User>())
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(bool)]),
      () => ListBuilder<bool>())

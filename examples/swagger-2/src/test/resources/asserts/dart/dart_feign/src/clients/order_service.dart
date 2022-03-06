@@ -206,6 +206,26 @@ OrderService() : super() {
   );
   }
 
+      /// 1:test hello_3
+      /// 2:Http请求方法：POST
+      /// 3:返回值在java中的类型为：ServiceQueryResponse
+      /// 4:返回值在java中的类型为：String
+          @PostMapping(value:"hello_3",)
+  Future<PageInfo<String>>  hello3(
+          @RequestParam(defaultValue: "test" ,name: "name" ,required: false )
+        String name,
+  [UIOptions? feignOptions]) {
+  return this.delegateInvoke<PageInfo<String>>("hello3",
+  [name,],
+          feignOptions: feignOptions,
+          serializer: BuiltValueSerializable(
+                serializeType: PageInfo,
+              specifiedType:FullType(PageInfo,[FullType(String)])
+          )
+    
+  );
+  }
+
       /// 1:test hello
       /// 2:Http请求方法：DELETE
       /// 3:返回值在java中的类型为：void

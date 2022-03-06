@@ -17,6 +17,7 @@
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
       import {OrderServiceQueryOrder2Req} from "../../req/OrderServiceQueryOrder2Req";
       import {OrderServiceHello2Req} from "../../req/OrderServiceHello2Req";
+      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
 
     /**
      * 订单服务
@@ -179,6 +180,23 @@ export const  hello=  ( options?: RequestOptionsInit): Promise<any> =>{
 
 export const  hello2=  (req?: OrderServiceHello2Req, options?: RequestOptionsInit): Promise<PageInfo<any>> =>{
   return request<PageInfo<any>>(`/order/hello_2`, {
+      method: 'post',
+          requestType: 'form',
+          data: req || {},
+      responseType: 'json',
+  ...(options || {} as RequestOptionsInit)
+  })
+  }
+
+    /**
+      * 1:test hello_3
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceQueryResponse
+      * 4:返回值在java中的类型为：String
+     **/
+
+export const  hello3=  (req?: OrderServiceHello3Req, options?: RequestOptionsInit): Promise<PageInfo<string>> =>{
+  return request<PageInfo<string>>(`/order/hello_3`, {
       method: 'post',
           requestType: 'form',
           data: req || {},

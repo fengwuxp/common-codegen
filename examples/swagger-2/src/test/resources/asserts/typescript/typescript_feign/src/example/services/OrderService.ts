@@ -29,6 +29,7 @@ FeignRequestOptions} from "fengwuxp-typescript-feign";
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
       import {OrderServiceQueryOrder2Req} from "../../req/OrderServiceQueryOrder2Req";
       import {OrderServiceHello2Req} from "../../req/OrderServiceHello2Req";
+      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
 
     /**
      * 订单服务
@@ -134,6 +135,16 @@ class OrderService{
             value:"hello_2",
       })
     hello2!:(req?: OrderServiceHello2Req, option?: FeignRequestOptions) => Promise<PageInfo<any>>;
+    /**
+      * 1:test hello_3
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceQueryResponse
+      * 4:返回值在java中的类型为：String
+     **/
+      @PostMapping({
+            value:"hello_3",
+      })
+    hello3!:(req?: OrderServiceHello3Req, option?: FeignRequestOptions) => Promise<PageInfo<string>>;
     /**
       * 1:test hello
       * 2:Http请求方法：DELETE

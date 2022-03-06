@@ -125,6 +125,16 @@ public interface OrderRetrofitClient{
           @Field(defaultValue = "test" ,required = false ,value = "name" )  String name
   );
     /**
+      * 1:test hello_3
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceQueryResponse
+      * 4:返回值在java中的类型为：String
+     **/
+      @POST(value = "/order/hello_3" )
+    ServiceResponse<PageInfo<String>>  hello3 (
+          @Field(defaultValue = "test" ,required = false ,value = "name" )  String name
+  );
+    /**
       * 1:test hello
       * 2:Http请求方法：DELETE
       * 3:返回值在java中的类型为：void

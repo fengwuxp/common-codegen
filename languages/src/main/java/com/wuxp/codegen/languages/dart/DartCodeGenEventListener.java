@@ -4,23 +4,33 @@ import com.wuxp.codegen.core.event.CodeGenEvent;
 import com.wuxp.codegen.core.event.CodeGenEventListener;
 import com.wuxp.codegen.core.strategy.CombineTypeDescStrategy;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.dart.DartBuiltValueFactoryModel;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
+import com.wuxp.codegen.model.util.JavaTypeUtils;
 import com.wuxp.codegen.types.DartFullTypeCombineTypeDescStrategy;
 import com.wuxp.codegen.types.SimpleCombineTypeDescStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
-import javax.swing.table.TableRowSorter;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.wuxp.codegen.model.CommonCodeGenClassMeta.TYPE_VARIABLE_NAME;
 
 /**
  * 基于 dart 代码生成事件监听
  */
 @Slf4j
 public class DartCodeGenEventListener implements CodeGenEventListener {
+
+    /**
+     * Page 分页对象的标记
+     */
+    public static final DartClassMeta PAGE_REF = new DartClassMeta("Page", "Page<T>", ClassType.CLASS, true, null, null);
 
     private static final List<DartClassMeta> SUPPORT_ALIAS_TYPES = Arrays.asList(
             DartClassMeta.BUILT_LIST,
@@ -38,19 +48,12 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
 
     private static final String SDK_LIB_TAG_NAME = "sdkLibName";
 
+    private static final String SDK_NAME = "feign_sdk";
+
     /**
      * sdk索引文件名称
      */
     private final String feignSdkLibName;
-
-    /**
-     * 类型别名
-     *
-     * @key 类型
-     * @value 别名列表
-     */
-    private final Map<DartClassMeta, List<String>> typeAlias;
-
 
     /**
      * 使用 {@link SortedSet} 保证同样的文件输出的顺序是一致的
@@ -67,9 +70,8 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
 
     private final CombineTypeDescStrategy dartFullTypeCombineTypeDescStrategy = new DartFullTypeCombineTypeDescStrategy();
 
-    public DartCodeGenEventListener(String feignSdkLibName, Map<DartClassMeta, List<String>> typeAlias) {
-        this.feignSdkLibName = feignSdkLibName == null ? "feign_sdk" : feignSdkLibName;
-        this.typeAlias = new TreeMap<>(typeAlias);
+    public DartCodeGenEventListener(String feignSdkLibName) {
+        this.feignSdkLibName = StringUtils.hasText(feignSdkLibName) ? feignSdkLibName : SDK_NAME;
     }
 
     @Override
@@ -162,19 +164,70 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
                 .map(CommonCodeGenClassMeta::getMethodMetas)
                 .map(this::flatMetaReturnTypes)
                 .flatMap(Collection::stream)
+                // 返回值类型大于 1，表示有泛型存在
                 .filter(returnTypes -> returnTypes.length > 1)
-                .map(this::converterTypeAliasName)
+                .map(returnTypes -> Arrays.stream(returnTypes).collect(Collectors.toList()))
+                .map(this::recursiveReturnTypes)
                 .flatMap(Collection::stream)
                 .map(this::getBuiltCollectionTypes)
                 .flatMap(Collection::stream)
                 .map(this::buildBuiltValueFactoryModel)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
     private List<CommonCodeGenClassMeta[]> flatMetaReturnTypes(CommonCodeGenMethodMeta[] methodMetas) {
         return Arrays.stream(methodMetas)
-                .map(CommonCodeGenMethodMeta::getReturnTypes).collect(Collectors.toList());
+                .map(CommonCodeGenMethodMeta::getReturnTypes)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 递归解析返回值类型中的泛型组合
+     * 例如
+     * <code>
+     * public class Page<E> {
+     * private List<E> records
+     * }
+     * ==>
+     * {Page<XXX>,List<XXX>}
+     * </code>
+     *
+     * @param classMetas 返回值泛型描述
+     * @return 用于生成序列化工厂代码的类型描述集合
+     */
+    private List<CommonCodeGenClassMeta[]> recursiveReturnTypes(List<CommonCodeGenClassMeta> classMetas) {
+        List<CommonCodeGenClassMeta[]> result = new ArrayList<>();
+        result.add(classMetas.toArray(new CommonCodeGenClassMeta[0]));
+        CommonCodeGenClassMeta wrapperType = classMetas.get(0);
+        if (wrapperType.getSource() == null || !JavaTypeUtils.isNoneJdkComplex(wrapperType.getSource())) {
+            // 说明 returnTypes 为 List<E> Map<K,V>、Set<E> 等 jdk 的泛型类型
+            return result;
+        }
+        List<CommonCodeGenClassMeta[]> metas = Arrays.stream(wrapperType.getFieldMetas())
+                .map(CommonCodeGenFiledMeta::getFiledTypes)
+                // 字段中存在泛型
+                .filter(filedTypes -> filedTypes.length > 1)
+                .map(filedTypes -> Arrays.stream(filedTypes).collect(Collectors.toList()))
+                .map(filedTypes -> {
+                    boolean hasTypeVariable = filedTypes.stream().anyMatch(filedType -> filedType.getName().equals(TYPE_VARIABLE_NAME));
+                    if (hasTypeVariable) {
+                        // 类型中存在的泛型变量，需要替换为具体的泛型变量
+                        List<CommonCodeGenClassMeta> types = new ArrayList<>();
+                        types.add(filedTypes.get(0));
+                        // 替换泛型为具体的类型
+                        types.addAll(classMetas.subList(1, classMetas.size()));
+                        return types;
+                    }
+                    return filedTypes;
+                })
+                // 递归解析字段中的类型
+                .map(this::recursiveReturnTypes)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        result.addAll(metas);
+        return result;
     }
 
     private DartBuiltValueFactoryModel buildBuiltValueFactoryModel(CommonCodeGenClassMeta[] returnTypes) {
@@ -210,51 +263,6 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
                 DartClassMeta.BUILT_ITERABLE.getName().equals(returnType.getName());
     }
 
-    private List<CommonCodeGenClassMeta[]> converterTypeAliasName(CommonCodeGenClassMeta[] returnTypes) {
-        // 别名转换
-        List<CommonCodeGenClassMeta> types = new ArrayList<>();
-        DartClassMeta aliasType = SUPPORT_ALIAS_TYPES.stream()
-                .map(classMeta -> {
-                    List<CommonCodeGenClassMeta> typeAliasNames = getTypeAliasNames(returnTypes, classMeta);
-                    if (typeAliasNames.isEmpty()) {
-                        return null;
-                    }
-                    types.addAll(typeAliasNames);
-                    return classMeta;
-                })
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
-        if (aliasType == null) {
-            List<CommonCodeGenClassMeta[]> list = new ArrayList<>();
-            list.add(returnTypes);
-            return list;
-        }
-
-        types.add(0, aliasType);
-        return Arrays.asList(returnTypes, types.toArray(new CommonCodeGenClassMeta[0]));
-    }
-
-    private List<CommonCodeGenClassMeta> getTypeAliasNames(CommonCodeGenClassMeta[] returnTypes, DartClassMeta classMeta) {
-        List<String> aliasNames = typeAlias.get(classMeta);
-        if (aliasNames == null) {
-            return Collections.emptyList();
-        }
-        List<CommonCodeGenClassMeta> result = new ArrayList<>();
-        aliasNames.forEach(aliasName -> {
-            boolean isMath = false;
-            for (CommonCodeGenClassMeta returnType : returnTypes) {
-                if (isMath) {
-                    result.add(returnType);
-                    continue;
-                }
-                if (aliasName.equals(returnType.getName())) {
-                    isMath = true;
-                }
-            }
-        });
-        return result;
-    }
 
     private String getFunctionCode(String originalGenericDesc) {
         Optional<Boolean> isBuiltCollection = BUILT_COLLECTION_TYPES.stream()
@@ -268,6 +276,5 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
             type = type.substring(5);
         }
         return MessageFormat.format("{0}Builder{1}", type, originalGenericDesc.substring(firstIndex));
-
     }
 }

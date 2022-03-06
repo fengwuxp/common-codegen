@@ -19,20 +19,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DartFullTypeCombineTypeDescStrategy implements CombineTypeDescStrategy {
 
-
     private final CombineTypeDescStrategy combineTypeDescStrategy = new SimpleCombineTypeDescStrategy();
-
 
     @Override
     public String combine(CommonCodeGenClassMeta[] classMetas) {
         //取泛型描述
         String genericDesc = this.combineTypeDescStrategy.combine(classMetas);
         String fullTypeCode = this.getFullTypeCode(genericDesc);
-        log.info("合并dart FullType {}", fullTypeCode);
-
+        if (log.isInfoEnabled()) {
+            log.info("合并dart FullType {}", fullTypeCode);
+        }
         return fullTypeCode;
     }
-
 
     /**
      * 获取 FullType Code

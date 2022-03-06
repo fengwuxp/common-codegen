@@ -28,20 +28,10 @@ import java.util.Map;
 @Slf4j
 public class Swagger3FeignDartCodegenBuilder extends AbstractSwagger3CodegenBuilder {
 
-    /**
-     * 类型别名
-     */
-    private Map<DartClassMeta, List<String>> typeAlias = Collections.emptyMap();
-
     private String feignSdkLibName;
 
     public static Swagger3FeignDartCodegenBuilder builder() {
         return new Swagger3FeignDartCodegenBuilder();
-    }
-
-    public Swagger3FeignDartCodegenBuilder typeAlias(Map<DartClassMeta, List<String>> typeAlias) {
-        this.typeAlias = typeAlias;
-        return this;
     }
 
     public Swagger3FeignDartCodegenBuilder feignSdkLibName(String feignSdkLibName) {
@@ -54,7 +44,7 @@ public class Swagger3FeignDartCodegenBuilder extends AbstractSwagger3CodegenBuil
         initCodegenConfig(LanguageDescription.DART, ClientProviderType.DART_FEIGN);
         configParserPostProcessors(DartClassMeta.FUTURE);
         configCodeGenElementMatchers();
-        this.codeGenEventListeners(new DartCodeGenEventListener(feignSdkLibName, typeAlias));
+        this.codeGenEventListeners(new DartCodeGenEventListener(feignSdkLibName));
         return createCodeGenerator();
     }
 

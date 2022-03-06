@@ -131,6 +131,16 @@ public interface OrderFeignClient{
           @RequestParam(defaultValue = "test" ,name = "name" ,required = false )  String name
   );
     /**
+      * 1:test hello_3
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceQueryResponse
+      * 4:返回值在java中的类型为：String
+     **/
+      @PostMapping(value = "hello_3" )
+    ServiceResponse<PageInfo<String>>  hello3 (
+          @RequestParam(defaultValue = "test" ,name = "name" ,required = false )  String name
+  );
+    /**
       * 1:test hello
       * 2:Http请求方法：DELETE
       * 3:返回值在java中的类型为：void

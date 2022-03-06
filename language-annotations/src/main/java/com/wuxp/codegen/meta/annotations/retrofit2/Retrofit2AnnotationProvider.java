@@ -58,7 +58,6 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
 
     public abstract static class RetrofitRequestParamMate extends RequestParamMetaFactory.RequestParamMate {
 
-
         @Override
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             Method method = (Method) annotationOwner.getDeclaringExecutable();
@@ -113,8 +112,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             return annotation;
         }
     }
-
-
+    
     private static void removeNameToValue(Map<String, String> namedArguments) {
         String name = namedArguments.remove(ANNOTATION_NAME_KEY);
         namedArguments.put(ANNOTATION_VALUE_KEY, name);
