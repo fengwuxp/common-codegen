@@ -15,7 +15,7 @@ import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,7 +48,7 @@ class Swagger2FeignSdkCodegenFeignClientTest {
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
                 //设置基础数据类型的映射关系
-                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(language)

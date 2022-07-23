@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,7 +81,7 @@ public class UserController {
 
 
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void uploadFile(@RequestParam(name = "file") CommonsMultipartFile commonsMultipartFile) {
+    public void uploadFile(@RequestParam(name = "file") MultipartFile commonsMultipartFile) {
 
     }
 

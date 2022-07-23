@@ -11,7 +11,7 @@
 
 ```
    // 设置java的类型和生成目标语言类型的映射关系，例如：
-    Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
+    Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE);
     Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE);
     Swagger2FeignJavaCodegenBuilder.builder().baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE);
   
@@ -43,7 +43,7 @@
                 // 可以设置多个类或者多个包，DefaultCodeGenImportMatcher.of方法有多个重载，如果设置的是包名或者类名，支持ant匹配
                 .codeGenMatchers(DefaultCodeGenImportMatcher.of(QueryOrderEvt.class))
                  // 基础类型映射
-                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
@@ -361,7 +361,7 @@ public class Swagger2FeignSdkCodegenRetrofitTest {
                 .useRxJava(true)
                 .build()
                 // 基础类型映射
-                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(LanguageDescription.JAVA_ANDROID)

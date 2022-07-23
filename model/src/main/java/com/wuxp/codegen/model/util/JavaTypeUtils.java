@@ -4,7 +4,7 @@ import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import  org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -281,7 +281,7 @@ public final class JavaTypeUtils {
      * @return
      */
     public static boolean isFileUploadObject(Class<?> clazz) {
-        return CommonsMultipartFile.class.equals(clazz);
+        return MultipartFile.class.equals(clazz);
     }
 
 

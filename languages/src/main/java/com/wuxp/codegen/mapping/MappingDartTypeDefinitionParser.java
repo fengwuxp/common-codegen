@@ -5,7 +5,7 @@ import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import  org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ public class MappingDartTypeDefinitionParser extends AbstractMappingTypeDefiniti
         DART_DEFAULT_BASE_MAPPING.put(Void.class, DartClassMeta.VOID);
 
         //文件上传
-        DART_DEFAULT_BASE_MAPPING.put(CommonsMultipartFile.class, DartClassMeta.FILE);
+        DART_DEFAULT_BASE_MAPPING.put(MultipartFile.class, DartClassMeta.FILE);
         DART_DEFAULT_BASE_MAPPING.put(InputStreamResource.class, DartClassMeta.FILE);
 
         // TODO support rxDart、reactor

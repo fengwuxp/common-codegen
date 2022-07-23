@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import  org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -162,7 +162,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             //设置基础数据类型的映射关系
-                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA)
                             .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
@@ -176,7 +176,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             // 基础类型映射
-                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA_ANDROID)
                             .clientProviderType(ClientProviderType.RETROFIT)
@@ -219,7 +219,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             //设置基础数据类型的映射关系
-                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA)
                             .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
@@ -233,7 +233,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             // 基础类型映射
-                            .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA_ANDROID)
                             .clientProviderType(ClientProviderType.RETROFIT)

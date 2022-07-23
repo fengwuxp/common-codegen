@@ -87,7 +87,6 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
      * @value {@link  CommonCodeGenClassMeta}
      */
     protected Map<String, ? extends CommonCodeGenClassMeta> dependencies = new TreeMap<>();
-    ;
 
     /**
      * 在有泛型时候的描述 例如 Set<T>,Map<K,V> 等

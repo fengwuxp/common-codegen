@@ -11,7 +11,7 @@ import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 
@@ -19,7 +19,7 @@ import java.util.Collections;
 class Swagger2FeignSdkCodegenRetrofitTest {
 
     @Test
-    void testCodeGenRetrofitApiByStater() throws Exception{
+    void testCodeGenRetrofitApiByStater() throws Exception {
 
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.example.controller"};
@@ -33,7 +33,7 @@ class Swagger2FeignSdkCodegenRetrofitTest {
                 .useRxJava(true)
                 .build()
                 // 基础类型映射
-                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(language)

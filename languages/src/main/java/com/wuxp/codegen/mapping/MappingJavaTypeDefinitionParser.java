@@ -1,9 +1,9 @@
 package com.wuxp.codegen.mapping;
 
-import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.JavaArrayClassTypeMark;
+import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,7 +50,7 @@ public class MappingJavaTypeDefinitionParser extends AbstractMappingTypeDefiniti
         JAVA_BASE_MAPPINGS.put(List.class, JavaCodeGenClassMeta.LIST);
         JAVA_BASE_MAPPINGS.put(Collection.class, JavaCodeGenClassMeta.COLLECTION);
         JAVA_BASE_MAPPINGS.put(JavaArrayClassTypeMark.class, JavaCodeGenClassMeta.JAVA_ARRAY_CLASS_TYPE_MARK);
-        JAVA_BASE_MAPPINGS.put(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
+        JAVA_BASE_MAPPINGS.put(MultipartFile.class, JavaCodeGenClassMeta.FILE);
         JAVA_BASE_MAPPINGS.put(InputStreamResource.class, JavaCodeGenClassMeta.FILE);
 
         // TODO support rxJava、reactor

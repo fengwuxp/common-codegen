@@ -43,7 +43,7 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
         /**
          * 文件上传
          */
-        DEFAULT_IGNORE_PATTERNS.add("org.springframework.web.multipart.commons.CommonsMultipartFile");
+        DEFAULT_IGNORE_PATTERNS.add("org.springframework.web.multipart.commons.MultipartFile");
     }
 
     private final ExcludeCodeGenTypeElementMatcher excludeMatcher;
