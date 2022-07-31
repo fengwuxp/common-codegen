@@ -109,7 +109,7 @@ public interface UserRetrofitClient{
      **/
       @POST(value = "/users/uploadFile" )
     void  uploadFile (
-          @Field(value = "file" )  File commonsMultipartFile
+          @Field(value = "file" )  File multipartFile
   );
     /**
       * 1:test3

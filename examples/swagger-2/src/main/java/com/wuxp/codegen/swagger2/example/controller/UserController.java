@@ -105,7 +105,7 @@ public class UserController {
     @ApiOperation(value = "文件上传", notes = "uploadFile")
     @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile")
     @RequestMapping(value = "uploadFile", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void uploadFile(@RequestParam(name = "file") MultipartFile commonsMultipartFile) {
+    public void uploadFile(@RequestParam(name = "file") MultipartFile multipartFile) {
 
     }
 

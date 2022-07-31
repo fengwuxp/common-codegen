@@ -175,10 +175,10 @@ UserService() : super() {
           @PostMapping(produces:[HttpMediaType.MULTIPART_FORM_DATA],)
   Future<void>  uploadFile(
           @RequestParam(name: "file" )
-        File commonsMultipartFile,
+        File multipartFile,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<void>("uploadFile",
-  [commonsMultipartFile,],
+  [multipartFile,],
     feignOptions: feignOptions
   );
   }

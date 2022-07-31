@@ -117,7 +117,7 @@ public interface UserFeignClient{
      **/
       @PostMapping(produces = {MediaType.MULTIPART_FORM_DATA_VALUE} )
     void  uploadFile (
-          @RequestParam(name = "file" )  File commonsMultipartFile
+          @RequestParam(name = "file" )  File multipartFile
   );
     /**
       * 1:test3
