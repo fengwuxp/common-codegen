@@ -59,7 +59,7 @@ public class PackageNameCodeGenMatcher implements CodeGenMatcher {
         /**
          * 文件上传
          */
-        INCLUDE_PACKAGE_LIST.add("org.springframework.web.multipart.commons.CommonsMultipartFile");
+        INCLUDE_PACKAGE_LIST.add("org.springframework.web.multipart.MultipartFile");
     }
 
     private final List<String> ignorePackages;

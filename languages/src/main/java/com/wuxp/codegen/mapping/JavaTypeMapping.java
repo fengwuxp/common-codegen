@@ -6,7 +6,7 @@ import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.mapping.JavaArrayClassTypeMark;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -61,7 +61,7 @@ public class JavaTypeMapping extends AbstractLanguageTypeMapping<JavaCodeGenClas
         JAVA_DEFAULT_BASE_MAPPING.put(List.class, JavaCodeGenClassMeta.LIST);
         JAVA_DEFAULT_BASE_MAPPING.put(Collection.class, JavaCodeGenClassMeta.COLLECTION);
         JAVA_DEFAULT_BASE_MAPPING.put(JavaArrayClassTypeMark.class, JavaCodeGenClassMeta.JAVA_ARRAY_CLASS_TYPE_MARK);
-        JAVA_DEFAULT_BASE_MAPPING.put(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE);
+        JAVA_DEFAULT_BASE_MAPPING.put(MultipartFile.class, JavaCodeGenClassMeta.FILE);
         JAVA_DEFAULT_BASE_MAPPING.put(InputStreamResource.class, JavaCodeGenClassMeta.FILE);
 
         //  reactor TODO support rxJava

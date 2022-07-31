@@ -12,7 +12,7 @@ import com.wuxp.codegen.swagger3.example.maven.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger3.example.maven.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -47,7 +47,7 @@ public class Swagger3FeignSdkCodegenRetrofitTest {
                 .languageDescription(LanguageDescription.JAVA_ANDROID)
                 .clientProviderType(ClientProviderType.RETROFIT)
                 //设置基础数据类型的映射关系
-                .baseTypeMapping(CommonsMultipartFile.class, JavaCodeGenClassMeta.FILE)
+                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new JavaPackageMapStrategy(packageMap, basePackageName))
