@@ -71,6 +71,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
         registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN, RequestMapping.class, new TypeScriptRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.DART_FEIGN, RequestMapping.class, new DartRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.UMI_REQUEST, RequestMapping.class, new TypeScriptRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.AXIOS, RequestMapping.class, new TypeScriptRequestMappingTransformer());
     }
 
     /**

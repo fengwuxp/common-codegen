@@ -147,6 +147,7 @@ public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
             case RETROFIT:
                 return "RetrofitClient";
             case UMI_REQUEST:
+            case AXIOS:
             default:
                 return "Service";
         }
