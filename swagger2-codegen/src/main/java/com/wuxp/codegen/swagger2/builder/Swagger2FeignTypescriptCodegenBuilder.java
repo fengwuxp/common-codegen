@@ -1,5 +1,6 @@
 package com.wuxp.codegen.swagger2.builder;
 
+import com.google.common.collect.ImmutableSet;
 import com.wuxp.codegen.core.ClientProviderType;
 import com.wuxp.codegen.core.CodeGenerator;
 import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
@@ -36,7 +37,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2Codeg
     @Override
     public CodeGenerator buildCodeGenerator() {
         initCodegenConfig(LanguageDescription.TYPESCRIPT, ClientProviderType.TYPESCRIPT_FEIGN);
-        if (ClientProviderType.UMI_REQUEST.equals(this.clientProviderType)) {
+        if (ImmutableSet.of(ClientProviderType.UMI_REQUEST, ClientProviderType.AXIOS).contains(this.clientProviderType)) {
             this.elementParsePostProcessors(new UmiRequestMethodDefinitionPostProcessor());
         }
         configParserPostProcessors(TypescriptClassMeta.PROMISE);

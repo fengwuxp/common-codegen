@@ -18,7 +18,7 @@ import java.util.*;
 import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_ON_PUBLIC_PARSER;
 
 /**
- * 基于umi request的增强配置
+ * 基于 umi request 的增强配置
  *
  * @author wuxp
  * <a href="https://github.com/umijs/umi-request"></a>
@@ -67,7 +67,9 @@ public class UmiRequestMethodDefinitionPostProcessor implements LanguageDefiniti
         tags.put("httpMethod", requestMethod.name().toLowerCase());
         boolean supportRequestBody = RequestMappingMetaFactory.isSupportRequestBody(requestMethod);
         if (supportRequestBody) {
-            tags.put("requestType", this.getRequestType(javaMethodMeta, requestMappingMate));
+            String requestContentType = getRequestContentType(javaMethodMeta, requestMappingMate);
+            tags.put("requestContentType", requestContentType);
+            tags.put("requestType", this.getContentTypeAlisName(requestContentType));
         }
         tags.put("supportBody", supportRequestBody);
         tags.put("responseType", this.getResponseType(requestMappingMate, javaMethodMeta, javaMethodMeta.getOwner()));
@@ -116,7 +118,7 @@ public class UmiRequestMethodDefinitionPostProcessor implements LanguageDefiniti
      * @param requestMappingMate RequestMappingMate
      * @return umi-request的请求类型
      */
-    private String getRequestType(JavaMethodMeta javaMethodMeta, RequestMappingMetaFactory.RequestMappingMate requestMappingMate) {
+    private String getRequestContentType(JavaMethodMeta javaMethodMeta, RequestMappingMetaFactory.RequestMappingMate requestMappingMate) {
         boolean hasRequestBody = hasRequestBody(javaMethodMeta);
         String[] consumes = requestMappingMate.consumes();
         boolean isEmpty = consumes.length == 0;
@@ -130,7 +132,7 @@ public class UmiRequestMethodDefinitionPostProcessor implements LanguageDefiniti
                 consumes = new String[]{MediaType.APPLICATION_FORM_URLENCODED_VALUE};
             }
         }
-        return getContentTypeAlisName(consumes[0]);
+        return consumes[0];
     }
 
     /**

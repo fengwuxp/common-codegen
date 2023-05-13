@@ -147,6 +147,14 @@ public final class LoongCodeGenerator implements CodeGenerator {
                     .clientProviderType(ClientProviderType.UMI_REQUEST)
                     .outPath(this.getCodegenOutputPath(ClientProviderType.UMI_REQUEST)));
         }
+        if (finallyClientProviderTypes.contains(ClientProviderType.AXIOS)) {
+            codeGenerators.add(Swagger2FeignTypescriptCodegenBuilder.builder()
+                    .scanPackages(scanPackages)
+                    .isDeletedOutputDirectory(false)
+                    .languageDescription(LanguageDescription.TYPESCRIPT)
+                    .clientProviderType(ClientProviderType.AXIOS)
+                    .outPath(this.getCodegenOutputPath(ClientProviderType.AXIOS)));
+        }
         if (finallyClientProviderTypes.contains(ClientProviderType.DART_FEIGN)) {
             codeGenerators.add(
                     Swagger2FeignDartCodegenBuilder.builder()

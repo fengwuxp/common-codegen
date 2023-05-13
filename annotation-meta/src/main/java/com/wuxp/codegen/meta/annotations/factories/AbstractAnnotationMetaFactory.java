@@ -110,8 +110,8 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
 
     @SuppressWarnings("unchecked")
     public static <T extends CommonCodeGenAnnotation, A extends AnnotationMate> Optional<AnnotationCodeGenTransformer<T, A>> getAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType) {
-        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate>> transformerMap = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
-        return Optional.ofNullable((AnnotationCodeGenTransformer<T, A>) transformerMap.get(annotationType));
+        Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate>> transformers = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
+        return Optional.ofNullable((AnnotationCodeGenTransformer<T, A>) transformers.get(annotationType) );
     }
 
 

@@ -39,5 +39,10 @@ public enum ClientProviderType {
     /**
      * https://github.com/umijs/umi-request
      */
-    UMI_REQUEST
+    UMI_REQUEST,
+
+    /**
+     * https://github.com/axios/axios
+     */
+    AXIOS
 }
