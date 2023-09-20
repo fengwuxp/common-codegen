@@ -227,8 +227,8 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     /**
      * 是否为复杂的集合或数组参数
      *
-     * @param methodMeta
-     * @return
+     * @param methodMeta java 方法元数据描述
+     * @return if <code>true</code> 是
      */
     private boolean isArrayOrCollectComplexParams(JavaMethodMeta methodMeta) {
         if (methodMeta.getParams().size() > 1) {

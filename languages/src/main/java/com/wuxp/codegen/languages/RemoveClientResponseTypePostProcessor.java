@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 /**
  * 移除重复的 client 统一响应类型
+ * @author wuxp
  */
 public class RemoveClientResponseTypePostProcessor implements LanguageDefinitionPostProcessor<CommonCodeGenMethodMeta> {
 

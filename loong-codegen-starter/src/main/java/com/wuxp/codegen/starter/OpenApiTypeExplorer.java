@@ -28,8 +28,8 @@ public final class OpenApiTypeExplorer {
 
     private static OpenApiType defaultOpenApiType;
 
-
     private OpenApiTypeExplorer() {
+        throw new AssertionError();
     }
 
     public static synchronized OpenApiType getDefaultOpenApiType() {

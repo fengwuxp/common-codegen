@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
-import  org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -33,13 +33,21 @@ import static com.wuxp.codegen.core.constant.Constants.DEFAULT_CODEGEN_DIR;
  * @author wuxp
  */
 @Slf4j
+
 public final class LoongCodeGenerator implements CodeGenerator {
 
     private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList(DEFAULT_CODEGEN_DIR, "loong");
 
+    /**
+     * 扫描的包列表
+     */
     @Setter
     private String[] scanPackages;
 
+    /**
+     * open api 类型
+     */
+    @Setter
     private OpenApiType openApiType;
 
     /**
@@ -68,7 +76,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
 
 
     public LoongCodeGenerator() {
-        this(OpenApiTypeExplorer.getDefaultOpenApiType(), new String[0]);
+        this(OpenApiTypeExplorer.getDefaultOpenApiType());
     }
 
     public LoongCodeGenerator(OpenApiType openApiType) {
@@ -82,10 +90,6 @@ public final class LoongCodeGenerator implements CodeGenerator {
     public LoongCodeGenerator(OpenApiType openApiType, String... scanPackages) {
         this.scanPackages = scanPackages;
         this.openApiType = openApiType;
-    }
-
-    public void setOpenApiType(String openApiType) {
-        this.openApiType = OpenApiType.valueOf(openApiType);
     }
 
     @Override
@@ -295,6 +299,5 @@ public final class LoongCodeGenerator implements CodeGenerator {
     public static String getBaseOutputPath() {
         return Paths.get(System.getProperty("user.dir")).resolveSibling(String.join(File.separator, DEFAULT_OUT_PATHS)).toString();
     }
-
 
 }
