@@ -253,7 +253,7 @@ public final class JavaClassParser {
     }
 
     private List<String> getOwnerTypeParameterNames(Class<?> owner) {
-        TypeVariable<? extends Class<?>>[] ownerTypeParameters = owner.getTypeParameters();
+        TypeVariable<?>[] ownerTypeParameters = owner.getTypeParameters();
         return Arrays.stream(ownerTypeParameters)
                 .map(TypeVariable::getName)
                 .collect(Collectors.toList());
@@ -401,7 +401,7 @@ public final class JavaClassParser {
             for (ResolvableType generic : generics) {
                 Class<?>[] typeVariables = getGenericsAndClassType(generic);
                 if (typeVariables.length == 0) {
-                    classes.addAll(Collections.singletonList(Object.class));
+                    classes.add(Object.class);
                 } else {
                     classes.addAll(Arrays.asList(typeVariables));
                 }
