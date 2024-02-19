@@ -115,9 +115,10 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
             Thread.currentThread().interrupt();
         } catch (ExecutionException exception) {
             throw new CodegenRuntimeException(exception);
+        }finally {
+            // clear config
+            CodegenConfigHolder.clear();
         }
-        // clear config
-        CodegenConfigHolder.clear();
     }
 
     @Override

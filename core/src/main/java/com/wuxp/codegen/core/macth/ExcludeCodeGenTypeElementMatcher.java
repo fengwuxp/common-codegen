@@ -2,6 +2,9 @@ package com.wuxp.codegen.core.macth;
 
 import java.util.*;
 
+/**
+ * @author wuxp
+ */
 public class ExcludeCodeGenTypeElementMatcher extends AbstractCodeGenTypeElementMatcher {
 
     private ExcludeCodeGenTypeElementMatcher(Set<String> matchPackages, Set<Class<?>> matchClasses) {

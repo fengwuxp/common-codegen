@@ -29,7 +29,7 @@ public final class CombineTypeMethod implements TemplateMethodModelEx {
         Assert.notEmpty(arguments, "arguments is null or is empty");
         DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.get(0);
         CommonCodeGenClassMeta[] classMetas = (CommonCodeGenClassMeta[]) arrayAdapter.getAdaptedObject(CommonCodeGenClassMeta.class);
-        Assert.isTrue(!ObjectUtils.isEmpty(classMetas), "combine type  classMetas is null or is empty");
+        Assert.isTrue(!ObjectUtils.isEmpty(classMetas), "combine type classMetas is null or is empty");
         if (log.isDebugEnabled()) {
             log.debug("要合并的泛型描述，length={}", classMetas.length);
         }

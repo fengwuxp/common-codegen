@@ -48,9 +48,9 @@ class Swagger3FeignSdkCodegenTypescriptTest {
         Swagger3FeignTypescriptCodegenBuilder.builder()
                 .languageDescription(language)
                 .clientProviderType(clientProviderType)
-                //设置基础数据类型的映射关系
-                .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
-                .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
+                //设置数据类型的映射关系
+                .typeMappings(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
+                .typeMappings(ServiceResponse.class, TypescriptClassMeta.PROMISE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))

@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenEventListener;
 import com.wuxp.codegen.core.event.CombineCodeGenEventListener;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
 import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.macth.JavaFieldMatcher;
@@ -86,15 +87,9 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
 
     /**
-     * 基础数据类型的映射关系
+     * java 类型 => CommonCodeGenClassMeta
      */
-    protected Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new LinkedHashMap<>();
-
-
-    /**
-     * 自定义的类型映射
-     */
-    protected Map<Class<?>, CommonCodeGenClassMeta> customTypeMapping = new LinkedHashMap<>();
+    protected Map<Class<?>, CommonCodeGenClassMeta> typeMappings = new LinkedHashMap<>();
 
     /**
      * 自定义的java类型映射
@@ -212,13 +207,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractLoongCodegenBuilder baseTypeMapping(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
-        this.baseTypeMapping.put(javaType, classMeta);
-        return this;
-    }
-
-    public AbstractLoongCodegenBuilder customTypeMapping(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
-        this.customTypeMapping.put(javaType, classMeta);
+    public AbstractLoongCodegenBuilder typeMappings(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
+        this.typeMappings.put(javaType, classMeta);
         return this;
     }
 
@@ -375,8 +365,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
                 JavaClassElementMatcher.builder()
                         .includePackages(this.getIncludePackages())
                         .includeClasses(this.getIncludeClasses())
-                        .includePackages(this.getIgnorePackages())
                         .ignoreClasses(this.getIgnoreClasses())
+                        .ignorePackages(this.getIgnorePackages())
                         .build(),
                 new JavaMethodMatcher(this.getIgnoreMethodNames()),
                 new JavaFieldMatcher(this.getIgnoreFieldNames()),
@@ -463,7 +453,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
             CodegenFileUtils.createDirectoryRecursively(CODEGEN_TEMP_EXTENSIONS_DIR);
         }
         try {
-            loader.load().forEach(classMeta -> customTypeMapping(classMeta.getSource(), classMeta));
+            loader.load().forEach(classMeta -> typeMappings(classMeta.getSource(), classMeta));
         } finally {
             File tempdir = file.getParentFile();
             boolean deleteRecursively = FileSystemUtils.deleteRecursively(tempdir);
@@ -490,8 +480,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
             }
             return jsonFiles;
         } catch (IOException exception) {
-            exception.printStackTrace();
+           throw new CodegenRuntimeException(exception);
         }
-        return Collections.emptyList();
     }
 }

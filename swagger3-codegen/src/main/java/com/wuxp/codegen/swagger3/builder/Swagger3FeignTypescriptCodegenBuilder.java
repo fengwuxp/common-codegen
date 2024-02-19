@@ -70,7 +70,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractSwagger3Codeg
     @Override
     protected LanguageTypeDefinitionParser<TypescriptClassMeta> getMappingTypeDefinitionParser() {
         return MappingTypescriptTypeDefinitionParser.builder()
-                .typeMapping(baseTypeMapping)
+                .typeMapping(typeMappings)
                 .build();
     }
 }

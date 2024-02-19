@@ -174,7 +174,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             //设置基础数据类型的映射关系
-                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .typeMappings(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA)
                             .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
@@ -188,7 +188,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             // 基础类型映射
-                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .typeMappings(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA_ANDROID)
                             .clientProviderType(ClientProviderType.RETROFIT)
@@ -231,7 +231,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             //设置基础数据类型的映射关系
-                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .typeMappings(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA)
                             .clientProviderType(ClientProviderType.SPRING_CLOUD_OPENFEIGN)
@@ -245,7 +245,7 @@ public final class LoongCodeGenerator implements CodeGenerator {
                             .scanPackages(scanPackages)
                             .isDeletedOutputDirectory(false)
                             // 基础类型映射
-                            .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
+                            .typeMappings(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                             //自定义的类型映射
                             .languageDescription(LanguageDescription.JAVA_ANDROID)
                             .clientProviderType(ClientProviderType.RETROFIT)

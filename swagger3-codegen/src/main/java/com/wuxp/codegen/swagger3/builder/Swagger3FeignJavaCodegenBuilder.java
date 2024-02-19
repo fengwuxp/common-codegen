@@ -44,7 +44,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractSwagger3CodegenBuil
     @Override
     protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
         return MappingJavaTypeDefinitionParser.builder()
-                .typeMapping(baseTypeMapping)
+                .typeMapping(typeMappings)
                 .build();
     }
 

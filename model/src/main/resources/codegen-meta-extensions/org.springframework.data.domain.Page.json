@@ -22,7 +22,7 @@
     },
     {
       "name": "first",
-      "type": "boolean",
+      "type": "",
       "required": true
     },
     {
