@@ -183,7 +183,7 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     @SuppressWarnings("unchecked")
     private CommonCodeGenClassMeta[] getFiledTypes(SchemaCodegenModelFieldMeta meta, CommonCodeGenClassMeta classMeta) {
         String type = meta.getType();
-        if (!StringUtils.hasText(type)){
+        if (!StringUtils.hasText(type)) {
             return new CommonCodeGenClassMeta[0];
         }
         boolean isArray = meta.isArray();
@@ -264,9 +264,14 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     }
 
     private SchemaCodegenModel transformToCodegenModel(File file) {
-        SchemaCodegenModel result = parseSchemaModel(file);
-        result.setSource(loadClass(file.getName()));
-        return result;
+        try {
+            SchemaCodegenModel result = parseSchemaModel(file);
+            result.setSource(loadClass(file.getName()));
+            return result;
+        } catch (Exception exception) {
+            log.info("transformToCodegenModel error, message = {}", exception.getMessage());
+            return null;
+        }
     }
 
     private Class<?> loadClass(String name) {
