@@ -2,6 +2,12 @@
     <#include "../spring_cloud_openfeign/api_request.ftl"/>
 <#else >
 package ${packagePath?replace('.'+name,'')};
+
+<#if queryObjectShareDependencies??>
+    <#list queryObjectShareDependencies as className>
+        import ${className};
+    </#list>
+</#if>
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >

@@ -1,6 +1,5 @@
 package com.wuxp.codegen.meta.annotations.retrofit2;
 
-import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.wuxp.codegen.core.parser.JavaClassParser.PARAMETER_NAME_DISCOVERER;
 import static com.wuxp.codegen.meta.annotations.factories.AnnotationMate.ANNOTATION_VALUE_KEY;
 
 /**
@@ -36,10 +36,12 @@ public class Retrofit2AnnotationPostProcessor implements LanguageDefinitionPostP
         RequestMappingUtils.findRequestMappingAnnotation(method.getAnnotations()).ifPresent(requestMappingMeta -> {
             if (Arrays.asList(RequestMethod.DELETE, RequestMethod.GET).contains(requestMappingMeta.getRequestMethod())) {
                 Map<String, CommonCodeGenAnnotation[]> paramAnnotations = meta.getParamAnnotations();
+                List<String> parameterNames = Arrays.asList(Objects.requireNonNull(PARAMETER_NAME_DISCOVERER.getParameterNames(method)));
+                Parameter[] parameters = method.getParameters();
                 meta.getParams().forEach((name, v) -> {
                     CommonCodeGenAnnotation[] annotations = paramAnnotations.getOrDefault(name, new CommonCodeGenAnnotation[0]);
                     List<CommonCodeGenAnnotation> result = new ArrayList<>(Arrays.asList(annotations));
-                    CommonCodeGenAnnotation queryAnnotation = genQueryAnnotation(finParameter(name, method.getParameters()));
+                    CommonCodeGenAnnotation queryAnnotation = genQueryAnnotation(name, parameters[parameterNames.indexOf(name)]);
                     if (queryAnnotation != null) {
                         result.add(queryAnnotation);
                     }
@@ -49,14 +51,7 @@ public class Retrofit2AnnotationPostProcessor implements LanguageDefinitionPostP
         });
     }
 
-    private Parameter finParameter(String name, Parameter[] parameters) {
-        return Arrays.stream(parameters).
-                filter(parameter -> Objects.equals(name, parameter.getName()))
-                .findFirst()
-                .orElseThrow(() -> new CodegenRuntimeException(String.format("find name = %sparameter error", name)));
-    }
-
-    private CommonCodeGenAnnotation genQueryAnnotation(Parameter parameter) {
+    private CommonCodeGenAnnotation genQueryAnnotation(String name, Parameter parameter) {
         if (parameter.isAnnotationPresent(RequestParam.class)) {
             // 有 RequestParam 注解
             return null;
@@ -71,7 +66,7 @@ public class Retrofit2AnnotationPostProcessor implements LanguageDefinitionPostP
         } else {
             // 没有注解则使用参数名称
             result.setName(Query.class.getSimpleName());
-            namedArguments.put(ANNOTATION_VALUE_KEY, "\"" + parameter.getName() + "\"");
+            namedArguments.put(ANNOTATION_VALUE_KEY, "\"" + name + "\"");
         }
         result.setNamedArguments(namedArguments);
         result.setElementType(ElementType.PARAMETER);

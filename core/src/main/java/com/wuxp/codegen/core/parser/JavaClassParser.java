@@ -41,7 +41,7 @@ public final class JavaClassParser {
     /**
      * spring的方法参数发现者
      */
-    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+    public static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
     private static final Map<Class<?>, JavaClassMeta> PARSER_CACHES = new ConcurrentHashMap<>();
 
