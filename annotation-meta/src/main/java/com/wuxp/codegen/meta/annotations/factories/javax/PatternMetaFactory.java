@@ -3,7 +3,6 @@ package com.wuxp.codegen.meta.annotations.factories.javax;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import javax.validation.constraints.Pattern;
 import java.lang.reflect.Field;

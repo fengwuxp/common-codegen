@@ -1,4 +1,9 @@
 package ${packagePath?replace('.'+name,'')};
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+<#assign enumFieldHasLength=(fieldMetas?size>0)/>
+<#assign enumConstantsHasLength=(enumConstants?size>0)/>
 <#if (comments?size>0)>
   /**
     <#list comments as cmment>
@@ -6,10 +11,12 @@ package ${packagePath?replace('.'+name,'')};
     </#list>
    **/
 </#if>
+<#if enumFieldHasLength>
+@AllArgsConstructor
+@Getter
+</#if>
 public enum  ${name}{
 
-<#assign enumFieldHasLength=(fieldMetas?size>0)/>
-<#assign enumConstantsHasLength=(enumConstants?size>0)/>
 <#if enumConstantsHasLength>
 <#list enumConstants as enumConstant>
     ${enumConstant.name}<#if (enumConstant.enumFiledValues?size>0)>(<#list enumConstant.enumFiledValues as enumValue>${enumValue}<#if enumValue_has_next>,</#if></#list>)</#if><#if  enumConstant_has_next>,<#else>;</#if>
@@ -18,24 +25,8 @@ public enum  ${name}{
 
 <#if enumConstantsHasLength>
     <#list fieldMetas as field>
-        private String ${field.name};
+        ${field.accessPermissionName} final ${customizeMethod.combineType(field.filedTypes)} ${field.name};
     </#list>
-</#if>
-
-<#if enumFieldHasLength>
-${name}(<#list fieldMetas as field>${field.filedTypes[0].name} ${field.name}<#if field_has_next>,</#if></#list>) {
-  <#list fieldMetas as field>
-   this.${field.name} = ${field.name};
-  </#list>
-}
-</#if>
-
-<#if enumFieldHasLength>
-<#list fieldMetas as field>
-  public String get${field.name?cap_first}() {
-      return ${field.name};
-  }
-</#list>
 </#if>
 
 

@@ -39,11 +39,11 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
         </#if>
         <#if field.annotations??>
             <#list field.annotations as annotation>
-                @${annotation.name}<#if (annotation.namedArguments?size>0)>({
-                <#list annotation.namedArguments as name,val>
-                    ${name}=${val}
+                @${annotation.name}<#if (annotation.namedArguments?size>0)>(
+                <#list annotation.namedArguments?keys as name>
+                    ${name}=${annotation.namedArguments[name]}<#if name_has_next>,</#if>
                 </#list>
-                })</#if>
+                )</#if>
             </#list>
         </#if>
         ${field.accessPermissionName} ${customizeMethod.combineType(field.filedTypes)} ${field.name};

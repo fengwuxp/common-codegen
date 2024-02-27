@@ -26,10 +26,12 @@ public abstract class AbstractNamedAnnotationMate extends AbstractAnnotationMate
         namedArguments.remove(ANNOTATION_VALUE_KEY);
         namedArguments.remove(ANNOTATION_VALUE_KEY);
         namedArguments.put(ANNOTATION_NAME_KEY, CodegenAnnotationUtils.quote(getParameterName(annotationOwner)));
-        //注解位置参数
+        // 注解位置参数
         List<String> positionArguments = new LinkedList<>(namedArguments.values());
         annotation.setPositionArguments(positionArguments);
         annotation.setElementType(ElementType.PARAMETER);
         return annotation;
     }
+
+
 }
