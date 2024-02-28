@@ -22,7 +22,7 @@ package ${packagePath?replace('.'+name,'')};
     </#list>
     **/
 </#if>
-public class  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
+public class ${finallyClassName}<#if queryObjectShareClassName??> extends ${queryObjectShareClassName}</#if> {
 
 <#if fieldMetas??>
     <#list fieldMetas as field>
@@ -37,8 +37,9 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
           return (${customizeMethod.combineType(field.filedTypes)})get("${field.name}");
         }
 
-        public void set${field.name?cap_first}(${customizeMethod.combineType(field.filedTypes)} ${field.name}){
+        public ${finallyClassName} set${field.name?cap_first}(${customizeMethod.combineType(field.filedTypes)} ${field.name}){
              put("${field.name}",${field.name});
+            return this;
         }
 
     </#list>

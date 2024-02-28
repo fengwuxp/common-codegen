@@ -1,6 +1,7 @@
 package ${packagePath?replace('.'+name,'')};
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 <#if dependencies??>
 <#--依赖导入处理-->
@@ -26,6 +27,7 @@ import javax.validation.constraints.*;
     </#list>
 </#if>
 @Data
+@Accessors(chain = true)
 public class  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
 <#if fieldMetas??>
