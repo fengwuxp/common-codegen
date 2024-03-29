@@ -66,7 +66,7 @@ public interface UserFeignClient{
       * 3:返回值在java中的类型为：String
      **/
       @GetMapping(value = "sample3" )
-    String[]  sample2 (
+    String  sample2 (
   Long[] ids,
   String name
   );
@@ -79,7 +79,7 @@ public interface UserFeignClient{
       * 6:返回值在java中的类型为：User
      **/
       @GetMapping(value = "sample2" )
-    Map<String,User>[]  sampleMap (
+    Map<String,User>  sampleMap (
   Long[] ids,
   String name,
   Sex sex,
@@ -136,7 +136,7 @@ public interface UserFeignClient{
       * 7:返回值在java中的类型为：User
      **/
       @GetMapping(value = "/test6" )
-    Map<Sex,List<PageInfo<User[]>>>  test6 (
+    Map<Sex,List<PageInfo<User>>>  test6 (
   Long id
   );
     /**
@@ -150,7 +150,7 @@ public interface UserFeignClient{
       * 8:返回值在java中的类型为：User
      **/
       @GetMapping(value = "/test7" )
-    Map<Integer,List<PageInfo<User[]>>>  test7 (
+    Map<Integer,List<PageInfo<User>>>  test7 (
   Long id
   );
     /**
@@ -164,7 +164,7 @@ public interface UserFeignClient{
       * 8:返回值在java中的类型为：String
      **/
       @GetMapping(value = "/test8" )
-    Map<String,String[]>  test8 (
+    Map<String,String>  test8 (
   Long id
   );
     /**
@@ -178,7 +178,7 @@ public interface UserFeignClient{
       * 8:返回值在java中的类型为：String
      **/
       @GetMapping(value = "/test9" )
-    Map<String,String>[]  test9 (
+    Map<String,String>  test9 (
   Long id
   );
 }

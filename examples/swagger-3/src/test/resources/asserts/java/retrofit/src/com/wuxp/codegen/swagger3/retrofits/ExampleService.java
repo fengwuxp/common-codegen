@@ -20,7 +20,7 @@ public interface ExampleService{
       * 3:返回值在java中的类型为：Integer
      **/
       @GET(value = "/example_cms/get_num" )
-    Observable<List<Integer>>  getNums (
+    List<Integer>  getNums (
           @Query(value = "num" )  Integer num
   );
     /**
@@ -31,7 +31,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：String
      **/
       @GET(value = "/example_cms/get_maps" )
-    Observable<List<Map<Integer,String>>>  getMaps (
+    List<Map<Integer,String>>  getMaps (
           @Query(value = "num" )  Integer num
   );
     /**
@@ -41,7 +41,7 @@ public interface ExampleService{
       * 4:返回值在java中的类型为：Integer
      **/
       @GET(value = "/example_cms/get_map" )
-    Observable<Map<String,Integer>>  getMap (
+    Map<String,Integer>  getMap (
   );
     /**
       * 1:Http请求方法：GET
@@ -51,7 +51,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_2" )
-    Observable<Map<String,List<Boolean>>>  getMap2 (
+    Map<String,List<Boolean>>  getMap2 (
   );
     /**
       * 1:Http请求方法：GET
@@ -61,7 +61,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_3/{id}" )
-    Observable<Map<String,List<Boolean>>>  getMap3 (
+    Map<String,List<Boolean>>  getMap3 (
           @Path(value = "id" )  String id
   );
     /**
@@ -72,7 +72,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_/" )
-    Observable<Map<String,List<Boolean>>>  getMap4 (
+    Map<String,List<Boolean>>  getMap4 (
           @QueryMap()  ExampleDTO dto
   );
     /**
@@ -83,7 +83,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_5" )
-    Observable<Map<String,List<Boolean>>>  getMap5 (
+    Map<String,List<Boolean>>  getMap5 (
           @QueryMap()  ExampleDto dto
   );
 }

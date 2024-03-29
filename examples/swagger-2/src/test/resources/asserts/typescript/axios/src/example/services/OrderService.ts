@@ -107,10 +107,10 @@ export const  pageBySpringData=  (req: QueryOrderEvt, options?: AxiosRequestConf
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Promise<PageInfo<Order>>>> =>{
+export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
         const headers:Record<string,any>={};
                 headers['Content-Type']= 'multipart/form-data';
-  return axios.request<Promise<PageInfo<Order>>>( {
+  return axios.request<PageInfo<Order>>( {
       url:`/order/queryOrder2`,
       method: 'post',
         headers,
@@ -132,10 +132,10 @@ export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: AxiosRe
       * 9:返回值在java中的类型为：Order
      **/
 
-export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: AxiosRequestConfig): Promise<AxiosResponse<Promise<PageInfo<Order>>>> =>{
+export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
         const headers:Record<string,any>={};
                 headers['Content-Type']= 'application/json';
-  return axios.request<Promise<PageInfo<Order>>>( {
+  return axios.request<PageInfo<Order>>( {
       url:`/order/queryPage`,
       method: 'post',
         headers,
@@ -156,10 +156,10 @@ export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: AxiosReques
       * 8:返回值在java中的类型为：Long
      **/
 
-export const  createOrder=  (req: CreateOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<Promise<string>>> =>{
+export const  createOrder=  (req: CreateOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<string>> =>{
         const headers:Record<string,any>={};
                 headers['Content-Type']= 'application/json';
-  return axios.request<Promise<string>>( {
+  return axios.request<string>( {
       url:`/order/createOrder`,
       method: 'post',
         headers,
@@ -176,10 +176,10 @@ export const  createOrder=  (req: CreateOrderEvt, options?: AxiosRequestConfig):
       * 4:返回值在java中的类型为：Object
      **/
 
-export const  hello=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<Promise<any>>> =>{
+export const  hello=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<any>> =>{
         const headers:Record<string,any>={};
                 headers['Content-Type']= 'application/x-www-form-urlencoded';
-  return axios.request<Promise<any>>( {
+  return axios.request<any>( {
       url:`/order/hello`,
       method: 'post',
         headers,
@@ -195,10 +195,10 @@ export const  hello=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<Pro
       * 4:返回值在java中的类型为：Object
      **/
 
-export const  hello2=  (req?: OrderServiceHello2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Promise<PageInfo<any>>>> =>{
+export const  hello2=  (req?: OrderServiceHello2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<any>>> =>{
         const headers:Record<string,any>={};
                 headers['Content-Type']= 'application/x-www-form-urlencoded';
-  return axios.request<Promise<PageInfo<any>>>( {
+  return axios.request<PageInfo<any>>( {
       url:`/order/hello_2`,
       method: 'post',
         headers,
@@ -215,10 +215,10 @@ export const  hello2=  (req?: OrderServiceHello2Req, options?: AxiosRequestConfi
       * 4:返回值在java中的类型为：String
      **/
 
-export const  hello3=  (req?: OrderServiceHello3Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Promise<PageInfo<string>>>> =>{
+export const  hello3=  (req?: OrderServiceHello3Req, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<string>>> =>{
         const headers:Record<string,any>={};
                 headers['Content-Type']= 'application/x-www-form-urlencoded';
-  return axios.request<Promise<PageInfo<string>>>( {
+  return axios.request<PageInfo<string>>( {
       url:`/order/hello_3`,
       method: 'post',
         headers,

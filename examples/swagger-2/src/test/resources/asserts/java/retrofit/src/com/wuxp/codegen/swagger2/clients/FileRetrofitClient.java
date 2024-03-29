@@ -16,7 +16,7 @@ public interface FileRetrofitClient{
       * 3:返回值在java中的类型为：InputStreamResource
      **/
       @GET(value = "/file/download" )
-    Observable<File>  download (
+    File  download (
   String name
   );
     /**
@@ -25,7 +25,7 @@ public interface FileRetrofitClient{
      **/
       @GET(value = "/file/download_2" )
       @Headers(value = {"Content-Type: application/octet-stream"} )
-    Observable<File>  download2 (
+    File  download2 (
   String name
   );
 }

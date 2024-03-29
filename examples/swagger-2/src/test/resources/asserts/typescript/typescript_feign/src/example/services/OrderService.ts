@@ -89,7 +89,7 @@ class OrderService{
       @PostMapping({
             produces:[HttpMediaType.MULTIPART_FORM_DATA],
       })
-    queryOrder2!:(req?: OrderServiceQueryOrder2Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<Order>>>;
+    queryOrder2!:(req?: OrderServiceQueryOrder2Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:查询分页
       * 2:Http请求方法：POST
@@ -103,7 +103,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    queryPage!:(req?: OrderServiceQueryPageReq, option?: FeignRequestOptions) => Promise<Promise<PageInfo<Order>>>;
+    queryPage!:(req?: OrderServiceQueryPageReq, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:创建订单
       * 2:Http请求方法：POST
@@ -116,7 +116,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<Promise<string>>;
+    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:test hello
       * 2:Http请求方法：POST
@@ -125,7 +125,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    hello!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<Promise<any>>;
+    hello!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<any>;
     /**
       * 1:test hello
       * 2:Http请求方法：POST
@@ -135,7 +135,7 @@ class OrderService{
       @PostMapping({
             value:"hello_2",
       })
-    hello2!:(req?: OrderServiceHello2Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<any>>>;
+    hello2!:(req?: OrderServiceHello2Req, option?: FeignRequestOptions) => Promise<PageInfo<any>>;
     /**
       * 1:test hello_3
       * 2:Http请求方法：POST
@@ -145,7 +145,7 @@ class OrderService{
       @PostMapping({
             value:"hello_3",
       })
-    hello3!:(req?: OrderServiceHello3Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<string>>>;
+    hello3!:(req?: OrderServiceHello3Req, option?: FeignRequestOptions) => Promise<PageInfo<string>>;
     /**
       * 1:test hello
       * 2:Http请求方法：DELETE

@@ -52,26 +52,14 @@ part 'serializers.g.dart';
 
 final Serializers serializers = (_$serializers.toBuilder()
     ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(String)])]),
-     () => ListBuilder<BuiltMap<String,String>>())
-    ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(User)])]),
-     () => ListBuilder<BuiltMap<String,User>>())
-    ..addBuilderFactory(
     const FullType(BuiltList,[FullType(BuiltMap,[FullType(int),FullType(String)])]),
      () => ListBuilder<BuiltMap<int,String>>())
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(Order)]),
      () => ListBuilder<Order>())
     ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(User)])])]),
-     () => ListBuilder<PageInfo<BuiltList<User>>>())
-    ..addBuilderFactory(
     const FullType(BuiltList,[FullType(PageInfo,[FullType(User)])]),
      () => ListBuilder<PageInfo<User>>())
-    ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(String)]),
-     () => ListBuilder<String>())
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(bool)]),
      () => ListBuilder<bool>())
@@ -79,14 +67,11 @@ final Serializers serializers = (_$serializers.toBuilder()
     const FullType(BuiltList,[FullType(int)]),
      () => ListBuilder<int>())
     ..addBuilderFactory(
-    const FullType(BuiltMap,[FullType(Sex),FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(User)])])])]),
-     () => MapBuilder<Sex,BuiltList<PageInfo<BuiltList<User>>>>())
+    const FullType(BuiltMap,[FullType(Sex),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])]),
+     () => MapBuilder<Sex,BuiltList<PageInfo<User>>>())
     ..addBuilderFactory(
     const FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])]),
      () => MapBuilder<String,BuiltList<PageInfo<User>>>())
-    ..addBuilderFactory(
-    const FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(String)])]),
-     () => MapBuilder<String,BuiltList<String>>())
     ..addBuilderFactory(
     const FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(bool)])]),
      () => MapBuilder<String,BuiltList<bool>>())
@@ -103,26 +88,17 @@ final Serializers serializers = (_$serializers.toBuilder()
     const FullType(BuiltMap,[FullType(String),FullType(int)]),
      () => MapBuilder<String,int>())
     ..addBuilderFactory(
-    const FullType(BuiltMap,[FullType(int),FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(User)])])])]),
-     () => MapBuilder<int,BuiltList<PageInfo<BuiltList<User>>>>())
+    const FullType(BuiltMap,[FullType(int),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])]),
+     () => MapBuilder<int,BuiltList<PageInfo<User>>>())
     ..addBuilderFactory(
     const FullType(BuiltMap,[FullType(int),FullType(String)]),
      () => MapBuilder<int,String>())
     ..addBuilderFactory(
-    const FullType(Future,[FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])]),
-     () => FutureBuilder<BuiltList<PageInfo<User>>>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(Object)]),
-     () => FutureBuilder<Object>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(PageInfo,[FullType(Order)])]),
-     () => FutureBuilder<PageInfo<Order>>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(int)]),
-     () => FutureBuilder<int>())
-    ..addBuilderFactory(
     const FullType(PageInfo,[FullType(Order)]),
      () => PageInfoBuilder<Order>())
+    ..addBuilderFactory(
+    const FullType(PageInfo,[FullType(User)]),
+     () => PageInfoBuilder<User>())
 ..addPlugin(StandardJsonPlugin())
 ..add(DateTimeMillisecondsSerializer()))
 .build();

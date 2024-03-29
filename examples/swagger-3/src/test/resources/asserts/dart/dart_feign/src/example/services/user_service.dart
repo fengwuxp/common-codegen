@@ -101,15 +101,15 @@ UserService() : super() {
       /// 2:返回值在java中的类型为：数组
       /// 3:返回值在java中的类型为：String
           @GetMapping(value:"sample3",)
-  Future<BuiltList<String>>  sample2(
+  Future<String>  sample2(
         BuiltList<int> ids,
         String name,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltList<String>>("sample2",
+  return this.delegateInvoke<String>("sample2",
   [ids,name,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltList,[FullType(String)])
+              specifiedType:FullType(String)
           )
     
   );
@@ -122,17 +122,17 @@ UserService() : super() {
       /// 5:返回值在java中的类型为：数组
       /// 6:返回值在java中的类型为：User
           @GetMapping(value:"sample2",)
-  Future<BuiltList<BuiltMap<String,User>>>  sampleMap(
+  Future<BuiltMap<String,User>>  sampleMap(
         BuiltList<int> ids,
         String name,
         Sex sex,
         BuiltList<BuiltMap<String,BuiltList<String>>> testParam,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltList<BuiltMap<String,User>>>("sampleMap",
+  return this.delegateInvoke<BuiltMap<String,User>>("sampleMap",
   [ids,name,sex,testParam,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(User)])])
+              specifiedType:FullType(BuiltMap,[FullType(String),FullType(User)])
           )
     
   );
@@ -175,15 +175,14 @@ UserService() : super() {
       /// 4:返回值在java中的类型为：PageInfo
       /// 5:返回值在java中的类型为：User
           @GetMapping(value:"/test2",)
-  Future<Future<BuiltList<PageInfo<User>>>>  test4(
+  Future<BuiltList<PageInfo<User>>>  test4(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<BuiltList<PageInfo<User>>>>("test4",
+  return this.delegateInvoke<BuiltList<PageInfo<User>>>("test4",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])])
+              specifiedType:FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])
           )
     
   );
@@ -217,14 +216,14 @@ UserService() : super() {
       /// 6:返回值在java中的类型为：数组
       /// 7:返回值在java中的类型为：User
           @GetMapping(value:"/test6",)
-  Future<BuiltMap<Sex,BuiltList<PageInfo<BuiltList<User>>>>>  test6(
+  Future<BuiltMap<Sex,BuiltList<PageInfo<User>>>>  test6(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltMap<Sex,BuiltList<PageInfo<BuiltList<User>>>>>("test6",
+  return this.delegateInvoke<BuiltMap<Sex,BuiltList<PageInfo<User>>>>("test6",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltMap,[FullType(Sex),FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(User)])])])])
+              specifiedType:FullType(BuiltMap,[FullType(Sex),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])])
           )
     
   );
@@ -239,14 +238,14 @@ UserService() : super() {
       /// 7:返回值在java中的类型为：数组
       /// 8:返回值在java中的类型为：User
           @GetMapping(value:"/test7",)
-  Future<BuiltMap<int,BuiltList<PageInfo<BuiltList<User>>>>>  test7(
+  Future<BuiltMap<int,BuiltList<PageInfo<User>>>>  test7(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltMap<int,BuiltList<PageInfo<BuiltList<User>>>>>("test7",
+  return this.delegateInvoke<BuiltMap<int,BuiltList<PageInfo<User>>>>("test7",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltMap,[FullType(int),FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(User)])])])])
+              specifiedType:FullType(BuiltMap,[FullType(int),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])])
           )
     
   );
@@ -261,14 +260,14 @@ UserService() : super() {
       /// 7:返回值在java中的类型为：数组
       /// 8:返回值在java中的类型为：String
           @GetMapping(value:"/test8",)
-  Future<BuiltMap<String,BuiltList<String>>>  test8(
+  Future<BuiltMap<String,String>>  test8(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltMap<String,BuiltList<String>>>("test8",
+  return this.delegateInvoke<BuiltMap<String,String>>("test8",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(String)])])
+              specifiedType:FullType(BuiltMap,[FullType(String),FullType(String)])
           )
     
   );
@@ -283,14 +282,14 @@ UserService() : super() {
       /// 7:返回值在java中的类型为：数组
       /// 8:返回值在java中的类型为：String
           @GetMapping(value:"/test9",)
-  Future<BuiltList<BuiltMap<String,String>>>  test9(
+  Future<BuiltMap<String,String>>  test9(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltList<BuiltMap<String,String>>>("test9",
+  return this.delegateInvoke<BuiltMap<String,String>>("test9",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(String)])])
+              specifiedType:FullType(BuiltMap,[FullType(String),FullType(String)])
           )
     
   );

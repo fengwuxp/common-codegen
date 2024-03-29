@@ -94,8 +94,8 @@ export const  sample=  (req?: UserServiceSampleReq, options?: RequestOptionsInit
       * 3:返回值在java中的类型为：String
      **/
 
-export const  sample2=  (req?: UserServiceSample2Req, options?: RequestOptionsInit): Promise<string[]> =>{
-  return request<string[]>(`/users/sample3`, {
+export const  sample2=  (req?: UserServiceSample2Req, options?: RequestOptionsInit): Promise<string> =>{
+  return request<string>(`/users/sample3`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -112,8 +112,8 @@ export const  sample2=  (req?: UserServiceSample2Req, options?: RequestOptionsIn
       * 6:返回值在java中的类型为：User
      **/
 
-export const  sampleMap=  (req?: UserServiceSampleMapReq, options?: RequestOptionsInit): Promise<Record<string,User>[]> =>{
-  return request<Record<string,User>[]>(`/users/sample2`, {
+export const  sampleMap=  (req?: UserServiceSampleMapReq, options?: RequestOptionsInit): Promise<Record<string,User>> =>{
+  return request<Record<string,User>>(`/users/sample2`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -159,8 +159,8 @@ export const  test3=  (req?: UserServiceTest3Req, options?: RequestOptionsInit):
       * 5:返回值在java中的类型为：User
      **/
 
-export const  test4=  (req?: UserServiceTest4Req, options?: RequestOptionsInit): Promise<Promise<Array<PageInfo<User>>>> =>{
-  return request<Promise<Array<PageInfo<User>>>>(`/users/test2`, {
+export const  test4=  (req?: UserServiceTest4Req, options?: RequestOptionsInit): Promise<Array<PageInfo<User>>> =>{
+  return request<Array<PageInfo<User>>>(`/users/test2`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -196,8 +196,8 @@ export const  test5=  (req?: UserServiceTest5Req, options?: RequestOptionsInit):
       * 7:返回值在java中的类型为：User
      **/
 
-export const  test6=  (req?: UserServiceTest6Req, options?: RequestOptionsInit): Promise<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User[]>>>> =>{
-  return request<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User[]>>>>(`/users/test6`, {
+export const  test6=  (req?: UserServiceTest6Req, options?: RequestOptionsInit): Promise<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User>>>> =>{
+  return request<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User>>>>(`/users/test6`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -216,8 +216,8 @@ export const  test6=  (req?: UserServiceTest6Req, options?: RequestOptionsInit):
       * 8:返回值在java中的类型为：User
      **/
 
-export const  test7=  (req?: UserServiceTest7Req, options?: RequestOptionsInit): Promise<Record<number,Array<PageInfo<User[]>>>> =>{
-  return request<Record<number,Array<PageInfo<User[]>>>>(`/users/test7`, {
+export const  test7=  (req?: UserServiceTest7Req, options?: RequestOptionsInit): Promise<Record<number,Array<PageInfo<User>>>> =>{
+  return request<Record<number,Array<PageInfo<User>>>>(`/users/test7`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -236,8 +236,8 @@ export const  test7=  (req?: UserServiceTest7Req, options?: RequestOptionsInit):
       * 8:返回值在java中的类型为：String
      **/
 
-export const  test8=  (req?: UserServiceTest8Req, options?: RequestOptionsInit): Promise<Record<string,string[]>> =>{
-  return request<Record<string,string[]>>(`/users/test8`, {
+export const  test8=  (req?: UserServiceTest8Req, options?: RequestOptionsInit): Promise<Record<string,string>> =>{
+  return request<Record<string,string>>(`/users/test8`, {
       method: 'get',
       params: req || {},
       responseType: 'json',
@@ -256,8 +256,8 @@ export const  test8=  (req?: UserServiceTest8Req, options?: RequestOptionsInit):
       * 8:返回值在java中的类型为：String
      **/
 
-export const  test9=  (req?: UserServiceTest9Req, options?: RequestOptionsInit): Promise<Record<string,string>[]> =>{
-  return request<Record<string,string>[]>(`/users/test9`, {
+export const  test9=  (req?: UserServiceTest9Req, options?: RequestOptionsInit): Promise<Record<string,string>> =>{
+  return request<Record<string,string>>(`/users/test9`, {
       method: 'get',
       params: req || {},
       responseType: 'json',

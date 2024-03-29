@@ -27,7 +27,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Order
      **/
       @GET(value = "/order/get_order" )
-    Observable<List<Order>>  getOrder (
+    List<Order>  getOrder (
   String text,
           @Header(value = "names" )  String[] names,
           @Header(value = cookie@"ids" )  List<Integer> ids,
@@ -40,7 +40,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Order
      **/
       @GET(value = "/order/get_order_32" )
-    Observable<List<Order>>  getOrder32 (
+    List<Order>  getOrder32 (
           @Query(value = "names" )  String[] names
   );
     /**
@@ -50,7 +50,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Order
      **/
       @GET(value = "/order/queryOrder" )
-    Observable<PageInfo<Order>>  queryOrder (
+    PageInfo<Order>  queryOrder (
   QueryOrderEvt evt
   );
     /**
@@ -60,7 +60,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Order
      **/
       @GET(value = "/order" )
-    Observable<Page<Order>>  pageBySpringData (
+    Page<Order>  pageBySpringData (
   QueryOrderEvt evt
   );
     /**
@@ -71,7 +71,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/queryOrder2" )
       @Headers(value = {"Content-Type: application/json"} )
-    Observable<ServiceResponse<PageInfo<Order>>>  queryOrder2 (
+    ServiceResponse<PageInfo<Order>>  queryOrder2 (
           @Field()  Long oderId,
   String sn,
           @Header(value = cookie@"memberId" )  Long memberId
@@ -89,7 +89,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/queryPage" )
       @Headers(value = {"Content-Type: application/json"} )
-    Observable<ServiceResponse<PageInfo<Order>>>  queryPage (
+    ServiceResponse<PageInfo<Order>>  queryPage (
   String id
   );
     /**
@@ -103,7 +103,7 @@ public interface OrderRetrofitClient{
       * 8:返回值在java中的类型为：Long
      **/
       @POST(value = "/order/createOrder" )
-    Observable<ServiceResponse<Long>>  createOrder (
+    ServiceResponse<Long>  createOrder (
           @Body()  CreateOrderEvt evt
   );
     /**
@@ -113,7 +113,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Object
      **/
       @POST(value = "/order/hello" )
-    Observable<ServiceResponse<Object>>  hello (
+    ServiceResponse<Object>  hello (
   );
     /**
       * 1:test hello
@@ -122,7 +122,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Object
      **/
       @POST(value = "/order/hello_2" )
-    Observable<ServiceResponse<PageInfo<Object>>>  hello2 (
+    ServiceResponse<PageInfo<Object>>  hello2 (
           @Field()  String name
   );
     /**
@@ -132,7 +132,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：String
      **/
       @POST(value = "/order/hello_3" )
-    Observable<ServiceResponse<PageInfo<String>>>  hello3 (
+    ServiceResponse<PageInfo<String>>  hello3 (
           @Field()  String name
   );
     /**
@@ -141,7 +141,7 @@ public interface OrderRetrofitClient{
       * 3:返回值在java中的类型为：void
      **/
       @DELETE(value = "/order/hello_delete" )
-    Observable<void>  delete (
+    void  delete (
           @Query(required = false ,value = "id" )  String id
   );
     /**
@@ -151,7 +151,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Sex
      **/
       @GET(value = "/order/testEnumNames" )
-    Observable<Map<Sex,Sex>>  testEnumNames (
+    Map<Sex,Sex>  testEnumNames (
   );
     /**
       * 1:Http请求方法：GET
@@ -160,7 +160,7 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Sex
      **/
       @GET(value = "/order/testEnumNames2" )
-    Observable<Map<String,Sex>>  testEnumNames2 (
+    Map<String,Sex>  testEnumNames2 (
   );
     /**
       * 1:Http请求方法：GET
@@ -169,14 +169,14 @@ public interface OrderRetrofitClient{
       * 4:返回值在java中的类型为：Integer
      **/
       @GET(value = "/order/testEnumNames3" )
-    Observable<Map<Sex,Integer>>  testEnumNames3 (
+    Map<Sex,Integer>  testEnumNames3 (
   );
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：void
      **/
       @GET(value = "/test2" )
-    Observable<void>  test2 (
+    void  test2 (
   Object t
   );
 }

@@ -139,8 +139,8 @@ export const  queryOrder6=  (req: OrderFeignClientQueryOrder6Req, options?: Requ
       * 3:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder_2=  (req?: OrderFeignClientQueryOrder_2Req, options?: RequestOptionsInit): Promise<Promise<PageInfo<Order>>> =>{
-  return request<Promise<PageInfo<Order>>>(`/order/queryOrder_2`, {
+export const  queryOrder_2=  (req?: OrderFeignClientQueryOrder_2Req, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
+  return request<PageInfo<Order>>(`/order/queryOrder_2`, {
       method: 'post',
           requestType: 'form',
           data: req || {},
@@ -156,8 +156,8 @@ export const  queryOrder_2=  (req?: OrderFeignClientQueryOrder_2Req, options?: R
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  queryPage=  (req?: OrderFeignClientQueryPageReq, options?: RequestOptionsInit): Promise<Promise<PageInfo<Order>>> =>{
-  return request<Promise<PageInfo<Order>>>(`/order/queryPage`, {
+export const  queryPage=  (req?: OrderFeignClientQueryPageReq, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
+  return request<PageInfo<Order>>(`/order/queryPage`, {
       method: 'post',
           requestType: 'json',
           data: req || {},
@@ -172,8 +172,8 @@ export const  queryPage=  (req?: OrderFeignClientQueryPageReq, options?: Request
       * 3:返回值在java中的类型为：Long
      **/
 
-export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<Promise<string>> =>{
-  return request<Promise<string>>(`/order/createOrder`, {
+export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
+  return request<string>(`/order/createOrder`, {
       method: 'get',
       params: req,
       responseType: 'json',
@@ -187,8 +187,8 @@ export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit):
       * 3:返回值在java中的类型为：Object
      **/
 
-export const  hello=  ( options?: RequestOptionsInit): Promise<Promise<any>> =>{
-  return request<Promise<any>>(`/order/hello`, {
+export const  hello=  ( options?: RequestOptionsInit): Promise<any> =>{
+  return request<any>(`/order/hello`, {
       method: 'post',
           requestType: 'form',
       responseType: 'json',
@@ -202,8 +202,8 @@ export const  hello=  ( options?: RequestOptionsInit): Promise<Promise<any>> =>{
       * 3:返回值在java中的类型为：Object
      **/
 
-export const  deleteRequest=  (req?: ExampleDTO, options?: RequestOptionsInit): Promise<Promise<any>> =>{
-  return request<Promise<any>>(`/order/delete`, {
+export const  deleteRequest=  (req?: ExampleDTO, options?: RequestOptionsInit): Promise<any> =>{
+  return request<any>(`/order/delete`, {
       method: 'delete',
       params: req || {},
       responseType: 'json',

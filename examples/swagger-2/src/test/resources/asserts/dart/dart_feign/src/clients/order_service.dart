@@ -110,19 +110,19 @@ OrderService() : super() {
       /// 3:返回值在java中的类型为：ServiceQueryResponse
       /// 4:返回值在java中的类型为：Order
           @PostMapping(produces:[HttpMediaType.MULTIPART_FORM_DATA],)
-  Future<Future<PageInfo<Order>>>  queryOrder2(
+  Future<PageInfo<Order>>  queryOrder2(
           @RequestParam(name: "order_id" ,required: false )
         int oderId,
         String sn,
           @CookieValue(name: "memberId" )
         int memberId,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<PageInfo<Order>>>("queryOrder2",
+  return this.delegateInvoke<PageInfo<Order>>("queryOrder2",
   [oderId,sn,memberId,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(PageInfo,[FullType(Order)])])
+                serializeType: PageInfo,
+              specifiedType:FullType(PageInfo,[FullType(Order)])
           )
     
   );
@@ -138,15 +138,15 @@ OrderService() : super() {
       /// 8:返回值在java中的类型为：PageInfo
       /// 9:返回值在java中的类型为：Order
           @PostMapping()
-  Future<Future<PageInfo<Order>>>  queryPage(
+  Future<PageInfo<Order>>  queryPage(
         String id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<PageInfo<Order>>>("queryPage",
+  return this.delegateInvoke<PageInfo<Order>>("queryPage",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(PageInfo,[FullType(Order)])])
+                serializeType: PageInfo,
+              specifiedType:FullType(PageInfo,[FullType(Order)])
           )
     
   );
@@ -161,16 +161,15 @@ OrderService() : super() {
       /// 7:返回值在java中的类型为：ServiceResponse
       /// 8:返回值在java中的类型为：Long
           @PostMapping()
-  Future<Future<int>>  createOrder(
+  Future<int>  createOrder(
           @RequestBody()
         CreateOrderEvt evt,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<int>>("createOrder",
+  return this.delegateInvoke<int>("createOrder",
   [evt,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(int)])
+              specifiedType:FullType(int)
           )
     
   );
@@ -181,16 +180,11 @@ OrderService() : super() {
       /// 3:返回值在java中的类型为：ServiceResponse
       /// 4:返回值在java中的类型为：Object
           @PostMapping()
-  Future<Future<Object>>  hello(
+  Future<Object>  hello(
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<Object>>("hello",
+  return this.delegateInvoke<Object>("hello",
   [],
-          feignOptions: feignOptions,
-          serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(Object)])
-          )
-    
+    feignOptions: feignOptions
   );
   }
 
@@ -199,16 +193,16 @@ OrderService() : super() {
       /// 3:返回值在java中的类型为：ServiceQueryResponse
       /// 4:返回值在java中的类型为：Object
           @PostMapping(value:"hello_2",)
-  Future<Future<PageInfo<Object>>>  hello2(
+  Future<PageInfo<Object>>  hello2(
           @RequestParam(defaultValue: "test" ,name: "name" ,required: false )
         String name,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<PageInfo<Object>>>("hello2",
+  return this.delegateInvoke<PageInfo<Object>>("hello2",
   [name,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(PageInfo,[FullType(Object)])])
+                serializeType: PageInfo,
+              specifiedType:FullType(PageInfo,[FullType(Object)])
           )
     
   );
@@ -219,16 +213,16 @@ OrderService() : super() {
       /// 3:返回值在java中的类型为：ServiceQueryResponse
       /// 4:返回值在java中的类型为：String
           @PostMapping(value:"hello_3",)
-  Future<Future<PageInfo<String>>>  hello3(
+  Future<PageInfo<String>>  hello3(
           @RequestParam(defaultValue: "test" ,name: "name" ,required: false )
         String name,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Future<PageInfo<String>>>("hello3",
+  return this.delegateInvoke<PageInfo<String>>("hello3",
   [name,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: Future,
-              specifiedType:FullType(Future,[FullType(PageInfo,[FullType(String)])])
+                serializeType: PageInfo,
+              specifiedType:FullType(PageInfo,[FullType(String)])
           )
     
   );

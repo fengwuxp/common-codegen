@@ -56,8 +56,14 @@ part 'serializers.g.dart';
 
 final Serializers serializers = (_$serializers.toBuilder()
     ..addBuilderFactory(
+    const FullType(BuiltList,[FullType(Object)]),
+     () => ListBuilder<Object>())
+    ..addBuilderFactory(
     const FullType(BuiltList,[FullType(Order)]),
      () => ListBuilder<Order>())
+    ..addBuilderFactory(
+    const FullType(BuiltList,[FullType(String)]),
+     () => ListBuilder<String>())
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(User)]),
      () => ListBuilder<User>())
@@ -77,26 +83,17 @@ final Serializers serializers = (_$serializers.toBuilder()
     const FullType(BuiltMap,[FullType(String),FullType(User)]),
      () => MapBuilder<String,User>())
     ..addBuilderFactory(
-    const FullType(Future,[FullType(Object)]),
-     () => FutureBuilder<Object>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(PageInfo,[FullType(Object)])]),
-     () => FutureBuilder<PageInfo<Object>>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(PageInfo,[FullType(Order)])]),
-     () => FutureBuilder<PageInfo<Order>>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(PageInfo,[FullType(String)])]),
-     () => FutureBuilder<PageInfo<String>>())
-    ..addBuilderFactory(
-    const FullType(Future,[FullType(int)]),
-     () => FutureBuilder<int>())
-    ..addBuilderFactory(
     const FullType(Page,[FullType(Order)]),
      () => PageBuilder<Order>())
     ..addBuilderFactory(
+    const FullType(PageInfo,[FullType(Object)]),
+     () => PageInfoBuilder<Object>())
+    ..addBuilderFactory(
     const FullType(PageInfo,[FullType(Order)]),
      () => PageInfoBuilder<Order>())
+    ..addBuilderFactory(
+    const FullType(PageInfo,[FullType(String)]),
+     () => PageInfoBuilder<String>())
 ..addPlugin(StandardJsonPlugin())
 ..add(DateTimeMillisecondsSerializer()))
 .build();

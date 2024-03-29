@@ -25,7 +25,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users" )
-    Observable<List<User>>  getUserList (
+    List<User>  getUserList (
   );
     /**
       * 1:创建用户
@@ -36,7 +36,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：Long
      **/
       @POST(value = "/users" )
-    Observable<Long>  postUser (
+    Long  postUser (
           @Body()  User user,
   Order order
   );
@@ -47,7 +47,7 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：User
      **/
       @GET(value = "/users/{id}" )
-    Observable<User>  getUser (
+    User  getUser (
           @Path(value = "id" )  Long id
   );
     /**
@@ -61,7 +61,7 @@ public interface UserRetrofitClient{
       * 8:返回值在java中的类型为：String
      **/
       @PUT(value = "/users/{id}" )
-    Observable<String>  putUser (
+    String  putUser (
           @Path(value = "id" )  Long id,
           @Body()  User user
   );
@@ -72,7 +72,7 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：String
      **/
       @DELETE(value = "/users/{id}" )
-    Observable<String>  deleteUser (
+    String  deleteUser (
           @Path(value = "id" )  Long id,
   String name
   );
@@ -83,7 +83,7 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：String
      **/
       @GET(value = "/users/sample" )
-    Observable<String>  sample (
+    String  sample (
   Long[] ids,
   String name
   );
@@ -96,7 +96,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users/sample2" )
-    Observable<Map<String,User>>  sampleMap (
+    Map<String,User>  sampleMap (
   Long[] ids,
   String name,
   Map<String,String[]>[] testParam
@@ -108,7 +108,7 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：void
      **/
       @POST(value = "/users/uploadFile" )
-    Observable<void>  uploadFile (
+    void  uploadFile (
           @Field()  File multipartFile
   );
     /**
@@ -120,7 +120,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：Object
      **/
       @GET(value = "/users/test" )
-    Observable<Map<String,Object>>  test3 (
+    Map<String,Object>  test3 (
   Long id
   );
 }

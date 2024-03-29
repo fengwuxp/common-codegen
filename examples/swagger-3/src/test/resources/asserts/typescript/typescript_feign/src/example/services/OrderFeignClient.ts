@@ -96,7 +96,7 @@ class OrderFeignClient{
       @PostMapping({
             produces:[HttpMediaType.MULTIPART_FORM_DATA],
       })
-    queryOrder_2!:(req?: OrderFeignClientQueryOrder_2Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<Order>>>;
+    queryOrder_2!:(req?: OrderFeignClientQueryOrder_2Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:Http请求方法：POST
       * 2:返回值在java中的类型为：ServiceResponse
@@ -105,7 +105,7 @@ class OrderFeignClient{
      **/
       @PostMapping({
       })
-    queryPage!:(req?: OrderFeignClientQueryPageReq, option?: FeignRequestOptions) => Promise<Promise<PageInfo<Order>>>;
+    queryPage!:(req?: OrderFeignClientQueryPageReq, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：ServiceResponse
@@ -113,7 +113,7 @@ class OrderFeignClient{
      **/
       @GetMapping({
       })
-    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<Promise<string>>;
+    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
     /**
       * 1:Http请求方法：POST
       * 2:返回值在java中的类型为：ServiceResponse
@@ -121,7 +121,7 @@ class OrderFeignClient{
      **/
       @PostMapping({
       })
-    hello!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<Promise<any>>;
+    hello!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<any>;
     /**
       * 1:Http请求方法：DELETE
       * 2:返回值在java中的类型为：ServiceResponse
@@ -130,7 +130,7 @@ class OrderFeignClient{
       @DeleteMapping({
             value:"/delete",
       })
-    delete!:(req?: ExampleDTO, option?: FeignRequestOptions) => Promise<Promise<any>>;
+    delete!:(req?: ExampleDTO, option?: FeignRequestOptions) => Promise<any>;
 }
 
 export default new OrderFeignClient();

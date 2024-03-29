@@ -376,7 +376,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
         this.elementParsePostProcessors(
-                new RemoveRepeatClientResponseTypePostProcessor(clientResponseType),
+                new RemoveClientResponseTypePostProcessor(clientResponseType),
                 new EnumDefinitionPostProcessor(),
                 new EnumNamesPostProcessor()
         );

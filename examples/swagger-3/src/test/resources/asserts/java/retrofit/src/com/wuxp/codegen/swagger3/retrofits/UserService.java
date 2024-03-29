@@ -24,7 +24,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：User
      **/
       @GET(value = "/users/{id}" )
-    Observable<User>  getUser (
+    User  getUser (
           @Path(value = "id" )  Long id
   );
     /**
@@ -32,7 +32,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：String
      **/
       @PUT(value = "/users/{id}" )
-    Observable<String>  putUser (
+    String  putUser (
           @Path(value = "id" )  Long id,
           @Body()  User user,
           @Body()  Order order
@@ -42,7 +42,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：String
      **/
       @DELETE(value = "/users/{id}" )
-    Observable<String>  deleteUser (
+    String  deleteUser (
           @Path(value = "id" )  Long id,
           @Query(value = "name" )  String name
   );
@@ -51,7 +51,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：String
      **/
       @GET(value = "/users/sample" )
-    Observable<String>  sample (
+    String  sample (
           @Query(value = "ids" )  Long[] ids,
           @Query(value = "name" )  String name
   );
@@ -61,7 +61,7 @@ public interface UserService{
       * 3:返回值在java中的类型为：String
      **/
       @GET(value = "/users/sample3" )
-    Observable<String>  sample2 (
+    String  sample2 (
           @Query(value = "ids" )  Long[] ids,
           @Query(value = "name" )  String name
   );
@@ -74,7 +74,7 @@ public interface UserService{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users/sample2" )
-    Observable<Map<String,User>>  sampleMap (
+    Map<String,User>  sampleMap (
           @Query(value = "ids" )  Long[] ids,
           @Query(value = "name" )  String name,
           @QueryMap()  Sex sex,
@@ -85,7 +85,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：void
      **/
       @POST(value = "/users/uploadFile" )
-    Observable<void>  uploadFile (
+    void  uploadFile (
           @Field()  File multipartFile
   );
     /**
@@ -95,7 +95,7 @@ public interface UserService{
       * 4:返回值在java中的类型为：Object
      **/
       @GET(value = "/users/test" )
-    Observable<Map<String,Object>>  test3 (
+    Map<String,Object>  test3 (
           @Query(value = "id" )  Long id
   );
     /**
@@ -106,7 +106,7 @@ public interface UserService{
       * 5:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test2" )
-    Observable<ServiceResponse<List<PageInfo<User>>>>  test4 (
+    ServiceResponse<List<PageInfo<User>>>  test4 (
           @Query(value = "id" )  Long id
   );
     /**
@@ -118,7 +118,7 @@ public interface UserService{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test5" )
-    Observable<Map<String,List<PageInfo<User>>>>  test5 (
+    Map<String,List<PageInfo<User>>>  test5 (
           @Query(value = "id" )  Long id
   );
     /**
@@ -131,7 +131,7 @@ public interface UserService{
       * 7:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test6" )
-    Observable<Map<Sex,List<PageInfo<User>>>>  test6 (
+    Map<Sex,List<PageInfo<User>>>  test6 (
           @Query(value = "id" )  Long id
   );
     /**
@@ -145,7 +145,7 @@ public interface UserService{
       * 8:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test7" )
-    Observable<Map<Integer,List<PageInfo<User>>>>  test7 (
+    Map<Integer,List<PageInfo<User>>>  test7 (
           @Query(value = "id" )  Long id
   );
     /**
@@ -159,7 +159,7 @@ public interface UserService{
       * 8:返回值在java中的类型为：String
      **/
       @GET(value = "/users/test8" )
-    Observable<Map<String,String>>  test8 (
+    Map<String,String>  test8 (
           @Query(value = "id" )  Long id
   );
     /**
@@ -173,7 +173,7 @@ public interface UserService{
       * 8:返回值在java中的类型为：String
      **/
       @GET(value = "/users/test9" )
-    Observable<Map<String,String>>  test9 (
+    Map<String,String>  test9 (
           @Query(value = "id" )  Long id
   );
 }
