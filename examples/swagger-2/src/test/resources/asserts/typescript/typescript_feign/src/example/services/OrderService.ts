@@ -8,10 +8,10 @@ PostMapping,
 DeleteMapping,
 GetMapping,
 PutMapping,
-Signature,
-HttpMediaType,
-AuthenticationType,
+FeignHttpClientPromiseFunction,
+feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
+import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {User} from "../../domain/User";
       import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
       import {Sex} from "../../enums/Sex";

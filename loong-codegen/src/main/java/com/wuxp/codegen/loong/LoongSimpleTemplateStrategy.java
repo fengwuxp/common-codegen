@@ -164,15 +164,15 @@ public class LoongSimpleTemplateStrategy implements TemplateStrategy<CommonCodeG
             return templatePath;
         }
         if (methodMetas == null || methodMetas.length == 0) {
-            //DTO or enum
+            // DTO or enum
             if (ClassType.ENUM.equals(data.getClassType())) {
                 templatePath = FeignApiSdkTemplateName.API_ENUM_TEMPLATE_NAME;
             } else {
-                //区分请求对象还是响应对象
+                // 区分请求对象还是响应对象
                 templatePath = FeignApiSdkTemplateName.API_REQUEST_TEMPLATE_NAME;
             }
         } else {
-            //api 接口
+            // api 接口
             templatePath = FeignApiSdkTemplateName.API_SERVICE_TEMPLATE_NAME;
 
         }

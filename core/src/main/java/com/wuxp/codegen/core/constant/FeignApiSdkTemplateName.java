@@ -3,6 +3,7 @@ package com.wuxp.codegen.core.constant;
 
 /**
  * feign Api sdk的模板名称
+ * @author wuxp
  */
 public final class FeignApiSdkTemplateName {
 

@@ -50,6 +50,8 @@ public final class WindApiModelConstants {
 
     public static final TypescriptClassMeta TS_ABSTRACT_PAGE_QUERY = new TypescriptClassMeta(AbstractPageQuery.class.getSimpleName(), null, ClassType.CLASS, true, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
 
+    public static final TypescriptClassMeta TS_DEFAULT_ORDER_FIELD = new TypescriptClassMeta(DefaultOrderField.class.getSimpleName(), null, ClassType.ENUM, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
+
     public static final TypescriptClassMeta TS_QUERY_TYPE = new TypescriptClassMeta(QueryType.class.getSimpleName(), null, ClassType.ENUM, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
 
     public static final TypescriptClassMeta TS_QUERY_ORDER_TYPE = new TypescriptClassMeta(QueryOrderType.class.getSimpleName(), null, ClassType.ENUM, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);

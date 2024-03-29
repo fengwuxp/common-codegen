@@ -209,6 +209,14 @@ public final class LoongCodeGenerator implements CodeGenerator {
                     .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN)
                     .outPath(this.getCodegenOutputPath(ClientProviderType.TYPESCRIPT_FEIGN)));
         }
+        if (finallyClientProviderTypes.contains(ClientProviderType.TYPESCRIPT_FEIGN_FUNC)) {
+            codeGenerators.add(Swagger3FeignTypescriptCodegenBuilder.builder()
+                    .scanPackages(scanPackages)
+                    .isDeletedOutputDirectory(false)
+                    .languageDescription(LanguageDescription.TYPESCRIPT)
+                    .clientProviderType(ClientProviderType.TYPESCRIPT_FEIGN_FUNC)
+                    .outPath(this.getCodegenOutputPath(ClientProviderType.TYPESCRIPT_FEIGN_FUNC)));
+        }
         if (finallyClientProviderTypes.contains(ClientProviderType.UMI_REQUEST)) {
             codeGenerators.add(Swagger3FeignTypescriptCodegenBuilder.builder()
                     .scanPackages(scanPackages)

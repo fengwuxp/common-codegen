@@ -141,6 +141,7 @@ public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
         ClientProviderType providerType = CodegenConfigHolder.getConfig().getProviderType();
         switch (providerType) {
             case TYPESCRIPT_FEIGN:
+            case TYPESCRIPT_FEIGN_FUNC:
             case OPENFEIGN:
             case SPRING_CLOUD_OPENFEIGN:
                 return "FeignClient";

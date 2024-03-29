@@ -8,10 +8,10 @@ PostMapping,
 DeleteMapping,
 GetMapping,
 PutMapping,
-Signature,
-HttpMediaType,
-AuthenticationType,
+FeignHttpClientPromiseFunction,
+feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
+import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {FileServiceDownloadReq} from "../../req/FileServiceDownloadReq";
       import {FileServiceDownload2Req} from "../../req/FileServiceDownload2Req";
 

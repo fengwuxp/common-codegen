@@ -36,6 +36,8 @@ public enum ClientProviderType {
      */
     TYPESCRIPT_FEIGN,
 
+    TYPESCRIPT_FEIGN_FUNC,
+
     /**
      * https://github.com/umijs/umi-request
      */
