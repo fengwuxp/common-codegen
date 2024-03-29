@@ -12,5 +12,5 @@ export interface  ExampleServiceGetNumsReq {
             /**
                 *字段在java中的类型为：Integer
             **/
-        num?: number;
+        num: number;
 }

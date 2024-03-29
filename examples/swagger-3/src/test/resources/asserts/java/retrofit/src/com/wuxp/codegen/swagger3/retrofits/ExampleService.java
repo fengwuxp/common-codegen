@@ -20,8 +20,8 @@ public interface ExampleService{
       * 3:返回值在java中的类型为：Integer
      **/
       @GET(value = "/example_cms/get_num" )
-    List<Integer>  getNums (
-  Integer num
+    Observable<List<Integer>>  getNums (
+          @Query(value = "num" )  Integer num
   );
     /**
       * 1:Http请求方法：GET
@@ -31,8 +31,8 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：String
      **/
       @GET(value = "/example_cms/get_maps" )
-    List<Map<Integer,String>>  getMaps (
-  Integer num
+    Observable<List<Map<Integer,String>>>  getMaps (
+          @Query(value = "num" )  Integer num
   );
     /**
       * 1:Http请求方法：GET
@@ -41,7 +41,7 @@ public interface ExampleService{
       * 4:返回值在java中的类型为：Integer
      **/
       @GET(value = "/example_cms/get_map" )
-    Map<String,Integer>  getMap (
+    Observable<Map<String,Integer>>  getMap (
   );
     /**
       * 1:Http请求方法：GET
@@ -51,7 +51,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_2" )
-    Map<String,List<Boolean>>  getMap2 (
+    Observable<Map<String,List<Boolean>>>  getMap2 (
   );
     /**
       * 1:Http请求方法：GET
@@ -61,7 +61,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_3/{id}" )
-    Map<String,List<Boolean>>  getMap3 (
+    Observable<Map<String,List<Boolean>>>  getMap3 (
           @Path(value = "id" )  String id
   );
     /**
@@ -72,8 +72,8 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_/" )
-    Map<String,List<Boolean>>  getMap4 (
-  ExampleDTO dto
+    Observable<Map<String,List<Boolean>>>  getMap4 (
+          @QueryMap()  ExampleDTO dto
   );
     /**
       * 1:Http请求方法：GET
@@ -83,7 +83,7 @@ public interface ExampleService{
       * 5:返回值在java中的类型为：Boolean
      **/
       @GET(value = "/example_cms/get_map_5" )
-    Map<String,List<Boolean>>  getMap5 (
-  ExampleDto dto
+    Observable<Map<String,List<Boolean>>>  getMap5 (
+          @QueryMap()  ExampleDto dto
   );
 }

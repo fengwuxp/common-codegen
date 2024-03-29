@@ -10,6 +10,7 @@
   constructor() {}
         /**
           *男
+          *男的
           *字段在java中的类型为：Sex
         **/
       public static readonly MAN:Enum={
@@ -19,6 +20,7 @@
       };
         /**
           *女
+          *女的
           *字段在java中的类型为：Sex
         **/
       public static readonly WOMAN:Enum={
@@ -28,6 +30,7 @@
       };
         /**
           *未知
+          *???
           *字段在java中的类型为：Sex
         **/
       public static readonly NONE:Enum={

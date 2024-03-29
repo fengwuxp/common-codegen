@@ -1,10 +1,12 @@
 package com.wuxp.codegen.swagger2.model.domain;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
         import com.wuxp.codegen.swagger2.enums.domain.BaseExample;
 
 @Data
+@Accessors(chain = true)
 public class  BaseInfo<ID> {
 
             /**

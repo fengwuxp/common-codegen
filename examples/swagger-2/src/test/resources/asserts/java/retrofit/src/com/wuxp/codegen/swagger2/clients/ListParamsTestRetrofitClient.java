@@ -20,7 +20,7 @@ public interface ListParamsTestRetrofitClient{
       * 2:返回值在java中的类型为：String
      **/
       @POST(value = "/list" )
-    String  test1 (
+    Observable<String>  test1 (
           @Body()  List<User> users
   );
     /**
@@ -28,7 +28,7 @@ public interface ListParamsTestRetrofitClient{
       * 2:返回值在java中的类型为：String
      **/
       @GET(value = "/list/test_2" )
-    String  test2 (
+    Observable<String>  test2 (
   User[] users
   );
     /**
@@ -36,7 +36,7 @@ public interface ListParamsTestRetrofitClient{
       * 2:返回值在java中的类型为：String
      **/
       @GET(value = "/list/test_3" )
-    String  test3 (
+    Observable<String>  test3 (
   Map<String,Order> users
   );
     /**
@@ -44,7 +44,7 @@ public interface ListParamsTestRetrofitClient{
       * 2:返回值在java中的类型为：String
      **/
       @POST(value = "/list/test_4" )
-    String  test4 (
+    Observable<String>  test4 (
           @Body()  Set<User> users
   );
     /**
@@ -52,7 +52,7 @@ public interface ListParamsTestRetrofitClient{
       * 2:返回值在java中的类型为：String
      **/
       @POST(value = "/list/test_5" )
-    String  test5 (
+    Observable<String>  test5 (
           @Body()  Collection<User> users
   );
     /**
@@ -60,7 +60,7 @@ public interface ListParamsTestRetrofitClient{
       * 2:返回值在java中的类型为：String
      **/
       @POST(value = "/list/test_6" )
-    String  test6 (
+    Observable<String>  test6 (
           @Body()  Set<User> users
   );
 }

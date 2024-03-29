@@ -25,7 +25,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users" )
-    List<User>  getUserList (
+    Observable<List<User>>  getUserList (
   );
     /**
       * 1:创建用户
@@ -36,7 +36,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：Long
      **/
       @POST(value = "/users" )
-    Long  postUser (
+    Observable<Long>  postUser (
           @Body()  User user,
   Order order
   );
@@ -47,7 +47,7 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：User
      **/
       @GET(value = "/users/{id}" )
-    User  getUser (
+    Observable<User>  getUser (
           @Path(value = "id" )  Long id
   );
     /**
@@ -61,7 +61,7 @@ public interface UserRetrofitClient{
       * 8:返回值在java中的类型为：String
      **/
       @PUT(value = "/users/{id}" )
-    String  putUser (
+    Observable<String>  putUser (
           @Path(value = "id" )  Long id,
           @Body()  User user
   );
@@ -71,8 +71,8 @@ public interface UserRetrofitClient{
       * 3:Http请求方法：DELETE
       * 4:返回值在java中的类型为：String
      **/
-      @DELETED(value = "/users/{id}" )
-    String  deleteUser (
+      @DELETE(value = "/users/{id}" )
+    Observable<String>  deleteUser (
           @Path(value = "id" )  Long id,
   String name
   );
@@ -83,7 +83,7 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：String
      **/
       @GET(value = "/users/sample" )
-    String  sample (
+    Observable<String>  sample (
   Long[] ids,
   String name
   );
@@ -96,7 +96,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users/sample2" )
-    Map<String,User>  sampleMap (
+    Observable<Map<String,User>>  sampleMap (
   Long[] ids,
   String name,
   Map<String,String[]>[] testParam
@@ -108,8 +108,8 @@ public interface UserRetrofitClient{
       * 4:返回值在java中的类型为：void
      **/
       @POST(value = "/users/uploadFile" )
-    void  uploadFile (
-          @Field(value = "file" )  File multipartFile
+    Observable<void>  uploadFile (
+          @Field()  File multipartFile
   );
     /**
       * 1:test3
@@ -120,7 +120,7 @@ public interface UserRetrofitClient{
       * 6:返回值在java中的类型为：Object
      **/
       @GET(value = "/users/test" )
-    Map<String,Object>  test3 (
+    Observable<Map<String,Object>>  test3 (
   Long id
   );
 }

@@ -1,23 +1,24 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
-      import {Order} from "../../domain/Order";
       import {User} from "../../domain/User";
+      import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
+      import {Sex} from "../../enums/Sex";
+      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
+      import {Page} from "../../model/paging/Page";
+      import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
+      import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
+      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
+      import {Order} from "../../domain/Order";
       import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
-      import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
-      import {Sex} from "../../enums/Sex";
-      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
       import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
-      import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
       import {PageInfo} from "../../resp/PageInfo";
-      import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
       import {OrderServiceQueryOrder2Req} from "../../req/OrderServiceQueryOrder2Req";
       import {OrderServiceHello2Req} from "../../req/OrderServiceHello2Req";
-      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
 
     /**
      * 订单服务
@@ -86,8 +87,8 @@ export const  queryOrder=  (req: QueryOrderEvt, options?: RequestOptionsInit): P
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  pageBySpringData=  (req: QueryOrderEvt, options?: RequestOptionsInit): Promise<Order> =>{
-  return request<Order>(`/order`, {
+export const  pageBySpringData=  (req: QueryOrderEvt, options?: RequestOptionsInit): Promise<Page<Order>> =>{
+  return request<Page<Order>>(`/order`, {
       method: 'get',
       params: req,
       responseType: 'json',
@@ -102,8 +103,8 @@ export const  pageBySpringData=  (req: QueryOrderEvt, options?: RequestOptionsIn
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
-  return request<PageInfo<Order>>(`/order/queryOrder2`, {
+export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: RequestOptionsInit): Promise<Promise<PageInfo<Order>>> =>{
+  return request<Promise<PageInfo<Order>>>(`/order/queryOrder2`, {
       method: 'post',
           requestType: 'form',
           data: req || {},
@@ -124,8 +125,8 @@ export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: Request
       * 9:返回值在java中的类型为：Order
      **/
 
-export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
-  return request<PageInfo<Order>>(`/order/queryPage`, {
+export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: RequestOptionsInit): Promise<Promise<PageInfo<Order>>> =>{
+  return request<Promise<PageInfo<Order>>>(`/order/queryPage`, {
       method: 'post',
           requestType: 'json',
           data: req || {},
@@ -145,8 +146,8 @@ export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: RequestOpti
       * 8:返回值在java中的类型为：Long
      **/
 
-export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
-  return request<string>(`/order/createOrder`, {
+export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<Promise<string>> =>{
+  return request<Promise<string>>(`/order/createOrder`, {
       method: 'post',
           requestType: 'json',
           data: req,
@@ -162,8 +163,8 @@ export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit):
       * 4:返回值在java中的类型为：Object
      **/
 
-export const  hello=  ( options?: RequestOptionsInit): Promise<any> =>{
-  return request<any>(`/order/hello`, {
+export const  hello=  ( options?: RequestOptionsInit): Promise<Promise<any>> =>{
+  return request<Promise<any>>(`/order/hello`, {
       method: 'post',
           requestType: 'form',
       responseType: 'json',
@@ -178,8 +179,8 @@ export const  hello=  ( options?: RequestOptionsInit): Promise<any> =>{
       * 4:返回值在java中的类型为：Object
      **/
 
-export const  hello2=  (req?: OrderServiceHello2Req, options?: RequestOptionsInit): Promise<PageInfo<any>> =>{
-  return request<PageInfo<any>>(`/order/hello_2`, {
+export const  hello2=  (req?: OrderServiceHello2Req, options?: RequestOptionsInit): Promise<Promise<PageInfo<any>>> =>{
+  return request<Promise<PageInfo<any>>>(`/order/hello_2`, {
       method: 'post',
           requestType: 'form',
           data: req || {},
@@ -195,8 +196,8 @@ export const  hello2=  (req?: OrderServiceHello2Req, options?: RequestOptionsIni
       * 4:返回值在java中的类型为：String
      **/
 
-export const  hello3=  (req?: OrderServiceHello3Req, options?: RequestOptionsInit): Promise<PageInfo<string>> =>{
-  return request<PageInfo<string>>(`/order/hello_3`, {
+export const  hello3=  (req?: OrderServiceHello3Req, options?: RequestOptionsInit): Promise<Promise<PageInfo<string>>> =>{
+  return request<Promise<PageInfo<string>>>(`/order/hello_3`, {
       method: 'post',
           requestType: 'form',
           data: req || {},

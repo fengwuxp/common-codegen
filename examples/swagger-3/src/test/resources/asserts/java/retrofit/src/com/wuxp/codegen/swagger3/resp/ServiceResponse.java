@@ -1,9 +1,11 @@
 package com.wuxp.codegen.swagger3.resp;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 
 @Data
+@Accessors(chain = true)
 public class  ServiceResponse<T> {
 
             /**

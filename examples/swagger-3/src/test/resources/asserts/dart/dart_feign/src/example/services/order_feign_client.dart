@@ -162,17 +162,17 @@ OrderFeignClient() : super() {
       /// 2:返回值在java中的类型为：ServiceQueryResponse
       /// 3:返回值在java中的类型为：Order
           @PostMapping(produces:[HttpMediaType.MULTIPART_FORM_DATA],)
-  Future<PageInfo<Order>>  queryOrder_2(
+  Future<Future<PageInfo<Order>>>  queryOrder_2(
           @RequestParam(name: "order_id" ,required: false )
         int oderId,
         String sn,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<PageInfo<Order>>("queryOrder_2",
+  return this.delegateInvoke<Future<PageInfo<Order>>>("queryOrder_2",
   [oderId,sn,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: PageInfo,
-              specifiedType:FullType(PageInfo,[FullType(Order)])
+                serializeType: Future,
+              specifiedType:FullType(Future,[FullType(PageInfo,[FullType(Order)])])
           )
     
   );
@@ -183,16 +183,16 @@ OrderFeignClient() : super() {
       /// 3:返回值在java中的类型为：PageInfo
       /// 4:返回值在java中的类型为：Order
           @PostMapping()
-  Future<PageInfo<Order>>  queryPage(
+  Future<Future<PageInfo<Order>>>  queryPage(
         String id,
         int memberId,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<PageInfo<Order>>("queryPage",
+  return this.delegateInvoke<Future<PageInfo<Order>>>("queryPage",
   [id,memberId,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-                serializeType: PageInfo,
-              specifiedType:FullType(PageInfo,[FullType(Order)])
+                serializeType: Future,
+              specifiedType:FullType(Future,[FullType(PageInfo,[FullType(Order)])])
           )
     
   );
@@ -202,14 +202,15 @@ OrderFeignClient() : super() {
       /// 2:返回值在java中的类型为：ServiceResponse
       /// 3:返回值在java中的类型为：Long
           @GetMapping()
-  Future<int>  createOrder(
+  Future<Future<int>>  createOrder(
         CreateOrderEvt evt,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<int>("createOrder",
+  return this.delegateInvoke<Future<int>>("createOrder",
   [evt,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(int)
+                serializeType: Future,
+              specifiedType:FullType(Future,[FullType(int)])
           )
     
   );
@@ -219,11 +220,16 @@ OrderFeignClient() : super() {
       /// 2:返回值在java中的类型为：ServiceResponse
       /// 3:返回值在java中的类型为：Object
           @PostMapping()
-  Future<Object>  hello(
+  Future<Future<Object>>  hello(
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Object>("hello",
+  return this.delegateInvoke<Future<Object>>("hello",
   [],
-    feignOptions: feignOptions
+          feignOptions: feignOptions,
+          serializer: BuiltValueSerializable(
+                serializeType: Future,
+              specifiedType:FullType(Future,[FullType(Object)])
+          )
+    
   );
   }
 
@@ -231,12 +237,17 @@ OrderFeignClient() : super() {
       /// 2:返回值在java中的类型为：ServiceResponse
       /// 3:返回值在java中的类型为：Object
           @DeleteMapping(value:"/delete",)
-  Future<Object>  delete(
+  Future<Future<Object>>  delete(
         ExampleDTO dto,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<Object>("delete",
+  return this.delegateInvoke<Future<Object>>("delete",
   [dto,],
-    feignOptions: feignOptions
+          feignOptions: feignOptions,
+          serializer: BuiltValueSerializable(
+                serializeType: Future,
+              specifiedType:FullType(Future,[FullType(Object)])
+          )
+    
   );
   }
 }

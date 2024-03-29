@@ -43,7 +43,7 @@ public final class SpringControllerFilterUtils {
             return;
         }
 
-        //抓取超类的方法
+        // 抓取超类的方法
         List<JavaMethodMeta> methodMetas = Arrays.stream(classMeta.getMethodMetas()).collect(Collectors.toList());
         Class<?> superclass = clazz.getSuperclass();
         boolean isNoneSupper = superclass == null || Object.class.equals(superclass);

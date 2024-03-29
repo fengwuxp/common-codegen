@@ -11,25 +11,26 @@ PutMapping,
 Signature,
 HttpMediaType,
 AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
-      import {Order} from "../../domain/Order";
+FeignRequestOptions} from "feign-client";
       import {User} from "../../domain/User";
+      import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
+      import {Sex} from "../../enums/Sex";
+      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
+      import {Page} from "../../model/paging/Page";
+      import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
+      import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
+      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
+      import {Order} from "../../domain/Order";
       import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
-      import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
-      import {Sex} from "../../enums/Sex";
-      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
       import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
-      import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
       import {PageInfo} from "../../resp/PageInfo";
-      import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
       import {OrderServiceQueryOrder2Req} from "../../req/OrderServiceQueryOrder2Req";
       import {OrderServiceHello2Req} from "../../req/OrderServiceHello2Req";
-      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
 
     /**
      * 订单服务
@@ -78,7 +79,7 @@ class OrderService{
      **/
       @GetMapping({
       })
-    pageBySpringData!:(req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<Order>;
+    pageBySpringData!:(req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<Page<Order>>;
     /**
       * 1:获取订单列表
       * 2:Http请求方法：POST
@@ -88,7 +89,7 @@ class OrderService{
       @PostMapping({
             produces:[HttpMediaType.MULTIPART_FORM_DATA],
       })
-    queryOrder2!:(req?: OrderServiceQueryOrder2Req, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryOrder2!:(req?: OrderServiceQueryOrder2Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<Order>>>;
     /**
       * 1:查询分页
       * 2:Http请求方法：POST
@@ -102,7 +103,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    queryPage!:(req?: OrderServiceQueryPageReq, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryPage!:(req?: OrderServiceQueryPageReq, option?: FeignRequestOptions) => Promise<Promise<PageInfo<Order>>>;
     /**
       * 1:创建订单
       * 2:Http请求方法：POST
@@ -115,7 +116,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<string>;
+    createOrder!:(req: CreateOrderEvt, option?: FeignRequestOptions) => Promise<Promise<string>>;
     /**
       * 1:test hello
       * 2:Http请求方法：POST
@@ -124,7 +125,7 @@ class OrderService{
      **/
       @PostMapping({
       })
-    hello!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<any>;
+    hello!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<Promise<any>>;
     /**
       * 1:test hello
       * 2:Http请求方法：POST
@@ -134,7 +135,7 @@ class OrderService{
       @PostMapping({
             value:"hello_2",
       })
-    hello2!:(req?: OrderServiceHello2Req, option?: FeignRequestOptions) => Promise<PageInfo<any>>;
+    hello2!:(req?: OrderServiceHello2Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<any>>>;
     /**
       * 1:test hello_3
       * 2:Http请求方法：POST
@@ -144,7 +145,7 @@ class OrderService{
       @PostMapping({
             value:"hello_3",
       })
-    hello3!:(req?: OrderServiceHello3Req, option?: FeignRequestOptions) => Promise<PageInfo<string>>;
+    hello3!:(req?: OrderServiceHello3Req, option?: FeignRequestOptions) => Promise<Promise<PageInfo<string>>>;
     /**
       * 1:test hello
       * 2:Http请求方法：DELETE

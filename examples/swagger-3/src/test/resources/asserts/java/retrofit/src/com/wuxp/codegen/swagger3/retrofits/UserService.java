@@ -24,7 +24,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：User
      **/
       @GET(value = "/users/{id}" )
-    User  getUser (
+    Observable<User>  getUser (
           @Path(value = "id" )  Long id
   );
     /**
@@ -32,7 +32,7 @@ public interface UserService{
       * 2:返回值在java中的类型为：String
      **/
       @PUT(value = "/users/{id}" )
-    String  putUser (
+    Observable<String>  putUser (
           @Path(value = "id" )  Long id,
           @Body()  User user,
           @Body()  Order order
@@ -41,19 +41,19 @@ public interface UserService{
       * 1:Http请求方法：DELETE
       * 2:返回值在java中的类型为：String
      **/
-      @DELETED(value = "/users/{id}" )
-    String  deleteUser (
+      @DELETE(value = "/users/{id}" )
+    Observable<String>  deleteUser (
           @Path(value = "id" )  Long id,
-  String name
+          @Query(value = "name" )  String name
   );
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：String
      **/
       @GET(value = "/users/sample" )
-    String  sample (
-  Long[] ids,
-  String name
+    Observable<String>  sample (
+          @Query(value = "ids" )  Long[] ids,
+          @Query(value = "name" )  String name
   );
     /**
       * 1:Http请求方法：GET
@@ -61,9 +61,9 @@ public interface UserService{
       * 3:返回值在java中的类型为：String
      **/
       @GET(value = "/users/sample3" )
-    String[]  sample2 (
-  Long[] ids,
-  String name
+    Observable<String>  sample2 (
+          @Query(value = "ids" )  Long[] ids,
+          @Query(value = "name" )  String name
   );
     /**
       * 1:Http请求方法：GET
@@ -74,19 +74,19 @@ public interface UserService{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users/sample2" )
-    Map<String,User[]>[]  sampleMap (
-  Long[] ids,
-  String name,
-  Sex sex,
-  Map<String,String[]>[] testParam
+    Observable<Map<String,User>>  sampleMap (
+          @Query(value = "ids" )  Long[] ids,
+          @Query(value = "name" )  String name,
+          @QueryMap()  Sex sex,
+          @Query(value = "testParam" )  Map<String,String[]>[] testParam
   );
     /**
       * 1:Http请求方法：POST
       * 2:返回值在java中的类型为：void
      **/
       @POST(value = "/users/uploadFile" )
-    void  uploadFile (
-          @Field(value = "file" )  File multipartFile
+    Observable<void>  uploadFile (
+          @Field()  File multipartFile
   );
     /**
       * 1:Http请求方法：GET
@@ -95,8 +95,8 @@ public interface UserService{
       * 4:返回值在java中的类型为：Object
      **/
       @GET(value = "/users/test" )
-    Map<String,Object>  test3 (
-  Long id
+    Observable<Map<String,Object>>  test3 (
+          @Query(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：GET
@@ -106,8 +106,8 @@ public interface UserService{
       * 5:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test2" )
-    ServiceResponse<List<PageInfo<User>>>  test4 (
-  Long id
+    Observable<ServiceResponse<List<PageInfo<User>>>>  test4 (
+          @Query(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：GET
@@ -118,8 +118,8 @@ public interface UserService{
       * 6:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test5" )
-    Map<String,List<PageInfo<User>>>  test5 (
-  Long id
+    Observable<Map<String,List<PageInfo<User>>>>  test5 (
+          @Query(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：GET
@@ -131,8 +131,8 @@ public interface UserService{
       * 7:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test6" )
-    Map<Sex,List<PageInfo<User[]>>>  test6 (
-  Long id
+    Observable<Map<Sex,List<PageInfo<User>>>>  test6 (
+          @Query(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：GET
@@ -145,8 +145,8 @@ public interface UserService{
       * 8:返回值在java中的类型为：User
      **/
       @GET(value = "/users/test7" )
-    Map<Integer,List<PageInfo<User[][]>>>  test7 (
-  Long id
+    Observable<Map<Integer,List<PageInfo<User>>>>  test7 (
+          @Query(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：GET
@@ -159,8 +159,8 @@ public interface UserService{
       * 8:返回值在java中的类型为：String
      **/
       @GET(value = "/users/test8" )
-    Map<String,String[][][][]>  test8 (
-  Long id
+    Observable<Map<String,String>>  test8 (
+          @Query(value = "id" )  Long id
   );
     /**
       * 1:Http请求方法：GET
@@ -173,7 +173,7 @@ public interface UserService{
       * 8:返回值在java中的类型为：String
      **/
       @GET(value = "/users/test9" )
-    Map<String,String[]>[][][]  test9 (
-  Long id
+    Observable<Map<String,String>>  test9 (
+          @Query(value = "id" )  Long id
   );
 }

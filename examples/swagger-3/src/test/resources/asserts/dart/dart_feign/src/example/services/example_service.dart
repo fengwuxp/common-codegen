@@ -26,6 +26,7 @@ ExampleService() : super() {
       /// 3:返回值在java中的类型为：Integer
           @GetMapping(value:"get_num",)
   Future<BuiltList<int>>  getNums(
+          @RequestParam(name: "num" )
         int num,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltList<int>>("getNums",

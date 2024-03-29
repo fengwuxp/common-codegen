@@ -16,9 +16,12 @@ import 'package:fengwuxp_dart_openfeign/src/built/date_time_serializer.dart';
             import './model/evt/create_order_evt.dart';
             import './enums/example_enum.dart';
             import './model/domain/order.dart';
+            import './model/paging/Page.dart';
             import './model/resp/page_info.dart';
+            import './model/paging/Pageable.dart';
             import './model/evt/query_order_evt.dart';
             import './enums/sex.dart';
+            import './model/paging/Sort.dart';
             import './model/domain/user.dart';
 
 part 'serializers.g.dart';
@@ -42,22 +45,19 @@ part 'serializers.g.dart';
         CreateOrderEvt,
         ExampleEnum,
         Order,
+        Page,
         PageInfo,
+        Pageable,
         QueryOrderEvt,
         Sex,
+        Sort,
         User,
 ])
 
 final Serializers serializers = (_$serializers.toBuilder()
     ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(Object)]),
-     () => ListBuilder<Object>())
-    ..addBuilderFactory(
     const FullType(BuiltList,[FullType(Order)]),
      () => ListBuilder<Order>())
-    ..addBuilderFactory(
-    const FullType(BuiltList,[FullType(String)]),
-     () => ListBuilder<String>())
     ..addBuilderFactory(
     const FullType(BuiltList,[FullType(User)]),
      () => ListBuilder<User>())
@@ -77,14 +77,26 @@ final Serializers serializers = (_$serializers.toBuilder()
     const FullType(BuiltMap,[FullType(String),FullType(User)]),
      () => MapBuilder<String,User>())
     ..addBuilderFactory(
-    const FullType(PageInfo,[FullType(Object)]),
-     () => PageInfoBuilder<Object>())
+    const FullType(Future,[FullType(Object)]),
+     () => FutureBuilder<Object>())
+    ..addBuilderFactory(
+    const FullType(Future,[FullType(PageInfo,[FullType(Object)])]),
+     () => FutureBuilder<PageInfo<Object>>())
+    ..addBuilderFactory(
+    const FullType(Future,[FullType(PageInfo,[FullType(Order)])]),
+     () => FutureBuilder<PageInfo<Order>>())
+    ..addBuilderFactory(
+    const FullType(Future,[FullType(PageInfo,[FullType(String)])]),
+     () => FutureBuilder<PageInfo<String>>())
+    ..addBuilderFactory(
+    const FullType(Future,[FullType(int)]),
+     () => FutureBuilder<int>())
+    ..addBuilderFactory(
+    const FullType(Page,[FullType(Order)]),
+     () => PageBuilder<Order>())
     ..addBuilderFactory(
     const FullType(PageInfo,[FullType(Order)]),
      () => PageInfoBuilder<Order>())
-    ..addBuilderFactory(
-    const FullType(PageInfo,[FullType(String)]),
-     () => PageInfoBuilder<String>())
 ..addPlugin(StandardJsonPlugin())
 ..add(DateTimeMillisecondsSerializer()))
 .build();

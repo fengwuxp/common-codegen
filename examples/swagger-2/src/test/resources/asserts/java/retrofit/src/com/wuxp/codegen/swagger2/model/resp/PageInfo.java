@@ -1,6 +1,7 @@
 package com.wuxp.codegen.swagger2.model.resp;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
         import java.util.List;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.*;
         * 分页对象
     **/
 @Data
+@Accessors(chain = true)
 public class  PageInfo<T> {
 
             /**

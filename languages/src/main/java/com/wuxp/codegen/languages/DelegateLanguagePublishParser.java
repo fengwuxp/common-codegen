@@ -6,6 +6,7 @@ import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -19,6 +20,7 @@ public abstract class DelegateLanguagePublishParser implements LanguageElementDe
 
     private final LanguageTypeDefinitionPublishParser<CommonCodeGenClassMeta> delegate;
 
+    @Setter
     private JavaTypeMapper javaTypeMapper;
 
     @SuppressWarnings("unchecked")
@@ -47,7 +49,4 @@ public abstract class DelegateLanguagePublishParser implements LanguageElementDe
         return javaTypeMapper.mappingClasses(sources);
     }
 
-    public void setJavaTypeMapper(JavaTypeMapper javaTypeMapper) {
-        this.javaTypeMapper = javaTypeMapper;
-    }
 }

@@ -11,7 +11,7 @@ PutMapping,
 Signature,
 HttpMediaType,
 AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
+FeignRequestOptions} from "feign-client";
       import {FileServiceDownloadReq} from "../../req/FileServiceDownloadReq";
       import {FileServiceDownload2Req} from "../../req/FileServiceDownload2Req";
 

@@ -1,6 +1,7 @@
 package com.wuxp.codegen.swagger2.model.evt;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
         import com.wuxp.codegen.swagger2.model.evt.BaseEvt;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.*;
         * 统一的查询对象
     **/
 @Data
+@Accessors(chain = true)
 public class  BaseQueryEvt extends BaseEvt {
 
             /**

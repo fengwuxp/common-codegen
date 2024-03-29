@@ -11,7 +11,7 @@ PutMapping,
 Signature,
 HttpMediaType,
 AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
+FeignRequestOptions} from "feign-client";
       import {Order} from "../../domain/Order";
       import {User} from "../../domain/User";
 

@@ -11,7 +11,7 @@ PutMapping,
 Signature,
 HttpMediaType,
 AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
+FeignRequestOptions} from "feign-client";
       import {ExampleServiceGetMap3Req} from "../../req/ExampleServiceGetMap3Req";
       import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
       import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
@@ -37,7 +37,7 @@ class ExampleService{
       @GetMapping({
             value:"get_num",
       })
-    getNums!:(req?: ExampleServiceGetNumsReq, option?: FeignRequestOptions) => Promise<Array<number>>;
+    getNums!:(req: ExampleServiceGetNumsReq, option?: FeignRequestOptions) => Promise<Array<number>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：List

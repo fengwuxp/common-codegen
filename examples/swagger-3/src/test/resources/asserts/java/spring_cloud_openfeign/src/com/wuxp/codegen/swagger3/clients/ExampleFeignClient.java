@@ -26,7 +26,7 @@ public interface ExampleFeignClient{
      **/
       @GetMapping(value = "get_num" )
     List<Integer>  getNums (
-  Integer num
+          @RequestParam(name = "num" )  Integer num
   );
     /**
       * 1:Http请求方法：GET

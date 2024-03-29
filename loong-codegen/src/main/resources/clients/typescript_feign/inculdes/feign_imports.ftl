@@ -8,4 +8,4 @@ PutMapping,
 Signature,
 HttpMediaType,
 AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
+FeignRequestOptions} from "feign-client";

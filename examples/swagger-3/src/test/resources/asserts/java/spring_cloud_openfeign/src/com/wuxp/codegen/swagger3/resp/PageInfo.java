@@ -1,10 +1,12 @@
 package com.wuxp.codegen.swagger3.resp;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
         import java.util.List;
 
 @Data
+@Accessors(chain = true)
 public class  PageInfo<T> {
 
             /**

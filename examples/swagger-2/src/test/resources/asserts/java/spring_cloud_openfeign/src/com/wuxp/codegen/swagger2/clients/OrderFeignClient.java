@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
       import com.wuxp.codegen.swagger2.evt.CreateOrderEvt;
       import com.wuxp.codegen.swagger2.evt.QueryOrderEvt;
       import com.wuxp.codegen.swagger2.enums.Sex;
+      import com.wuxp.codegen.swagger2.model.paging.Page;
       import com.wuxp.codegen.swagger2.resp.ServiceResponse;
       import com.wuxp.codegen.swagger2.resp.PageInfo;
       import java.util.List;
@@ -67,7 +68,7 @@ public interface OrderFeignClient{
       * 4:返回值在java中的类型为：Order
      **/
       @GetMapping()
-    Order  pageBySpringData (
+    Page<Order>  pageBySpringData (
           @SpringQueryMap(value = true )  QueryOrderEvt evt
   );
     /**

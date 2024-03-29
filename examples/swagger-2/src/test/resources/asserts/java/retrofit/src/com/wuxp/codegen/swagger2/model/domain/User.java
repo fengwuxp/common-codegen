@@ -1,6 +1,7 @@
 package com.wuxp.codegen.swagger2.model.domain;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
         import com.wuxp.codegen.swagger2.model.domain.Order;
         import com.wuxp.codegen.swagger2.enums.Sex;
@@ -12,6 +13,7 @@ import javax.validation.constraints.*;
         * 用户
     **/
 @Data
+@Accessors(chain = true)
 public class  User {
 
             /**

@@ -9,12 +9,13 @@
 
   constructor() {}
         /**
+          *男的
           *字段在java中的类型为：ExampleEnum
         **/
       public static readonly MAN:Enum={
       name:"MAN",
       ordinal:0,
-       desc: "字段在java中的类型为：ExampleEnum"
+       desc: "男的"
       };
         /**
           *女
@@ -27,11 +28,12 @@
        desc: "女"
       };
         /**
+          *位置
           *字段在java中的类型为：ExampleEnum
         **/
       public static readonly NONE:Enum={
       name:"NONE",
       ordinal:2,
-       desc: "字段在java中的类型为：ExampleEnum"
+       desc: "位置"
       };
   }

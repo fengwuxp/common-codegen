@@ -11,7 +11,7 @@ PutMapping,
 Signature,
 HttpMediaType,
 AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
+FeignRequestOptions} from "feign-client";
       import {User} from "../../domain/User";
       import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {Sex} from "../../enums/Sex";
@@ -91,7 +91,7 @@ class UserService{
       @GetMapping({
             value:"sample2",
       })
-    sampleMap!:(req?: UserServiceSampleMapReq, option?: FeignRequestOptions) => Promise<Record<string,User[]>[]>;
+    sampleMap!:(req?: UserServiceSampleMapReq, option?: FeignRequestOptions) => Promise<Record<string,User>[]>;
     /**
       * 1:Http请求方法：POST
       * 2:返回值在java中的类型为：void
@@ -120,7 +120,7 @@ class UserService{
       @GetMapping({
             value:"/test2",
       })
-    test4!:(req?: UserServiceTest4Req, option?: FeignRequestOptions) => Promise<Array<PageInfo<User>>>;
+    test4!:(req?: UserServiceTest4Req, option?: FeignRequestOptions) => Promise<Promise<Array<PageInfo<User>>>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：Map
@@ -159,7 +159,7 @@ class UserService{
       @GetMapping({
             value:"/test7",
       })
-    test7!:(req?: UserServiceTest7Req, option?: FeignRequestOptions) => Promise<Record<number,Array<PageInfo<User[][]>>>>;
+    test7!:(req?: UserServiceTest7Req, option?: FeignRequestOptions) => Promise<Record<number,Array<PageInfo<User[]>>>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：Map
@@ -173,7 +173,7 @@ class UserService{
       @GetMapping({
             value:"/test8",
       })
-    test8!:(req?: UserServiceTest8Req, option?: FeignRequestOptions) => Promise<Record<string,string[][][][]>>;
+    test8!:(req?: UserServiceTest8Req, option?: FeignRequestOptions) => Promise<Record<string,string[]>>;
     /**
       * 1:Http请求方法：GET
       * 2:返回值在java中的类型为：数组
@@ -187,7 +187,7 @@ class UserService{
       @GetMapping({
             value:"/test9",
       })
-    test9!:(req?: UserServiceTest9Req, option?: FeignRequestOptions) => Promise<Record<string,string[]>[][][]>;
+    test9!:(req?: UserServiceTest9Req, option?: FeignRequestOptions) => Promise<Record<string,string>[]>;
 }
 
 export default new UserService();

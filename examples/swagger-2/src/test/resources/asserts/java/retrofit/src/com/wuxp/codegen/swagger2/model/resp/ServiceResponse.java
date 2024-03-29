@@ -1,12 +1,14 @@
 package com.wuxp.codegen.swagger2.model.resp;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
 
     /**
         * 服务响应对象
     **/
 @Data
+@Accessors(chain = true)
 public class  ServiceResponse<T> {
 
             /**

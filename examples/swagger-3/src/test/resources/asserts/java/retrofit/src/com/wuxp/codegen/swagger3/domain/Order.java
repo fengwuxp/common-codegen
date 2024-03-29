@@ -1,12 +1,14 @@
 package com.wuxp.codegen.swagger3.domain;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
         import com.wuxp.codegen.swagger3.domain.User;
         import java.util.Date;
         import com.wuxp.codegen.swagger3.domain.BaseInfo;
 
 @Data
+@Accessors(chain = true)
 public class  Order extends BaseInfo<Long,String> {
 
             /**

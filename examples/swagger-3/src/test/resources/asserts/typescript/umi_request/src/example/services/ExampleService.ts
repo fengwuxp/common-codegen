@@ -20,10 +20,10 @@
       * 3:返回值在java中的类型为：Integer
      **/
 
-export const  getNums=  (req?: ExampleServiceGetNumsReq, options?: RequestOptionsInit): Promise<Array<number>> =>{
+export const  getNums=  (req: ExampleServiceGetNumsReq, options?: RequestOptionsInit): Promise<Array<number>> =>{
   return request<Array<number>>(`/example_cms/get_num`, {
       method: 'get',
-      params: req || {},
+      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

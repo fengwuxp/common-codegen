@@ -13,6 +13,7 @@ import org.springframework.util.ObjectUtils;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Slf4j
 public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProcessor<CommonBaseMeta> {
@@ -65,6 +66,9 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
         return Arrays.stream(fieldMeta.getDeclaringClassMeta().getFieldMetas())
                 .filter(field -> !field.getIsEnumConstant())
                 .map(field -> getEnumFiledValue(enumConstant, field))
+                .filter(Objects::nonNull)
+                // TODO 枚举字段名称判断优化
+                .filter(name -> !name.contains("@"))
                 .toArray(String[]::new);
     }
 
