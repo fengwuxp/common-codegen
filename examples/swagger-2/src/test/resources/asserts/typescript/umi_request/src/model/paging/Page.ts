@@ -3,6 +3,7 @@
 
         import {Pageable} from "./Pageable";
         import {Sort} from "./Sort";
+import {DefaultOrderField} from "feign-client";
 
 
 

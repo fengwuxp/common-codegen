@@ -1,5 +1,5 @@
 /* tslint:disable */
-  import {Enum} from "fengwuxp-typescript-feign";
+  import {Enum} from "feign-client";
 
   export class BaseExample{
 

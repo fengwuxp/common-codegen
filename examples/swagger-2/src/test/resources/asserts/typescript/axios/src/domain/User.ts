@@ -4,6 +4,7 @@
         import {Order} from "./Order";
         import {Sex} from "../enums/Sex";
         import {ExampleEnum} from "../enums/ExampleEnum";
+import {DefaultOrderField} from "feign-client";
 
     /**
         * 用户

@@ -2,6 +2,7 @@
 /* eslint-disable */
 
         import {Sort} from "./Sort";
+import {DefaultOrderField} from "feign-client";
 
 
 
