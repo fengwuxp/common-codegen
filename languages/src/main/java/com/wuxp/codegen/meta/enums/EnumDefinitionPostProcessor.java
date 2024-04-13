@@ -80,7 +80,7 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
             if (value instanceof String) {
                 return String.format("\"%s\"", value);
             }
-            return value.toString();
+            return value == null ? null : value.toString();
         } catch (IllegalAccessException e) {
             if (log.isInfoEnabled()) {
                 log.info("获取枚举字段值失败：{}", enumField);
