@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger3.resp;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
         import java.util.List;
 
 @Data

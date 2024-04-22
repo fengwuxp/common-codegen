@@ -3,6 +3,7 @@ package com.wuxp.codegen.swagger2.resp;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
     /**
         * 服务响应对象

@@ -1,12 +1,13 @@
 package com.wuxp.codegen;
 
+import com.wind.api.core.ApiResponse;
 import com.wind.client.retrofit.query.AbstractPageQueryMap;
 import com.wind.common.query.supports.AbstractPageQuery;
 import com.wind.common.query.supports.DefaultOrderField;
 import com.wind.common.query.supports.Pagination;
 import com.wind.common.query.supports.QueryOrderType;
 import com.wind.common.query.supports.QueryType;
-import com.wind.core.api.ApiResponse;
+
 import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
