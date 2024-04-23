@@ -86,7 +86,7 @@ public interface UserService{
      **/
       @POST(value = "/users/uploadFile" )
     void  uploadFile (
-          @Field()  File multipartFile
+          @Field(value = "file" )  File multipartFile
   );
     /**
       * 1:Http请求方法：GET

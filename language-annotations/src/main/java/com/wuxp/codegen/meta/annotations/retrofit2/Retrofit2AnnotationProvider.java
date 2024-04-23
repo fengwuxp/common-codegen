@@ -9,8 +9,6 @@ import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFact
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import com.wuxp.codegen.model.util.JavaTypeUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +20,6 @@ import retrofit2.http.Field;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
@@ -88,7 +85,8 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
             boolean isUseQueryString = RequestMethod.GET.equals(requestMethod) || RequestMethod.DELETE.equals(requestMethod);
             removeNameToValue(annotation.getNamedArguments());
-            Map<String, String> namedArguments = new HashMap<>();
+            // 移除 required 属性
+            annotation.getNamedArguments().remove("required");
             if (isUseQueryString) {
                 annotation.setName(Query.class.getSimpleName());
                 return annotation;
@@ -98,7 +96,6 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             if (isSupportBody) {
                 annotation.setName(Field.class.getSimpleName());
             }
-            annotation.setNamedArguments(namedArguments);
             annotation.setElementType(ElementType.PARAMETER);
             return annotation;
         }

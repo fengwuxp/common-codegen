@@ -102,6 +102,8 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
             } else {
                 dependencies.add(this.publishParse(classMeta.getSource()));
             }
+            // 参数中的泛型
+            dependencies.addAll(Arrays.asList(classMeta.getTypeVariables()));
         });
         dependencies.addAll(Arrays.asList(result.getReturnTypes()));
         if (!ObjectUtils.isEmpty(result.getTypeVariables())) {

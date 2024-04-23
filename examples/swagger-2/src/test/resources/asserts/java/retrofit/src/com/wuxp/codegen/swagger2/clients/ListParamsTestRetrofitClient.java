@@ -2,7 +2,9 @@ package com.wuxp.codegen.swagger2.clients;
 import retrofit2.http.*;
 
 
+      import com.wuxp.codegen.swagger2.model.domain.Order;
       import java.util.Set;
+      import com.wuxp.codegen.swagger2.model.domain.User;
       import java.util.Collection;
       import java.util.List;
       import java.util.Map;

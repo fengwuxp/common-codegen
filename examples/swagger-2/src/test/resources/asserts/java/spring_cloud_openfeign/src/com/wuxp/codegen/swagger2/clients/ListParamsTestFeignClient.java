@@ -4,7 +4,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
+      import com.wuxp.codegen.swagger2.domain.Order;
       import java.util.Set;
+      import com.wuxp.codegen.swagger2.domain.User;
       import java.util.Collection;
       import java.util.List;
       import java.util.Map;

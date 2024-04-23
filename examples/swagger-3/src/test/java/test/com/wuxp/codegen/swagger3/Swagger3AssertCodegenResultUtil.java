@@ -39,7 +39,6 @@ public final class Swagger3AssertCodegenResultUtil {
         for (int i = 0; i < files.size(); i++) {
             assertEquals(assertFiles.get(i), files.get(i));
         }
-
         deleteOutputDir();
     }
 

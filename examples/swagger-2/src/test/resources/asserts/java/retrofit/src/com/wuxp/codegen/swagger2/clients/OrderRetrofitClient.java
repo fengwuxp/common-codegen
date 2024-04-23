@@ -72,7 +72,7 @@ public interface OrderRetrofitClient{
       @POST(value = "/order/queryOrder2" )
       @Headers(value = {"Content-Type: application/json"} )
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
-          @Field()  Long oderId,
+          @Field(value = "order_id" )  Long oderId,
   String sn,
           @Header(value = cookie@"memberId" )  Long memberId
   );
@@ -123,7 +123,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/hello_2" )
     ServiceResponse<PageInfo<Object>>  hello2 (
-          @Field()  String name
+          @Field(defaultValue = "test" ,value = "name" )  String name
   );
     /**
       * 1:test hello_3
@@ -133,7 +133,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/hello_3" )
     ServiceResponse<PageInfo<String>>  hello3 (
-          @Field()  String name
+          @Field(defaultValue = "test" ,value = "name" )  String name
   );
     /**
       * 1:test hello
@@ -142,7 +142,7 @@ public interface OrderRetrofitClient{
      **/
       @DELETE(value = "/order/hello_delete" )
     void  delete (
-          @Query(required = false ,value = "id" )  String id
+          @Query(value = "id" )  String id
   );
     /**
       * 1:Http请求方法：GET

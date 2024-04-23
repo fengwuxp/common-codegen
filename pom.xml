@@ -329,34 +329,6 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <!-- id 要查看setting.xml文件中的server配置，上传时需要用户和密码-->
-            <id>${dist-repo}</id>
-            <url>${dist-repo.releases.url}</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>${dist-repo}</id>
-            <url>${dist-repo.snapshots.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>apache-public</id>
-            <url>https://repository.apache.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>apache-snapshots</id>
-            <url>https://repository.apache.org/snapshots</url>
-        </repository>
-    </repositories>
-
     <organization>
         <name>fengwuxp</name>
         <url>https://github.com/</url>
@@ -368,15 +340,9 @@
         </developer>
     </developers>
 
-
     <build>
         <pluginManagement>
             <plugins>
-<!--                <plugin>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                    <version>2.4.2</version>-->
-<!--                </plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
