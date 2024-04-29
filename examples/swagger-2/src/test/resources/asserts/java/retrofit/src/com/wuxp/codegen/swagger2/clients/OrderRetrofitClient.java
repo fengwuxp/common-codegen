@@ -30,7 +30,7 @@ public interface OrderRetrofitClient{
     List<Order>  getOrder (
   String text,
           @Header(value = "names" )  String[] names,
-          @Header(value = cookie@"ids" )  List<Integer> ids,
+          @Header(value = cookie@"my_ids" )  List<Integer> ids,
   Set<Order> moneys
   );
     /**

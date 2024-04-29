@@ -34,7 +34,7 @@ OrderService() : super() {
         String text,
           @RequestHeader(name: "names" )
         BuiltList<String> names,
-          @CookieValue(name: "ids" )
+          @CookieValue(name: "my_ids" )
         BuiltList<int> ids,
         BuiltSet<Order> moneys,
   [UIOptions? feignOptions]) {

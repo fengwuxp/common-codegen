@@ -38,7 +38,7 @@ public interface OrderFeignClient{
     List<Order>  getOrder (
   String text,
           @RequestHeader(name = "names" )  String[] names,
-          @CookieValue(name = "ids" )  List<Integer> ids,
+          @CookieValue(name = "my_ids" )  List<Integer> ids,
   Set<Order> moneys
   );
     /**
