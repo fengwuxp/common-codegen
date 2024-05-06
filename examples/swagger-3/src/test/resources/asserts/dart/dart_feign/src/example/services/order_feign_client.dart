@@ -26,11 +26,11 @@ OrderFeignClient() : super() {
       /// 1:Http请求方法：GET
       /// 2:返回值在java中的类型为：List
       /// 3:返回值在java中的类型为：Order
-          @GetMapping()
+          @GetMapping(headers:{"My-Ids":"{ids}"},)
   Future<BuiltList<Order>>  getOrder(
           @RequestParam(name: "names" )
         BuiltList<String> names,
-          @RequestHeader(name: "ids" )
+          @RequestHeader(name: "My-Ids" )
         BuiltList<int> ids,
         BuiltSet<Order> moneys,
   [UIOptions? feignOptions]) {

@@ -31,7 +31,7 @@ public interface OrderFeignClient{
       @GetMapping()
     List<Order>  getOrder (
           @RequestParam(name = "names" )  String[] names,
-          @RequestHeader(name = "ids" )  List<Integer> ids,
+          @RequestHeader(name = "My-Ids" )  List<Integer> ids,
   Set<Order> moneys
   );
     /**

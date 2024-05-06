@@ -38,6 +38,7 @@ class OrderFeignClient{
       * 3:返回值在java中的类型为：Order
      **/
       @GetMapping({
+            headers:{"My-Ids":"{ids}"},
       })
     getOrder!:(req: OrderFeignClientGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**

@@ -24,10 +24,10 @@
      **/
 
 export const  getOrder=  (req: OrderFeignClientGetOrderReq, options?: RequestOptionsInit): Promise<Array<Order>> =>{
-        const {ids,...reqData} = req;
+        const {My-Ids,...reqData} = req;
         const headers:Record<string,any>={};
-            if(ids!=null){
-              headers['ids']=Array.isArray(ids)?ids.join(";"):ids;
+            if(My-Ids!=null){
+              headers['My-Ids']=Array.isArray(My-Ids)?My-Ids.join(";"):My-Ids;
             }
   return request<Array<Order>>(`/order/getOrder`, {
       method: 'get',

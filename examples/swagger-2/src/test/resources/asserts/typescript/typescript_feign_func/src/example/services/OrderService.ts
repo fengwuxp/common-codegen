@@ -46,6 +46,7 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
      **/
     export const getOrder: FeignHttpClientPromiseFunction<OrderServiceGetOrderReq ,Array<Order>> = API_FUNCTION_FACTORY.get({
                 value:"get_order",
+                headers:{"names":"{names}"},
     });
     /**
       * 1:获取订单列表

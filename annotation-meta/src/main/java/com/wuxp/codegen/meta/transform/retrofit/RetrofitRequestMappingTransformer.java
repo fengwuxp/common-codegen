@@ -20,7 +20,7 @@ import java.util.Map;
 
 
 /**
- * 将spring requestMapping相关的注解转换为 retrofit相关的注解
+ * 将 Spring RequestMapping 相关的注解转换为 Retrofit 相关的注解
  *
  * @author wuxp
  */

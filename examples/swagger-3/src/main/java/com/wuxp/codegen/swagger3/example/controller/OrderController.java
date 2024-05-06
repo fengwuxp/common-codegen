@@ -29,7 +29,7 @@ public class OrderController extends BaseController<String> {
     private UserService userService;
 
     @GetMapping(value = {"getOrder"})
-    public List<Order> getOrder(@RequestParam String[] names, @RequestHeader List<Integer> ids, Set<Order> moneys) {
+    public List<Order> getOrder(@RequestParam String[] names, @RequestHeader("My-Ids") List<Integer> ids, Set<Order> moneys) {
         return Collections.EMPTY_LIST;
     }
 

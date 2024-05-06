@@ -49,6 +49,7 @@ class OrderService{
      **/
       @GetMapping({
             value:"get_order",
+            headers:{"names":"{names}"},
       })
     getOrder!:(req: OrderServiceGetOrderReq, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**

@@ -114,7 +114,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
     /**
      * 方法参数处理流程
-     * 1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
+     * 1: 参数过滤（过滤掉控制器方法中 servlet 相关的参数等等）
      * 2：转换参数上的注解
      */
     private M parseMethod(JavaMethodMeta methodMeta) {

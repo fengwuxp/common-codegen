@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -56,6 +57,10 @@ public class JavaFieldMeta extends JavaBaseMeta {
         super(modifiers);
         this.setIsTransient(Modifier.isTransient(modifiers))
                 .setIsVolatile(Modifier.isVolatile(modifiers));
+    }
+
+    public AnnotatedElement getAnnotatedElement() {
+        return getField();
     }
 
     @Override

@@ -29,7 +29,7 @@ OrderService() : super() {
       /// 2:Http请求方法：GET
       /// 3:返回值在java中的类型为：List
       /// 4:返回值在java中的类型为：Order
-          @GetMapping(value:"get_order",)
+          @GetMapping(value:"get_order",headers:{"names":"{names}"},)
   Future<BuiltList<Order>>  getOrder(
         String text,
           @RequestHeader(name: "names" )

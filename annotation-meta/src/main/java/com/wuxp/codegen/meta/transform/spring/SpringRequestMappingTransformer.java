@@ -132,9 +132,9 @@ public class SpringRequestMappingTransformer implements
         }
 
         Map<String, String[]> mediaTypes = new HashMap<>();
-        //在注解中属性名称
+        // 在注解中属性名称
         String[] attrNames = {MappingAnnotationPropNameConstant.PRODUCES, MappingAnnotationPropNameConstant.CONSUMES};
-        //客户端和服务的produces consumes 逻辑对调
+        // 客户端和服务的 produces consumes 逻辑对调
         mediaTypes.put(attrNames[0], annotationMate.consumes());
         mediaTypes.put(attrNames[1], annotationMate.produces());
 
