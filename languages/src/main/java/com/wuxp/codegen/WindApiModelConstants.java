@@ -47,9 +47,9 @@ public final class WindApiModelConstants {
     public static final JavaCodeGenClassMeta JAVA_QUERY_ORDER_TYPE = new JavaCodeGenClassMeta(QueryOrderType.class, null, QueryOrderType.class.getName(), true);
 
 
-    public static final TypescriptClassMeta TS_API_RESPONSE = new TypescriptClassMeta(ApiResponse.class.getSimpleName(), API_RESPONSE_GENERIC_NAME, ClassType.INTERFACE, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
+    public static final TypescriptClassMeta TS_API_RESPONSE = new TypescriptClassMeta(ApiResponse.class.getSimpleName(), "ApiResponse<T>", ClassType.INTERFACE, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
 
-    public static final TypescriptClassMeta TS_PAGINATION = new TypescriptClassMeta(Pagination.class.getSimpleName(), PAGINATION_GENERIC_NAME, ClassType.INTERFACE, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
+    public static final TypescriptClassMeta TS_PAGINATION = new TypescriptClassMeta(Pagination.class.getSimpleName(), "Pagination<T>", ClassType.INTERFACE, false, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
 
     public static final TypescriptClassMeta TS_ABSTRACT_PAGE_QUERY = new TypescriptClassMeta(AbstractPageQuery.class.getSimpleName(), null, ClassType.CLASS, true, null, TS_FEIGN_CLIENT_PACKAGE_PATH);
 
