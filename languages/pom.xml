@@ -33,7 +33,7 @@
             <artifactId>reactive-streams</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wind.core</groupId>
+            <groupId>com.wind.middleware</groupId>
             <artifactId>wind-core</artifactId>
         </dependency>
         <dependency>
