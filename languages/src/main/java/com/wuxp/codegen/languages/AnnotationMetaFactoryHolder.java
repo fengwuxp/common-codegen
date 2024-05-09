@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationCodeGenCommentExtractor;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.jackson.JsonFormatMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.javax.NotBlanklMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.javax.NotNullMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.javax.PatternMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.javax.SizeMetaFactory;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -52,6 +54,7 @@ public final class AnnotationMetaFactoryHolder {
 
     static {
         ANNOTATION_META_FACTORIES.put(NotNull.class, new NotNullMetaFactory());
+        ANNOTATION_META_FACTORIES.put(NotBlank.class, new NotBlanklMetaFactory());
         ANNOTATION_META_FACTORIES.put(Size.class, new SizeMetaFactory());
         ANNOTATION_META_FACTORIES.put(Pattern.class, new PatternMetaFactory());
         ANNOTATION_META_FACTORIES.put(JsonFormat.class, new JsonFormatMetaFactory());
