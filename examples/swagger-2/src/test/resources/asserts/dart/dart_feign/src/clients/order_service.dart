@@ -71,12 +71,14 @@ OrderService() : super() {
       /// 2:Http请求方法：GET
       /// 3:返回值在java中的类型为：PageInfo
       /// 4:返回值在java中的类型为：Order
-          @GetMapping(value:"/queryOrder",)
+          @GetMapping(value:"/queryOrder",headers:{"X-User-Id":"{userId}"},)
   Future<PageInfo<Order>>  queryOrder(
+          @RequestHeader(name: "X-User-Id" )
+        String userId,
         QueryOrderEvt evt,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder",
-  [evt,],
+  [userId,evt,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
                 serializeType: PageInfo,

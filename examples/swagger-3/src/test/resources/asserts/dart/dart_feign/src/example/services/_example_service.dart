@@ -6,7 +6,7 @@ import 'package:fengwuxp_dart_basic/index.dart';
 import 'package:fengwuxp_dart_openfeign/index.dart';
 
           import '../../example_dto.dart';
-          import '../../evt/example_dto.dart';
+          import '../../evt/_example_dto.dart';
           import '../../serializers.dart';
 
 

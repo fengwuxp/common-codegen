@@ -11,7 +11,6 @@ FeignHttpClientPromiseFunction,
 feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
-        import {User} from "../../domain/User";
         import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
         import {Sex} from "../../enums/Sex";
         import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
@@ -24,6 +23,7 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
         import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
         import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
         import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+        import {OrderServiceQueryOrderReq} from "../../req/OrderServiceQueryOrderReq";
         import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
         import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
         import {PageInfo} from "../../resp/PageInfo";
@@ -63,8 +63,10 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       * 3:返回值在java中的类型为：PageInfo
       * 4:返回值在java中的类型为：Order
      **/
-    export const queryOrder: FeignHttpClientPromiseFunction<QueryOrderEvt ,PageInfo<Order>> = API_FUNCTION_FACTORY.get({
+    export const queryOrder: FeignHttpClientPromiseFunction<OrderServiceQueryOrderReq ,PageInfo<Order>> = API_FUNCTION_FACTORY.get({
                 value:"/queryOrder",
+                headers:{"X-User-Id":"{userId}"},
+                queryArgNames:["evt"],
     });
     /**
       * 1:获取订单列表

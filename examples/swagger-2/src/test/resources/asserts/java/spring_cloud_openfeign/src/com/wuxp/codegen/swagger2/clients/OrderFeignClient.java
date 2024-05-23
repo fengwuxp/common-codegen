@@ -59,6 +59,7 @@ public interface OrderFeignClient{
      **/
       @GetMapping(value = "/queryOrder" )
     PageInfo<Order>  queryOrder (
+          @RequestHeader(name = "X-User-Id" )  String userId,
           @SpringQueryMap(value = true )  QueryOrderEvt evt
   );
     /**

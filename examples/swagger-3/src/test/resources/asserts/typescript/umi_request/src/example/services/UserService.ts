@@ -1,8 +1,8 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
       import {User} from "../../domain/User";
-      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {Sex} from "../../enums/Sex";
+      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
       import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
       import {UserServiceSample2Req} from "../../req/UserServiceSample2Req";

@@ -33,7 +33,6 @@ import static com.wuxp.codegen.core.constant.Constants.DEFAULT_CODEGEN_DIR;
  * @author wuxp
  */
 @Slf4j
-
 public final class LoongCodeGenerator implements CodeGenerator {
 
     private static final List<String> DEFAULT_OUT_PATHS = Arrays.asList(DEFAULT_CODEGEN_DIR, "loong");
@@ -265,7 +264,8 @@ public final class LoongCodeGenerator implements CodeGenerator {
 
     private String getCodegenBaseOutputPath() {
         String codegenOutputPath = this.getCodegenOutputPath(ClientProviderType.RETROFIT);
-        return codegenOutputPath.split(String.join("", File.separator, ClientProviderType.RETROFIT.name().toLowerCase(), File.separator))[0];
+        String indexPart = String.join("", File.separator, ClientProviderType.RETROFIT.name().toLowerCase(), File.separator);
+        return codegenOutputPath.substring(0, codegenOutputPath.indexOf(indexPart));
     }
 
     private String getCodegenOutputPath(ClientProviderType type) {

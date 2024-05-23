@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -67,11 +68,11 @@ public final class Swagger2AssertCodegenResultUtil {
         return getPath(outPaths);
     }
 
-    private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) {
+    private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) throws Exception{
         URL resource = Swagger2AssertCodegenResultUtil.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] outPaths = {
-                resource.getPath(),
+                Paths.get(resource.toURI()).toString(),
                 ASSERT_DIR,
                 languageDescription.getName().toLowerCase(),
                 clientProviderType.name().toLowerCase(),
@@ -121,11 +122,11 @@ public final class Swagger2AssertCodegenResultUtil {
         FileUtils.copyDirectory(new File(outBasePath), destDir);
     }
 
-    private static void copyToTestClasspath(String outBasePath) throws IOException {
+    private static void copyToTestClasspath(String outBasePath) throws IOException, URISyntaxException {
         URL resource = Swagger2AssertCodegenResultUtil.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] assertResourcePaths = {
-                resource.getPath(),
+                Paths.get(resource.toURI()).toString(),
                 ASSERT_DIR,
         };
         String assertsPath = getPath(assertResourcePaths);
@@ -136,6 +137,6 @@ public final class Swagger2AssertCodegenResultUtil {
     }
 
     private static String getPath(String[] paths) {
-        return Paths.get(String.join(File.separator, paths)).toString();
+        return Paths.get(String.join(File.separator, paths)).toUri().getPath();
     }
 }

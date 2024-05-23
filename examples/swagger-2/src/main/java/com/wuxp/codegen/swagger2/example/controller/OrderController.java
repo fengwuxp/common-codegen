@@ -64,7 +64,7 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @RequestMapping(method = RequestMethod.GET, value = "/queryOrder")
-    public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
+    public PageInfo<Order> queryOrder(@RequestHeader("X-User-Id") String userId, QueryOrderEvt evt) {
         return new PageInfo<Order>();
     }
 

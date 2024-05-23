@@ -1,7 +1,6 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
       import {Order} from "../../domain/Order";
-      import {User} from "../../domain/User";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
       import {OrderFeignClientQueryPageReq} from "../../req/OrderFeignClientQueryPageReq";

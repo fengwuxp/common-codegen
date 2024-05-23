@@ -16,13 +16,11 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
         import {UserServiceSampleReq} from "../../req/UserServiceSampleReq";
         import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
         import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
-        import {Sex} from "../../enums/Sex";
         import {UserServicePostUserReq} from "../../req/UserServicePostUserReq";
         import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
         import {UserServiceGetUserListReq} from "../../req/UserServiceGetUserListReq";
         import {UserServiceTest3Req} from "../../req/UserServiceTest3Req";
         import {UserServicePutUserReq} from "../../req/UserServicePutUserReq";
-        import {ExampleEnum} from "../../enums/ExampleEnum";
 
     /**
      * 用户服务
@@ -51,6 +49,7 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       * 6:返回值在java中的类型为：Long
      **/
     export const postUser: FeignHttpClientPromiseFunction<UserServicePostUserReq ,string> = API_FUNCTION_FACTORY.post({
+                queryArgNames:["user","order"],
     });
     /**
       * 1:获取用户详细信息
@@ -73,6 +72,7 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
      **/
     export const putUser: FeignHttpClientPromiseFunction<UserServicePutUserReq ,string> = API_FUNCTION_FACTORY.put({
                 value:"/{id}",
+                queryArgNames:["user"],
     });
     /**
       * 1:删除用户

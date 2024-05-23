@@ -7,7 +7,12 @@ import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
-import com.wuxp.codegen.languages.typescript.*;
+import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionPostProcessor;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionParser;
+import com.wuxp.codegen.languages.typescript.UmiModel;
+import com.wuxp.codegen.languages.typescript.UmiRequestMethodDefinitionPostProcessor;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -43,6 +48,7 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractSwagger3Codeg
         configParserPostProcessors(TypescriptClassMeta.PROMISE);
         configCodeGenElementMatchers();
         configUmiModel();
+        this.elementParsePostProcessors.add(new TypeScriptMethodDefinitionPostProcessor());
         return createCodeGenerator();
     }
 

@@ -13,7 +13,6 @@ feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {Order} from "../../domain/Order";
-      import {User} from "../../domain/User";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
       import {OrderFeignClientQueryPageReq} from "../../req/OrderFeignClientQueryPageReq";

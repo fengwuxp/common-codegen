@@ -5,10 +5,10 @@ import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 import 'package:fengwuxp_dart_openfeign/index.dart';
 
-          import '../../domain/order.dart';
-          import '../../resp/page_info.dart';
-          import '../../domain/user.dart';
-          import '../../enums/sex.dart';
+          import '../../domain/_order.dart';
+          import '../../resp/_page_info.dart';
+          import '../../domain/_user.dart';
+          import '../../enums/_sex.dart';
           import '../../serializers.dart';
 
 

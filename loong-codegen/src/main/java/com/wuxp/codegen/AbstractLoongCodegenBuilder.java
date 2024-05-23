@@ -21,6 +21,7 @@ import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
 import com.wuxp.codegen.languages.*;
 import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
+import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionPostProcessor;
 import com.wuxp.codegen.loong.CombineCodeGenerateAsyncTaskFuture;
 import com.wuxp.codegen.loong.LoongClassCodeGenerator;
 import com.wuxp.codegen.loong.LoongSimpleTemplateStrategy;

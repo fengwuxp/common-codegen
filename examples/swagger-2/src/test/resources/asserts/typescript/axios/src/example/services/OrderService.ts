@@ -1,6 +1,5 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
-      import {User} from "../../domain/User";
       import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
       import {Sex} from "../../enums/Sex";
       import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
@@ -13,6 +12,7 @@ import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+      import {OrderServiceQueryOrderReq} from "../../req/OrderServiceQueryOrderReq";
       import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
       import {PageInfo} from "../../resp/PageInfo";
@@ -73,11 +73,17 @@ export const  getOrder32=  (req: OrderServiceGetOrder32Req, options?: AxiosReque
       * 4:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder=  (req: QueryOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
+export const  queryOrder=  (req: OrderServiceQueryOrderReq, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
+        const {X-User-Id,...reqData} = req;
+        const headers:Record<string,any>={};
+            if(X-User-Id!=null){
+              headers['X-User-Id']=Array.isArray(X-User-Id)?X-User-Id.join(";"):X-User-Id;
+            }
   return axios.request<PageInfo<Order>>( {
       url:`/order/queryOrder`,
       method: 'get',
-      params: req,
+        headers,
+      params: reqData,
       responseType: 'json',
   ...(options || {} as AxiosRequestConfig)
   })

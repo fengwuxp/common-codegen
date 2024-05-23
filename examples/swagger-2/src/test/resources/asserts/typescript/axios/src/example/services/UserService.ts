@@ -5,13 +5,11 @@ import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
       import {UserServiceSampleReq} from "../../req/UserServiceSampleReq";
       import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
-      import {Sex} from "../../enums/Sex";
       import {UserServicePostUserReq} from "../../req/UserServicePostUserReq";
       import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
       import {UserServiceGetUserListReq} from "../../req/UserServiceGetUserListReq";
       import {UserServiceTest3Req} from "../../req/UserServiceTest3Req";
       import {UserServicePutUserReq} from "../../req/UserServicePutUserReq";
-      import {ExampleEnum} from "../../enums/ExampleEnum";
 
     /**
      * 用户服务

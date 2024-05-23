@@ -12,7 +12,6 @@ FeignHttpClientPromiseFunction,
 feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
-      import {User} from "../../domain/User";
       import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
       import {Sex} from "../../enums/Sex";
       import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
@@ -25,6 +24,7 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+      import {OrderServiceQueryOrderReq} from "../../req/OrderServiceQueryOrderReq";
       import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
       import {PageInfo} from "../../resp/PageInfo";
@@ -70,8 +70,10 @@ class OrderService{
      **/
       @GetMapping({
             value:"/queryOrder",
+            headers:{"X-User-Id":"{userId}"},
+            queryArgNames:["evt"],
       })
-    queryOrder!:(req: QueryOrderEvt, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
+    queryOrder!:(req: OrderServiceQueryOrderReq, option?: FeignRequestOptions) => Promise<PageInfo<Order>>;
     /**
       * 1:获取订单列表
       * 2:Http请求方法：GET

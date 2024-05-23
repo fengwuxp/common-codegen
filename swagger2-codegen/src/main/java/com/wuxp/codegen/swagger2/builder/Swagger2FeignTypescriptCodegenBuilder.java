@@ -7,7 +7,12 @@ import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
-import com.wuxp.codegen.languages.typescript.*;
+import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionPostProcessor;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionParser;
+import com.wuxp.codegen.languages.typescript.UmiModel;
+import com.wuxp.codegen.languages.typescript.UmiRequestMethodDefinitionPostProcessor;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -24,11 +29,9 @@ import java.util.List;
 @Slf4j
 public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2CodegenBuilder {
 
-
     private Swagger2FeignTypescriptCodegenBuilder() {
         super();
     }
-
 
     public static Swagger2FeignTypescriptCodegenBuilder builder() {
         return new Swagger2FeignTypescriptCodegenBuilder();
@@ -43,6 +46,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2Codeg
         configParserPostProcessors(TypescriptClassMeta.PROMISE);
         configCodeGenElementMatchers();
         configUmiModel();
+        this.elementParsePostProcessors.add(new TypeScriptMethodDefinitionPostProcessor());
         return createCodeGenerator();
     }
 

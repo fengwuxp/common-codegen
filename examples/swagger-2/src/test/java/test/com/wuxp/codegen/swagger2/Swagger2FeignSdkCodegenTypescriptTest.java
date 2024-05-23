@@ -59,7 +59,7 @@ class Swagger2FeignSdkCodegenTypescriptTest {
                 .scanPackages(packagePaths)
                 .buildCodeGenerator()
                 .generate();
-//        Swagger2AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+        Swagger2AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
     }
 
 

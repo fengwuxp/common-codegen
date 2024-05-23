@@ -17,13 +17,11 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {UserServiceSampleReq} from "../../req/UserServiceSampleReq";
       import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
-      import {Sex} from "../../enums/Sex";
       import {UserServicePostUserReq} from "../../req/UserServicePostUserReq";
       import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
       import {UserServiceGetUserListReq} from "../../req/UserServiceGetUserListReq";
       import {UserServiceTest3Req} from "../../req/UserServiceTest3Req";
       import {UserServicePutUserReq} from "../../req/UserServicePutUserReq";
-      import {ExampleEnum} from "../../enums/ExampleEnum";
 
     /**
      * 用户服务
@@ -55,6 +53,7 @@ class UserService{
       * 6:返回值在java中的类型为：Long
      **/
       @PostMapping({
+            queryArgNames:["user","order"],
       })
     postUser!:(req: UserServicePostUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
@@ -79,6 +78,7 @@ class UserService{
      **/
       @PutMapping({
             value:"/{id}",
+            queryArgNames:["user"],
       })
     putUser!:(req: UserServicePutUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**

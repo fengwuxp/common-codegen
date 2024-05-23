@@ -91,7 +91,8 @@ public final class MavenCommandInvokeUtils {
                         env = System.getProperty(name);
                     }
                     return env;
-                }).filter(StringUtils::hasText)
+                })
+                .filter(StringUtils::hasText)
                 .findFirst()
                 .orElse(null);
     }

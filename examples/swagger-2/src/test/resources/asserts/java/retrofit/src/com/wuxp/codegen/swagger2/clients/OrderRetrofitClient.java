@@ -51,6 +51,7 @@ public interface OrderRetrofitClient{
      **/
       @GET(value = "/order/queryOrder" )
     PageInfo<Order>  queryOrder (
+          @Header(value = "X-User-Id" )  String userId,
   QueryOrderEvt evt
   );
     /**

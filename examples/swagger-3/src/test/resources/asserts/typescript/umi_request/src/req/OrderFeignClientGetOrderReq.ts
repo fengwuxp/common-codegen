@@ -2,7 +2,6 @@
 /* eslint-disable */
 
         import {Order} from "../domain/Order";
-        import {User} from "../domain/User";
 import {DefaultOrderField} from "feign-client";
 
     /**
@@ -12,19 +11,6 @@ import {DefaultOrderField} from "feign-client";
 
 export interface  OrderFeignClientGetOrderReq {
 
-            /**
-                * ，默认值：，示例输入：
-                *字段在java中的类型为：String
-            **/
-        sn?: string;
-            /**
-                *字段在java中的类型为：User
-            **/
-        user?: User;
-            /**
-                *字段在java中的类型为：Date
-            **/
-        addTime?: number;
             /**
                 *字段在java中的类型为：数组
                 *字段在java中的类型为：String

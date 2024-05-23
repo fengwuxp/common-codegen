@@ -41,7 +41,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
      */
     private static final String DEFAULT_MARGE_PARAMS_NAME = "req";
 
-    private static final String MARGE_PARAMS_TAG_NAME = "margeParams";
+    public static final String MARGE_PARAMS_TAG_NAME = "margeParams";
 
     /**
      * 泛型合并策略

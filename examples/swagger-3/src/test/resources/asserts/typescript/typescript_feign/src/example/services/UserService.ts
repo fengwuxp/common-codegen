@@ -13,8 +13,8 @@ feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {User} from "../../domain/User";
-      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {Sex} from "../../enums/Sex";
+      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
       import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
       import {UserServiceSample2Req} from "../../req/UserServiceSample2Req";
@@ -54,6 +54,7 @@ class UserService{
      **/
       @PutMapping({
             value:"/{id}",
+            queryArgNames:["user","order"],
       })
     putUser!:(req: UserServicePutUserReq, option?: FeignRequestOptions) => Promise<string>;
     /**
@@ -90,6 +91,7 @@ class UserService{
      **/
       @GetMapping({
             value:"sample2",
+            queryArgNames:["sex"],
       })
     sampleMap!:(req?: UserServiceSampleMapReq, option?: FeignRequestOptions) => Promise<Record<string,User>>;
     /**
