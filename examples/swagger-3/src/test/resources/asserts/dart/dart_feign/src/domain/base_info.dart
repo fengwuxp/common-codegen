@@ -5,7 +5,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 
-            import './_base_example.dart';
+            import './base_example.dart';
             import '../serializers.dart';
 
     part 'base_info.g.dart';

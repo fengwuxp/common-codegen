@@ -9,9 +9,10 @@ import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
 /*================================================分割线，以下为接口列表===================================================*/
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：HttpEntity
-      * 3:返回值在java中的类型为：InputStreamResource
+      * 1:GET /file/download
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：HttpEntity
+      * 4:返回值在java中的类型为：InputStreamResource
      **/
 
 export const  download=  (req?: FileServiceDownloadReq, options?: AxiosRequestConfig): Promise<AxiosResponse<File>> =>{
@@ -25,8 +26,9 @@ export const  download=  (req?: FileServiceDownloadReq, options?: AxiosRequestCo
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：void
+      * 1:GET /file/download_2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
      **/
 
 export const  download2=  (req?: FileServiceDownload2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<File>> =>{

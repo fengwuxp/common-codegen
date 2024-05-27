@@ -8,6 +8,7 @@ import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptIndexGenEventListener;
 import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionPostProcessor;
 import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
 import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionParser;
@@ -29,15 +30,21 @@ import java.util.List;
 @Slf4j
 public class Swagger3FeignTypescriptCodegenBuilder extends AbstractSwagger3CodegenBuilder {
 
+    private final boolean genIndexFile;
 
-    protected Swagger3FeignTypescriptCodegenBuilder() {
+    private Swagger3FeignTypescriptCodegenBuilder(boolean genIndexFile) {
         super();
+        this.genIndexFile = genIndexFile;
     }
 
+    public static Swagger3FeignTypescriptCodegenBuilder builder(boolean genIndexFile) {
+        return new Swagger3FeignTypescriptCodegenBuilder(genIndexFile);
+    }
 
     public static Swagger3FeignTypescriptCodegenBuilder builder() {
-        return new Swagger3FeignTypescriptCodegenBuilder();
+        return new Swagger3FeignTypescriptCodegenBuilder(false);
     }
+
 
     @Override
     public CodeGenerator buildCodeGenerator() {
@@ -48,7 +55,10 @@ public class Swagger3FeignTypescriptCodegenBuilder extends AbstractSwagger3Codeg
         configParserPostProcessors(TypescriptClassMeta.PROMISE);
         configCodeGenElementMatchers();
         configUmiModel();
-        this.elementParsePostProcessors.add(new TypeScriptMethodDefinitionPostProcessor());
+        this.elementParsePostProcessors(new TypeScriptMethodDefinitionPostProcessor());
+        if (genIndexFile) {
+            this.codeGenEventListeners(new TypeScriptIndexGenEventListener());
+        }
         return createCodeGenerator();
     }
 

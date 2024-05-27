@@ -44,7 +44,7 @@ class Swagger3FeignSdkCodegenUmiRequestTest {
         LanguageDescription language = LanguageDescription.TYPESCRIPT;
         ClientProviderType clientProviderType = ClientProviderType.UMI_REQUEST;
 
-        Swagger3FeignTypescriptCodegenBuilder.builder()
+        Swagger3FeignTypescriptCodegenBuilder.builder(true)
                 .languageDescription(LanguageDescription.TYPESCRIPT)
                 .clientProviderType(ClientProviderType.UMI_REQUEST)
                 //设置数据类型的映射关系

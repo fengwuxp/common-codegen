@@ -9,18 +9,18 @@ import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 import 'package:fengwuxp_dart_openfeign/src/built/date_time_serializer.dart';
 
-            import './evt/_base_evt.dart';
-            import './domain/_base_example.dart';
-            import './domain/_base_info.dart';
-            import './evt/_base_query_evt.dart';
-            import './evt/_create_order_evt.dart';
-            import './evt/_example_dto.dart';
+            import './evt/base_evt.dart';
+            import './domain/base_example.dart';
+            import './domain/base_info.dart';
+            import './evt/base_query_evt.dart';
+            import './evt/create_order_evt.dart';
+            import './evt/example_dto.dart';
             import './example_dto.dart';
-            import './domain/_order.dart';
-            import './resp/_page_info.dart';
-            import './evt/_query_order_evt.dart';
-            import './enums/_sex.dart';
-            import './domain/_user.dart';
+            import './domain/order.dart';
+            import './resp/page_info.dart';
+            import './evt/query_order_evt.dart';
+            import './enums/sex.dart';
+            import './domain/user.dart';
 
 part 'serializers.g.dart';
 

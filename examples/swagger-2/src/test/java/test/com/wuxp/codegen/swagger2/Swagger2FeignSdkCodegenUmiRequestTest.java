@@ -40,7 +40,7 @@ class Swagger2FeignSdkCodegenUmiRequestTest {
         LanguageDescription language = LanguageDescription.TYPESCRIPT;
         ClientProviderType clientProviderType = ClientProviderType.UMI_REQUEST;
 
-        Swagger2FeignTypescriptCodegenBuilder.builder()
+        Swagger2FeignTypescriptCodegenBuilder.builder(true)
                 .languageDescription(language)
                 .clientProviderType(clientProviderType)
                 // 基础类型映射

@@ -23,10 +23,11 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
 class HelloService{
 
     /**
-      * 1:Http请求方法：GET
-      * 2:Documented with OpenAPI v3 annotations
-      * 3:标记忽略
-      * 4:返回值在java中的类型为：String
+      * 1:GET /hello/hello
+      * 2:Http请求方法：GET
+      * 3:Documented with OpenAPI v3 annotations
+      * 4:标记忽略
+      * 5:返回值在java中的类型为：String
      **/
       @GetMapping({
             value:"/hello",

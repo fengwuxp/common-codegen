@@ -21,17 +21,19 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
             value:"/file",
         });
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：HttpEntity
-      * 3:返回值在java中的类型为：InputStreamResource
+      * 1:GET /file/download
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：HttpEntity
+      * 4:返回值在java中的类型为：InputStreamResource
      **/
     export const download: FeignHttpClientPromiseFunction<FileServiceDownloadReq |void,File> = API_FUNCTION_FACTORY.get({
                 value:"/download",
                 consumes:[HttpMediaType.APPLICATION_STREAM],
     });
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：void
+      * 1:GET /file/download_2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
      **/
     export const download2: FeignHttpClientPromiseFunction<FileServiceDownload2Req |void,File> = API_FUNCTION_FACTORY.get({
                 value:"/download_2",

@@ -46,7 +46,7 @@ class Swagger2FeignSdkCodegenTypescriptTest {
         //要进行生成的源代码包名列表
         String[] packagePaths = {"com.wuxp.codegen.swagger2.**.controller"};
         LanguageDescription language = LanguageDescription.TYPESCRIPT;
-        Swagger2FeignTypescriptCodegenBuilder.builder()
+        Swagger2FeignTypescriptCodegenBuilder.builder(true)
                 .languageDescription(language)
                 .clientProviderType(clientProviderType)
                 // 自定义的类型映射

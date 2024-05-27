@@ -5,9 +5,9 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 
-            import '../enums/_sex.dart';
+            import '../enums/sex.dart';
             import '../serializers.dart';
-            import './_base_evt.dart';
+            import './base_evt.dart';
 
     part 'create_order_evt.g.dart';
 

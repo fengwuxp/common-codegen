@@ -45,7 +45,7 @@ class Swagger3FeignSdkCodegenTypescriptTest {
         LanguageDescription language = LanguageDescription.TYPESCRIPT;
         ClientProviderType clientProviderType = ClientProviderType.TYPESCRIPT_FEIGN;
 
-        Swagger3FeignTypescriptCodegenBuilder.builder()
+        Swagger3FeignTypescriptCodegenBuilder.builder(true)
                 .languageDescription(language)
                 .clientProviderType(clientProviderType)
                 //设置数据类型的映射关系

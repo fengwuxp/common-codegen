@@ -373,6 +373,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
                 new JavaFieldMatcher(this.getIgnoreFieldNames()),
                 new JavaParameterMatcher(this.ignoreParamByAnnotations)
         );
+        this.elementParsePostProcessors(new HttpRequestDestinationPostProcessor());
     }
 
     protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
@@ -481,7 +482,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
             }
             return jsonFiles;
         } catch (IOException exception) {
-           throw new CodegenRuntimeException(exception);
+            throw new CodegenRuntimeException(exception);
         }
     }
 }

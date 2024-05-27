@@ -15,9 +15,10 @@
 /*================================================分割线，以下为接口列表===================================================*/
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：List
-      * 3:返回值在java中的类型为：Integer
+      * 1:GET /example_cms/get_num
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：List
+      * 4:返回值在java中的类型为：Integer
      **/
 
 export const  getNums=  (req: ExampleServiceGetNumsReq, options?: RequestOptionsInit): Promise<Array<number>> =>{
@@ -30,11 +31,12 @@ export const  getNums=  (req: ExampleServiceGetNumsReq, options?: RequestOptions
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：List
-      * 3:返回值在java中的类型为：Map
-      * 4:返回值在java中的类型为：Integer
-      * 5:返回值在java中的类型为：String
+      * 1:GET /example_cms/get_maps
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：List
+      * 4:返回值在java中的类型为：Map
+      * 5:返回值在java中的类型为：Integer
+      * 6:返回值在java中的类型为：String
      **/
 
 export const  getMaps=  (req?: ExampleServiceGetMapsReq, options?: RequestOptionsInit): Promise<Array<Record<number,string>>> =>{
@@ -47,10 +49,11 @@ export const  getMaps=  (req?: ExampleServiceGetMapsReq, options?: RequestOption
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：Integer
+      * 1:GET /example_cms/get_map
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：Integer
      **/
 
 export const  getMap=  ( options?: RequestOptionsInit): Promise<Record<string,number>> =>{
@@ -62,11 +65,12 @@ export const  getMap=  ( options?: RequestOptionsInit): Promise<Record<string,nu
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：Boolean
+      * 1:GET /example_cms/get_map_2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：Boolean
      **/
 
 export const  getMap2=  ( options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
@@ -78,11 +82,12 @@ export const  getMap2=  ( options?: RequestOptionsInit): Promise<Record<string,A
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：Boolean
+      * 1:GET /example_cms/get_map_3/{id}
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：Boolean
      **/
 
 export const  getMap3=  (req: ExampleServiceGetMap3Req, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
@@ -97,11 +102,12 @@ export const  getMap3=  (req: ExampleServiceGetMap3Req, options?: RequestOptions
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：Boolean
+      * 1:GET /example_cms/get_map_/
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：Boolean
      **/
 
 export const  getMap4=  (req?: ExampleDTO, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
@@ -114,11 +120,12 @@ export const  getMap4=  (req?: ExampleDTO, options?: RequestOptionsInit): Promis
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：Boolean
+      * 1:GET /example_cms/get_map_5
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：Boolean
      **/
 
 export const  getMap5=  (req?: ExampleDto, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
