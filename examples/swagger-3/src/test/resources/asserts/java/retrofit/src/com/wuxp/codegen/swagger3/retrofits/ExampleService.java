@@ -34,7 +34,6 @@ public interface ExampleService{
      **/
       @GET(value = "/example_cms/get_maps" )
     List<Map<Integer,String>>  getMaps (
-          @Query(value = "num" )  Integer num
   );
     /**
       * 1:GET /example_cms/get_map

@@ -2,6 +2,7 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 import com.wuxp.codegen.swagger3.example.ExampleDto;
 import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class ExampleController {
     }
 
     @GetMapping("get_maps")
-    public List<Map<Integer, String>> getMaps(Integer num) {
+    public List<Map<Integer, String>> getMaps(@Parameter(hidden = true) Integer num) {
 
         Map<Integer, String> map = new HashMap<>();
         map.put(num, "num");

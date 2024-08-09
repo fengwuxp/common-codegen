@@ -152,10 +152,9 @@ OrderFeignClient() : super() {
   Future<PageInfo<Order>>  queryOrder6(
           @RequestBody()
         BuiltList<QueryOrderEvt> evt,
-        int memberId,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder6",
-  [evt,memberId,],
+  [evt,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
                 serializeType: PageInfo,
@@ -194,10 +193,9 @@ OrderFeignClient() : super() {
           @PostMapping()
   Future<PageInfo<Order>>  queryPage(
         String id,
-        int memberId,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryPage",
-  [id,memberId,],
+  [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
                 serializeType: PageInfo,

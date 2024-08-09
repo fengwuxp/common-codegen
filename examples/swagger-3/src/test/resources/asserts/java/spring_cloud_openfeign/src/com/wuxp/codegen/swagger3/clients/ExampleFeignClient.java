@@ -39,7 +39,6 @@ public interface ExampleFeignClient{
      **/
       @GetMapping(value = "get_maps" )
     List<Map<Integer,String>>  getMaps (
-  Integer num
   );
     /**
       * 1:GET /example_cms/get_map

@@ -50,7 +50,7 @@ class ExampleService{
       @GetMapping({
             value:"get_maps",
       })
-    getMaps!:(req?: ExampleServiceGetMapsReq, option?: FeignRequestOptions) => Promise<Array<Record<number,string>>>;
+    getMaps!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<Array<Record<number,string>>>;
     /**
       * 1:GET /example_cms/get_map
       * 2:Http请求方法：GET

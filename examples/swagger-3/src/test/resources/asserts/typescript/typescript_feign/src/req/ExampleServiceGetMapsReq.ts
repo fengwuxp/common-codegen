@@ -10,8 +10,4 @@ import {DefaultOrderField} from "feign-client";
 
 export interface  ExampleServiceGetMapsReq {
 
-            /**
-                *字段在java中的类型为：Integer
-            **/
-        num?: number;
 }

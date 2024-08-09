@@ -93,8 +93,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     PageInfo<Order>  queryOrder6 (
-          @RequestBody()  List<QueryOrderEvt> evt,
-  Long memberId
+          @RequestBody()  List<QueryOrderEvt> evt
   );
     /**
       * 1:POST /order/queryOrder_2
@@ -116,8 +115,7 @@ public interface OrderFeignClient{
      **/
       @PostMapping()
     ServiceResponse<PageInfo<Order>>  queryPage (
-  String id,
-  Long memberId
+  String id
   );
     /**
       * 1:GET /order/createOrder

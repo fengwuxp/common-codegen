@@ -48,10 +48,9 @@ ExampleService() : super() {
       /// 6:返回值在java中的类型为：String
           @GetMapping(value:"get_maps",)
   Future<BuiltList<BuiltMap<int,String>>>  getMaps(
-        int num,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltList<BuiltMap<int,String>>>("getMaps",
-  [num,],
+  [],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
               specifiedType:FullType(BuiltList,[FullType(BuiltMap,[FullType(int),FullType(String)])])

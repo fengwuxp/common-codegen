@@ -7,7 +7,11 @@ import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
-import com.wuxp.codegen.model.*;
+import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
@@ -28,7 +32,16 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -136,6 +149,19 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     private Optional<CommonCodeGenClassMeta> getParameterMeta(JavaMethodMeta methodMeta, String parameterName, Class<?>[] parameterTypes) {
+        Parameter parameter = methodMeta.getParameters().get(parameterName);
+        JavaParameterMeta parameterMeta = new JavaParameterMeta();
+        parameterMeta.setTypes(parameterTypes)
+                .setIsTransient(false)
+                .setIsVolatile(false);
+        parameterMeta.setAccessPermission(AccessPermission.PUBLIC);
+        parameterMeta.setAnnotations(parameter.getAnnotations());
+        parameterMeta.setParameter(parameter);
+        // TODO 判断参数是否需要生成，待优化
+        CommonBaseMeta commonBaseMeta = this.publishParse(parameterMeta);
+        if (commonBaseMeta == null) {
+            return Optional.empty();
+        }
         Optional<CommonCodeGenClassMeta> optionalMeta = this.publishParseOfNullable(parameterTypes[0]);
         return optionalMeta.map(result -> {
             CommonCodeGenClassMeta classMeta = new CommonCodeGenClassMeta();

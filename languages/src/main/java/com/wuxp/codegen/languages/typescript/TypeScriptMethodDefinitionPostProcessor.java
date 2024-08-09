@@ -8,21 +8,19 @@ import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,6 +37,12 @@ public class TypeScriptMethodDefinitionPostProcessor implements LanguageDefiniti
     private static final Set<Class<? extends Annotation>> QUERY_PARAM_ARGS = ImmutableSet.of(
             RequestParam.class
     );
+
+    private static final Set<Class<? extends Annotation>> NONE_PARAM_ARGS = ImmutableSet.of(
+            PathVariable.class,
+            CookieValue.class,
+            RequestHeader.class,
+            ModelAttribute.class);
 
     private static final Set<Class<? extends Annotation>> BODY_ARGS = ImmutableSet.of(
             RequestBody.class
@@ -79,12 +83,14 @@ public class TypeScriptMethodDefinitionPostProcessor implements LanguageDefiniti
     }
 
     private Set<String> getQueryArgNames(CommonCodeGenMethodMeta meta) {
-        return meta.getParams().values().stream()
+        return meta.getParams()
+                .values()
+                .stream()
                 .filter(param -> Boolean.TRUE.equals(param.getTags().get(MARGE_PARAMS_TAG_NAME)))
                 .filter(param -> param.getFieldMetas().length > 1)
                 .map(param -> {
                     return Arrays.stream(param.getFieldMetas())
-                            .filter(TypeScriptMethodDefinitionPostProcessor::isRequestParamArgs)
+                            .filter(TypeScriptMethodDefinitionPostProcessor::isRequestQueryParamArgs)
                             .map(CommonBaseMeta::getName)
                             .collect(Collectors.toSet());
                 })
@@ -115,8 +121,13 @@ public class TypeScriptMethodDefinitionPostProcessor implements LanguageDefiniti
         return Arrays.stream(field.getAnnotations()).anyMatch(annotation -> BODY_ARGS.contains(annotation.getSource().annotationType()));
     }
 
-    private static boolean isRequestParamArgs(CommonCodeGenFiledMeta field) {
-        return Arrays.stream(field.getAnnotations()).anyMatch(annotation -> QUERY_PARAM_ARGS.contains(annotation.getSource().annotationType()))
+    private static boolean isRequestQueryParamArgs(CommonCodeGenFiledMeta field) {
+        if (Arrays.stream(field.getAnnotations()).anyMatch(annotation -> NONE_PARAM_ARGS.contains(annotation.getSource().annotationType()))) {
+            return false;
+        }
+        return Arrays.stream(field.getAnnotations())
+                .anyMatch(annotation ->
+                        QUERY_PARAM_ARGS.contains(annotation.getSource().annotationType()))
                 || (!ObjectUtils.isEmpty(field.getFiledTypes()) && JavaTypeUtils.isNoneJdkComplex(field.getFiledTypes()[0].getSource()));
     }
 

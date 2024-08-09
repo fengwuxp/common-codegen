@@ -39,10 +39,9 @@ export const  getNums=  (req: ExampleServiceGetNumsReq, options?: RequestOptions
       * 6:返回值在java中的类型为：String
      **/
 
-export const  getMaps=  (req?: ExampleServiceGetMapsReq, options?: RequestOptionsInit): Promise<Array<Record<number,string>>> =>{
+export const  getMaps=  ( options?: RequestOptionsInit): Promise<Array<Record<number,string>>> =>{
   return request<Array<Record<number,string>>>(`/example_cms/get_maps`, {
       method: 'get',
-      params: req || {},
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })
