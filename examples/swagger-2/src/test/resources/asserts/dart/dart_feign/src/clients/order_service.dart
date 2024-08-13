@@ -32,7 +32,6 @@ OrderService() : super() {
       /// 5:返回值在java中的类型为：Order
           @GetMapping(value:"get_order",headers:{"names":"{names}"},)
   Future<BuiltList<Order>>  getOrder(
-        String text,
           @RequestHeader(name: "names" )
         BuiltList<String> names,
           @CookieValue(name: "my_ids" )
@@ -40,7 +39,7 @@ OrderService() : super() {
         BuiltSet<Order> moneys,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltList<Order>>("getOrder",
-  [text,names,ids,moneys,],
+  [names,ids,moneys,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
               specifiedType:FullType(BuiltList,[FullType(Order)])
@@ -121,11 +120,9 @@ OrderService() : super() {
           @RequestParam(name: "order_id" ,required: false )
         int oderId,
         String sn,
-          @CookieValue(name: "memberId" )
-        int memberId,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<PageInfo<Order>>("queryOrder2",
-  [oderId,sn,memberId,],
+  [oderId,sn,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
                 serializeType: PageInfo,

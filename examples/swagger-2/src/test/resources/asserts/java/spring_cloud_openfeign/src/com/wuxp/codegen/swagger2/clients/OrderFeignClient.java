@@ -37,7 +37,6 @@ public interface OrderFeignClient{
      **/
       @GetMapping(value = "get_order" )
     List<Order>  getOrder (
-  String text,
           @RequestHeader(name = "names" )  String[] names,
           @CookieValue(name = "my_ids" )  List<Integer> ids,
   Set<Order> moneys
@@ -86,8 +85,7 @@ public interface OrderFeignClient{
       @PostMapping(produces = {MediaType.MULTIPART_FORM_DATA_VALUE} )
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
           @RequestParam(name = "order_id" ,required = false )  Long oderId,
-  String sn,
-          @CookieValue(name = "memberId" )  Long memberId
+  String sn
   );
     /**
       * 1:POST /order/queryPage

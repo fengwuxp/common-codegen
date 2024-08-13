@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.core.util.JacksonUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenEnumFiledValue;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -169,7 +170,10 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     private CommonCodeGenFiledMeta converterFiledMeta(SchemaCodegenModelFieldMeta fieldMeta, CommonCodeGenClassMeta classMeta) {
         CommonCodeGenFiledMeta filed = newCodegenFileInstance(fieldMeta);
         filed.setName(fieldMeta.getName());
-        filed.setEnumFiledValues(fieldMeta.getEnumFiledValues());
+        if (fieldMeta.getEnumFiledValues() != null) {
+            filed.setEnumFiledConstantValues(Arrays.stream(fieldMeta.getEnumFiledValues()).map(va -> new CommonCodeGenEnumFiledValue(null, va))
+                    .toArray(CommonCodeGenEnumFiledValue[]::new));
+        }
         filed.setAnnotations(new CommonCodeGenAnnotation[0]);
         filed.setTypeVariables(new CommonCodeGenClassMeta[0]);
         filed.setName(filed.getName());

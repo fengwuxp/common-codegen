@@ -29,7 +29,6 @@ public interface OrderRetrofitClient{
      **/
       @GET(value = "/order/get_order" )
     List<Order>  getOrder (
-  String text,
           @Header(value = "names" )  String[] names,
           @Header(value = cookie@"my_ids" )  List<Integer> ids,
   Set<Order> moneys
@@ -79,8 +78,7 @@ public interface OrderRetrofitClient{
       @Headers(value = {"Content-Type: application/json"} )
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
           @Field(value = "order_id" )  Long oderId,
-  String sn,
-          @Header(value = cookie@"memberId" )  Long memberId
+  String sn
   );
     /**
       * 1:POST /order/queryPage
