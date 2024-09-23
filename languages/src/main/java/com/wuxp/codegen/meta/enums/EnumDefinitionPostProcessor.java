@@ -1,5 +1,6 @@
 package com.wuxp.codegen.meta.enums;
 
+import com.wind.common.WindConstants;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.meta.util.EnumUtils;
 import com.wuxp.codegen.model.CommonBaseMeta;
@@ -87,7 +88,7 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
             if (value instanceof String) {
                 return new CommonCodeGenEnumFiledValue(enumField, String.format("\"%s\"", value));
             }
-            return new CommonCodeGenEnumFiledValue(enumField, value == null ? null : value.toString());
+            return new CommonCodeGenEnumFiledValue(enumField, value == null ? WindConstants.NULL : value.toString());
         } catch (IllegalAccessException e) {
             if (log.isInfoEnabled()) {
                 log.info("获取枚举字段值失败：{}", enumField);
