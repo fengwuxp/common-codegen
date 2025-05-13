@@ -33,7 +33,7 @@ class Swagger2FeignSdkCodegenRetrofitTest {
                 .useRxJava(true)
                 .build()
                 // 基础类型映射
-                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
+                .typeMappings(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(language)

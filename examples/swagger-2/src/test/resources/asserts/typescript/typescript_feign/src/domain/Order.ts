@@ -3,6 +3,7 @@
 
         import {User} from "./User";
         import {BaseInfo} from "./BaseInfo";
+import {DefaultOrderField} from "feign-client";
 
     /**
         * 订单

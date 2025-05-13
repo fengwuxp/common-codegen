@@ -1,9 +1,11 @@
 package com.wuxp.codegen.meta.enums;
 
+import com.wind.common.WindConstants;
 import com.wuxp.codegen.core.parser.enhance.LanguageDefinitionPostProcessor;
 import com.wuxp.codegen.meta.util.EnumUtils;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenEnumFiledValue;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
@@ -13,6 +15,7 @@ import org.springframework.util.ObjectUtils;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Objects;
 
 @Slf4j
 public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProcessor<CommonBaseMeta> {
@@ -41,6 +44,13 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
         }
         CommonCodeGenFiledMeta[] enumConstants = Arrays.stream(classMeta.getFieldMetas())
                 .filter(CommonCodeGenFiledMeta::isEnumConstant)
+                .map(item -> {
+                    CommonCodeGenEnumFiledValue[] values = Arrays.stream(item.getEnumFiledConstantValues())
+                            .filter(ec -> ec.getField() == null || Arrays.stream(classMeta.getFieldMetas()).anyMatch(e -> Objects.equals(ec.getField(), e.getSource())))
+                            .toArray(CommonCodeGenEnumFiledValue[]::new);
+                    item.setEnumFiledConstantValues(values);
+                    return item;
+                })
                 .toArray(CommonCodeGenFiledMeta[]::new);
         CommonCodeGenFiledMeta[] fieldMetas = Arrays.stream(classMeta.getFieldMetas())
                 .filter(commonCodeGenFiledMeta -> !commonCodeGenFiledMeta.isEnumConstant())
@@ -52,31 +62,33 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
         }
     }
 
-
     public void postProcessFiledMeta(CommonCodeGenFiledMeta fieldMeta) {
         Field sourceFiled = fieldMeta.getSource();
         if (sourceFiled == null || !sourceFiled.isEnumConstant()) {
             return;
         }
-        EnumUtils.getEnumConstant(sourceFiled).ifPresent(enumConstant -> fieldMeta.setEnumFiledValues(resolveEnumFiledValues(fieldMeta, enumConstant)));
+        EnumUtils.getEnumConstant(sourceFiled).ifPresent(enumConstant -> fieldMeta.setEnumFiledConstantValues(resolveEnumFiledValues(fieldMeta, enumConstant)));
     }
 
-    private String[] resolveEnumFiledValues(CommonCodeGenFiledMeta fieldMeta, Enum<?> enumConstant) {
+    private CommonCodeGenEnumFiledValue[] resolveEnumFiledValues(CommonCodeGenFiledMeta fieldMeta, Enum<?> enumConstant) {
         return Arrays.stream(fieldMeta.getDeclaringClassMeta().getFieldMetas())
                 .filter(field -> !field.getIsEnumConstant())
                 .map(field -> getEnumFiledValue(enumConstant, field))
-                .toArray(String[]::new);
+                .filter(Objects::nonNull)
+                // TODO 枚举字段名称判断优化
+                .filter(filedValue -> !filedValue.getEnumValue().contains("@"))
+                .toArray(CommonCodeGenEnumFiledValue[]::new);
     }
 
-    private String getEnumFiledValue(Enum<?> enumConstant, JavaFieldMeta field) {
+    private CommonCodeGenEnumFiledValue getEnumFiledValue(Enum<?> enumConstant, JavaFieldMeta field) {
         Field enumField = field.getField();
         AccessibleObject.setAccessible(new AccessibleObject[]{enumField}, true);
         try {
             Object value = enumField.get(enumConstant);
             if (value instanceof String) {
-                return String.format("\"%s\"", value);
+                return new CommonCodeGenEnumFiledValue(enumField, String.format("\"%s\"", value));
             }
-            return value.toString();
+            return new CommonCodeGenEnumFiledValue(enumField, value == null ? WindConstants.NULL : value.toString());
         } catch (IllegalAccessException e) {
             if (log.isInfoEnabled()) {
                 log.info("获取枚举字段值失败：{}", enumField);

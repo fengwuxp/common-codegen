@@ -32,6 +32,14 @@
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wind.middleware</groupId>
+            <artifactId>wind-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wind.client</groupId>
+            <artifactId>wind-retrofit</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,5 +1,9 @@
 package com.wuxp.codegen.core.macth;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -12,6 +16,11 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
      */
     private static final List<String> DEFAULT_IGNORE_PATTERNS = new ArrayList<>();
 
+    /**
+     * 需要全局忽略的包名列表
+     */
+    private static final List<Class<?>> DEFAULT_INCLUDE_CLASSES = new ArrayList<>();
+
     static {
         DEFAULT_IGNORE_PATTERNS.add("org.springframework.");
         DEFAULT_IGNORE_PATTERNS.add("org.slf4j.");
@@ -23,12 +32,14 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
         DEFAULT_IGNORE_PATTERNS.add("org.apache.");
         DEFAULT_IGNORE_PATTERNS.add("lombok.");
         DEFAULT_IGNORE_PATTERNS.add("javax.persistence.");
+        DEFAULT_IGNORE_PATTERNS.add("java.net.");
         DEFAULT_IGNORE_PATTERNS.add("javax.servlet.");
         DEFAULT_IGNORE_PATTERNS.add("java.security.");
         DEFAULT_IGNORE_PATTERNS.add("java.text.");
         DEFAULT_IGNORE_PATTERNS.add("java.io.");
         DEFAULT_IGNORE_PATTERNS.add("java.time.");
         DEFAULT_IGNORE_PATTERNS.add("java.util.");
+        DEFAULT_IGNORE_PATTERNS.add("java.lang.");
         DEFAULT_IGNORE_PATTERNS.add("sun.");
         DEFAULT_IGNORE_PATTERNS.add("com.google.");
         DEFAULT_IGNORE_PATTERNS.add("com.alibaba.");
@@ -44,6 +55,31 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
          * 文件上传
          */
         DEFAULT_IGNORE_PATTERNS.add("org.springframework.web.multipart.commons.MultipartFile");
+
+        DEFAULT_INCLUDE_CLASSES.add(Byte.class);
+        DEFAULT_INCLUDE_CLASSES.add(Short.class);
+        DEFAULT_INCLUDE_CLASSES.add(Integer.class);
+        DEFAULT_INCLUDE_CLASSES.add(Long.class);
+        DEFAULT_INCLUDE_CLASSES.add(Double.class);
+        DEFAULT_INCLUDE_CLASSES.add(Float.class);
+        DEFAULT_INCLUDE_CLASSES.add(Boolean.class);
+        DEFAULT_INCLUDE_CLASSES.add(byte.class);
+        DEFAULT_INCLUDE_CLASSES.add(short.class);
+        DEFAULT_INCLUDE_CLASSES.add(int.class);
+        DEFAULT_INCLUDE_CLASSES.add(long.class);
+        DEFAULT_INCLUDE_CLASSES.add(double.class);
+        DEFAULT_INCLUDE_CLASSES.add(float.class);
+        DEFAULT_INCLUDE_CLASSES.add(boolean.class);
+        DEFAULT_INCLUDE_CLASSES.add(BigDecimal.class);
+        DEFAULT_INCLUDE_CLASSES.add(BigInteger.class);
+        DEFAULT_INCLUDE_CLASSES.add(String.class);
+        DEFAULT_INCLUDE_CLASSES.add(Date.class);
+        DEFAULT_INCLUDE_CLASSES.add(LocalDateTime.class);
+        DEFAULT_INCLUDE_CLASSES.add(LocalDate.class);
+
+        DEFAULT_INCLUDE_CLASSES.add(Iterable.class);
+        DEFAULT_INCLUDE_CLASSES.add(Collection.class);
+        DEFAULT_INCLUDE_CLASSES.add(Map.class);
     }
 
     private final ExcludeCodeGenTypeElementMatcher excludeMatcher;
@@ -75,6 +111,7 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
     }
 
     public static class JavaClassElementMatcherBuilder {
+
         private final Set<String> ignorePackages;
 
         private final Set<Class<?>> ignoreClasses;

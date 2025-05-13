@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
+ * 枚举名称类型处理器
+ *
  * @see com.wuxp.codegen.meta.enums.EnumDefinitionPostProcessor
  */
 public class EnumNamesPostProcessor implements LanguageDefinitionPostProcessor<TypescriptClassMeta> {

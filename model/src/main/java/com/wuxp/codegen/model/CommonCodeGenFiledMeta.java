@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 
 /**
@@ -52,10 +53,14 @@ public class CommonCodeGenFiledMeta extends CommonBaseMeta {
     /**
      * 枚举的内部字段值
      */
-    private String[] enumFiledValues;
+    private CommonCodeGenEnumFiledValue[] enumFiledConstantValues;
 
     /**
      * 是否必填
      */
     private Boolean required = false;
+
+    public String[] getEnumFiledValues() {
+        return enumFiledConstantValues == null ? new String[0] : Arrays.stream(enumFiledConstantValues).map(CommonCodeGenEnumFiledValue::getEnumValue).toArray(String[]::new);
+    }
 }

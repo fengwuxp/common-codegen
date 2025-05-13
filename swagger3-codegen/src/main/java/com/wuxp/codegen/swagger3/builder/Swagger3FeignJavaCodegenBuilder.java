@@ -10,6 +10,7 @@ import com.wuxp.codegen.languages.java.JavaTypeDefinitionParser;
 import com.wuxp.codegen.languages.java.JavaTypeVariableDefinitionParser;
 import com.wuxp.codegen.languages.java.RxJavaSupportPostProcessor;
 import com.wuxp.codegen.mapping.MappingJavaTypeDefinitionParser;
+import com.wuxp.codegen.meta.annotations.retrofit2.Retrofit2AnnotationPostProcessor;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.LanguageDescription;
@@ -33,8 +34,11 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractSwagger3CodegenBuil
     @Override
     public CodeGenerator buildCodeGenerator() {
         initCodegenConfig(LanguageDescription.JAVA, ClientProviderType.SPRING_CLOUD_OPENFEIGN);
-        if (ClientProviderType.RETROFIT.equals(this.clientProviderType) && Boolean.TRUE.equals(useRxJava)) {
-            this.elementParsePostProcessors(new RxJavaSupportPostProcessor());
+        if (ClientProviderType.RETROFIT.equals(this.clientProviderType)) {
+            if (Boolean.TRUE.equals(useRxJava)) {
+                this.elementParsePostProcessors(new RxJavaSupportPostProcessor());
+            }
+            this.elementParsePostProcessors(new Retrofit2AnnotationPostProcessor());
         }
         configParserPostProcessors(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
         configCodeGenElementMatchers();
@@ -44,7 +48,7 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractSwagger3CodegenBuil
     @Override
     protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
         return MappingJavaTypeDefinitionParser.builder()
-                .typeMapping(baseTypeMapping)
+                .typeMapping(typeMappings)
                 .build();
     }
 

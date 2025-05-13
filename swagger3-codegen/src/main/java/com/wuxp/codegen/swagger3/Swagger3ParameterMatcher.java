@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
-import java.util.Optional;
 
 public class Swagger3ParameterMatcher implements CodeGenElementMatcher<JavaParameterMeta> {
 
@@ -20,14 +19,20 @@ public class Swagger3ParameterMatcher implements CodeGenElementMatcher<JavaParam
         if (schema != null) {
             return !schema.hidden();
         }
+        io.swagger.v3.oas.annotations.Parameter parameterAnnotation = parameter.getAnnotation(io.swagger.v3.oas.annotations.Parameter.class);
+        if (parameterAnnotation != null) {
+            return !parameterAnnotation.hidden();
+        }
         Method method = (Method) parameter.getDeclaringExecutable();
         String parameterName = parameter.getName();
-        Optional<Parameters> parameters = Optional.ofNullable(method.getAnnotation(Parameters.class));
-        return parameters.map(value -> Arrays.stream(value.value())
-                        .filter(item -> item.name().equals(parameterName))
-                        .findFirst())
-                .orElseGet(() -> Optional.ofNullable(method.getAnnotation(io.swagger.v3.oas.annotations.Parameter.class)))
-                .map(io.swagger.v3.oas.annotations.Parameter::hidden)
+        Parameters parameters = method.getAnnotation(Parameters.class);
+        if (parameters == null) {
+            return true;
+        }
+        return Arrays.stream(parameters.value())
+                .filter(item -> item.name().equals(parameterName))
+                .findFirst()
+                .map(p -> !p.hidden())
                 .orElse(true);
     }
 

@@ -3,7 +3,6 @@ package com.wuxp.codegen.meta.annotations.factories.javax;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import javax.validation.constraints.Pattern;
 import java.lang.reflect.Field;
@@ -17,10 +16,8 @@ import java.text.MessageFormat;
  */
 public class PatternMetaFactory extends AbstractAnnotationMetaFactory<Pattern, PatternMetaFactory.PatternMate> {
 
-
     @Override
     public PatternMate factory(Pattern annotation) {
-
         return super.newProxyMate(annotation, PatternMate.class);
     }
 
@@ -29,8 +26,7 @@ public class PatternMetaFactory extends AbstractAnnotationMetaFactory<Pattern, P
 
         @Override
         public String toComment(Field annotationOwner) {
-
-            return MessageFormat.format("{0} 约束条件：匹配正则表达式{1}", annotationOwner.getName(), this.regexp());
+            return MessageFormat.format("{0} 约束条件：匹配正则表达式: {1}", annotationOwner.getName(), this.regexp());
         }
     }
 }

@@ -1,23 +1,24 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
+      import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
+      import {Sex} from "../../enums/Sex";
+      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
+      import {Page} from "../../model/paging/Page";
+      import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
+      import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
+      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
       import {Order} from "../../domain/Order";
-      import {User} from "../../domain/User";
       import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
-      import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
-      import {Sex} from "../../enums/Sex";
-      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
+      import {OrderServiceQueryOrderReq} from "../../req/OrderServiceQueryOrderReq";
       import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
-      import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
       import {PageInfo} from "../../resp/PageInfo";
-      import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
       import {OrderServiceQueryOrder2Req} from "../../req/OrderServiceQueryOrder2Req";
       import {OrderServiceHello2Req} from "../../req/OrderServiceHello2Req";
-      import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
 
     /**
      * 订单服务
@@ -26,10 +27,11 @@ import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
 /*================================================分割线，以下为接口列表===================================================*/
 
     /**
-      * 1:获取订单列表
-      * 2:Http请求方法：GET
-      * 3:返回值在java中的类型为：List
-      * 4:返回值在java中的类型为：Order
+      * 1:GET /order/get_order
+      * 2:获取订单列表
+      * 3:Http请求方法：GET
+      * 4:返回值在java中的类型为：List
+      * 5:返回值在java中的类型为：Order
      **/
 
 export const  getOrder=  (req: OrderServiceGetOrderReq, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Order>>> =>{
@@ -49,10 +51,11 @@ export const  getOrder=  (req: OrderServiceGetOrderReq, options?: AxiosRequestCo
   }
 
     /**
-      * 1:获取订单列表
-      * 2:Http请求方法：GET
-      * 3:返回值在java中的类型为：List
-      * 4:返回值在java中的类型为：Order
+      * 1:GET /order/get_order_32
+      * 2:获取订单列表
+      * 3:Http请求方法：GET
+      * 4:返回值在java中的类型为：List
+      * 5:返回值在java中的类型为：Order
      **/
 
 export const  getOrder32=  (req: OrderServiceGetOrder32Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Order>>> =>{
@@ -66,31 +69,39 @@ export const  getOrder32=  (req: OrderServiceGetOrder32Req, options?: AxiosReque
   }
 
     /**
-      * 1:获取订单列表
-      * 2:Http请求方法：GET
-      * 3:返回值在java中的类型为：PageInfo
-      * 4:返回值在java中的类型为：Order
+      * 1:GET /order/queryOrder
+      * 2:获取订单列表
+      * 3:Http请求方法：GET
+      * 4:返回值在java中的类型为：PageInfo
+      * 5:返回值在java中的类型为：Order
      **/
 
-export const  queryOrder=  (req: QueryOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
+export const  queryOrder=  (req: OrderServiceQueryOrderReq, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
+        const {X-User-Id,...reqData} = req;
+        const headers:Record<string,any>={};
+            if(X-User-Id!=null){
+              headers['X-User-Id']=Array.isArray(X-User-Id)?X-User-Id.join(";"):X-User-Id;
+            }
   return axios.request<PageInfo<Order>>( {
       url:`/order/queryOrder`,
       method: 'get',
-      params: req,
+        headers,
+      params: reqData,
       responseType: 'json',
   ...(options || {} as AxiosRequestConfig)
   })
   }
 
     /**
-      * 1:获取订单列表
-      * 2:Http请求方法：GET
-      * 3:返回值在java中的类型为：Page
-      * 4:返回值在java中的类型为：Order
+      * 1:GET /order
+      * 2:获取订单列表
+      * 3:Http请求方法：GET
+      * 4:返回值在java中的类型为：Page
+      * 5:返回值在java中的类型为：Order
      **/
 
-export const  pageBySpringData=  (req: QueryOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<Order>> =>{
-  return axios.request<Order>( {
+export const  pageBySpringData=  (req: QueryOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<Page<Order>>> =>{
+  return axios.request<Page<Order>>( {
       url:`/order`,
       method: 'get',
       params: req,
@@ -100,10 +111,11 @@ export const  pageBySpringData=  (req: QueryOrderEvt, options?: AxiosRequestConf
   }
 
     /**
-      * 1:获取订单列表
-      * 2:Http请求方法：POST
-      * 3:返回值在java中的类型为：ServiceQueryResponse
-      * 4:返回值在java中的类型为：Order
+      * 1:POST /order/queryOrder2
+      * 2:获取订单列表
+      * 3:Http请求方法：POST
+      * 4:返回值在java中的类型为：ServiceQueryResponse
+      * 5:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
@@ -120,15 +132,16 @@ export const  queryOrder2=  (req?: OrderServiceQueryOrder2Req, options?: AxiosRe
   }
 
     /**
-      * 1:查询分页
-      * 2:Http请求方法：POST
+      * 1:POST /order/queryPage
+      * 2:查询分页
+      * 3:Http请求方法：POST
       * <pre>
-      * 4:参数列表：
-      * 5:参数名称：id，参数说明：null
+      * 5:参数列表：
+      * 6:参数名称：id，参数说明：null
       * </pre>
-      * 7:返回值在java中的类型为：ServiceResponse
-      * 8:返回值在java中的类型为：PageInfo
-      * 9:返回值在java中的类型为：Order
+      * 8:返回值在java中的类型为：ServiceResponse
+      * 9:返回值在java中的类型为：PageInfo
+      * 10:返回值在java中的类型为：Order
      **/
 
 export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<Order>>> =>{
@@ -145,14 +158,15 @@ export const  queryPage=  (req?: OrderServiceQueryPageReq, options?: AxiosReques
   }
 
     /**
-      * 1:创建订单
-      * 2:Http请求方法：POST
+      * 1:POST /order/createOrder
+      * 2:创建订单
+      * 3:Http请求方法：POST
       * <pre>
-      * 4:参数列表：
-      * 5:参数名称：evt，参数说明：null
+      * 5:参数列表：
+      * 6:参数名称：evt，参数说明：null
       * </pre>
-      * 7:返回值在java中的类型为：ServiceResponse
-      * 8:返回值在java中的类型为：Long
+      * 8:返回值在java中的类型为：ServiceResponse
+      * 9:返回值在java中的类型为：Long
      **/
 
 export const  createOrder=  (req: CreateOrderEvt, options?: AxiosRequestConfig): Promise<AxiosResponse<string>> =>{
@@ -169,10 +183,11 @@ export const  createOrder=  (req: CreateOrderEvt, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:test hello
-      * 2:Http请求方法：POST
-      * 3:返回值在java中的类型为：ServiceResponse
-      * 4:返回值在java中的类型为：Object
+      * 1:POST /order/hello
+      * 2:test hello
+      * 3:Http请求方法：POST
+      * 4:返回值在java中的类型为：ServiceResponse
+      * 5:返回值在java中的类型为：Object
      **/
 
 export const  hello=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<any>> =>{
@@ -188,10 +203,11 @@ export const  hello=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<any
   }
 
     /**
-      * 1:test hello
-      * 2:Http请求方法：POST
-      * 3:返回值在java中的类型为：ServiceQueryResponse
-      * 4:返回值在java中的类型为：Object
+      * 1:POST /order/hello_2
+      * 2:test hello
+      * 3:Http请求方法：POST
+      * 4:返回值在java中的类型为：ServiceQueryResponse
+      * 5:返回值在java中的类型为：Object
      **/
 
 export const  hello2=  (req?: OrderServiceHello2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<any>>> =>{
@@ -208,10 +224,11 @@ export const  hello2=  (req?: OrderServiceHello2Req, options?: AxiosRequestConfi
   }
 
     /**
-      * 1:test hello_3
-      * 2:Http请求方法：POST
-      * 3:返回值在java中的类型为：ServiceQueryResponse
-      * 4:返回值在java中的类型为：String
+      * 1:POST /order/hello_3
+      * 2:test hello_3
+      * 3:Http请求方法：POST
+      * 4:返回值在java中的类型为：ServiceQueryResponse
+      * 5:返回值在java中的类型为：String
      **/
 
 export const  hello3=  (req?: OrderServiceHello3Req, options?: AxiosRequestConfig): Promise<AxiosResponse<PageInfo<string>>> =>{
@@ -228,9 +245,10 @@ export const  hello3=  (req?: OrderServiceHello3Req, options?: AxiosRequestConfi
   }
 
     /**
-      * 1:test hello
-      * 2:Http请求方法：DELETE
-      * 3:返回值在java中的类型为：void
+      * 1:DELETE /order/hello_delete
+      * 2:test hello
+      * 3:Http请求方法：DELETE
+      * 4:返回值在java中的类型为：void
      **/
 
 export const  deleteRequest=  (req?: OrderServiceDeleteReq, options?: AxiosRequestConfig): Promise<AxiosResponse<void>> =>{
@@ -244,10 +262,11 @@ export const  deleteRequest=  (req?: OrderServiceDeleteReq, options?: AxiosReque
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：Sex
+      * 1:GET /order/testEnumNames
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
       * 4:返回值在java中的类型为：Sex
+      * 5:返回值在java中的类型为：Sex
      **/
 
 export const  testEnumNames=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<Record<'MAN' | 'WOMAN' | 'NONE','MAN' | 'WOMAN' | 'NONE'>>> =>{
@@ -260,10 +279,11 @@ export const  testEnumNames=  ( options?: AxiosRequestConfig): Promise<AxiosResp
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：Sex
+      * 1:GET /order/testEnumNames2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：Sex
      **/
 
 export const  testEnumNames2=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,'MAN' | 'WOMAN' | 'NONE'>>> =>{
@@ -276,10 +296,11 @@ export const  testEnumNames2=  ( options?: AxiosRequestConfig): Promise<AxiosRes
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：Sex
-      * 4:返回值在java中的类型为：Integer
+      * 1:GET /order/testEnumNames3
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：Sex
+      * 5:返回值在java中的类型为：Integer
      **/
 
 export const  testEnumNames3=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<Record<'MAN' | 'WOMAN' | 'NONE',number>>> =>{

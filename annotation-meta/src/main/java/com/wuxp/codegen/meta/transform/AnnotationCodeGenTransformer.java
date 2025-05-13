@@ -31,7 +31,9 @@ public interface AnnotationCodeGenTransformer<T extends CommonCodeGenAnnotation,
             return this.transform(annotationMate, (Class<?>) annotationOwner);
         } else if (annotationOwner instanceof Field) {
             return this.transform(annotationMate, (Field) annotationOwner);
-        } else {
+        } else if (annotationOwner instanceof Parameter){
+            return this.transform(annotationMate, (Parameter) annotationOwner);
+        }else {
             return this.transform(annotationMate, (Method) annotationOwner);
         }
     }

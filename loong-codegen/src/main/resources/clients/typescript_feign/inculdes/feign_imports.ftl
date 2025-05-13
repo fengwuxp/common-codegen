@@ -5,7 +5,7 @@ PostMapping,
 DeleteMapping,
 GetMapping,
 PutMapping,
-Signature,
-HttpMediaType,
-AuthenticationType,
-FeignRequestOptions} from "fengwuxp-typescript-feign";
+FeignHttpClientPromiseFunction,
+feignHttpFunctionBuilder,
+FeignRequestOptions} from "feign-client";
+import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";

@@ -2,7 +2,9 @@ package com.wuxp.codegen.meta.annotations.factories;
 
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.meta.annotations.ClientAnnotationProvider;
 import com.wuxp.codegen.meta.transform.AnnotationCodeGenTransformer;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
@@ -16,7 +18,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -96,7 +102,6 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
         }
     }
 
-
     public static void registerAnnotationProvider(ClientProviderType type, ClientAnnotationProvider annotationProvider) {
         ANNOTATION_PROVIDERS.put(type, annotationProvider);
     }
@@ -107,11 +112,21 @@ public abstract class AbstractAnnotationMetaFactory<A extends Annotation, T exte
         transformerMap.put(annotationType, transformer);
     }
 
+    public static <T extends CommonCodeGenAnnotation, A extends AnnotationMate> AnnotationCodeGenTransformer<T, A> getAnnotationTransformer(Class<? extends Annotation> annotationType) {
+        CodegenConfig codegenGlobalConfig = CodegenConfigHolder.getConfig();
+        ClientProviderType providerType = codegenGlobalConfig.getProviderType();
+        if (providerType == null) {
+            throw new CodegenRuntimeException("CODEGEN_GLOBAL_CONFIG#providerType is null");
+        }
+
+        Optional<AnnotationCodeGenTransformer<T, A>> transformer = getAnnotationTransformer(providerType, annotationType);
+        return transformer.orElseThrow(() -> new CodegenRuntimeException(String.format("client provider type=%s annotationType = %s not found AnnotationCodeGenTransformer", providerType.name(), annotationType.getName())));
+    }
 
     @SuppressWarnings("unchecked")
     public static <T extends CommonCodeGenAnnotation, A extends AnnotationMate> Optional<AnnotationCodeGenTransformer<T, A>> getAnnotationTransformer(ClientProviderType type, Class<? extends Annotation> annotationType) {
         Map<Class<? extends Annotation>, AnnotationCodeGenTransformer<? extends CommonCodeGenAnnotation, ? extends AnnotationMate>> transformers = CLIENT_PROVIDER_TYPE_ANNOTATION_TRANSFORMERS.get(type);
-        return Optional.ofNullable((AnnotationCodeGenTransformer<T, A>) transformers.get(annotationType) );
+        return Optional.ofNullable((AnnotationCodeGenTransformer<T, A>) transformers.get(annotationType));
     }
 
 

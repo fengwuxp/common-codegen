@@ -17,9 +17,7 @@ import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -51,7 +49,7 @@ public class Swagger2FeignDartCodegenBuilder extends AbstractSwagger2CodegenBuil
     @Override
     protected LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser() {
         return MappingDartTypeDefinitionParser.builder()
-                .typeMapping(baseTypeMapping)
+                .typeMapping(typeMappings)
                 .build();
     }
 

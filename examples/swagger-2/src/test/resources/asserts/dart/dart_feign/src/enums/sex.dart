@@ -12,12 +12,15 @@ class Sex extends EnumClass  {
 
 static Serializer<Sex> get serializer => _$sexSerializer;
 /// 男
+/// 男的
 /// 字段在java中的类型为：Sex
 static const Sex MAN = _$MAN;
 /// 女
+/// 女的
 /// 字段在java中的类型为：Sex
 static const Sex WOMAN = _$WOMAN;
 /// 未知
+/// ???
 /// 字段在java中的类型为：Sex
 static const Sex NONE = _$NONE;
 

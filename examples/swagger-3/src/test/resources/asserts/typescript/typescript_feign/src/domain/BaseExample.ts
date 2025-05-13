@@ -1,15 +1,7 @@
 /* tslint:disable */
-  import {Enum} from "fengwuxp-typescript-feign";
-
-  export class BaseExample{
-
-  constructor() {}
+  export enum BaseExample{
         /**
           *字段在java中的类型为：BaseExample
         **/
-      public static readonly A:Enum={
-      name:"A",
-      ordinal:0,
-       desc: "字段在java中的类型为：BaseExample"
-      };
+        A='A'
   }

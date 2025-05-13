@@ -2,11 +2,13 @@ package com.wuxp.codegen.swagger3.example.controller;
 
 import com.wuxp.codegen.swagger3.example.ExampleDto;
 import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -25,13 +27,13 @@ public class ExampleController {
 
 
     @GetMapping("get_num")
-    public List<Integer> getNums(Integer num) {
+    public List<Integer> getNums(@RequestParam("num") Integer num) {
 
         return Arrays.asList(num, num + 1);
     }
 
     @GetMapping("get_maps")
-    public List<Map<Integer, String>> getMaps(Integer num) {
+    public List<Map<Integer, String>> getMaps(@Parameter(hidden = true) Integer num) {
 
         Map<Integer, String> map = new HashMap<>();
         map.put(num, "num");

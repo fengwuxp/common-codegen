@@ -3,14 +3,10 @@ package com.wuxp.codegen.meta.annotations.factories.javax;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
-import com.wuxp.codegen.meta.util.CodegenAnnotationUtils;
-import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 
 import javax.validation.constraints.Size;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * javax 验证注解处理

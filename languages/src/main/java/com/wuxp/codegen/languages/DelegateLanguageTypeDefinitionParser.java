@@ -3,11 +3,15 @@ package com.wuxp.codegen.languages;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import lombok.Getter;
 
 
 /**
+ * 将类型解析委托给 {@link #delegate}
+ *
  * @author wuxp
  */
+@Getter
 public abstract class DelegateLanguageTypeDefinitionParser<C extends CommonCodeGenClassMeta> implements LanguageTypeDefinitionParser<C> {
 
     private final LanguageTypeDefinitionParser<C> delegate;
@@ -19,10 +23,6 @@ public abstract class DelegateLanguageTypeDefinitionParser<C extends CommonCodeG
     @Override
     public C newElementInstance() {
         return getDelegate().newElementInstance();
-    }
-
-    public LanguageTypeDefinitionParser<C> getDelegate() {
-        return delegate;
     }
 
     @Override

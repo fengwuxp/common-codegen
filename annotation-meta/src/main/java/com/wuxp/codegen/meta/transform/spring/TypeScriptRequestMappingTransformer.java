@@ -1,12 +1,23 @@
 package com.wuxp.codegen.meta.transform.spring;
 
 
+import com.alibaba.fastjson2.JSON;
+import com.wuxp.codegen.core.parser.JavaClassParser;
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import com.wuxp.codegen.model.constant.TypescriptFeignMediaTypeConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wxup
@@ -31,6 +42,31 @@ public class TypeScriptRequestMappingTransformer extends SpringRequestMappingTra
         CommonCodeGenAnnotation annotation = super.innerTransform(annotationMate, annotationOwner.getSimpleName());
         annotation.setName(TS_FEIGN_CLIENT_ANNOTATION_NAME);
         return annotation;
+    }
+
+    @Override
+    public CommonCodeGenAnnotation transform(RequestMappingMetaFactory.RequestMappingMate annotationMate, Method annotationOwner) {
+        CommonCodeGenAnnotation result = super.transform(annotationMate, annotationOwner);
+        Map<String, String> headers = new HashMap<>();
+        String[] parameterNames = JavaClassParser.PARAMETER_NAME_DISCOVERER.getParameterNames(annotationOwner);
+        if (ObjectUtils.isEmpty(parameterNames)) {
+            return result;
+        }
+        int i = 0;
+        for (Parameter parameter : annotationOwner.getParameters()) {
+            RequestHeader header = parameter.getAnnotation(RequestHeader.class);
+            if (header != null) {
+                String name = StringUtils.hasText(header.value()) ? header.value() : header.name();
+                Assert.hasText(name, () -> String.format("method: %s#%s RequestHeader annotation value or name is empty", annotationOwner.getDeclaringClass().getName(), annotationOwner.getName()));
+                headers.put(name, "{" + parameterNames[i] + "}");
+            }
+            i++;
+        }
+        if (!headers.isEmpty()) {
+            Map<String, String> namedArguments = result.getNamedArguments();
+            namedArguments.put("headers", JSON.toJSONString(headers));
+        }
+        return result;
     }
 
 

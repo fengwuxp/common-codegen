@@ -7,6 +7,7 @@
         import {${key}} from "${customizeMethod.pathResolve(packagePath,val.packagePath)}";
     </#list>
 </#if>
+import {DefaultOrderField} from "feign-client";
 
 <#if (comments?size>0)>
     /**

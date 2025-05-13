@@ -2,7 +2,6 @@ package com.wuxp.codegen.swagger2.example.enums;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -11,14 +10,13 @@ import lombok.Getter;
  * @author wuxp
  */
 @ApiModel("ExampleEnum")
-@AllArgsConstructor
 @Getter
 public enum ExampleEnum {
 
     /**
      * 男的
      */
-    MAN(),
+    MAN,
 
     /**
      * 女的
@@ -26,12 +24,12 @@ public enum ExampleEnum {
      * @serialField 妹纸
      */
     @ApiModelProperty("女")
-    WOMAN(),
+    WOMAN,
 
     /**
-     * ???
+     * 位置
      */
-    NONE();
+    NONE;
 
 
 }

@@ -2,6 +2,7 @@
 /* eslint-disable */
 
         import {BaseEvt} from "./BaseEvt";
+import {DefaultOrderField} from "feign-client";
 
     /**
         * 统一的查询对象

@@ -1,6 +1,7 @@
 package com.wuxp.codegen.templates;
 
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.model.TemplateFileVersion;
 import freemarker.ext.beans.MapModel;
@@ -91,9 +92,8 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
         try {
             configuration.setAllSharedVariables(mapModel);
         } catch (TemplateModelException e) {
-            e.printStackTrace();
+            throw new CodegenRuntimeException(e);
         }
-
         return configuration;
     }
 
@@ -107,7 +107,7 @@ public class FreemarkerTemplateLoader extends AbstractTemplateLoader<Template> {
             templateMethods.put("pathResolve", ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.PathResolveMethod").newInstance());
             templateMethods.put("combineDartFullType", ClassLoaderUtils.loadClass("com.wuxp.codegen.loong.freemarker.DartFullTypeCombineMethod").newInstance());
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new CodegenRuntimeException(e);
         }
         return templateMethods;
     }

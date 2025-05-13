@@ -38,8 +38,8 @@ public abstract class AbstractSwagger3CodegenBuilder extends AbstractLoongCodege
         this.codeGenElementMatchers(
                 new ExcludeAnnotationCodeGenElementMatcher(Collections.singletonList(Hidden.class)),
                 new Swagger3MethodMatcher(),
-                new Swagger3FieldMatcher(),
-                new Swagger3ParameterMatcher()
+                new Swagger3ParameterMatcher(),
+                new Swagger3FieldMatcher()
         );
     }
 }

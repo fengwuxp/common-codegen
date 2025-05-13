@@ -22,14 +22,18 @@ public abstract class AbstractNamedAnnotationMate extends AbstractAnnotationMate
     public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
         CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
         Map<String, String> namedArguments = annotation.getNamedArguments();
-        // name 和 value 都有值，移除一个
+        // name 和 value 都有值，移除 value
         namedArguments.remove(ANNOTATION_VALUE_KEY);
-        namedArguments.remove(ANNOTATION_VALUE_KEY);
-        namedArguments.put(ANNOTATION_NAME_KEY, CodegenAnnotationUtils.quote(getParameterName(annotationOwner)));
-        //注解位置参数
+        if (!StringUtils.hasText(namedArguments.get(ANNOTATION_NAME_KEY))) {
+            // 如果 name 属性为空，则尝试使用参数名称
+            namedArguments.put(ANNOTATION_NAME_KEY, CodegenAnnotationUtils.quote(getParameterName(annotationOwner)));
+        }
+        // 注解位置参数
         List<String> positionArguments = new LinkedList<>(namedArguments.values());
         annotation.setPositionArguments(positionArguments);
         annotation.setElementType(ElementType.PARAMETER);
         return annotation;
     }
+
+
 }

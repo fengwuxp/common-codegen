@@ -7,7 +7,13 @@ import com.wuxp.codegen.core.parser.LanguageElementDefinitionParser;
 import com.wuxp.codegen.core.parser.LanguageTypeDefinitionParser;
 import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
 import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
-import com.wuxp.codegen.languages.typescript.*;
+import com.wuxp.codegen.languages.typescript.TypeScriptFieldDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptIndexGenEventListener;
+import com.wuxp.codegen.languages.typescript.TypeScriptMethodDefinitionPostProcessor;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeDefinitionParser;
+import com.wuxp.codegen.languages.typescript.TypeScriptTypeVariableDefinitionParser;
+import com.wuxp.codegen.languages.typescript.UmiModel;
+import com.wuxp.codegen.languages.typescript.UmiRequestMethodDefinitionPostProcessor;
 import com.wuxp.codegen.mapping.MappingTypescriptTypeDefinitionParser;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
@@ -24,14 +30,19 @@ import java.util.List;
 @Slf4j
 public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2CodegenBuilder {
 
+    private final boolean genIndexFile;
 
-    private Swagger2FeignTypescriptCodegenBuilder() {
+    private Swagger2FeignTypescriptCodegenBuilder(boolean genIndexFile) {
         super();
+        this.genIndexFile = genIndexFile;
     }
 
+    public static Swagger2FeignTypescriptCodegenBuilder builder(boolean genIndexFile) {
+        return new Swagger2FeignTypescriptCodegenBuilder(genIndexFile);
+    }
 
     public static Swagger2FeignTypescriptCodegenBuilder builder() {
-        return new Swagger2FeignTypescriptCodegenBuilder();
+        return new Swagger2FeignTypescriptCodegenBuilder(false);
     }
 
     @Override
@@ -43,6 +54,10 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2Codeg
         configParserPostProcessors(TypescriptClassMeta.PROMISE);
         configCodeGenElementMatchers();
         configUmiModel();
+        this.elementParsePostProcessors(new TypeScriptMethodDefinitionPostProcessor());
+        if (genIndexFile) {
+            this.codeGenEventListeners(new TypeScriptIndexGenEventListener());
+        }
         return createCodeGenerator();
     }
 
@@ -70,7 +85,7 @@ public class Swagger2FeignTypescriptCodegenBuilder extends AbstractSwagger2Codeg
     @Override
     protected LanguageTypeDefinitionParser<TypescriptClassMeta> getMappingTypeDefinitionParser() {
         return MappingTypescriptTypeDefinitionParser.builder()
-                .typeMapping(baseTypeMapping)
+                .typeMapping(typeMappings)
                 .build();
     }
 

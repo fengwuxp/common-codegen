@@ -5,6 +5,9 @@ import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.languages.typescript.TypescriptFieldMate;
 
+/**
+ * @author wuxp
+ */
 public class TypeScriptFieldDefinitionParser extends AbstractLanguageFieldDefinitionParser<TypescriptFieldMate> {
 
     public TypeScriptFieldDefinitionParser(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishSourceParser) {

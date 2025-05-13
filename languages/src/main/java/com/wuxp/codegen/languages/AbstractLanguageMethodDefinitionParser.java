@@ -7,7 +7,11 @@ import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.ToggleCaseUtils;
 import com.wuxp.codegen.meta.annotations.factories.NamedAnnotationMate;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
-import com.wuxp.codegen.model.*;
+import com.wuxp.codegen.model.CommonBaseMeta;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
@@ -28,7 +32,16 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Parameter;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,8 +54,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
      */
     private static final String DEFAULT_MARGE_PARAMS_NAME = "req";
 
-    private static final String MARGE_PARAMS_TAG_NAME = "margeParams";
-
+    public static final String MARGE_PARAMS_TAG_NAME = "margeParams";
 
     /**
      * 泛型合并策略
@@ -102,6 +114,8 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
             } else {
                 dependencies.add(this.publishParse(classMeta.getSource()));
             }
+            // 参数中的泛型
+            dependencies.addAll(Arrays.asList(classMeta.getTypeVariables()));
         });
         dependencies.addAll(Arrays.asList(result.getReturnTypes()));
         if (!ObjectUtils.isEmpty(result.getTypeVariables())) {
@@ -112,7 +126,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
     /**
      * 方法参数处理流程
-     * 1: 参数过滤（过滤掉控制器方法中servlet相关的参数等等）
+     * 1: 参数过滤（过滤掉控制器方法中 servlet 相关的参数等等）
      * 2：转换参数上的注解
      */
     private M parseMethod(JavaMethodMeta methodMeta) {
@@ -135,6 +149,19 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     private Optional<CommonCodeGenClassMeta> getParameterMeta(JavaMethodMeta methodMeta, String parameterName, Class<?>[] parameterTypes) {
+        Parameter parameter = methodMeta.getParameters().get(parameterName);
+        JavaParameterMeta parameterMeta = new JavaParameterMeta();
+        parameterMeta.setTypes(parameterTypes)
+                .setIsTransient(false)
+                .setIsVolatile(false);
+        parameterMeta.setAccessPermission(AccessPermission.PUBLIC);
+        parameterMeta.setAnnotations(parameter.getAnnotations());
+        parameterMeta.setParameter(parameter);
+        // TODO 判断参数是否需要生成，待优化
+        CommonBaseMeta commonBaseMeta = this.publishParse(parameterMeta);
+        if (commonBaseMeta == null) {
+            return Optional.empty();
+        }
         Optional<CommonCodeGenClassMeta> optionalMeta = this.publishParseOfNullable(parameterTypes[0]);
         return optionalMeta.map(result -> {
             CommonCodeGenClassMeta classMeta = new CommonCodeGenClassMeta();
@@ -163,9 +190,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
             return arrayOrCollectComplexParams(methodMeta);
         } else {
             // 用于缓存合并的参数 filedList，合并复杂参数
-            final Set<CommonCodeGenFiledMeta> filedMetas = new LinkedHashSet<>(resolveComplexParameters(methodMeta));
-            // 合并简单参数
-            filedMetas.addAll(meagreSimpleParameters(methodMeta));
+            final Set<CommonCodeGenFiledMeta> filedMetas = new LinkedHashSet<>(meagreMethodParameters(methodMeta));
             // 参数的元数据类型信息
             final CommonCodeGenClassMeta argsClassMeta = new CommonCodeGenClassMeta();
             argsClassMeta.setFieldMetas(filedMetas.toArray(new CommonCodeGenFiledMeta[]{}));
@@ -227,8 +252,8 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     /**
      * 是否为复杂的集合或数组参数
      *
-     * @param methodMeta
-     * @return
+     * @param methodMeta java 方法元数据描述
+     * @return if <code>true</code> 是
      */
     private boolean isArrayOrCollectComplexParams(JavaMethodMeta methodMeta) {
         if (methodMeta.getParams().size() > 1) {
@@ -288,7 +313,6 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 .stream()
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
-//                .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
                 .collect(Collectors.toList());
         if (params.size() > 1) {
             return false;
@@ -299,7 +323,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     // 合并简单参数
-    private List<CommonCodeGenFiledMeta> meagreSimpleParameters(JavaMethodMeta methodMeta) {
+    private List<CommonCodeGenFiledMeta> meagreMethodParameters(JavaMethodMeta methodMeta) {
         List<CommonCodeGenFiledMeta> results = new ArrayList<>();
         methodMeta.getParams().forEach((parameterName, classes) -> {
             // 注解
@@ -344,37 +368,6 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
                 JavaTypeUtils.isAssignableFrom(annotation.annotationType(), CookieValue.class) ||
                 JavaTypeUtils.isAssignableFrom(annotation.annotationType(), RequestHeader.class);
     }
-
-
-    /**
-     * 合并复杂参数的字段
-     *
-     * @return 是否存在复杂类型的参数
-     */
-    private List<CommonCodeGenFiledMeta> resolveComplexParameters(JavaMethodMeta methodMeta) {
-        return methodMeta.getParams().values()
-                .stream()
-                .map(this::parseComplexParameterTypes)
-                .flatMap(Collection::stream)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-    private List<List<CommonCodeGenFiledMeta>> parseComplexParameterTypes(Class<?>[] parameterTypes) {
-        return Arrays.stream(parameterTypes)
-                .filter(clazz -> !JavaArrayClassTypeMark.class.equals(clazz))
-                .filter(clazz -> !clazz.isEnum())
-                //非jdk中的复杂对象
-                .filter(JavaTypeUtils::isNoneJdkComplex)
-                .map(this::publishParseOfNullable)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(CommonCodeGenClassMeta.class::cast)
-                .map(CommonCodeGenClassMeta::getFieldMetas)
-                .map(Arrays::asList)
-                .collect(Collectors.toList());
-    }
-
 
     private CommonCodeGenClassMeta[] getReturnTypes(JavaMethodMeta javaMethodMeta) {
         //处理返回值

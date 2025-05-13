@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.Null;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -27,6 +28,13 @@ public final class RequestMappingUtils {
     private RequestMappingUtils() {
     }
 
+    /**
+     * 合并 url
+     *
+     * @param annotationMate  方法上的注解
+     * @param annotationOwner 方法
+     * @return 合并后的请url，可能会返回 null
+     */
     public static String combinePath(RequestMappingMetaFactory.RequestMappingMate annotationMate, Method annotationOwner) {
         Class<?> declaringClass = annotationOwner.getDeclaringClass();
         Optional<RequestMappingMetaFactory.RequestMappingMate> requestAnnotation = findRequestMappingAnnotation(declaringClass.getAnnotations());
@@ -42,6 +50,7 @@ public final class RequestMappingUtils {
      * @param otherPatterns 方法上的{@link org.springframework.web.bind.annotation.RequestMapping}注解的 value
      * @return 合并后的请url，可能会返回null
      */
+    @Null
     public static String combinePath(String[] patterns, String[] otherPatterns) {
         boolean patternIsEmpty = patterns == null || patterns.length == 0;
         boolean otherIsEmpty = otherPatterns == null || otherPatterns.length == 0;

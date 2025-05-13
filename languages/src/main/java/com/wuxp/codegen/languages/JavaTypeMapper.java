@@ -7,6 +7,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * 将一个 java 类类型转换为一个或多个 java 类类型
+ *
+ * @author wuxp
+ */
 public final class JavaTypeMapper {
 
     /**

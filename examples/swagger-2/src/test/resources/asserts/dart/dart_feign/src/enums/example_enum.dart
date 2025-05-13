@@ -11,12 +11,14 @@ class ExampleEnum extends EnumClass  {
 
 
 static Serializer<ExampleEnum> get serializer => _$exampleEnumSerializer;
+/// 男的
 /// 字段在java中的类型为：ExampleEnum
 static const ExampleEnum MAN = _$MAN;
 /// 女
 /// @serialField 妹纸
 /// 字段在java中的类型为：ExampleEnum
 static const ExampleEnum WOMAN = _$WOMAN;
+/// 位置
 /// 字段在java中的类型为：ExampleEnum
 static const ExampleEnum NONE = _$NONE;
 

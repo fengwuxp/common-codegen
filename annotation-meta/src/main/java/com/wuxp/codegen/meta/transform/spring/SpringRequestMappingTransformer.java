@@ -14,7 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
 
@@ -126,9 +132,9 @@ public class SpringRequestMappingTransformer implements
         }
 
         Map<String, String[]> mediaTypes = new HashMap<>();
-        //在注解中属性名称
+        // 在注解中属性名称
         String[] attrNames = {MappingAnnotationPropNameConstant.PRODUCES, MappingAnnotationPropNameConstant.CONSUMES};
-        //客户端和服务的produces consumes 逻辑对调
+        // 客户端和服务的 produces consumes 逻辑对调
         mediaTypes.put(attrNames[0], annotationMate.consumes());
         mediaTypes.put(attrNames[1], annotationMate.produces());
 

@@ -3,7 +3,15 @@ package com.wuxp.codegen;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.body.AnnotationDeclaration;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.EnumConstantDeclaration;
+import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.utils.CollectionStrategy;
 import com.github.javaparser.utils.ParserCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
@@ -22,7 +30,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.github.javaparser.utils.CodeGenerationUtils.mavenModuleRoot;
 
@@ -232,7 +245,7 @@ public class SourceCodeProvider {
      * @param field 枚举常量field
      * @return 枚举常量编译描述对象
      */
-    @SuppressWarnings({"rawtypes","unchecked"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public Optional<EnumConstantDeclaration> getEnumConstantDeclaration(Field field) {
         if (field == null || !field.isEnumConstant()) {
             return Optional.empty();
@@ -281,7 +294,7 @@ public class SourceCodeProvider {
      * @param parameterTypes 参数类型列表
      * @return Method编译描述对象
      */
-    @SuppressWarnings({"rawtypes","unchecked"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public Optional<MethodDeclaration> getMethodDeclaration(Class<?> clazz, String methodName, Class[] parameterTypes) {
         String[] parameterTypeNames = Arrays.stream(parameterTypes).map(Class::getName).toArray(String[]::new);
         return this.getTypeDeclaration(clazz)
@@ -417,7 +430,8 @@ public class SourceCodeProvider {
         }
         Map<Path, ParseResult<CompilationUnit>> sources = sourcesJarCaches.computeIfAbsent(classSourcePath, this::getSourcesJarParseResults);
         Path sourcePath = Paths.get(this.transformClassToPath(clazz));
-        return sources.get(sourcePath).getResult();
+        ParseResult<CompilationUnit> result = sources.get(sourcePath);
+        return result == null ? Optional.empty() : result.getResult();
     }
 
     private Map<Path, ParseResult<CompilationUnit>> getSourcesJarParseResults(String sourcesJarPath) {

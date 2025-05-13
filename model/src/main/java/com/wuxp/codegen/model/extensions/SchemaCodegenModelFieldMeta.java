@@ -36,6 +36,6 @@ public class SchemaCodegenModelFieldMeta implements Serializable {
      * @return
      */
     public boolean isRef() {
-        return type.startsWith("$");
+        return type!=null && type.startsWith("$");
     }
 }

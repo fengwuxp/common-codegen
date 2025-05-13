@@ -2,6 +2,7 @@
 /* eslint-disable */
 
         import {Sex} from "../enums/Sex";
+import {DefaultOrderField} from "feign-client";
 
     /**
         * 合并方法参数生成的类
