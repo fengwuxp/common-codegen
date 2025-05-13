@@ -53,10 +53,10 @@ class Swagger3FeignSdkCodegenDartTest {
         ClientProviderType clientProviderType = ClientProviderType.DART_FEIGN;
 
         Swagger3FeignDartCodegenBuilder.builder()
-                //设置基础数据类型的映射关系
-                .baseTypeMapping(ServiceQueryResponse.class, DartClassMeta.FUTURE)
-                .baseTypeMapping(ServiceResponse.class, DartClassMeta.FUTURE)
-                //自定义的类型映射
+                // 设置数据类型的映射关系
+                .typeMappings(ServiceQueryResponse.class, DartClassMeta.FUTURE)
+                .typeMappings(ServiceResponse.class, DartClassMeta.FUTURE)
+                // 自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
                 .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))

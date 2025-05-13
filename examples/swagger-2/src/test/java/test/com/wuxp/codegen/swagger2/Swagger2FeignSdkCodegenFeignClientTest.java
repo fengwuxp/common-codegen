@@ -9,6 +9,7 @@ import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignJavaCodegenBuilder;
 import com.wuxp.codegen.swagger2.example.domain.User;
+import com.wuxp.codegen.swagger2.example.enums.ExampleEnum;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
@@ -47,8 +48,8 @@ class Swagger2FeignSdkCodegenFeignClientTest {
 
         Swagger2FeignJavaCodegenBuilder.builder()
                 .build()
-                //设置基础数据类型的映射关系
-                .baseTypeMapping(MultipartFile.class, JavaCodeGenClassMeta.FILE)
+                //设置数据类型的映射关系
+                .typeMappings(MultipartFile.class, JavaCodeGenClassMeta.FILE)
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .languageDescription(language)

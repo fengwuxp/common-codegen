@@ -8,6 +8,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * 通过事件解析不同语言定义的解析器
+ *
+ * @author wuxp
+ */
 public interface LanguageElementDefinitionPublishSourceParser {
 
     default <C extends CommonBaseMeta> C publishParse(Object source) {

@@ -12,9 +12,12 @@ import './feign_sdk.reflectable.dart';
           import './src/clients/list_params_test_service.dart';
           import './src/model/domain/order.dart';
           import './src/clients/order_service.dart';
+          import './src/model/paging/Page.dart';
           import './src/model/resp/page_info.dart';
+          import './src/model/paging/Pageable.dart';
           import './src/model/evt/query_order_evt.dart';
           import './src/enums/sex.dart';
+          import './src/model/paging/Sort.dart';
           import './src/model/domain/user.dart';
           import './src/clients/user_service.dart';
 

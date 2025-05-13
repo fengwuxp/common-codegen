@@ -1,7 +1,9 @@
 package com.wuxp.codegen.swagger3.domain;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
         import com.wuxp.codegen.swagger3.domain.Order;
         import com.wuxp.codegen.swagger3.enums.Sex;
         import java.util.List;
@@ -11,6 +13,7 @@ import javax.validation.constraints.*;
         *  用户信息 用户信息描述，默认值：，示例输入：
     **/
 @Data
+@Accessors(chain = true)
 public class  User {
 
             /**

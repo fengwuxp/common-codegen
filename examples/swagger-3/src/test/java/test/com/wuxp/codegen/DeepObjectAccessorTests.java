@@ -17,9 +17,5 @@ class DeepObjectAccessorTests {
 
         User user = DeepObjectAccessor.of(new Order()).getIfAbsent(Order::getUser, Order::setUser, new User());
         Assertions.assertNotNull(user);
-
-//        DeepObjectAccessor.of(new Order())
-//                .access(Order::getUser)
-//                .orNullable(Order::setUser,new User())
     }
 }

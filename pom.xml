@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.9</version>
+        <groupId>com.wind.middleware</groupId>
+        <artifactId>wind-middleware</artifactId>
+        <version>1.0.21-SNAPSHOT</version>
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
@@ -17,7 +17,6 @@
     <artifactId>wuxp-codegen</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
-
 
     <modules>
         <module>core</module>
@@ -39,17 +38,14 @@
     </modules>
 
     <properties>
-        <revision>1.2.0-SNAPSHOT</revision>
+        <revision>1.0.1-SNAPSHOT</revision>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jdk.version>${maven.compiler.target}</jdk.version>
         <java.version>${maven.compiler.target}</java.version>
         <project.src.encoding>UTF-8</project.src.encoding>
-        <!--1.8编译参数 保留方法名称-->
-        <compilerArgument>-parameters</compilerArgument>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven-source-plugin.attach>false</maven-source-plugin.attach>
 
         <spring.version>${spring-framework.version}</spring.version>
         <swagger2.version>3.0.0</swagger2.version>
@@ -58,7 +54,6 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <zip4j.version>2.9.1</zip4j.version>
         <commons-io.version>2.8.0</commons-io.version>
-        <retrofit.version>2.9.0</retrofit.version>
         <google.format.version>1.5</google.format.version>
         <maven.plugin.plugin.version>3.5.2</maven.plugin.plugin.version>
     </properties>
@@ -112,7 +107,6 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-
 
             <!-- maven plugin 相关-->
             <dependency>
@@ -177,24 +171,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.squareup.retrofit2</groupId>
-                <artifactId>retrofit</artifactId>
-                <version>${retrofit.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp3.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>${javax-validation.version}</version>
                 <scope>provided</scope>
             </dependency>
-
             <!--  swagger  -->
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -348,68 +329,8 @@
         </dependency>
     </dependencies>
 
-
-    <profiles>
-        <profile>
-            <id>编译时保留方法参数名称</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <properties>
-                <!--1.8编译参数-保留方法名称-->
-                <compilerArgument>-parameters</compilerArgument>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>跳过测试</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>上传源代码到 Maven</id>
-            <properties>
-                <maven-source-plugin.attach>true</maven-source-plugin.attach>
-            </properties>
-        </profile>
-    </profiles>
-
-
-    <distributionManagement>
-        <repository>
-            <!-- id 要查看setting.xml文件中的server配置，上传时需要用户和密码-->
-            <id>${dist-repo}</id>
-            <url>${dist-repo.releases.url}</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>${dist-repo}</id>
-            <url>${dist-repo.snapshots.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>apache-public</id>
-            <url>https://repository.apache.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>apache-snapshots</id>
-            <url>https://repository.apache.org/snapshots</url>
-        </repository>
-    </repositories>
-
     <organization>
-        <name>wupxp</name>
+        <name>fengwuxp</name>
         <url>https://github.com/</url>
     </organization>
 
@@ -419,15 +340,9 @@
         </developer>
     </developers>
 
-
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>2.4.2</version>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -449,69 +364,6 @@
                         <delimiter>@{*}</delimiter>
                     </delimiters>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <debug>true</debug>
-                    <compilerArgument>${compilerArgument}</compilerArgument>
-
-                </configuration>
-                <inherited>true</inherited>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <uniqueVersion>true</uniqueVersion>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!--默认不上传到maven库-->
-                    <attach>${maven-source-plugin.attach}</attach>
-                </configuration>
-                <inherited>true</inherited>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.2.5</version>
-                <configuration>
-                    <!--    是否更新pom文件 -->
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                    <outputDirectory>${project.build.directory}</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

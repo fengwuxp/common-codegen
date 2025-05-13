@@ -45,8 +45,8 @@ class Swagger2FeignSdkCodegenAxiosTest {
                 .languageDescription(language)
                 .clientProviderType(clientProviderType)
                 // 基础类型映射
-                .baseTypeMapping(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
-                .baseTypeMapping(ServiceResponse.class, TypescriptClassMeta.PROMISE)
+                .typeMappings(ServiceQueryResponse.class, TypescriptClassMeta.PROMISE)
+                .typeMappings(ServiceResponse.class, TypescriptClassMeta.PROMISE)
                 // 自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))

@@ -12,6 +12,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
+import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaClassMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
@@ -24,7 +25,16 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,10 +72,11 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         return cacheLanguageTypeDefinitionParser.parseOfNullable(source).orElseGet(() -> this.parseInner(source));
     }
 
-    private C parseInner(Class<?> source) {
-        if (source == Enum.class) {
+    private C parseInner(Class<?> clazz) {
+        if (clazz == Enum.class) {
             return null;
         }
+        Class<?> source = mappingClass(clazz);
         JavaClassMeta classMeta = javaParser.parse(source);
         preProcess(classMeta);
         C result = newCodeGenClassMetaAndPutCache(source);
@@ -89,6 +100,18 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
         result.setNeedGenerate(true);
         result.setDependencies(getAllDependencies(result));
         return result;
+    }
+
+    private Class<?> mappingClass(Class<?> source) {
+        JavaTypeMapper mapper = getJavaTypeMapper();
+        if (mapper == null) {
+            return source;
+        }
+        Class<?>[] classes = mapper.mappingClasses(source);
+        if (ObjectUtils.isEmpty(classes)) {
+            return source;
+        }
+        return classes[0];
     }
 
     private void preProcess(JavaClassMeta classMeta) {
@@ -201,7 +224,9 @@ public abstract class AbstractLanguageTypeDefinitionParser<C extends CommonCodeG
 
     private List<JavaFieldMeta> margeFiledMetas(JavaClassMeta classMeta) {
         ArrayList<JavaFieldMeta> fieldMetas = new ArrayList<>(Arrays.asList(classMeta.getFieldMetas()));
-        fieldMetas.addAll(resolveGetterMethodFiledMetas(classMeta));
+        if (Objects.equals(classMeta.getClassType(), ClassType.CLASS)) {
+            fieldMetas.addAll(resolveGetterMethodFiledMetas(classMeta));
+        }
         return fieldMetas;
     }
 

@@ -16,9 +16,12 @@ import 'package:fengwuxp_dart_openfeign/src/built/date_time_serializer.dart';
             import './model/evt/create_order_evt.dart';
             import './enums/example_enum.dart';
             import './model/domain/order.dart';
+            import './model/paging/Page.dart';
             import './model/resp/page_info.dart';
+            import './model/paging/Pageable.dart';
             import './model/evt/query_order_evt.dart';
             import './enums/sex.dart';
+            import './model/paging/Sort.dart';
             import './model/domain/user.dart';
 
 part 'serializers.g.dart';
@@ -42,9 +45,12 @@ part 'serializers.g.dart';
         CreateOrderEvt,
         ExampleEnum,
         Order,
+        Page,
         PageInfo,
+        Pageable,
         QueryOrderEvt,
         Sex,
+        Sort,
         User,
 ])
 
@@ -76,6 +82,9 @@ final Serializers serializers = (_$serializers.toBuilder()
     ..addBuilderFactory(
     const FullType(BuiltMap,[FullType(String),FullType(User)]),
      () => MapBuilder<String,User>())
+    ..addBuilderFactory(
+    const FullType(Page,[FullType(Order)]),
+     () => PageBuilder<Order>())
     ..addBuilderFactory(
     const FullType(PageInfo,[FullType(Object)]),
      () => PageInfoBuilder<Object>())

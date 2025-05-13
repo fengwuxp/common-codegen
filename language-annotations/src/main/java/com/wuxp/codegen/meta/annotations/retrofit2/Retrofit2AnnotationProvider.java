@@ -1,11 +1,25 @@
 package com.wuxp.codegen.meta.annotations.retrofit2;
 
 import com.wuxp.codegen.meta.annotations.AbstractClientAnnotationProvider;
-import com.wuxp.codegen.meta.annotations.factories.spring.*;
+import com.wuxp.codegen.meta.annotations.factories.spring.CookieValueMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.PathVariableMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestBodyMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestHeaderMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
-import org.springframework.web.bind.annotation.*;
-import retrofit2.http.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.Header;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
@@ -68,8 +82,10 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             RequestMappingMetaFactory.RequestMappingMate requestMappingMate = requestMappingAnnotation.get();
             RequestMethod requestMethod = requestMappingMate.getRequestMethod();
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
-            removeNameToValue(annotation.getNamedArguments());
             boolean isUseQueryString = RequestMethod.GET.equals(requestMethod) || RequestMethod.DELETE.equals(requestMethod);
+            removeNameToValue(annotation.getNamedArguments());
+            // 移除 required 属性
+            annotation.getNamedArguments().remove("required");
             if (isUseQueryString) {
                 annotation.setName(Query.class.getSimpleName());
                 return annotation;
@@ -112,10 +128,9 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             return annotation;
         }
     }
-    
+
     private static void removeNameToValue(Map<String, String> namedArguments) {
-        String name = namedArguments.remove(ANNOTATION_NAME_KEY);
-        namedArguments.put(ANNOTATION_VALUE_KEY, name);
+        namedArguments.put(ANNOTATION_VALUE_KEY, namedArguments.remove(ANNOTATION_NAME_KEY));
     }
 
 }

@@ -2,7 +2,9 @@ package com.wuxp.codegen.swagger2.clients;
 import retrofit2.http.*;
 
 
+      import com.wuxp.codegen.swagger2.model.domain.Order;
       import java.util.Set;
+      import com.wuxp.codegen.swagger2.model.domain.User;
       import java.util.Collection;
       import java.util.List;
       import java.util.Map;
@@ -16,48 +18,54 @@ import retrofit2.http.*;
 public interface ListParamsTestRetrofitClient{
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：String
+      * 1:POST /list
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：String
      **/
       @POST(value = "/list" )
     String  test1 (
           @Body()  List<User> users
   );
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：String
+      * 1:GET /list/test_2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：String
      **/
       @GET(value = "/list/test_2" )
     String  test2 (
   User[] users
   );
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：String
+      * 1:GET /list/test_3
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：String
      **/
       @GET(value = "/list/test_3" )
     String  test3 (
   Map<String,Order> users
   );
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：String
+      * 1:POST /list/test_4
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：String
      **/
       @POST(value = "/list/test_4" )
     String  test4 (
           @Body()  Set<User> users
   );
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：String
+      * 1:POST /list/test_5
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：String
      **/
       @POST(value = "/list/test_5" )
     String  test5 (
           @Body()  Collection<User> users
   );
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：String
+      * 1:POST /list/test_6
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：String
      **/
       @POST(value = "/list/test_6" )
     String  test6 (

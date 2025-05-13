@@ -1,7 +1,7 @@
 package com.wuxp.codegen.meta.annotations;
 
-import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 
 import java.lang.annotation.Annotation;
 

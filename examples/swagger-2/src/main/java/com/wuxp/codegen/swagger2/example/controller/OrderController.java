@@ -10,15 +10,33 @@ import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import com.wuxp.codegen.swagger2.example.services.UserService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @Api("订单服务")
@@ -33,7 +51,7 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @GetMapping(value = {"get_order"})
-    public List<Order> getOrder(@ModelAttribute("text") String text, @RequestHeader String[] names, @CookieValue("my_ids") List<Integer> ids, Set<Order> moneys) {
+    public List<Order> getOrder(@ModelAttribute("text") String text, @RequestHeader("names") String[] names, @CookieValue("my_ids") List<Integer> ids, Set<Order> moneys) {
         return Collections.EMPTY_LIST;
     }
 
@@ -46,7 +64,7 @@ public class OrderController extends BaseController<String> {
 
     @ApiOperation(value = "获取订单列表", notes = "")
     @RequestMapping(method = RequestMethod.GET, value = "/queryOrder")
-    public PageInfo<Order> queryOrder(QueryOrderEvt evt) {
+    public PageInfo<Order> queryOrder(@RequestHeader("X-User-Id") String userId, QueryOrderEvt evt) {
         return new PageInfo<Order>();
     }
 

@@ -17,10 +17,9 @@ public final class CodeGenCommentExtractorFactory {
 
     private static final CodeGenCommentExtractorFactory INSTANCE = new CodeGenCommentExtractorFactory();
 
-    private final List<CodeGenCommentExtractor> codeGenCommentExtractors;
+    private final List<CodeGenCommentExtractor> codeGenCommentExtractors = new ArrayList<>();
 
     private CodeGenCommentExtractorFactory() {
-        this.codeGenCommentExtractors = new ArrayList<>();
         initDefaultCommentExtractors();
     }
 

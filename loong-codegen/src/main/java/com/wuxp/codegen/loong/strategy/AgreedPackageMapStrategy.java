@@ -6,6 +6,7 @@ import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.loong.path.PathResolve;
 import com.wuxp.codegen.core.util.CodegenFileUtils;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -104,7 +105,8 @@ public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
         if (isJava) {
             return String.format(packageFormat, outPackage, className);
         }
-        String path = CodegenFileUtils.toFilepathPart(outPackage.replace(groupId, ""));
+        String path = CodegenFileUtils.toFilepathPart(outPackage.replace(groupId, ""))
+                .replace(File.separator,PathResolve.RIGHT_SLASH);
         return String.format("%s%s%s%s", PathResolve.RIGHT_SLASH, path, PathResolve.RIGHT_SLASH, className);
     }
 
@@ -141,6 +143,7 @@ public class AgreedPackageMapStrategy implements PackageNameConvertStrategy {
         ClientProviderType providerType = CodegenConfigHolder.getConfig().getProviderType();
         switch (providerType) {
             case TYPESCRIPT_FEIGN:
+            case TYPESCRIPT_FEIGN_FUNC:
             case OPENFEIGN:
             case SPRING_CLOUD_OPENFEIGN:
                 return "FeignClient";

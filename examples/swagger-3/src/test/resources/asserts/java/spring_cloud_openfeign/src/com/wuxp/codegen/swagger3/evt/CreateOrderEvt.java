@@ -1,12 +1,15 @@
 package com.wuxp.codegen.swagger3.evt;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
         import com.wuxp.codegen.swagger3.enums.Sex;
         import java.util.Map;
         import com.wuxp.codegen.swagger3.evt.BaseEvt;
 
 @Data
+@Accessors(chain = true)
 public class  CreateOrderEvt extends BaseEvt {
 
             /**
@@ -14,9 +17,9 @@ public class  CreateOrderEvt extends BaseEvt {
                 *  ，默认值：，示例输入：
                 *字段在java中的类型为：String
             **/
-                @Size({
+                @Size(
                     max=50
-                })
+                )
         private String sn;
 
             /**

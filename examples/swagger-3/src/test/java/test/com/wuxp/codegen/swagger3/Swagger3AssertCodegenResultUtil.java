@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -39,7 +40,6 @@ public final class Swagger3AssertCodegenResultUtil {
         for (int i = 0; i < files.size(); i++) {
             assertEquals(assertFiles.get(i), files.get(i));
         }
-
         deleteOutputDir();
     }
 
@@ -67,11 +67,11 @@ public final class Swagger3AssertCodegenResultUtil {
         return Paths.get(String.join(File.separator, outPaths)).toString();
     }
 
-    private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) {
+    private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) throws URISyntaxException {
         URL resource = Swagger3AssertCodegenResultUtil.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] outPaths = {
-                resource.getPath(),
+                Paths.get(resource.toURI()).toString(),
                 ASSERT_DIR,
                 languageDescription.getName().toLowerCase(),
                 clientProviderType.name().toLowerCase(),
@@ -89,7 +89,6 @@ public final class Swagger3AssertCodegenResultUtil {
     }
 
     private static void syncCodegenResult() throws Exception {
-
         String[] outPaths = {
                 // main 方法下为项目根路径
                 System.getProperty("user.dir"),
@@ -124,11 +123,11 @@ public final class Swagger3AssertCodegenResultUtil {
         FileUtils.copyDirectory(new File(outBasePath), destDir);
     }
 
-    private static void copyToTestClasspath(String outBasePath) throws IOException {
+    private static void copyToTestClasspath(String outBasePath) throws IOException, URISyntaxException {
         URL resource = Swagger3AssertCodegenResultUtil.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] assertResourcePaths = {
-                resource.getPath(),
+                Paths.get(resource.toURI()).toString(),
                 "asserts",
         };
         String assertsPath = getPath(assertResourcePaths);

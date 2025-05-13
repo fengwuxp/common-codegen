@@ -4,9 +4,18 @@ import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.core.util.JacksonUtils;
-import com.wuxp.codegen.model.*;
+import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import com.wuxp.codegen.model.CommonCodeGenClassMeta;
+import com.wuxp.codegen.model.CommonCodeGenEnumFiledValue;
+import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
+import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
+import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.enums.AccessPermission;
-import com.wuxp.codegen.model.extensions.*;
+import com.wuxp.codegen.model.extensions.CodegenSimpleType;
+import com.wuxp.codegen.model.extensions.CodegenTypeLoader;
+import com.wuxp.codegen.model.extensions.SchemaCodegenModel;
+import com.wuxp.codegen.model.extensions.SchemaCodegenModelFieldMeta;
+import com.wuxp.codegen.model.extensions.SchemaCodegenModelTypeVariable;
 import com.wuxp.codegen.model.languages.dart.DartClassMeta;
 import com.wuxp.codegen.model.languages.dart.DartFieldMate;
 import com.wuxp.codegen.model.languages.java.codegen.JavaCodeGenClassMeta;
@@ -16,11 +25,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -153,7 +170,10 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     private CommonCodeGenFiledMeta converterFiledMeta(SchemaCodegenModelFieldMeta fieldMeta, CommonCodeGenClassMeta classMeta) {
         CommonCodeGenFiledMeta filed = newCodegenFileInstance(fieldMeta);
         filed.setName(fieldMeta.getName());
-        filed.setEnumFiledValues(fieldMeta.getEnumFiledValues());
+        if (fieldMeta.getEnumFiledValues() != null) {
+            filed.setEnumFiledConstantValues(Arrays.stream(fieldMeta.getEnumFiledValues()).map(va -> new CommonCodeGenEnumFiledValue(null, va))
+                    .toArray(CommonCodeGenEnumFiledValue[]::new));
+        }
         filed.setAnnotations(new CommonCodeGenAnnotation[0]);
         filed.setTypeVariables(new CommonCodeGenClassMeta[0]);
         filed.setName(filed.getName());
@@ -167,6 +187,9 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     @SuppressWarnings("unchecked")
     private CommonCodeGenClassMeta[] getFiledTypes(SchemaCodegenModelFieldMeta meta, CommonCodeGenClassMeta classMeta) {
         String type = meta.getType();
+        if (!StringUtils.hasText(type)) {
+            return new CommonCodeGenClassMeta[0];
+        }
         boolean isArray = meta.isArray();
         if (isArray) {
             type = type.replace("[]", "");
@@ -177,8 +200,8 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
             type = type.substring(1);
             CommonCodeGenClassMeta cacheMeta = CACHE_CODEGEN_CLASSES.get(type);
             CommonCodeGenClassMeta commonCodeGenClassMeta = newCodegenClassInstance();
-            if (commonCodeGenClassMeta == null) {
-                return new CommonCodeGenClassMeta[0];
+            if (commonCodeGenClassMeta == null || cacheMeta == null) {
+                return new CommonCodeGenClassMeta[]{};
             }
             BeanUtils.copyProperties(cacheMeta, commonCodeGenClassMeta);
             results.add(commonCodeGenClassMeta);
@@ -245,9 +268,14 @@ public class JsonSchemaCodegenTypeLoader implements CodegenTypeLoader<CommonCode
     }
 
     private SchemaCodegenModel transformToCodegenModel(File file) {
-        SchemaCodegenModel result = parseSchemaModel(file);
-        result.setSource(loadClass(file.getName()));
-        return result;
+        try {
+            SchemaCodegenModel result = parseSchemaModel(file);
+            result.setSource(loadClass(file.getName()));
+            return result;
+        } catch (Exception exception) {
+            log.info("transformToCodegenModel error, message = {}", exception.getMessage());
+            return null;
+        }
     }
 
     private Class<?> loadClass(String name) {

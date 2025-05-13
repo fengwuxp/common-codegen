@@ -2,6 +2,7 @@
 /* eslint-disable */
 
         import {BaseQueryEvt} from "./BaseQueryEvt";
+import {DefaultOrderField} from "feign-client";
 
     /**
         * 测试的API接口方法一的请求参数

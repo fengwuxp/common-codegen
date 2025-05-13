@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 
 
@@ -27,5 +28,9 @@ public class JavaParameterMeta extends JavaFieldMeta {
 
     public JavaParameterMeta() {
         super();
+    }
+
+    public AnnotatedElement getAnnotatedElement() {
+        return getParameter();
     }
 }

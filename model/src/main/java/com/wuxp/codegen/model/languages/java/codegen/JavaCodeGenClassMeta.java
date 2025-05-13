@@ -139,6 +139,8 @@ public final class JavaCodeGenClassMeta extends CommonCodeGenClassMeta {
      */
     public static final JavaCodeGenClassMeta VOID = new JavaCodeGenClassMeta(void.class, null, "", false);
 
+    public static final JavaCodeGenClassMeta VOID_WRAPPER = new JavaCodeGenClassMeta(Void.class, null, "", false);
+
 
     /**
      * type variable 类型变量

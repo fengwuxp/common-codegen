@@ -2,6 +2,7 @@
 /* eslint-disable */
 
         import {BaseExample} from "./BaseExample";
+import {DefaultOrderField} from "feign-client";
 
 
 

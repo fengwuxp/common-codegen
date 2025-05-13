@@ -1,11 +1,16 @@
 package com.wuxp.codegen;
 
 
-import com.wuxp.codegen.core.*;
+import com.wuxp.codegen.core.ClientProviderType;
+import com.wuxp.codegen.core.CodeFormatter;
+import com.wuxp.codegen.core.CodeGenElementMatcher;
+import com.wuxp.codegen.core.CodegenBuilder;
+import com.wuxp.codegen.core.UnifiedResponseExplorer;
 import com.wuxp.codegen.core.config.CodegenConfig;
 import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.event.CodeGenEventListener;
 import com.wuxp.codegen.core.event.CombineCodeGenEventListener;
+import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.core.extensions.JsonSchemaCodegenTypeLoader;
 import com.wuxp.codegen.core.macth.JavaClassElementMatcher;
 import com.wuxp.codegen.core.macth.JavaFieldMatcher;
@@ -18,7 +23,12 @@ import com.wuxp.codegen.core.strategy.PackageNameConvertStrategy;
 import com.wuxp.codegen.core.strategy.TemplateStrategy;
 import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.format.LanguageCodeFormatter;
-import com.wuxp.codegen.languages.*;
+import com.wuxp.codegen.languages.CommonMethodDefinitionParser;
+import com.wuxp.codegen.languages.DelegateLanguagePublishParser;
+import com.wuxp.codegen.languages.HttpRequestDestinationPostProcessor;
+import com.wuxp.codegen.languages.JavaTypeMapper;
+import com.wuxp.codegen.languages.LanguageTypeDefinitionPublishParser;
+import com.wuxp.codegen.languages.RemoveClientResponseTypePostProcessor;
 import com.wuxp.codegen.languages.typescript.EnumNamesPostProcessor;
 import com.wuxp.codegen.loong.CombineCodeGenerateAsyncTaskFuture;
 import com.wuxp.codegen.loong.LoongClassCodeGenerator;
@@ -45,7 +55,14 @@ import org.springframework.util.FileSystemUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
 import static org.springframework.util.ResourceUtils.FILE_URL_PREFIX;
@@ -86,15 +103,9 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
 
     /**
-     * 基础数据类型的映射关系
+     * java 类型 => CommonCodeGenClassMeta
      */
-    protected Map<Class<?>, CommonCodeGenClassMeta> baseTypeMapping = new LinkedHashMap<>();
-
-
-    /**
-     * 自定义的类型映射
-     */
-    protected Map<Class<?>, CommonCodeGenClassMeta> customTypeMapping = new LinkedHashMap<>();
+    protected Map<Class<?>, CommonCodeGenClassMeta> typeMappings = new LinkedHashMap<>();
 
     /**
      * 自定义的java类型映射
@@ -120,15 +131,6 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      * 额外导入的类
      */
     protected Set<Class<?>> includeClasses = new HashSet<>();
-
-
-    /**
-     * 忽略的方法
-     *
-     * @key 类
-     * @value 方法名称
-     */
-    protected Map<Class<?>, String[]> ignoreMethods;
 
     /**
      * 忽略的方法
@@ -212,13 +214,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractLoongCodegenBuilder baseTypeMapping(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
-        this.baseTypeMapping.put(javaType, classMeta);
-        return this;
-    }
-
-    public AbstractLoongCodegenBuilder customTypeMapping(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
-        this.customTypeMapping.put(javaType, classMeta);
+    public AbstractLoongCodegenBuilder typeMappings(Class<?> javaType, CommonCodeGenClassMeta classMeta) {
+        this.typeMappings.put(javaType, classMeta);
         return this;
     }
 
@@ -311,8 +308,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
-    public AbstractLoongCodegenBuilder ignoreMethods(Map<Class<?>/*类名*/, String[]/*方法名称*/> ignoreMethods) {
-        this.ignoreMethods = ignoreMethods;
+    public AbstractLoongCodegenBuilder ignoreMethodNames(Class<?> clazz, String... ignoreMethodNames) {
+        this.ignoreMethodNames.put(clazz, Arrays.asList(ignoreMethodNames));
         return this;
     }
 
@@ -375,13 +372,14 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
                 JavaClassElementMatcher.builder()
                         .includePackages(this.getIncludePackages())
                         .includeClasses(this.getIncludeClasses())
-                        .includePackages(this.getIgnorePackages())
                         .ignoreClasses(this.getIgnoreClasses())
+                        .ignorePackages(this.getIgnorePackages())
                         .build(),
                 new JavaMethodMatcher(this.getIgnoreMethodNames()),
                 new JavaFieldMatcher(this.getIgnoreFieldNames()),
                 new JavaParameterMatcher(this.ignoreParamByAnnotations)
         );
+        this.elementParsePostProcessors(new HttpRequestDestinationPostProcessor());
     }
 
     protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
@@ -412,7 +410,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     }
 
     protected LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> getTypeDefinitionParser() {
-        LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> result = new LanguageTypeDefinitionPublishParser<>(getMappingTypeDefinitionParser());
+        LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> result =
+                new LanguageTypeDefinitionPublishParser<>(getMappingTypeDefinitionParser());
         result.addElementDefinitionParsers(getElementDefinitionParsers(result));
         result.addCodeGenElementMatchers(this.getCodeGenElementMatchers());
         List<LanguageDefinitionPostProcessor<? extends CommonBaseMeta>> postProcessors = this.getElementParsePostProcessors();
@@ -428,7 +427,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     protected LoongClassCodeGenerator createCodeGenerator() {
         CombineCodeGenerateAsyncTaskFuture.getInstance().addFuture(new LanguageCodeFormatter());
         LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> typeDefinitionParser = getTypeDefinitionParser();
-        LoongClassCodeGenerator codeGenerator = new LoongClassCodeGenerator(getScanPackages(), typeDefinitionParser, getTemplateStrategy(), getUnifiedResponseExplorer(typeDefinitionParser.getMappingTypeDefinitionParser()));
+        LoongClassCodeGenerator codeGenerator = new LoongClassCodeGenerator(getScanPackages(), typeDefinitionParser, getTemplateStrategy(),
+                getUnifiedResponseExplorer(typeDefinitionParser.getMappingTypeDefinitionParser()));
         codeGenerator.setIgnoreClasses(ignoreClasses);
         codeGenerator.setIncludeClasses(includeClasses);
         codeGenerator.setIgnorePackages(ignorePackages);
@@ -439,7 +439,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     private UnifiedResponseExplorer getUnifiedResponseExplorer(LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingTypeDefinitionParser) {
         if (mappingTypeDefinitionParser instanceof AbstractMappingTypeDefinitionParser) {
-            AbstractMappingTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingParser = (AbstractMappingTypeDefinitionParser<? extends CommonCodeGenClassMeta>) mappingTypeDefinitionParser;
+            AbstractMappingTypeDefinitionParser<? extends CommonCodeGenClassMeta> mappingParser = (AbstractMappingTypeDefinitionParser<?
+                    extends CommonCodeGenClassMeta>) mappingTypeDefinitionParser;
             return new LoongUnifiedResponseExplorer(mappingParser.getMappingTypeDefinitionParser());
         }
         return null;
@@ -463,7 +464,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
             CodegenFileUtils.createDirectoryRecursively(CODEGEN_TEMP_EXTENSIONS_DIR);
         }
         try {
-            loader.load().forEach(classMeta -> customTypeMapping(classMeta.getSource(), classMeta));
+            loader.load().forEach(classMeta -> typeMappings(classMeta.getSource(), classMeta));
         } finally {
             File tempdir = file.getParentFile();
             boolean deleteRecursively = FileSystemUtils.deleteRecursively(tempdir);
@@ -476,7 +477,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     private List<File> getJsonSchemaFiles() {
         PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
         try {
-            Resource[] resources = pathMatchingResourcePatternResolver.getResources(CLASSPATH_ALL_URL_PREFIX + CODEGEN_JSON_SCHEMA_CLASS_META_EXTENSIONS);
+            Resource[] resources =
+                    pathMatchingResourcePatternResolver.getResources(CLASSPATH_ALL_URL_PREFIX + CODEGEN_JSON_SCHEMA_CLASS_META_EXTENSIONS);
             List<File> jsonFiles = new ArrayList<>();
             for (Resource resource : resources) {
                 String path = resource.getURL().getPath();
@@ -490,8 +492,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
             }
             return jsonFiles;
         } catch (IOException exception) {
-            exception.printStackTrace();
+            throw new CodegenRuntimeException(exception);
         }
-        return Collections.emptyList();
     }
 }

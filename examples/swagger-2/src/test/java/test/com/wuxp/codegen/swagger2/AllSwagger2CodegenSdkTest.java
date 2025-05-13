@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitPlatform.class)
 @SelectClasses({
         Swagger2FeignSdkCodegenDartTest.class,
+        Swagger2FeignSdkCodegenAxiosTest.class,
         Swagger2FeignSdkCodegenFeignClientTest.class,
         Swagger2FeignSdkCodegenRetrofitTest.class,
         Swagger2FeignSdkCodegenTypescriptTest.class,

@@ -33,6 +33,9 @@ public class ExcludeAnnotationCodeGenElementMatcher implements CodeGenElementMat
         } else {
             annotations = new Annotation[0];
         }
+        if (annotations == null) {
+            return false;
+        }
         return !matches(annotations);
     }
 

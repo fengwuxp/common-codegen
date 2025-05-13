@@ -1,13 +1,16 @@
 package com.wuxp.codegen.swagger2.model.evt;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
         import com.wuxp.codegen.swagger2.model.evt.BaseEvt;
 
     /**
         * 创建订单
     **/
 @Data
+@Accessors(chain = true)
 public class  CreateOrderEvt extends BaseEvt {
 
             /**
@@ -15,9 +18,9 @@ public class  CreateOrderEvt extends BaseEvt {
                 *sn 约束条件：输入字符串的最小长度为：0，输入字符串的最大长度为：50
                 *字段在java中的类型为：String
             **/
-                @Size({
+                @Size(
                     max=50
-                })
+                )
         private String sn;
 
             /**

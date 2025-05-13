@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import {DefaultOrderField} from "feign-client";
 
     /**
         * 分页对象

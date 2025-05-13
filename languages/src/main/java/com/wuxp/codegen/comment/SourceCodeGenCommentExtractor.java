@@ -127,10 +127,10 @@ public class SourceCodeGenCommentExtractor implements CodeGenCommentExtractor {
                         }
                         return true;
                     })
-                    .filter(blockTag-> StringUtils.hasText(blockTag.getContent().toText()))
+                    .filter(blockTag -> StringUtils.hasText(blockTag.getContent().toText()))
                     .map(JavadocBlockTag::toText)
                     .findFirst()
-                    .orElse("");
+                    .orElseGet(() -> javadoc.getDescription().toText().replaceAll(System.lineSeparator(), "\\\\n"));
         }
         return "";
     }

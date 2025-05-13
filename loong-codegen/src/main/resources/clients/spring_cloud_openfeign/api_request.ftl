@@ -1,7 +1,9 @@
 package ${packagePath?replace('.'+name,'')};
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 <#if dependencies??>
 <#--依赖导入处理-->
     <#list dependencies as key,val >
@@ -26,6 +28,7 @@ import javax.validation.constraints.*;
     </#list>
 </#if>
 @Data
+@Accessors(chain = true)
 public class  ${finallyClassName}<#if superClass??> extends ${superClass.finallyClassName}</#if> {
 
 <#if fieldMetas??>
@@ -39,11 +42,11 @@ public class  ${finallyClassName}<#if superClass??> extends ${superClass.finally
         </#if>
         <#if field.annotations??>
             <#list field.annotations as annotation>
-                @${annotation.name}<#if (annotation.namedArguments?size>0)>({
-                <#list annotation.namedArguments as name,val>
-                    ${name}=${val}
+                @${annotation.name}<#if (annotation.namedArguments?size>0)>(
+                <#list annotation.namedArguments?keys as name>
+                    ${name}=${annotation.namedArguments[name]}<#if name_has_next>,</#if>
                 </#list>
-                })</#if>
+                )</#if>
             </#list>
         </#if>
         ${field.accessPermissionName} ${customizeMethod.combineType(field.filedTypes)} ${field.name};

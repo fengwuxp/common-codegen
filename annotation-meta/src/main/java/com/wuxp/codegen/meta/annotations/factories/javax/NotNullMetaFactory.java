@@ -16,7 +16,6 @@ import java.text.MessageFormat;
  */
 public class NotNullMetaFactory extends AbstractAnnotationMetaFactory<NotNull, NotNullMetaFactory.NotNullMate> {
 
-
     @Override
     public NotNullMate factory(NotNull annotation) {
 

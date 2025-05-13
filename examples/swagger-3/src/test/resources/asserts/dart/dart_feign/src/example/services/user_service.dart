@@ -24,8 +24,9 @@ UserService() : super() {
 }
 
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：User
+      /// 1:GET /users/{id}
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：User
           @GetMapping(value:"/{id}",)
   Future<User>  getUser(
           @PathVariable(name: "id" )
@@ -41,8 +42,9 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：PUT
-      /// 2:返回值在java中的类型为：String
+      /// 1:PUT /users/{id}
+      /// 2:Http请求方法：PUT
+      /// 3:返回值在java中的类型为：String
           @PutMapping(value:"/{id}",)
   Future<String>  putUser(
           @PathVariable(name: "id" )
@@ -62,8 +64,9 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：DELETE
-      /// 2:返回值在java中的类型为：String
+      /// 1:DELETE /users/{id}
+      /// 2:Http请求方法：DELETE
+      /// 3:返回值在java中的类型为：String
           @DeleteMapping(value:"/{id}",)
   Future<String>  deleteUser(
           @PathVariable(name: "id" )
@@ -80,8 +83,9 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：String
+      /// 1:GET /users/sample
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：String
           @GetMapping()
   Future<String>  sample(
         BuiltList<int> ids,
@@ -97,49 +101,52 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：数组
-      /// 3:返回值在java中的类型为：String
+      /// 1:GET /users/sample3
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：数组
+      /// 4:返回值在java中的类型为：String
           @GetMapping(value:"sample3",)
-  Future<BuiltList<String>>  sample2(
+  Future<String>  sample2(
         BuiltList<int> ids,
         String name,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltList<String>>("sample2",
+  return this.delegateInvoke<String>("sample2",
   [ids,name,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltList,[FullType(String)])
+              specifiedType:FullType(String)
           )
     
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：数组
-      /// 3:返回值在java中的类型为：Map
-      /// 4:返回值在java中的类型为：String
-      /// 5:返回值在java中的类型为：数组
-      /// 6:返回值在java中的类型为：User
+      /// 1:GET /users/sample2
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：数组
+      /// 4:返回值在java中的类型为：Map
+      /// 5:返回值在java中的类型为：String
+      /// 6:返回值在java中的类型为：数组
+      /// 7:返回值在java中的类型为：User
           @GetMapping(value:"sample2",)
-  Future<BuiltList<BuiltMap<String,BuiltList<User>>>>  sampleMap(
+  Future<BuiltMap<String,User>>  sampleMap(
         BuiltList<int> ids,
         String name,
         Sex sex,
         BuiltList<BuiltMap<String,BuiltList<String>>> testParam,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltList<BuiltMap<String,BuiltList<User>>>>("sampleMap",
+  return this.delegateInvoke<BuiltMap<String,User>>("sampleMap",
   [ids,name,sex,testParam,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(User)])])])
+              specifiedType:FullType(BuiltMap,[FullType(String),FullType(User)])
           )
     
   );
   }
 
-      /// 1:Http请求方法：POST
-      /// 2:返回值在java中的类型为：void
+      /// 1:POST /users/uploadFile
+      /// 2:Http请求方法：POST
+      /// 3:返回值在java中的类型为：void
           @PostMapping(produces:[HttpMediaType.MULTIPART_FORM_DATA],)
   Future<void>  uploadFile(
           @RequestParam(name: "file" )
@@ -151,10 +158,11 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：Map
-      /// 3:返回值在java中的类型为：String
-      /// 4:返回值在java中的类型为：Object
+      /// 1:GET /users/test
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：Map
+      /// 4:返回值在java中的类型为：String
+      /// 5:返回值在java中的类型为：Object
           @GetMapping(value:"/test",)
   Future<BuiltMap<String,Object>>  test3(
         int id,
@@ -169,11 +177,12 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：ServiceResponse
-      /// 3:返回值在java中的类型为：List
-      /// 4:返回值在java中的类型为：PageInfo
-      /// 5:返回值在java中的类型为：User
+      /// 1:GET /users/test2
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：ServiceResponse
+      /// 4:返回值在java中的类型为：List
+      /// 5:返回值在java中的类型为：PageInfo
+      /// 6:返回值在java中的类型为：User
           @GetMapping(value:"/test2",)
   Future<BuiltList<PageInfo<User>>>  test4(
         int id,
@@ -188,12 +197,13 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：Map
-      /// 3:返回值在java中的类型为：String
-      /// 4:返回值在java中的类型为：List
-      /// 5:返回值在java中的类型为：PageInfo
-      /// 6:返回值在java中的类型为：User
+      /// 1:GET /users/test5
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：Map
+      /// 4:返回值在java中的类型为：String
+      /// 5:返回值在java中的类型为：List
+      /// 6:返回值在java中的类型为：PageInfo
+      /// 7:返回值在java中的类型为：User
           @GetMapping(value:"/test5",)
   Future<BuiltMap<String,BuiltList<PageInfo<User>>>>  test5(
         int id,
@@ -208,88 +218,92 @@ UserService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：Map
-      /// 3:返回值在java中的类型为：Sex
-      /// 4:返回值在java中的类型为：List
-      /// 5:返回值在java中的类型为：PageInfo
-      /// 6:返回值在java中的类型为：数组
-      /// 7:返回值在java中的类型为：User
-          @GetMapping(value:"/test6",)
-  Future<BuiltMap<Sex,BuiltList<PageInfo<BuiltList<User>>>>>  test6(
-        int id,
-  [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltMap<Sex,BuiltList<PageInfo<BuiltList<User>>>>>("test6",
-  [id,],
-          feignOptions: feignOptions,
-          serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltMap,[FullType(Sex),FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(User)])])])])
-          )
-    
-  );
-  }
-
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：Map
-      /// 3:返回值在java中的类型为：Integer
-      /// 4:返回值在java中的类型为：List
-      /// 5:返回值在java中的类型为：PageInfo
-      /// 6:返回值在java中的类型为：数组
+      /// 1:GET /users/test6
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：Map
+      /// 4:返回值在java中的类型为：Sex
+      /// 5:返回值在java中的类型为：List
+      /// 6:返回值在java中的类型为：PageInfo
       /// 7:返回值在java中的类型为：数组
       /// 8:返回值在java中的类型为：User
-          @GetMapping(value:"/test7",)
-  Future<BuiltMap<int,BuiltList<PageInfo<BuiltList<BuiltList<User>>>>>>  test7(
+          @GetMapping(value:"/test6",)
+  Future<BuiltMap<Sex,BuiltList<PageInfo<User>>>>  test6(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltMap<int,BuiltList<PageInfo<BuiltList<BuiltList<User>>>>>>("test7",
+  return this.delegateInvoke<BuiltMap<Sex,BuiltList<PageInfo<User>>>>("test6",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltMap,[FullType(int),FullType(BuiltList,[FullType(PageInfo,[FullType(BuiltList,[FullType(BuiltList,[FullType(User)])])])])])
+              specifiedType:FullType(BuiltMap,[FullType(Sex),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])])
           )
     
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：Map
-      /// 3:返回值在java中的类型为：String
-      /// 4:返回值在java中的类型为：数组
+      /// 1:GET /users/test7
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：Map
+      /// 4:返回值在java中的类型为：Integer
+      /// 5:返回值在java中的类型为：List
+      /// 6:返回值在java中的类型为：PageInfo
+      /// 7:返回值在java中的类型为：数组
+      /// 8:返回值在java中的类型为：数组
+      /// 9:返回值在java中的类型为：User
+          @GetMapping(value:"/test7",)
+  Future<BuiltMap<int,BuiltList<PageInfo<User>>>>  test7(
+        int id,
+  [UIOptions? feignOptions]) {
+  return this.delegateInvoke<BuiltMap<int,BuiltList<PageInfo<User>>>>("test7",
+  [id,],
+          feignOptions: feignOptions,
+          serializer: BuiltValueSerializable(
+              specifiedType:FullType(BuiltMap,[FullType(int),FullType(BuiltList,[FullType(PageInfo,[FullType(User)])])])
+          )
+    
+  );
+  }
+
+      /// 1:GET /users/test8
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：Map
+      /// 4:返回值在java中的类型为：String
       /// 5:返回值在java中的类型为：数组
       /// 6:返回值在java中的类型为：数组
       /// 7:返回值在java中的类型为：数组
-      /// 8:返回值在java中的类型为：String
+      /// 8:返回值在java中的类型为：数组
+      /// 9:返回值在java中的类型为：String
           @GetMapping(value:"/test8",)
-  Future<BuiltMap<String,BuiltList<BuiltList<BuiltList<BuiltList<String>>>>>>  test8(
+  Future<BuiltMap<String,String>>  test8(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltMap<String,BuiltList<BuiltList<BuiltList<BuiltList<String>>>>>>("test8",
+  return this.delegateInvoke<BuiltMap<String,String>>("test8",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltList,[FullType(String)])])])])])
+              specifiedType:FullType(BuiltMap,[FullType(String),FullType(String)])
           )
     
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：数组
+      /// 1:GET /users/test9
+      /// 2:Http请求方法：GET
       /// 3:返回值在java中的类型为：数组
       /// 4:返回值在java中的类型为：数组
-      /// 5:返回值在java中的类型为：Map
-      /// 6:返回值在java中的类型为：String
-      /// 7:返回值在java中的类型为：数组
-      /// 8:返回值在java中的类型为：String
+      /// 5:返回值在java中的类型为：数组
+      /// 6:返回值在java中的类型为：Map
+      /// 7:返回值在java中的类型为：String
+      /// 8:返回值在java中的类型为：数组
+      /// 9:返回值在java中的类型为：String
           @GetMapping(value:"/test9",)
-  Future<BuiltList<BuiltList<BuiltList<BuiltMap<String,BuiltList<String>>>>>>  test9(
+  Future<BuiltMap<String,String>>  test9(
         int id,
   [UIOptions? feignOptions]) {
-  return this.delegateInvoke<BuiltList<BuiltList<BuiltList<BuiltMap<String,BuiltList<String>>>>>>("test9",
+  return this.delegateInvoke<BuiltMap<String,String>>("test9",
   [id,],
           feignOptions: feignOptions,
           serializer: BuiltValueSerializable(
-              specifiedType:FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltList,[FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(String)])])])])])
+              specifiedType:FullType(BuiltMap,[FullType(String),FullType(String)])
           )
     
   );

@@ -1,7 +1,6 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
       import {Order} from "../../domain/Order";
-      import {User} from "../../domain/User";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
       import {OrderFeignClientQueryPageReq} from "../../req/OrderFeignClientQueryPageReq";
@@ -18,16 +17,17 @@
 /*================================================分割线，以下为接口列表===================================================*/
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：List
-      * 3:返回值在java中的类型为：Order
+      * 1:GET /order/getOrder
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：List
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  getOrder=  (req: OrderFeignClientGetOrderReq, options?: RequestOptionsInit): Promise<Array<Order>> =>{
-        const {ids,...reqData} = req;
+        const {My-Ids,...reqData} = req;
         const headers:Record<string,any>={};
-            if(ids!=null){
-              headers['ids']=Array.isArray(ids)?ids.join(";"):ids;
+            if(My-Ids!=null){
+              headers['My-Ids']=Array.isArray(My-Ids)?My-Ids.join(";"):My-Ids;
             }
   return request<Array<Order>>(`/order/getOrder`, {
       method: 'get',
@@ -39,9 +39,10 @@ export const  getOrder=  (req: OrderFeignClientGetOrderReq, options?: RequestOpt
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：PageInfo
-      * 3:返回值在java中的类型为：Order
+      * 1:GET /order
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：PageInfo
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder2=  (req?: QueryOrderEvt, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -54,9 +55,10 @@ export const  queryOrder2=  (req?: QueryOrderEvt, options?: RequestOptionsInit):
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：PageInfo
-      * 3:返回值在java中的类型为：Order
+      * 1:POST /order
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：PageInfo
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder=  (req?: QueryOrderEvt, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -70,9 +72,10 @@ export const  queryOrder=  (req?: QueryOrderEvt, options?: RequestOptionsInit): 
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：PageInfo
-      * 3:返回值在java中的类型为：Order
+      * 1:POST /order/queryOrder3
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：PageInfo
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder3=  (req: QueryOrderEvt[], options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -86,9 +89,10 @@ export const  queryOrder3=  (req: QueryOrderEvt[], options?: RequestOptionsInit)
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：PageInfo
-      * 3:返回值在java中的类型为：Order
+      * 1:POST /order/queryOrder4
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：PageInfo
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder4=  (req: Array<QueryOrderEvt>, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -102,9 +106,10 @@ export const  queryOrder4=  (req: Array<QueryOrderEvt>, options?: RequestOptions
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：PageInfo
-      * 3:返回值在java中的类型为：Order
+      * 1:POST /order/queryOrder5
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：PageInfo
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder5=  (req: Record<string,QueryOrderEvt>, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -118,9 +123,10 @@ export const  queryOrder5=  (req: Record<string,QueryOrderEvt>, options?: Reques
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：PageInfo
-      * 3:返回值在java中的类型为：Order
+      * 1:POST /order/queryOrder6
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：PageInfo
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder6=  (req: OrderFeignClientQueryOrder6Req, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -134,9 +140,10 @@ export const  queryOrder6=  (req: OrderFeignClientQueryOrder6Req, options?: Requ
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：ServiceQueryResponse
-      * 3:返回值在java中的类型为：Order
+      * 1:POST /order/queryOrder_2
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceQueryResponse
+      * 4:返回值在java中的类型为：Order
      **/
 
 export const  queryOrder_2=  (req?: OrderFeignClientQueryOrder_2Req, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -150,10 +157,11 @@ export const  queryOrder_2=  (req?: OrderFeignClientQueryOrder_2Req, options?: R
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：ServiceResponse
-      * 3:返回值在java中的类型为：PageInfo
-      * 4:返回值在java中的类型为：Order
+      * 1:POST /order/queryPage
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceResponse
+      * 4:返回值在java中的类型为：PageInfo
+      * 5:返回值在java中的类型为：Order
      **/
 
 export const  queryPage=  (req?: OrderFeignClientQueryPageReq, options?: RequestOptionsInit): Promise<PageInfo<Order>> =>{
@@ -167,9 +175,10 @@ export const  queryPage=  (req?: OrderFeignClientQueryPageReq, options?: Request
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：ServiceResponse
-      * 3:返回值在java中的类型为：Long
+      * 1:GET /order/createOrder
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：ServiceResponse
+      * 4:返回值在java中的类型为：Long
      **/
 
 export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit): Promise<string> =>{
@@ -182,9 +191,10 @@ export const  createOrder=  (req: CreateOrderEvt, options?: RequestOptionsInit):
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：ServiceResponse
-      * 3:返回值在java中的类型为：Object
+      * 1:POST /order/hello
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：ServiceResponse
+      * 4:返回值在java中的类型为：Object
      **/
 
 export const  hello=  ( options?: RequestOptionsInit): Promise<any> =>{
@@ -197,9 +207,10 @@ export const  hello=  ( options?: RequestOptionsInit): Promise<any> =>{
   }
 
     /**
-      * 1:Http请求方法：DELETE
-      * 2:返回值在java中的类型为：ServiceResponse
-      * 3:返回值在java中的类型为：Object
+      * 1:DELETE /order/delete
+      * 2:Http请求方法：DELETE
+      * 3:返回值在java中的类型为：ServiceResponse
+      * 4:返回值在java中的类型为：Object
      **/
 
 export const  deleteRequest=  (req?: ExampleDTO, options?: RequestOptionsInit): Promise<any> =>{

@@ -1,15 +1,12 @@
 package com.wuxp.codegen.meta.annotations.factories.spring;
 
 import com.wuxp.codegen.core.ClientProviderType;
-import com.wuxp.codegen.core.config.CodegenConfig;
-import com.wuxp.codegen.core.config.CodegenConfigHolder;
 import com.wuxp.codegen.core.exception.CodegenRuntimeException;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.meta.enums.AuthenticationType;
-import com.wuxp.codegen.meta.transform.AnnotationCodeGenTransformer;
+import com.wuxp.codegen.meta.transform.retrofit.RetrofitRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.DartRequestMappingTransformer;
-import com.wuxp.codegen.meta.transform.spring.JavaRetrofitRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.SpringRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.TypeScriptRequestMappingTransformer;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
@@ -20,13 +17,22 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -67,8 +73,9 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
 
 
         registerAnnotationTransformer(ClientProviderType.SPRING_CLOUD_OPENFEIGN, RequestMapping.class, new SpringRequestMappingTransformer());
-        registerAnnotationTransformer(ClientProviderType.RETROFIT, RequestMapping.class, new JavaRetrofitRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.RETROFIT, RequestMapping.class, new RetrofitRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN, RequestMapping.class, new TypeScriptRequestMappingTransformer());
+        registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN_FUNC, RequestMapping.class, new TypeScriptRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.DART_FEIGN, RequestMapping.class, new DartRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.UMI_REQUEST, RequestMapping.class, new TypeScriptRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.AXIOS, RequestMapping.class, new TypeScriptRequestMappingTransformer());
@@ -212,15 +219,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
          * @return 用于生成的注解
          */
         private CommonCodeGenAnnotation genAnnotation(Object annotationOwner) {
-            CodegenConfig codegenGlobalConfig = CodegenConfigHolder.getConfig();
-            ClientProviderType providerType = codegenGlobalConfig.getProviderType();
-            if (providerType == null) {
-                throw new CodegenRuntimeException("CODEGEN_GLOBAL_CONFIG#providerType is null");
-            }
-            Optional<AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMate>> transformer = getAnnotationTransformer(providerType, RequestMapping.class);
-            return transformer.orElseThrow(() -> new CodegenRuntimeException("client provider type=" + providerType.name() + " not found AnnotationCodeGenTransformer"))
-                    .transform(this, annotationOwner);
-
+            return getAnnotationTransformer(RequestMapping.class).transform(this, annotationOwner);
         }
     }
 

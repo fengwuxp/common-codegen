@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
+ * 语言类型定义断言工具
+ *
  * @author wuxp
  */
 public final class LanguageTypeDefinitionAssert {

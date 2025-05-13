@@ -5,6 +5,9 @@ import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 import 'package:fengwuxp_dart_openfeign/index.dart';
 
+          import '../model/domain/order.dart';
+          import '../model/domain/user.dart';
+          import '../serializers.dart';
 
 
       /// list tst
@@ -19,8 +22,9 @@ ListParamsTestService() : super() {
 }
 
 
-      /// 1:Http请求方法：POST
-      /// 2:返回值在java中的类型为：String
+      /// 1:POST /list
+      /// 2:Http请求方法：POST
+      /// 3:返回值在java中的类型为：String
           @PostMapping()
   Future<String>  test1(
           @RequestBody()
@@ -36,8 +40,9 @@ ListParamsTestService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：String
+      /// 1:GET /list/test_2
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：String
           @GetMapping(value:"test_2",)
   Future<String>  test2(
         BuiltList<User> users,
@@ -52,8 +57,9 @@ ListParamsTestService() : super() {
   );
   }
 
-      /// 1:Http请求方法：GET
-      /// 2:返回值在java中的类型为：String
+      /// 1:GET /list/test_3
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：String
           @GetMapping(value:"test_3",)
   Future<String>  test3(
         BuiltMap<String,Order> users,
@@ -68,8 +74,9 @@ ListParamsTestService() : super() {
   );
   }
 
-      /// 1:Http请求方法：POST
-      /// 2:返回值在java中的类型为：String
+      /// 1:POST /list/test_4
+      /// 2:Http请求方法：POST
+      /// 3:返回值在java中的类型为：String
           @PostMapping(value:"test_4",)
   Future<String>  test4(
           @RequestBody()
@@ -85,8 +92,9 @@ ListParamsTestService() : super() {
   );
   }
 
-      /// 1:Http请求方法：POST
-      /// 2:返回值在java中的类型为：String
+      /// 1:POST /list/test_5
+      /// 2:Http请求方法：POST
+      /// 3:返回值在java中的类型为：String
           @PostMapping(value:"test_5",)
   Future<String>  test5(
           @RequestBody()
@@ -102,8 +110,9 @@ ListParamsTestService() : super() {
   );
   }
 
-      /// 1:Http请求方法：POST
-      /// 2:返回值在java中的类型为：String
+      /// 1:POST /list/test_6
+      /// 2:Http请求方法：POST
+      /// 3:返回值在java中的类型为：String
           @PostMapping(value:"test_6",)
   Future<String>  test6(
           @RequestBody()

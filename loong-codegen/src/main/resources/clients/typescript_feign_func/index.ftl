@@ -1,0 +1,1 @@
+<#include "../typescript_feign/index.ftl">
