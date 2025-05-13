@@ -2,6 +2,7 @@
 /* eslint-disable */
 
         import {BaseQueryEvt} from "./BaseQueryEvt";
+import {DefaultOrderField} from "feign-client";
 
 
 

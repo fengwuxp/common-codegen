@@ -3,6 +3,7 @@
 
         import {Order} from "./Order";
         import {Sex} from "../enums/Sex";
+import {DefaultOrderField} from "feign-client";
 
     /**
         *  用户信息 用户信息描述，默认值：，示例输入：

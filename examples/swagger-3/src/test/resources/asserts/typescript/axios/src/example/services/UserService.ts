@@ -1,8 +1,8 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
       import {User} from "../../domain/User";
-      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {Sex} from "../../enums/Sex";
+      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
       import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
       import {UserServiceSample2Req} from "../../req/UserServiceSample2Req";
@@ -26,8 +26,9 @@ import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
 /*================================================分割线，以下为接口列表===================================================*/
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：User
+      * 1:GET /users/{id}
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：User
      **/
 
 export const  getUser=  (req: UserServiceGetUserReq, options?: AxiosRequestConfig): Promise<AxiosResponse<User>> =>{
@@ -43,8 +44,9 @@ export const  getUser=  (req: UserServiceGetUserReq, options?: AxiosRequestConfi
   }
 
     /**
-      * 1:Http请求方法：PUT
-      * 2:返回值在java中的类型为：String
+      * 1:PUT /users/{id}
+      * 2:Http请求方法：PUT
+      * 3:返回值在java中的类型为：String
      **/
 
 export const  putUser=  (req: UserServicePutUserReq, options?: AxiosRequestConfig): Promise<AxiosResponse<string>> =>{
@@ -63,8 +65,9 @@ export const  putUser=  (req: UserServicePutUserReq, options?: AxiosRequestConfi
   }
 
     /**
-      * 1:Http请求方法：DELETE
-      * 2:返回值在java中的类型为：String
+      * 1:DELETE /users/{id}
+      * 2:Http请求方法：DELETE
+      * 3:返回值在java中的类型为：String
      **/
 
 export const  deleteUser=  (req: UserServiceDeleteUserReq, options?: AxiosRequestConfig): Promise<AxiosResponse<string>> =>{
@@ -80,8 +83,9 @@ export const  deleteUser=  (req: UserServiceDeleteUserReq, options?: AxiosReques
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：String
+      * 1:GET /users/sample
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：String
      **/
 
 export const  sample=  (req?: UserServiceSampleReq, options?: AxiosRequestConfig): Promise<AxiosResponse<string>> =>{
@@ -95,13 +99,14 @@ export const  sample=  (req?: UserServiceSampleReq, options?: AxiosRequestConfig
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：数组
-      * 3:返回值在java中的类型为：String
+      * 1:GET /users/sample3
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：数组
+      * 4:返回值在java中的类型为：String
      **/
 
-export const  sample2=  (req?: UserServiceSample2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<string[]>> =>{
-  return axios.request<string[]>( {
+export const  sample2=  (req?: UserServiceSample2Req, options?: AxiosRequestConfig): Promise<AxiosResponse<string>> =>{
+  return axios.request<string>( {
       url:`/users/sample3`,
       method: 'get',
       params: req || {},
@@ -111,16 +116,17 @@ export const  sample2=  (req?: UserServiceSample2Req, options?: AxiosRequestConf
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：数组
-      * 3:返回值在java中的类型为：Map
-      * 4:返回值在java中的类型为：String
-      * 5:返回值在java中的类型为：数组
-      * 6:返回值在java中的类型为：User
+      * 1:GET /users/sample2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：数组
+      * 4:返回值在java中的类型为：Map
+      * 5:返回值在java中的类型为：String
+      * 6:返回值在java中的类型为：数组
+      * 7:返回值在java中的类型为：User
      **/
 
-export const  sampleMap=  (req?: UserServiceSampleMapReq, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,User[]>[]>> =>{
-  return axios.request<Record<string,User[]>[]>( {
+export const  sampleMap=  (req?: UserServiceSampleMapReq, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,User>>> =>{
+  return axios.request<Record<string,User>>( {
       url:`/users/sample2`,
       method: 'get',
       params: req || {},
@@ -130,8 +136,9 @@ export const  sampleMap=  (req?: UserServiceSampleMapReq, options?: AxiosRequest
   }
 
     /**
-      * 1:Http请求方法：POST
-      * 2:返回值在java中的类型为：void
+      * 1:POST /users/uploadFile
+      * 2:Http请求方法：POST
+      * 3:返回值在java中的类型为：void
      **/
 
 export const  uploadFile=  ( options?: AxiosRequestConfig): Promise<AxiosResponse<void>> =>{
@@ -147,10 +154,11 @@ export const  uploadFile=  ( options?: AxiosRequestConfig): Promise<AxiosRespons
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：Object
+      * 1:GET /users/test
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：Object
      **/
 
 export const  test3=  (req?: UserServiceTest3Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,any>>> =>{
@@ -164,11 +172,12 @@ export const  test3=  (req?: UserServiceTest3Req, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：ServiceResponse
-      * 3:返回值在java中的类型为：List
-      * 4:返回值在java中的类型为：PageInfo
-      * 5:返回值在java中的类型为：User
+      * 1:GET /users/test2
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：ServiceResponse
+      * 4:返回值在java中的类型为：List
+      * 5:返回值在java中的类型为：PageInfo
+      * 6:返回值在java中的类型为：User
      **/
 
 export const  test4=  (req?: UserServiceTest4Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<PageInfo<User>>>> =>{
@@ -182,12 +191,13 @@ export const  test4=  (req?: UserServiceTest4Req, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：PageInfo
-      * 6:返回值在java中的类型为：User
+      * 1:GET /users/test5
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：PageInfo
+      * 7:返回值在java中的类型为：User
      **/
 
 export const  test5=  (req?: UserServiceTest5Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,Array<PageInfo<User>>>>> =>{
@@ -201,17 +211,18 @@ export const  test5=  (req?: UserServiceTest5Req, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：Sex
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：PageInfo
-      * 6:返回值在java中的类型为：数组
-      * 7:返回值在java中的类型为：User
+      * 1:GET /users/test6
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：Sex
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：PageInfo
+      * 7:返回值在java中的类型为：数组
+      * 8:返回值在java中的类型为：User
      **/
 
-export const  test6=  (req?: UserServiceTest6Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User[]>>>>> =>{
-  return axios.request<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User[]>>>>( {
+export const  test6=  (req?: UserServiceTest6Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User>>>>> =>{
+  return axios.request<Record<'MAN' | 'WOMAN' | 'NONE',Array<PageInfo<User>>>>( {
       url:`/users/test6`,
       method: 'get',
       params: req || {},
@@ -221,18 +232,19 @@ export const  test6=  (req?: UserServiceTest6Req, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：Integer
-      * 4:返回值在java中的类型为：List
-      * 5:返回值在java中的类型为：PageInfo
-      * 6:返回值在java中的类型为：数组
+      * 1:GET /users/test7
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：Integer
+      * 5:返回值在java中的类型为：List
+      * 6:返回值在java中的类型为：PageInfo
       * 7:返回值在java中的类型为：数组
-      * 8:返回值在java中的类型为：User
+      * 8:返回值在java中的类型为：数组
+      * 9:返回值在java中的类型为：User
      **/
 
-export const  test7=  (req?: UserServiceTest7Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<number,Array<PageInfo<User[][]>>>>> =>{
-  return axios.request<Record<number,Array<PageInfo<User[][]>>>>( {
+export const  test7=  (req?: UserServiceTest7Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<number,Array<PageInfo<User>>>>> =>{
+  return axios.request<Record<number,Array<PageInfo<User>>>>( {
       url:`/users/test7`,
       method: 'get',
       params: req || {},
@@ -242,18 +254,19 @@ export const  test7=  (req?: UserServiceTest7Req, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：Map
-      * 3:返回值在java中的类型为：String
-      * 4:返回值在java中的类型为：数组
+      * 1:GET /users/test8
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：Map
+      * 4:返回值在java中的类型为：String
       * 5:返回值在java中的类型为：数组
       * 6:返回值在java中的类型为：数组
       * 7:返回值在java中的类型为：数组
-      * 8:返回值在java中的类型为：String
+      * 8:返回值在java中的类型为：数组
+      * 9:返回值在java中的类型为：String
      **/
 
-export const  test8=  (req?: UserServiceTest8Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,string[][][][]>>> =>{
-  return axios.request<Record<string,string[][][][]>>( {
+export const  test8=  (req?: UserServiceTest8Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,string>>> =>{
+  return axios.request<Record<string,string>>( {
       url:`/users/test8`,
       method: 'get',
       params: req || {},
@@ -263,18 +276,19 @@ export const  test8=  (req?: UserServiceTest8Req, options?: AxiosRequestConfig):
   }
 
     /**
-      * 1:Http请求方法：GET
-      * 2:返回值在java中的类型为：数组
+      * 1:GET /users/test9
+      * 2:Http请求方法：GET
       * 3:返回值在java中的类型为：数组
       * 4:返回值在java中的类型为：数组
-      * 5:返回值在java中的类型为：Map
-      * 6:返回值在java中的类型为：String
-      * 7:返回值在java中的类型为：数组
-      * 8:返回值在java中的类型为：String
+      * 5:返回值在java中的类型为：数组
+      * 6:返回值在java中的类型为：Map
+      * 7:返回值在java中的类型为：String
+      * 8:返回值在java中的类型为：数组
+      * 9:返回值在java中的类型为：String
      **/
 
-export const  test9=  (req?: UserServiceTest9Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,string[]>[][][]>> =>{
-  return axios.request<Record<string,string[]>[][][]>( {
+export const  test9=  (req?: UserServiceTest9Req, options?: AxiosRequestConfig): Promise<AxiosResponse<Record<string,string>>> =>{
+  return axios.request<Record<string,string>>( {
       url:`/users/test9`,
       method: 'get',
       params: req || {},
