@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_PARSER;
 
@@ -32,6 +33,11 @@ public class SpringRequestMappingTransformer implements
         AnnotationCodeGenTransformer<CommonCodeGenAnnotation, RequestMappingMetaFactory.RequestMappingMate> {
 
     public static final String SPRING_OPENFEIGN_CLIENT_ANNOTATION_NAME = "FeignClient";
+
+    /**
+     * Convention over Configuration（约定优于配置）
+     */
+    public static final AtomicBoolean USE_COC = new AtomicBoolean(false);
 
     /**
      * 请求方法和Mapping名称的对应
@@ -83,7 +89,8 @@ public class SpringRequestMappingTransformer implements
             return commonCodeGenAnnotation;
         }
         JavaMethodMeta javaMethodMeta = JAVA_CLASS_PARSER.getJavaMethodMeta(annotationOwner);
-        boolean isNoneReturnFile = Arrays.stream(javaMethodMeta.getReturnType()).noneMatch(clazz -> JavaTypeUtils.isAssignableFrom(clazz, InputStreamResource.class));
+        boolean isNoneReturnFile = Arrays.stream(javaMethodMeta.getReturnType()).noneMatch(clazz -> JavaTypeUtils.isAssignableFrom(clazz,
+                InputStreamResource.class));
         if (isNoneReturnFile) {
             return commonCodeGenAnnotation;
         }
@@ -115,9 +122,17 @@ public class SpringRequestMappingTransformer implements
         if (paths.length > 0) {
             val = paths[0];
         }
-        //如果val不存在或者ownerName和value中的一致，则不生成value
-        if (StringUtils.hasText(val) && !ownerName.equals(val)) {
+        if (USE_COC.get()) {
+            //  coc
+            if (!StringUtils.hasText(val)) {
+                val = ownerName;
+            }
             namedArguments.put(MappingAnnotationPropNameConstant.VALUE, "\"" + val + "\"");
+        } else {
+            //如果 val 不存在 或者 ownerName 和 value 中的一致，则不生成 value
+            if (StringUtils.hasText(val) && !ownerName.equals(val)) {
+                namedArguments.put(MappingAnnotationPropNameConstant.VALUE, "\"" + val + "\"");
+            }
         }
 
         if (annotationMate.annotationType().equals(RequestMapping.class)) {
