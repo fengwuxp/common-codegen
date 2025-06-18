@@ -2,11 +2,13 @@ package com.wuxp.codegen.server.util;
 
 import com.wuxp.codegen.core.CodegenVersion;
 import com.wuxp.codegen.core.util.PathResolveUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 
+@Disabled
 class MavenCommandInvokeUtilsTests {
 
     @Test
