@@ -2,7 +2,7 @@ package ${packagePath?replace('.'+name,'')};
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 <#if dependencies??>
 <#--依赖导入处理-->

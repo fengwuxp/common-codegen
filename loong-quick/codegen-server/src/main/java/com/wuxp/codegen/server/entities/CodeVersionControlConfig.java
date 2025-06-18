@@ -2,11 +2,16 @@ package com.wuxp.codegen.server.entities;
 
 import com.wuxp.codegen.server.enums.SourcecodeRepositoryType;
 import com.wuxp.codegen.server.vcs.SourceCodeRepositoryAccessProperties;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 

@@ -7,11 +7,11 @@ import org.springframework.http.MediaType;
       import com.wuxp.codegen.swagger3.domain.Order;
       import com.wuxp.codegen.swagger3.domain.User;
       import com.wuxp.codegen.swagger3.enums.Sex;
-      import com.wuxp.codegen.swagger3.resp.PageInfo;
       import com.wuxp.codegen.swagger3.resp.ServiceResponse;
+      import com.wuxp.codegen.swagger3.resp.PageInfo;
       import java.util.List;
-      import java.io.File;
       import java.util.Map;
+      import java.io.File;
 
     /**
      * 接口：GET

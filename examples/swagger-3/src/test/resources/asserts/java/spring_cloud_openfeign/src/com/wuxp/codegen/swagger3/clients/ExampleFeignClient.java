@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
       import java.util.List;
-      import com.wuxp.codegen.swagger3.ExampleDto;
-      import com.wuxp.codegen.swagger3.evt.ExampleDTO;
       import java.util.Map;
+      import com.wuxp.codegen.swagger3.evt.ExampleDTO;
+      import com.wuxp.codegen.swagger3.ExampleDto;
 
     /**
      * 接口：GET

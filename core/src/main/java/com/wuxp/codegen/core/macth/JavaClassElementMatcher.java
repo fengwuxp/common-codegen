@@ -33,7 +33,7 @@ public class JavaClassElementMatcher implements CodeGenTypeElementMatcher {
         DEFAULT_IGNORE_PATTERNS.add("lombok.");
         DEFAULT_IGNORE_PATTERNS.add("javax.persistence.");
         DEFAULT_IGNORE_PATTERNS.add("java.net.");
-        DEFAULT_IGNORE_PATTERNS.add("javax.servlet.");
+        DEFAULT_IGNORE_PATTERNS.add("jakarta.servlet.");
         DEFAULT_IGNORE_PATTERNS.add("java.security.");
         DEFAULT_IGNORE_PATTERNS.add("java.text.");
         DEFAULT_IGNORE_PATTERNS.add("java.io.");

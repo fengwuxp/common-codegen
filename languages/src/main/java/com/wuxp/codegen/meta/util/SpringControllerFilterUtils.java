@@ -14,8 +14,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.core.parser.JavaClassParser.JAVA_CLASS_ON_PUBLIC_PARSER;
-import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_CONTROLLER_ANNOTATIONS;
-import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstants.SPRING_CONTROLLER_ANNOTATIONS;
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstants.SPRING_MAPPING_ANNOTATIONS;
 
 /**
  * 过滤spring controller 的方法或属性

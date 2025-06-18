@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
-class JavaParserTest {
+class JavaParserTests {
 
     private final SourceCodeProvider sourceCodeProvider = new SourceCodeProvider();
 
@@ -32,7 +32,7 @@ class JavaParserTest {
     }
 
     @Test
-    void testSourceZipRoot() throws Exception {
+    void testSourceZipRoot() {
         Assertions.assertTrue(sourceCodeProvider.getTypeDeclaration(ClassPathScanningCandidateComponentProvider.class).isPresent());
         Assertions.assertFalse(sourceCodeProvider.getTypeDeclaration(Object.class).isPresent());
         Assertions.assertTrue(sourceCodeProvider.getTypeDeclaration(Sex.class).isPresent());

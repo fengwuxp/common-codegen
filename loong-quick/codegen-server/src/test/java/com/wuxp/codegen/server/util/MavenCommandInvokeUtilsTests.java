@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 
-class MavenCommandInvokeUtilsTest {
+class MavenCommandInvokeUtilsTests {
 
     @Test
     void testMavenCommandExecute() {

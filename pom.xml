@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.wind.middleware</groupId>
         <artifactId>wind-middleware</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-jdk21-SNAPSHOT</version>
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
@@ -38,24 +38,21 @@
     </modules>
 
     <properties>
-        <revision>1.0.0</revision>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <revision>1.0.0-jdk21-SNAPSHOT</revision>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <jdk.version>${maven.compiler.target}</jdk.version>
         <java.version>${maven.compiler.target}</java.version>
         <project.src.encoding>UTF-8</project.src.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring.version>${spring-framework.version}</spring.version>
+        <maven.plugin.plugin.version>3.15.1</maven.plugin.plugin.version>
+
         <swagger2.version>3.0.0</swagger2.version>
-        <springdoc.version>1.6.6</springdoc.version>
-        <javaparser.version>3.18.0</javaparser.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <zip4j.version>2.9.1</zip4j.version>
-        <commons-io.version>2.8.0</commons-io.version>
-        <google.format.version>1.5</google.format.version>
-        <maven.plugin.plugin.version>3.5.2</maven.plugin.plugin.version>
+        <javaparser.version>3.27.0</javaparser.version>
+        <zip4j.version>2.11.5</zip4j.version>
+        <google.format.version>1.27.0</google.format.version>
     </properties>
 
     <dependencyManagement>
@@ -81,31 +78,9 @@
                 <version>4.8.59</version>
             </dependency>
             <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.googlejavaformat</groupId>
                 <artifactId>google-java-format</artifactId>
                 <version>${google.format.version}</version>
-            </dependency>
-
-            <!--   mapstruct -->
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-jdk8</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
             </dependency>
 
             <!-- maven plugin 相关-->
@@ -149,31 +124,25 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring-framework.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring-framework.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring-framework.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${javax-validation.version}</version>
+                <version>${spring-framework.version}</version>
                 <scope>provided</scope>
             </dependency>
             <!--  swagger  -->
@@ -192,29 +161,16 @@
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webmvc-core</artifactId>
-                <version>${springdoc.version}</version>
+                <version>${springdoc-openapi.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc.version}</version>
+                <version>${springdoc-openapi.version}</version>
                 <scope>provided</scope>
             </dependency>
 
-            <!--      test scope  -->
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>import</scope>
-            </dependency>
             <!--    子模块        -->
             <dependency>
                 <groupId>com.wuxp.codegen</groupId>
@@ -299,9 +255,8 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -309,29 +264,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
+            <artifactId>junit-platform-suite</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
         </dependency>
     </dependencies>
 
     <organization>
-        <name>fengwuxp</name>
-        <url>https://github.com/</url>
+        <name>Wuxp</name>
+        <url>https://github.com/fengwuxp</url>
     </organization>
 
     <developers>
@@ -363,6 +304,16 @@
                         <delimiter>${*}</delimiter>
                         <delimiter>@{*}</delimiter>
                     </delimiters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>

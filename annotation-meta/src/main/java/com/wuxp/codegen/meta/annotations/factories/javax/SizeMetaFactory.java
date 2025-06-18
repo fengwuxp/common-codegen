@@ -4,7 +4,7 @@ import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 

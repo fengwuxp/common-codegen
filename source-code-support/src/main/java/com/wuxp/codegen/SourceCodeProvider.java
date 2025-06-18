@@ -413,7 +413,8 @@ public class SourceCodeProvider {
                         return sourceRoot.parse(clazz.getPackage().getName(), sourceFilePath);
                     } catch (Exception e) {
                         // 由于target目录下可能会有一些其他目录会被误识别为源码目录，此处的异常忽略
-                        log.warn("get source file error sourceRoot={},sourceFilePath={},clazz={}", sourceRoot.getRoot(), sourceFilePath, clazz.getName());
+                        log.warn("get source file error sourceRoot={},sourceFilePath={},clazz={}", sourceRoot.getRoot(), sourceFilePath,
+                                clazz.getName());
                     }
                     return null;
                 })
