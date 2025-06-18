@@ -18,9 +18,9 @@ import static com.wuxp.codegen.core.constant.Constants.DEFAULT_CODEGEN_DIR;
 
 public final class Swagger2AssertCodegenResultUtil {
 
-    private final static String SWAGGER_VERSION = "swagger2";
+    private static final String SWAGGER_VERSION = "swagger2";
 
-    private final static String MODEL_DIR = "swagger-2";
+    private static final String MODEL_DIR = "swagger-2";
 
     private final static String ASSERT_DIR = "asserts";
 
@@ -68,7 +68,7 @@ public final class Swagger2AssertCodegenResultUtil {
         return getPath(outPaths);
     }
 
-    private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) throws Exception{
+    private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) throws Exception {
         URL resource = Swagger2AssertCodegenResultUtil.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] outPaths = {

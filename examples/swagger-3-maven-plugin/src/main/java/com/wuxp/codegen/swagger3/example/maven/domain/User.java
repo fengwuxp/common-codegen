@@ -12,38 +12,38 @@ import java.util.Map;
 @Schema(title = "用户信息", description = "用户信息描述")
 public class User {
 
-  @Schema(title = "id", description = "用户ID")
-  private Long id;
+    @Schema(title = "id", description = "用户ID")
+    private Long id;
 
-  @Schema(title = "姓名", description = "用户名称")
-  private String name;
+    @Schema(title = "姓名", description = "用户名称")
+    private String name;
 
-  private Integer age;
+    private Integer age;
 
-  private Order order;
+    private Order order;
 
-  private List<Order> orderList;
+    private List<Order> orderList;
 
-  private Sex sex;
+    private Sex sex;
 
-  private Map<String, String> other;
+    private Map<String, String> other;
 
-  private Map other2;
+    private Map other2;
 
-  private List<?> list;
+    private List<?> list;
 
-  private List list2;
+    private List list2;
 
-  private String myFriends;
+    private String myFriends;
 
-  private String[][] demos;
+    private String[][] demos;
 
-  private String[][][] demos2;
+    private String[][][] demos2;
 
-  private Map<Sex[], String[][][]>[][][] demos3;
+    private Map<Sex[], String[][][]>[][][] demos3;
 
 
-  public Boolean isBoy() {
-    return false;
-  }
+    public Boolean isBoy() {
+        return false;
+    }
 }

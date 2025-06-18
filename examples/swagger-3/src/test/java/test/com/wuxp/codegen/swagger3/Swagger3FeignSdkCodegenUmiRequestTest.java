@@ -53,7 +53,7 @@ class Swagger3FeignSdkCodegenUmiRequestTest {
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
-                .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
+                .outPath(Swagger3AssertCodegenResultUtils.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .otherCodegenClassMetas(TypescriptClassMeta.ENUM)
                 .sharedVariables("enumImportPath", "../" + TypescriptClassMeta.ENUM.getName())
@@ -61,7 +61,7 @@ class Swagger3FeignSdkCodegenUmiRequestTest {
                 .buildCodeGenerator()
                 .generate();
 
-        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+        Swagger3AssertCodegenResultUtils.assertGenerate(language, clientProviderType);
     }
 
 

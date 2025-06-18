@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 @Import(CodegenJpaAuditorAwareConfig.class)
-@DataJpaTest(properties = {"spring.profiles.active=test"})
-class SourceCodeRepositoryRepositoryTestConfiguration {
+@DataJpaTest
+@ActiveProfiles("test")
+class SourceCodeRepositoryRepositoryTests {
 
     @Autowired
     private CodeVersionControlConfigRepository codeVersionControlConfigRepository;

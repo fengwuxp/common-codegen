@@ -21,7 +21,7 @@ import java.util.Map;
 class Swagger3FeignSdkCodegenFeignClientTest {
 
     @Test
-    void testCodeGenFeignClientByStater() throws Exception{
+    void testCodeGenFeignClientByStater() throws Exception {
 
         //包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
@@ -51,14 +51,14 @@ class Swagger3FeignSdkCodegenFeignClientTest {
                 //自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(packageMapStrategy)
-                .outPath( Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
+                .outPath(Swagger3AssertCodegenResultUtils.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .elementParsePostProcessors(new ResetOnlyImportMetaPostProcessor(source -> QueryOrderEvt.class == source))
                 .isDeletedOutputDirectory(false)
                 .buildCodeGenerator()
                 .generate();
 
-        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+        Swagger3AssertCodegenResultUtils.assertGenerate(language, clientProviderType);
     }
 
 }

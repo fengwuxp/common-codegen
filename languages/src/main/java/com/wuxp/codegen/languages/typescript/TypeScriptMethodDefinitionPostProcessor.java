@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.languages.AbstractLanguageMethodDefinitionParser.MARGE_PARAMS_TAG_NAME;
-import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstant.SPRING_MAPPING_ANNOTATIONS;
+import static com.wuxp.codegen.model.constant.SpringAnnotationClassConstants.SPRING_MAPPING_ANNOTATIONS;
 
 /**
  * 处理 typescript-feign 的参数合并，从中标记 reqeustBody 的参数名称

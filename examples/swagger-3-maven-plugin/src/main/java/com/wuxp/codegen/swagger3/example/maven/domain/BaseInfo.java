@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BaseInfo<ID, T> {
 
-  protected ID id;
+    protected ID id;
 
-  protected T data;
+    protected T data;
 }
