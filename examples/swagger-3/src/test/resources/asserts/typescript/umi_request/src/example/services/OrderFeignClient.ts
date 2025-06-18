@@ -1,11 +1,11 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
       import {Order} from "../../domain/Order";
-      import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+      import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderFeignClientQueryPageReq} from "../../req/OrderFeignClientQueryPageReq";
-      import {ExampleDTO} from "../../evt/ExampleDTO";
       import {OrderFeignClientHelloReq} from "../../req/OrderFeignClientHelloReq";
+      import {ExampleDTO} from "../../evt/ExampleDTO";
       import {OrderFeignClientQueryOrder_2Req} from "../../req/OrderFeignClientQueryOrder_2Req";
       import {PageInfo} from "../../resp/PageInfo";
       import {OrderFeignClientQueryOrder6Req} from "../../req/OrderFeignClientQueryOrder6Req";

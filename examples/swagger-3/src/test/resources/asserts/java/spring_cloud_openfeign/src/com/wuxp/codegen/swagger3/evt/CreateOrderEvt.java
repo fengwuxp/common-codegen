@@ -2,7 +2,7 @@ package com.wuxp.codegen.swagger3.evt;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
         import com.wuxp.codegen.swagger3.enums.Sex;
         import java.util.Map;

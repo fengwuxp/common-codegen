@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_GIT_BRANCH_NAME;
 import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_MODULE_NAME;

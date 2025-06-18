@@ -1,18 +1,18 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
       import {OrderServiceTestEnumNames3Req} from "../../req/OrderServiceTestEnumNames3Req";
-      import {Sex} from "../../enums/Sex";
       import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
+      import {Sex} from "../../enums/Sex";
       import {Page} from "../../model/paging/Page";
       import {BaseServiceTest2Req} from "../../req/BaseServiceTest2Req";
       import {OrderServiceTestEnumNamesReq} from "../../req/OrderServiceTestEnumNamesReq";
       import {OrderServiceHello3Req} from "../../req/OrderServiceHello3Req";
       import {Order} from "../../domain/Order";
-      import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
-      import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
-      import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
-      import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
       import {OrderServiceQueryOrderReq} from "../../req/OrderServiceQueryOrderReq";
+      import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+      import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
+      import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
+      import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
       import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
       import {PageInfo} from "../../resp/PageInfo";

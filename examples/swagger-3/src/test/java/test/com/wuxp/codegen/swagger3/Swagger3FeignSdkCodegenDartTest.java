@@ -15,7 +15,11 @@ import com.wuxp.codegen.swagger3.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 测试swagger 生成  dart的 feign api sdk
@@ -59,14 +63,14 @@ class Swagger3FeignSdkCodegenDartTest {
                 // 自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap, classNameTransformers))
-                .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
+                .outPath(Swagger3AssertCodegenResultUtils.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .isDeletedOutputDirectory(true)
                 .ignoreFieldNames(ignoreFields)
                 .buildCodeGenerator()
                 .generate();
 
-        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+        Swagger3AssertCodegenResultUtils.assertGenerate(language, clientProviderType);
     }
 
 

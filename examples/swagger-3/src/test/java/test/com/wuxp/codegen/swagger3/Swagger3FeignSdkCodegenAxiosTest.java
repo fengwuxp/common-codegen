@@ -49,12 +49,12 @@ class Swagger3FeignSdkCodegenAxiosTest {
                 // 自定义的类型映射
                 .customJavaTypeMapping(ServiceQueryResponse.class, new Class<?>[]{ServiceResponse.class, PageInfo.class})
                 .packageMapStrategy(new TypescriptPackageMapStrategy(packageMap))
-                .outPath(Swagger3AssertCodegenResultUtil.getOutPath(language, clientProviderType))
+                .outPath(Swagger3AssertCodegenResultUtils.getOutPath(language, clientProviderType))
                 .scanPackages(packagePaths)
                 .elementParsePostProcessors(new UmiRequestMethodDefinitionPostProcessor())
                 .buildCodeGenerator()
                 .generate();
-        Swagger3AssertCodegenResultUtil.assertGenerate(language, clientProviderType);
+        Swagger3AssertCodegenResultUtils.assertGenerate(language, clientProviderType);
     }
 
 

@@ -5,22 +5,14 @@ import com.wuxp.codegen.loong.strategy.TypescriptPackageMapStrategy;
 import com.wuxp.codegen.model.LanguageDescription;
 import com.wuxp.codegen.model.languages.typescript.TypescriptClassMeta;
 import com.wuxp.codegen.swagger2.builder.Swagger2FeignTypescriptCodegenBuilder;
-import com.wuxp.codegen.swagger2.example.controller.BaseController;
-import com.wuxp.codegen.swagger2.example.evt.BaseEvt;
 import com.wuxp.codegen.swagger2.example.resp.PageInfo;
 import com.wuxp.codegen.swagger2.example.resp.ServiceQueryResponse;
 import com.wuxp.codegen.swagger2.example.resp.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 测试swagger 生成  typescript的 feign api sdk
@@ -34,7 +26,7 @@ class Swagger2FeignSdkCodegenTypescriptTest {
         codegen(ClientProviderType.TYPESCRIPT_FEIGN_FUNC);
     }
 
-    private static void codegen( ClientProviderType clientProviderType) throws Exception {
+    private static void codegen(ClientProviderType clientProviderType) throws Exception {
         // 包名映射关系
         Map<String, String> packageMap = new LinkedHashMap<>();
         packageMap.put("com.wuxp.codegen.swagger2.**.controller", "{0}services");

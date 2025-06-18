@@ -1,9 +1,9 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
       import {Order} from "../../domain/Order";
-      import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
-      import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+      import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
+      import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
       import {OrderServiceQueryOrder_2Req} from "../../req/OrderServiceQueryOrder_2Req";
       import {ExampleDTO} from "../../evt/ExampleDTO";

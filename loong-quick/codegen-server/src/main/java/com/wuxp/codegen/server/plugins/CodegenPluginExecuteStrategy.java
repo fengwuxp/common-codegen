@@ -3,7 +3,7 @@ package com.wuxp.codegen.server.plugins;
 import com.wuxp.codegen.core.ClientProviderType;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**

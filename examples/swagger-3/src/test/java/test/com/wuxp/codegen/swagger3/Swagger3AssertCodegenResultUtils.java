@@ -16,15 +16,15 @@ import java.util.List;
 
 import static com.wuxp.codegen.core.constant.Constants.DEFAULT_CODEGEN_DIR;
 
-public final class Swagger3AssertCodegenResultUtil {
+public final class Swagger3AssertCodegenResultUtils {
 
-    private final static String SWAGGER_VERSION = "swagger3";
+    private static final String SWAGGER_VERSION = "swagger3";
 
-    private final static String MODEL_DIR = "swagger-3";
+    private static final String MODEL_DIR = "swagger-3";
 
-    private final static String ASSERT_DIR = "asserts";
+    private static final String ASSERT_DIR = "asserts";
 
-    public Swagger3AssertCodegenResultUtil() {
+    public Swagger3AssertCodegenResultUtils() {
         throw new AssertionError();
     }
 
@@ -68,7 +68,7 @@ public final class Swagger3AssertCodegenResultUtil {
     }
 
     private static String getAssertPath(LanguageDescription languageDescription, ClientProviderType clientProviderType) throws URISyntaxException {
-        URL resource = Swagger3AssertCodegenResultUtil.class.getResource("/");
+        URL resource = Swagger3AssertCodegenResultUtils.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] outPaths = {
                 Paths.get(resource.toURI()).toString(),
@@ -124,7 +124,7 @@ public final class Swagger3AssertCodegenResultUtil {
     }
 
     private static void copyToTestClasspath(String outBasePath) throws IOException, URISyntaxException {
-        URL resource = Swagger3AssertCodegenResultUtil.class.getResource("/");
+        URL resource = Swagger3AssertCodegenResultUtils.class.getResource("/");
         Assertions.assertNotNull(resource);
         String[] assertResourcePaths = {
                 Paths.get(resource.toURI()).toString(),

@@ -3,12 +3,12 @@ package com.wuxp.codegen.swagger3.example.evt;
 
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.beans.Transient;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -12,13 +12,13 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Order extends BaseInfo<Long, String> {
 
-  @Parameter()
-  private String sn;
+    @Parameter()
+    private String sn;
 
-  private User user;
+    private User user;
 
-  @Schema(description = "添加时间")
-  public Date getAddTime() {
-    return new Date();
-  }
+    @Schema(description = "添加时间")
+    public Date getAddTime() {
+        return new Date();
+    }
 }

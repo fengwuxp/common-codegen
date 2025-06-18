@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.List;
 
-class JsonSchemaCodegenTypeLoaderTest {
+class JsonSchemaCodegenTypeLoaderTests {
 
     String dirPath = String.join(File.separator, PathResolveUtils.relative(System.getProperty("user.dir"),"../model"), "src", "main", "resources", "codegen-meta-extensions");
 

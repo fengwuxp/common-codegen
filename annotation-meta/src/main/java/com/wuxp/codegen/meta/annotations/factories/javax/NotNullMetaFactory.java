@@ -4,7 +4,7 @@ import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMate;
 import com.wuxp.codegen.meta.annotations.factories.AbstractAnnotationMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 
@@ -12,7 +12,7 @@ import java.text.MessageFormat;
  * javax 验证注解处理
  *
  * @author wuxp
- * @see javax.validation.constraints.NotNull
+ * @see jakarta.validation.constraints.NotNull
  */
 public class NotNullMetaFactory extends AbstractAnnotationMetaFactory<NotNull, NotNullMetaFactory.NotNullMate> {
 

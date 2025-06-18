@@ -7,8 +7,8 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 
           import '../../domain/order.dart';
           import '../../resp/page_info.dart';
-          import '../../evt/create_order_evt.dart';
           import '../../evt/query_order_evt.dart';
+          import '../../evt/create_order_evt.dart';
           import '../../evt/example_dto.dart';
           import '../../serializers.dart';
 

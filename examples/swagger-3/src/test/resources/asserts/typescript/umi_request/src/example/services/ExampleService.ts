@@ -4,8 +4,8 @@
       import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
       import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
       import {ExampleServiceGetMapReq} from "../../req/ExampleServiceGetMapReq";
-      import {ExampleDto} from "../../ExampleDto";
       import {ExampleDTO} from "../../evt/ExampleDTO";
+      import {ExampleDto} from "../../ExampleDto";
       import {ExampleServiceGetNumsReq} from "../../req/ExampleServiceGetNumsReq";
 
     /**

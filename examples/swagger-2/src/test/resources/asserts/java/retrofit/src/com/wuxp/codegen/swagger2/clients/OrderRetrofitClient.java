@@ -4,12 +4,12 @@ import retrofit2.http.*;
 
       import com.wuxp.codegen.swagger2.model.domain.Order;
       import java.util.Set;
-      import com.wuxp.codegen.swagger2.model.evt.CreateOrderEvt;
       import com.wuxp.codegen.swagger2.model.evt.QueryOrderEvt;
+      import com.wuxp.codegen.swagger2.model.evt.CreateOrderEvt;
       import com.wuxp.codegen.swagger2.enums.Sex;
       import com.wuxp.codegen.swagger2.model.paging.Page;
-      import com.wuxp.codegen.swagger2.model.resp.ServiceResponse;
       import com.wuxp.codegen.swagger2.model.resp.PageInfo;
+      import com.wuxp.codegen.swagger2.model.resp.ServiceResponse;
       import java.util.List;
       import java.util.Map;
 

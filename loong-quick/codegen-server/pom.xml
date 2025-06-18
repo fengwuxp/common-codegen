@@ -130,6 +130,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -178,15 +183,15 @@
                     </container>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.wuxp.codegen</groupId>
-                <artifactId>wuxp-codegen-loong-maven-plugin</artifactId>
-                <configuration>
-                    <projectName>codegen-server</projectName>
-                    <clientProviderTypes>typescript_feign</clientProviderTypes>
-                    <loongCodegenServer>http://localhost:8080</loongCodegenServer>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.wuxp.codegen</groupId>-->
+<!--                <artifactId>wuxp-codegen-loong-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <projectName>codegen-server</projectName>-->
+<!--                    <clientProviderTypes>typescript_feign</clientProviderTypes>-->
+<!--                    <loongCodegenServer>http://localhost:8080</loongCodegenServer>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

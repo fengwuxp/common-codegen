@@ -18,7 +18,7 @@ import java.util.Optional;
  * use junit5 test
  */
 @Slf4j
-class SourceCodeProviderTest {
+class SourceCodeProviderTests {
 
 
     private final SourceCodeProvider sourceCodeProvider = new SourceCodeProvider();
@@ -33,13 +33,13 @@ class SourceCodeProviderTest {
 
     @Test
     void getTypeDeclaration() {
-        Optional<ClassOrInterfaceDeclaration> typeDeclaration = sourceCodeProvider.getTypeDeclaration(SourceCodeProviderTest.class);
+        Optional<ClassOrInterfaceDeclaration> typeDeclaration = sourceCodeProvider.getTypeDeclaration(SourceCodeProviderTests.class);
         Assertions.assertTrue(typeDeclaration.isPresent());
     }
 
     @Test
     void getClassDeclaration() {
-        Optional<ClassOrInterfaceDeclaration> classDeclaration = sourceCodeProvider.getInterfaceDeclaration(SourceCodeProviderTest.class);
+        Optional<ClassOrInterfaceDeclaration> classDeclaration = sourceCodeProvider.getInterfaceDeclaration(SourceCodeProviderTests.class);
         Assertions.assertFalse(classDeclaration.isPresent());
     }
 
@@ -57,7 +57,7 @@ class SourceCodeProviderTest {
 
     @Test
     void getCompilationUnit() {
-        Optional<CompilationUnit> compilationUnit = sourceCodeProvider.getCompilationUnit(SourceCodeProviderTest.class);
+        Optional<CompilationUnit> compilationUnit = sourceCodeProvider.getCompilationUnit(SourceCodeProviderTests.class);
         Assertions.assertTrue(compilationUnit.isPresent());
     }
 

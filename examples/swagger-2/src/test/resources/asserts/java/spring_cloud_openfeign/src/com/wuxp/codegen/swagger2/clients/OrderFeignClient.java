@@ -6,12 +6,12 @@ import org.springframework.http.MediaType;
 
       import com.wuxp.codegen.swagger2.domain.Order;
       import java.util.Set;
-      import com.wuxp.codegen.swagger2.evt.CreateOrderEvt;
       import com.wuxp.codegen.swagger2.evt.QueryOrderEvt;
+      import com.wuxp.codegen.swagger2.evt.CreateOrderEvt;
       import com.wuxp.codegen.swagger2.enums.Sex;
       import com.wuxp.codegen.swagger2.model.paging.Page;
-      import com.wuxp.codegen.swagger2.resp.ServiceResponse;
       import com.wuxp.codegen.swagger2.resp.PageInfo;
+      import com.wuxp.codegen.swagger2.resp.ServiceResponse;
       import java.util.List;
       import java.util.Map;
 
