@@ -17,14 +17,12 @@ import java.lang.reflect.AnnotatedElement;
  */
 public class ParameterMetaFactory extends AbstractAnnotationMetaFactory<Parameter, ParameterMetaFactory.ParameterMate> {
 
-
     @Override
     public ParameterMate factory(Parameter annotation) {
         return this.newProxyMate(annotation, ParameterMate.class);
     }
 
     public abstract static class ParameterMate implements AnnotationMate, Parameter {
-
 
         @Override
         public String toComment(AnnotatedElement element) {

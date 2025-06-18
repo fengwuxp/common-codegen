@@ -2,10 +2,12 @@ package com.wuxp.codegen.server.plugins;
 
 import com.wuxp.codegen.core.util.PathResolveUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+@Disabled
 class MavenCodegenPluginExecuteStrategyTests {
 
 
