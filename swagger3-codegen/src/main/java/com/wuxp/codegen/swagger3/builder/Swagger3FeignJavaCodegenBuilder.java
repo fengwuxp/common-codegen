@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -30,6 +31,8 @@ import java.util.List;
 public class Swagger3FeignJavaCodegenBuilder extends AbstractSwagger3CodegenBuilder {
 
     private final Boolean useRxJava;
+
+    private final Boolean useJakarta;
 
     @Override
     public CodeGenerator buildCodeGenerator() {
@@ -42,6 +45,14 @@ public class Swagger3FeignJavaCodegenBuilder extends AbstractSwagger3CodegenBuil
         }
         configParserPostProcessors(JavaCodeGenClassMeta.RX_JAVA2_OBSERVABLE);
         configCodeGenElementMatchers();
+
+        this.elementParsePostProcessors(meta -> {
+            if (Objects.equals(useJakarta, false)) {
+                meta.getTags().put("jNamespace", "javax");
+            } else {
+                meta.getTags().put("jNamespace", "jakarta");
+            }
+        });
         return createCodeGenerator();
     }
 

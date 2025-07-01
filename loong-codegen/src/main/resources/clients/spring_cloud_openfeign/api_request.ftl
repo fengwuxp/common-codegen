@@ -1,8 +1,13 @@
 package ${packagePath?replace('.'+name,'')};
 
+<#if tags?has_content && tags['jNamespace']??>
+    <#assign javaNamespace = tags['jNamespace']>
+<#else>
+    <#assign javaNamespace = 'jakarta'>
+</#if>
 import lombok.Data;
 import lombok.experimental.Accessors;
-import jakarta.validation.constraints.*;
+import ${javaNamespace}.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 <#if dependencies??>
 <#--依赖导入处理-->
