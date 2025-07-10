@@ -8,8 +8,7 @@
         export {BaseInfo} from './domain/BaseInfo';
         export {BaseQueryEvt} from './evt/BaseQueryEvt';
         export {CreateOrderEvt} from './evt/CreateOrderEvt';
-        export {ExampleDTO} from './evt/ExampleDTO';
-        export {ExampleDto} from './ExampleDto';
+        export {ExampleDTO} from './resp/ExampleDTO';
         export {ExampleServiceGetMap2Req} from './req/ExampleServiceGetMap2Req';
         export {ExampleServiceGetMap3Req} from './req/ExampleServiceGetMap3Req';
         export {ExampleServiceGetMapReq} from './req/ExampleServiceGetMapReq';
@@ -25,6 +24,7 @@
         export {PageInfo} from './resp/PageInfo';
         export {QueryOrderEvt} from './evt/QueryOrderEvt';
         export {Sex} from './enums/Sex';
+        export {TestMethodDTO} from './resp/TestMethodDTO';
         export {User} from './domain/User';
         export {UserServiceDeleteUserReq} from './req/UserServiceDeleteUserReq';
         export {UserServiceGetUserReq} from './req/UserServiceGetUserReq';

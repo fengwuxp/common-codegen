@@ -1,6 +1,5 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
-      import {HelloServiceIndexReq} from "../../req/HelloServiceIndexReq";
 
     /**
      * 接口：GET

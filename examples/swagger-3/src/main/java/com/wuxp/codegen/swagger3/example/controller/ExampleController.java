@@ -1,7 +1,6 @@
 package com.wuxp.codegen.swagger3.example.controller;
 
-import com.wuxp.codegen.swagger3.example.ExampleDto;
-import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
+import com.wuxp.codegen.swagger3.example.resp.ExampleDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +68,7 @@ public class ExampleController {
     }
 
     @GetMapping("get_map_5")
-    public Map<String, List<Boolean>> getMap5(ExampleDto dto) {
+    public Map<String, List<Boolean>> getMap5(ExampleDTO dto) {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
         return map;

@@ -6,8 +6,7 @@ import org.springframework.http.MediaType;
 
       import java.util.List;
       import java.util.Map;
-      import com.wuxp.codegen.swagger3.evt.ExampleDTO;
-      import com.wuxp.codegen.swagger3.ExampleDto;
+      import com.wuxp.codegen.swagger3.resp.ExampleDTO;
 
     /**
      * 接口：GET
@@ -95,6 +94,6 @@ public interface ExampleFeignClient{
      **/
       @GetMapping(value = "get_map_5" )
     Map<String,List<Boolean>>  getMap5 (
-  ExampleDto dto
+  ExampleDTO dto
   );
 }
