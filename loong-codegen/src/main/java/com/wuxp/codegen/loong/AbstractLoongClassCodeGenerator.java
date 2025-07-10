@@ -26,7 +26,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -115,7 +123,7 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
             Thread.currentThread().interrupt();
         } catch (ExecutionException exception) {
             throw new CodegenRuntimeException(exception);
-        }finally {
+        } finally {
             // clear config
             CodegenConfigHolder.clear();
         }
@@ -260,7 +268,7 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
         if (ObjectUtils.isEmpty(fieldMetas)) {
             return;
         }
-        Map<String, Integer> filedCounts = new HashMap<>(fieldMetas.length);
+        Map<String, Integer> filedCounts = HashMap.newHashMap(fieldMetas.length);
         fieldMetas = Arrays.stream(fieldMetas)
                 .filter(commonCodeGenFiledMeta -> {
                     String name = commonCodeGenFiledMeta.getName();
@@ -326,13 +334,17 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
         dependencies.forEach((key, value) -> {
             Class<?> aClass = value.getSource();
-            // 排除掉无效的依赖
-            boolean isExclude = aClass != null && !effectiveDependencies.contains(aClass);
-            if (isExclude) {
+            if (aClass == null || !effectiveDependencies.contains(aClass)) {
+                // 排除掉无效的依赖
+                return;
+            }
+            if (Objects.equals(aClass, meta.getSource())) {
+                // 自己引用自己
                 return;
             }
             newDependencies.put(key, value);
         });
+
         meta.setDependencies(newDependencies);
     }
 

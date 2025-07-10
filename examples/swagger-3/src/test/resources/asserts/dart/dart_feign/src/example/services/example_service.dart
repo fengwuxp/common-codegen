@@ -5,9 +5,7 @@ import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 import 'package:fengwuxp_dart_openfeign/index.dart';
 
-          import '../../evt/example_dto.dart';
-          import '../../example_dto.dart';
-          import '../../serializers.dart';
+          import '../../resp/example_dto.dart';
 
 
       /// 接口：GET
@@ -145,7 +143,7 @@ ExampleService() : super() {
       /// 6:返回值在java中的类型为：Boolean
           @GetMapping(value:"get_map_5",)
   Future<BuiltMap<String,BuiltList<bool>>>  getMap5(
-        ExampleDto dto,
+        ExampleDTO dto,
   [UIOptions? feignOptions]) {
   return this.delegateInvoke<BuiltMap<String,BuiltList<bool>>>("getMap5",
   [dto,],

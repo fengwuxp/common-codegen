@@ -5,7 +5,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 
-            import '../serializers.dart';
+            import './test_method_dto.dart';
 
     part 'example_dto.g.dart';
 
@@ -23,6 +23,15 @@ factory ExampleDTO([Function(ExampleDTOBuilder) updates]) = _$ExampleDTO;
             /// 字段在java中的类型为：Integer
         @BuiltValueField(wireName: 'queryPage')
         int? get queryPage;
+            /// 字段在java中的类型为：String
+        @BuiltValueField(wireName: 'name')
+        String? get name;
+            /// 字段在java中的类型为：String
+        @BuiltValueField(wireName: 'keyword')
+        String? get keyword;
+            /// 字段在java中的类型为：TestMethodDTO
+        @BuiltValueField(wireName: 'method')
+        TestMethodDTO? get method;
 
 @override
 Map<String, dynamic> toMap() {

@@ -7,7 +7,6 @@ import 'package:fengwuxp_dart_basic/index.dart';
 
             import './order.dart';
             import '../enums/sex.dart';
-            import '../serializers.dart';
 
     part 'user.g.dart';
 

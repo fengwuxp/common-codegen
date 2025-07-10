@@ -4,7 +4,7 @@ package com.wuxp.codegen.swagger3.example.controller;
 import com.wuxp.codegen.swagger3.example.domain.Order;
 import com.wuxp.codegen.swagger3.example.domain.User;
 import com.wuxp.codegen.swagger3.example.evt.CreateOrderEvt;
-import com.wuxp.codegen.swagger3.example.evt.ExampleDTO;
+import com.wuxp.codegen.swagger3.example.resp.ExampleDTO;
 import com.wuxp.codegen.swagger3.example.evt.QueryOrderEvt;
 import com.wuxp.codegen.swagger3.example.resp.PageInfo;
 import com.wuxp.codegen.swagger3.example.resp.ServiceQueryResponse;

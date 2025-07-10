@@ -14,12 +14,12 @@ import 'package:fengwuxp_dart_openfeign/src/built/date_time_serializer.dart';
             import './domain/base_info.dart';
             import './evt/base_query_evt.dart';
             import './evt/create_order_evt.dart';
-            import './evt/example_dto.dart';
-            import './example_dto.dart';
+            import './resp/example_dto.dart';
             import './domain/order.dart';
             import './resp/page_info.dart';
             import './evt/query_order_evt.dart';
             import './enums/sex.dart';
+            import './resp/test_method_dto.dart';
             import './domain/user.dart';
 
 part 'serializers.g.dart';
@@ -42,11 +42,11 @@ part 'serializers.g.dart';
         BaseQueryEvt,
         CreateOrderEvt,
         ExampleDTO,
-        ExampleDto,
         Order,
         PageInfo,
         QueryOrderEvt,
         Sex,
+        TestMethodDTO,
         User,
 ])
 

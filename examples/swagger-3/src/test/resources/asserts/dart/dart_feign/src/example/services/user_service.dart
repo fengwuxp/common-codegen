@@ -9,7 +9,6 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
           import '../../resp/page_info.dart';
           import '../../domain/user.dart';
           import '../../enums/sex.dart';
-          import '../../serializers.dart';
 
 
       /// 接口：GET

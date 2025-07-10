@@ -12,13 +12,7 @@ FeignHttpClientPromiseFunction,
 feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
-      import {ExampleServiceGetMap3Req} from "../../req/ExampleServiceGetMap3Req";
-      import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
-      import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
-      import {ExampleServiceGetMapReq} from "../../req/ExampleServiceGetMapReq";
-      import {ExampleDTO} from "../../evt/ExampleDTO";
-      import {ExampleDto} from "../../ExampleDto";
-      import {ExampleServiceGetNumsReq} from "../../req/ExampleServiceGetNumsReq";
+      import {ExampleDTO} from "../../resp/ExampleDTO";
 
     /**
      * 接口：GET
@@ -109,7 +103,7 @@ class ExampleService{
       @GetMapping({
             value:"get_map_5",
       })
-    getMap5!:(req?: ExampleDto, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
+    getMap5!:(req?: ExampleDTO, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
 }
 
 export default new ExampleService();

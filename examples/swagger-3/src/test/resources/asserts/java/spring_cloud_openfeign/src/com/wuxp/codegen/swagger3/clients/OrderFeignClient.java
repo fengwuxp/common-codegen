@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
       import java.util.Set;
       import com.wuxp.codegen.swagger3.evt.QueryOrderEvt;
       import com.wuxp.codegen.swagger3.evt.CreateOrderEvt;
-      import com.wuxp.codegen.swagger3.evt.ExampleDTO;
+      import com.wuxp.codegen.swagger3.resp.ExampleDTO;
       import com.wuxp.codegen.swagger3.resp.PageInfo;
       import com.wuxp.codegen.swagger3.resp.ServiceResponse;
       import java.util.List;

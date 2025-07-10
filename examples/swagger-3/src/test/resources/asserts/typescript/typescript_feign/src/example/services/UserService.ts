@@ -13,22 +13,9 @@ feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {User} from "../../domain/User";
-      import {UserServiceGetUserReq} from "../../req/UserServiceGetUserReq";
-      import {UserServiceSampleMapReq} from "../../req/UserServiceSampleMapReq";
       import {Sex} from "../../enums/Sex";
-      import {UserServiceDeleteUserReq} from "../../req/UserServiceDeleteUserReq";
-      import {UserServiceSample2Req} from "../../req/UserServiceSample2Req";
-      import {UserServiceTest8Req} from "../../req/UserServiceTest8Req";
-      import {UserServiceTest6Req} from "../../req/UserServiceTest6Req";
-      import {UserServiceTest4Req} from "../../req/UserServiceTest4Req";
       import {Order} from "../../domain/Order";
-      import {UserServiceSampleReq} from "../../req/UserServiceSampleReq";
-      import {UserServiceTest3Req} from "../../req/UserServiceTest3Req";
-      import {UserServicePutUserReq} from "../../req/UserServicePutUserReq";
       import {PageInfo} from "../../resp/PageInfo";
-      import {UserServiceTest7Req} from "../../req/UserServiceTest7Req";
-      import {UserServiceTest9Req} from "../../req/UserServiceTest9Req";
-      import {UserServiceTest5Req} from "../../req/UserServiceTest5Req";
 
     /**
      * 接口：GET

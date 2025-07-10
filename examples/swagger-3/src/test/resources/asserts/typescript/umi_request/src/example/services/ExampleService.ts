@@ -1,12 +1,6 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
-      import {ExampleServiceGetMap3Req} from "../../req/ExampleServiceGetMap3Req";
-      import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
-      import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
-      import {ExampleServiceGetMapReq} from "../../req/ExampleServiceGetMapReq";
-      import {ExampleDTO} from "../../evt/ExampleDTO";
-      import {ExampleDto} from "../../ExampleDto";
-      import {ExampleServiceGetNumsReq} from "../../req/ExampleServiceGetNumsReq";
+      import {ExampleDTO} from "../../resp/ExampleDTO";
 
     /**
      * 接口：GET
@@ -127,7 +121,7 @@ export const  getMap4=  (req?: ExampleDTO, options?: RequestOptionsInit): Promis
       * 6:返回值在java中的类型为：Boolean
      **/
 
-export const  getMap5=  (req?: ExampleDto, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
+export const  getMap5=  (req?: ExampleDTO, options?: RequestOptionsInit): Promise<Record<string,Array<boolean>>> =>{
   return request<Record<string,Array<boolean>>>(`/example_cms/get_map_5`, {
       method: 'get',
       params: req || {},
