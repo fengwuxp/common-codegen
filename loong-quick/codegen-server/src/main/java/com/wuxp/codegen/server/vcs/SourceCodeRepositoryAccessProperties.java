@@ -3,8 +3,8 @@ package com.wuxp.codegen.server.vcs;
 
 import com.wuxp.codegen.server.enums.SourcecodeRepositoryType;
 import org.springframework.core.Ordered;
+import org.springframework.lang.Nullable;
 
-import javax.annotation.Nullable;
 
 /**
  * 访问源代码仓库访问属性

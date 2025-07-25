@@ -9,7 +9,11 @@ import com.wuxp.codegen.core.util.ClassLoaderUtils;
 import com.wuxp.codegen.core.util.CodegenFileUtils;
 import com.wuxp.codegen.starter.LoongCodeGenerator;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
@@ -60,7 +64,8 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
                 Class<? extends Annotation> entityAnnotationType = ClassLoaderUtils.loadClass(className);
                 processAnnotations(roundEnv.getElementsAnnotatedWith(entityAnnotationType), codeGenerators);
             } catch (ClassNotFoundException e) {
-                this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format("%s  can't found class %s", getClass().getSimpleName(), className));
+                this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format("%s  can't found class %s",
+                        getClass().getSimpleName(), className));
             }
         }
         return false;
