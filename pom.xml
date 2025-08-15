@@ -75,7 +75,7 @@
             <dependency>
                 <groupId>io.github.classgraph</groupId>
                 <artifactId>classgraph</artifactId>
-                <version>4.8.59</version>
+                <version>4.8.112</version>
             </dependency>
             <dependency>
                 <groupId>com.google.googlejavaformat</groupId>
