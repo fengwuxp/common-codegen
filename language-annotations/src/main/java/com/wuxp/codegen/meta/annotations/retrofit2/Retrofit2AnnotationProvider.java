@@ -76,7 +76,7 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
         public CommonCodeGenAnnotation toAnnotation(Parameter annotationOwner) {
             Method method = (Method) annotationOwner.getDeclaringExecutable();
             Optional<RequestMappingMetaFactory.RequestMappingMate> requestMappingAnnotation = RequestMappingUtils.findRequestMappingAnnotation(method.getAnnotations());
-            if (!requestMappingAnnotation.isPresent()) {
+            if (requestMappingAnnotation.isEmpty()) {
                 return null;
             }
             RequestMappingMetaFactory.RequestMappingMate requestMappingMate = requestMappingAnnotation.get();
@@ -90,8 +90,8 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
                 annotation.setName(Query.class.getSimpleName());
                 return annotation;
             }
-            boolean isSupportBody = RequestMethod.POST.equals(requestMethod) ||
-                    RequestMethod.PUT.equals(requestMethod) || RequestMethod.PATCH.equals(requestMethod);
+            annotation.getNamedArguments().remove("defaultValue");
+            boolean isSupportBody = RequestMethod.POST.equals(requestMethod) || RequestMethod.PUT.equals(requestMethod) || RequestMethod.PATCH.equals(requestMethod);
             if (isSupportBody) {
                 annotation.setName(Field.class.getSimpleName());
             }
