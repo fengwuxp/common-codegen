@@ -9,6 +9,7 @@ import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFact
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +25,10 @@ import retrofit2.http.Query;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -82,21 +85,20 @@ public class Retrofit2AnnotationProvider extends AbstractClientAnnotationProvide
             RequestMappingMetaFactory.RequestMappingMate requestMappingMate = requestMappingAnnotation.get();
             RequestMethod requestMethod = requestMappingMate.getRequestMethod();
             CommonCodeGenAnnotation annotation = super.toAnnotation(annotationOwner);
-            boolean isUseQueryString = RequestMethod.GET.equals(requestMethod) || RequestMethod.DELETE.equals(requestMethod);
             removeNameToValue(annotation.getNamedArguments());
             // 移除 required 属性
             annotation.getNamedArguments().remove("required");
-            if (isUseQueryString) {
-                annotation.setName(Query.class.getSimpleName());
-                return annotation;
-            }
             annotation.getNamedArguments().remove("defaultValue");
             boolean isSupportBody = RequestMethod.POST.equals(requestMethod) || RequestMethod.PUT.equals(requestMethod) || RequestMethod.PATCH.equals(requestMethod);
-            if (isSupportBody) {
+            if (isSupportBody && Objects.equals(CollectionUtils.firstElement(Arrays.asList(requestMappingMate.consumes())), "application/x-www-form-urlencoded")) {
+                // 使用表单
                 annotation.setName(Field.class.getSimpleName());
+                return annotation;
             }
             annotation.setElementType(ElementType.PARAMETER);
+            annotation.setName(Query.class.getSimpleName());
             return annotation;
+
         }
     }
 
