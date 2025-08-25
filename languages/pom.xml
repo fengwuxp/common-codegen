@@ -37,7 +37,7 @@
             <artifactId>wind-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wind.client</groupId>
+            <groupId>com.wind.middleware</groupId>
             <artifactId>wind-retrofit</artifactId>
         </dependency>
     </dependencies>
