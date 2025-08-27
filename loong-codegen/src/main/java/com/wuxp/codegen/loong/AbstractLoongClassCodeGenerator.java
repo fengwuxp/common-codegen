@@ -40,6 +40,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.core.event.CodeGenEventListener.EVENT_CODEGEN_META_TAG_NAME;
+import static com.wuxp.codegen.languages.AbstractLanguageMethodDefinitionParser.MARGE_PARAMS_TAG_NAME;
 
 /**
  * @author wuxp
@@ -334,17 +335,16 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
         dependencies.forEach((key, value) -> {
             Class<?> aClass = value.getSource();
-            if (aClass == null || !effectiveDependencies.contains(aClass)) {
+            if ((aClass == null && !Objects.equals(Boolean.TRUE, value.getTag(MARGE_PARAMS_TAG_NAME)))) {
                 // 排除掉无效的依赖
                 return;
             }
-            if (Objects.equals(aClass, meta.getSource())) {
-                // 自己引用自己
+            if (aClass != null && (Objects.equals(aClass, meta.getSource()) || !effectiveDependencies.contains(aClass))) {
+                // 自己引用自己 或 无效的依赖
                 return;
             }
             newDependencies.put(key, value);
         });
-
         meta.setDependencies(newDependencies);
     }
 

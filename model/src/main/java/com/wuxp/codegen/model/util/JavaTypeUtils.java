@@ -4,9 +4,14 @@ import com.wuxp.codegen.model.JavaArrayClassTypeMark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
-import  org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class JavaTypeUtils {
 
@@ -268,7 +273,7 @@ public final class JavaTypeUtils {
 
 
     public static boolean isAssignableFrom(Class<?> clazz, Class<?> superClazz) {
-        if(superClazz==null || clazz ==null){
+        if (superClazz == null || clazz == null) {
             return false;
         }
         return superClazz.isAssignableFrom(clazz);
@@ -285,8 +290,8 @@ public final class JavaTypeUtils {
     }
 
 
-    public static boolean isArrayMark(Class<?> clazz){
-        return clazz== JavaArrayClassTypeMark.class;
+    public static boolean isArrayMark(Class<?> clazz) {
+        return clazz == JavaArrayClassTypeMark.class;
     }
 
 }

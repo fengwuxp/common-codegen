@@ -6,7 +6,6 @@ import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 
             import './user.dart';
-            import '../../serializers.dart';
             import './base_info.dart';
 
     part 'order.g.dart';

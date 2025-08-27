@@ -1,6 +1,11 @@
 /* tslint:disable */
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
+      import {ExampleServiceGetMap3Req} from "../../req/ExampleServiceGetMap3Req";
+      import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
+      import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
+      import {ExampleServiceGetMapReq} from "../../req/ExampleServiceGetMapReq";
       import {ExampleDTO} from "../../resp/ExampleDTO";
+      import {ExampleServiceGetNumsReq} from "../../req/ExampleServiceGetNumsReq";
 
     /**
      * 接口：GET

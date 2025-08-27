@@ -7,7 +7,6 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
 
           import '../model/domain/order.dart';
           import '../model/domain/user.dart';
-          import '../serializers.dart';
 
 
       /// list tst

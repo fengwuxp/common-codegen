@@ -3,8 +3,13 @@
       import {Order} from "../../domain/Order";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
+      import {OrderFeignClientQueryPageReq} from "../../req/OrderFeignClientQueryPageReq";
+      import {OrderFeignClientHelloReq} from "../../req/OrderFeignClientHelloReq";
       import {ExampleDTO} from "../../resp/ExampleDTO";
+      import {OrderFeignClientQueryOrder_2Req} from "../../req/OrderFeignClientQueryOrder_2Req";
       import {PageInfo} from "../../resp/PageInfo";
+      import {OrderFeignClientQueryOrder6Req} from "../../req/OrderFeignClientQueryOrder6Req";
+      import {OrderFeignClientGetOrderReq} from "../../req/OrderFeignClientGetOrderReq";
 
     /**
      * 接口：GET

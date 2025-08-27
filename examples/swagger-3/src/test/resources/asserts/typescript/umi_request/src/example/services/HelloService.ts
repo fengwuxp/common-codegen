@@ -1,5 +1,6 @@
 /* tslint:disable */
   import request,{RequestOptionsInit} from 'umi-request';
+      import {HelloServiceIndexReq} from "../../req/HelloServiceIndexReq";
 
     /**
      * 接口：GET

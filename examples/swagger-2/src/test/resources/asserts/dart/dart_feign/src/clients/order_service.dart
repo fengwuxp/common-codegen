@@ -11,7 +11,6 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
           import '../enums/sex.dart';
           import '../model/paging/Page.dart';
           import '../model/resp/page_info.dart';
-          import '../serializers.dart';
 
 
       /// 订单服务

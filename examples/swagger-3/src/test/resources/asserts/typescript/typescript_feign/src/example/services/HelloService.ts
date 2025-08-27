@@ -12,6 +12,7 @@ FeignHttpClientPromiseFunction,
 feignHttpFunctionBuilder,
 FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
+      import {HelloServiceIndexReq} from "../../req/HelloServiceIndexReq";
 
     /**
      * 接口：GET

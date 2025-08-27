@@ -10,6 +10,7 @@ import java.beans.Transient;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -150,12 +151,12 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
         this.needGenerate = needGenerate;
     }
 
-
     /**
      * @return 获取最终的泛型描述
      */
     public String getFinallyGenericDescription() {
-        if (this.typeVariables == null || this.typeVariables.length == 0) {
+        if (Objects.equals(ClassType.ENUM, classType) ||
+                this.typeVariables == null || this.typeVariables.length == 0) {
             if (StringUtils.hasText(genericDescription)) {
                 return genericDescription;
             }

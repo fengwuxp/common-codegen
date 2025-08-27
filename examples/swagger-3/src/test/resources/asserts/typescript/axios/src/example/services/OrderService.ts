@@ -2,9 +2,14 @@
 import axios, {AxiosRequestConfig,AxiosResponse} from 'axios';
       import {Order} from "../../domain/Order";
       import {QueryOrderEvt} from "../../evt/QueryOrderEvt";
+      import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
+      import {OrderServiceHelloReq} from "../../req/OrderServiceHelloReq";
+      import {OrderServiceQueryOrder_2Req} from "../../req/OrderServiceQueryOrder_2Req";
       import {ExampleDTO} from "../../resp/ExampleDTO";
       import {PageInfo} from "../../resp/PageInfo";
+      import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
+      import {OrderServiceQueryOrder6Req} from "../../req/OrderServiceQueryOrder6Req";
 
     /**
      * 接口：GET

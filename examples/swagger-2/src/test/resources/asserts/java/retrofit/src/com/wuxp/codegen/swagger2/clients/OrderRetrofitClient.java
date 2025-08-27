@@ -77,7 +77,7 @@ public interface OrderRetrofitClient{
       @POST(value = "/order/queryOrder2" )
       @Headers(value = {"Content-Type: application/json"} )
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
-          @Field(value = "order_id" )  Long oderId,
+          @Query(value = "order_id" )  Long oderId,
   String sn
   );
     /**
@@ -131,7 +131,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/hello_2" )
     ServiceResponse<PageInfo<Object>>  hello2 (
-          @Field(defaultValue = "test" ,value = "name" )  String name
+          @Query(value = "name" )  String name
   );
     /**
       * 1:POST /order/hello_3
@@ -142,7 +142,7 @@ public interface OrderRetrofitClient{
      **/
       @POST(value = "/order/hello_3" )
     ServiceResponse<PageInfo<String>>  hello3 (
-          @Field(defaultValue = "test" ,value = "name" )  String name
+          @Query(value = "name" )  String name
   );
     /**
       * 1:DELETE /order/hello_delete
