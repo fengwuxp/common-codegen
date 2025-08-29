@@ -21,8 +21,8 @@
             <artifactId>wuxp-codegen-annotation-meta</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wuxp.codegen</groupId>
-            <artifactId>wuxp-codegen-source-code-support</artifactId>
+            <groupId>com.wind.tools</groupId>
+            <artifactId>wind-codegen-sources-supports</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

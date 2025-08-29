@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.wind.middleware</groupId>
         <artifactId>wind-middleware</artifactId>
-        <version>1.0.1-jdk21-SNAPSHOT</version>
+        <version>1.0.2-jdk21-SNAPSHOT</version>
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
@@ -31,14 +31,13 @@
         <module>annotation-meta</module>
         <module>annotation-processor</module>
         <module>loong-codegen-starter</module>
-        <module>source-code-support</module>
         <module>loong-maven-plugin</module>
         <module>loong-quick</module>
         <module>code-formatter</module>
     </modules>
 
     <properties>
-        <revision>1.0.1-jdk21-SNAPSHOT</revision>
+        <revision>1.0.2-jdk21-SNAPSHOT</revision>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <jdk.version>${maven.compiler.target}</jdk.version>
@@ -182,11 +181,6 @@
             <dependency>
                 <groupId>com.wuxp.codegen</groupId>
                 <artifactId>wuxp-codegen-annotation-processor</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wuxp.codegen</groupId>
-                <artifactId>wuxp-codegen-source-code-support</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

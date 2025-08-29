@@ -8,7 +8,7 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.javadoc.Javadoc;
 import com.github.javaparser.javadoc.JavadocBlockTag;
 import com.github.javaparser.javadoc.description.JavadocDescriptionElement;
-import com.wuxp.codegen.SourceCodeProvider;
+import com.wind.tools.codegen.SourceCodeProvider;
 import com.wuxp.codegen.core.CodeGenCommentExtractor;
 import com.wuxp.codegen.core.parser.JavaClassParser;
 import org.springframework.util.StringUtils;
