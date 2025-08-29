@@ -4,7 +4,7 @@ package test.com.wuxp.codegen.javaparser;
 import com.github.javaparser.utils.ParserCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
-import com.wuxp.codegen.SourceCodeProvider;
+import com.wind.tools.codegen.SourceCodeProvider;
 import com.wuxp.codegen.core.util.PathResolveUtils;
 import com.wuxp.codegen.swagger3.example.enums.Sex;
 import lombok.extern.slf4j.Slf4j;
