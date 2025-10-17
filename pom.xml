@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.wind.middleware</groupId>
         <artifactId>wind-middleware</artifactId>
-        <version>1.0.0-jdk21-SNAPSHOT</version>
+        <version>1.0.1-jdk21-SNAPSHOT</version>
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
