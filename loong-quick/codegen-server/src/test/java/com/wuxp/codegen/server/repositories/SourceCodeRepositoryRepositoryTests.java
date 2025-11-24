@@ -4,14 +4,16 @@ import com.wuxp.codegen.server.entities.CodeVersionControlConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
-@Import(CodegenJpaAuditorAwareConfig.class)
-@DataJpaTest
+@ContextConfiguration(classes = {CodegenJpaAuditorAwareConfig.class})
+@EnableJpaRepositories(basePackages = {"com.wuxp.codegen.server.repositories"})
+@EntityScan("com.wuxp.codegen.server.entities")
 @ActiveProfiles("test")
 class SourceCodeRepositoryRepositoryTests {
 

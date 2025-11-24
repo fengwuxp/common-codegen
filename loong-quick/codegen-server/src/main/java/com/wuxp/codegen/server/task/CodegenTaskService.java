@@ -1,7 +1,7 @@
 package com.wuxp.codegen.server.task;
 
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * 代码生成任务服务

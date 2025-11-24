@@ -9,9 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -26,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import static com.wuxp.codegen.server.constant.VcsConstants.DEFAULT_REPOSITORY_NANE;
 
 
-@DataJpaTest(properties = {"spring.profiles.active=test"})
 @ContextConfiguration(classes = {SourceCodeManagerTaskServiceTest.TaskConfig.class, LoongCodegenProperties.class, LoongCodegenConfig.class})
 @EnableJpaRepositories(basePackages = {"com.wuxp.codegen.server.repositories"})
 @EntityScan("com.wuxp.codegen.server.entities")
