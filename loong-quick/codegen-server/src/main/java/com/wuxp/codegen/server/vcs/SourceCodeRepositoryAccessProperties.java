@@ -2,8 +2,9 @@ package com.wuxp.codegen.server.vcs;
 
 
 import com.wuxp.codegen.server.enums.SourcecodeRepositoryType;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.Ordered;
-import org.springframework.lang.Nullable;
+
 
 
 /**

@@ -64,7 +64,6 @@ public class SpringRequestMappingTransformer implements
         mediaTypeMapping.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.MULTIPART_FORM_DATA_VALUE");
         mediaTypeMapping.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, "MediaType.APPLICATION_FORM_URLENCODED_VALUE");
         mediaTypeMapping.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.APPLICATION_JSON_VALUE");
-        mediaTypeMapping.put(MediaType.APPLICATION_JSON_UTF8_VALUE, "MediaType.APPLICATION_JSON_UTF8_VALUE");
         mediaTypeMapping.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, "MediaType.APPLICATION_OCTET_STREAM_VALUE");
     }
 

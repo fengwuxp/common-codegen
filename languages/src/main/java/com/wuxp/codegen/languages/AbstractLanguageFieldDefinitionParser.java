@@ -7,7 +7,7 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.languages.java.JavaFieldMeta;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.util.ObjectUtils;
 
 import jakarta.validation.constraints.NotBlank;

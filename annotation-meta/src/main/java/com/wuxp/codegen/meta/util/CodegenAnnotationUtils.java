@@ -3,7 +3,7 @@ package com.wuxp.codegen.meta.util;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.MergedAnnotation;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 

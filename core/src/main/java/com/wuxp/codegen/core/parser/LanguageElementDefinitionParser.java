@@ -3,7 +3,7 @@ package com.wuxp.codegen.core.parser;
 import com.wuxp.codegen.core.CodeGenClassSupportHandler;
 import com.wuxp.codegen.model.CommonBaseMeta;
 import com.wuxp.codegen.model.CommonCodeGenClassMeta;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.List;

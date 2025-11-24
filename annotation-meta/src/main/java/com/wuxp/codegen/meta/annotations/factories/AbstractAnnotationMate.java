@@ -3,7 +3,8 @@ package com.wuxp.codegen.meta.annotations.factories;
 import com.wuxp.codegen.meta.util.CodegenAnnotationUtils;
 import com.wuxp.codegen.model.CommonCodeGenAnnotation;
 import lombok.Getter;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
