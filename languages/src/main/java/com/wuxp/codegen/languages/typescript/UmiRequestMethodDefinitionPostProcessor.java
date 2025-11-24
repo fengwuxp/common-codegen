@@ -188,21 +188,13 @@ public class UmiRequestMethodDefinitionPostProcessor implements LanguageDefiniti
     }
 
     private String getContentTypeAlisName(String contentType) {
-        switch (contentType) {
-            case MediaType.APPLICATION_FORM_URLENCODED_VALUE:
-            case MediaType.MULTIPART_FORM_DATA_VALUE:
-                return "form";
-            case MediaType.TEXT_HTML_VALUE:
-            case MediaType.TEXT_PLAIN_VALUE:
-                return "text";
-            case MediaType.APPLICATION_OCTET_STREAM_VALUE:
-                return "blob";
-            case MediaType.APPLICATION_JSON_VALUE:
-            case MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE:
-                return "json";
-            default:
-                return null;
-        }
+        return switch (contentType) {
+            case MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE -> "form";
+            case MediaType.TEXT_HTML_VALUE, MediaType.TEXT_PLAIN_VALUE -> "text";
+            case MediaType.APPLICATION_OCTET_STREAM_VALUE -> "blob";
+            case MediaType.APPLICATION_JSON_VALUE -> "json";
+            default -> null;
+        };
     }
 
     private boolean hasRequestBody(JavaMethodMeta javaMethodMeta) {

@@ -32,7 +32,6 @@ public class TypeScriptRequestMappingTransformer extends SpringRequestMappingTra
         mediaTypeMapping.put(MediaType.MULTIPART_FORM_DATA_VALUE, TypescriptFeignMediaTypeConstant.MULTIPART_FORM_DATA);
         mediaTypeMapping.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, TypescriptFeignMediaTypeConstant.FORM_DATA);
         mediaTypeMapping.put(MediaType.APPLICATION_JSON_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON);
-        mediaTypeMapping.put(MediaType.APPLICATION_JSON_UTF8_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8);
         mediaTypeMapping.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_OCTET_STREAM);
     }
 

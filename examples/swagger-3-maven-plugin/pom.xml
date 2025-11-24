@@ -45,7 +45,7 @@
             <plugin>
                 <groupId>com.wuxp.codegen</groupId>
                 <artifactId>wuxp-codegen-loong-maven-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
                 <configuration>
                     <skip>false</skip>
                     <projectName>swagger-3-example-maven-plugin</projectName>
