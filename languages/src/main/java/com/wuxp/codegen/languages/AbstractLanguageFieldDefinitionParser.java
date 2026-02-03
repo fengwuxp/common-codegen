@@ -63,7 +63,7 @@ public abstract class AbstractLanguageFieldDefinitionParser<F extends CommonCode
     }
 
     private CommonCodeGenClassMeta[] getFiledTypes(JavaFieldMeta fieldMeta) {
-        List<CommonCodeGenClassMeta> results = this.publishParse(Arrays.asList(fieldMeta.getTypes()));
+        List<CommonCodeGenClassMeta> results = new ArrayList<>(this.publishParse(Arrays.asList(fieldMeta.getTypes())));
         List<CommonCodeGenClassMeta> fieldTypeVariables = getFieldTypeVariables(fieldMeta);
         if (!fieldTypeVariables.isEmpty() && results.size() >= fieldTypeVariables.size()) {
             // 存在泛型描述对象，将默认的泛型描述移除

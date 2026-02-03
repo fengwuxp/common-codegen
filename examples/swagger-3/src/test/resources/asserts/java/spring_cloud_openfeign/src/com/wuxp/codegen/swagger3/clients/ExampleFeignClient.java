@@ -4,6 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
+      import com.wuxp.codegen.swagger3.domain.User;
+      import com.wuxp.codegen.swagger3.domain.BaseInfo;
       import java.util.List;
       import java.util.Map;
       import com.wuxp.codegen.swagger3.resp.ExampleDTO;
@@ -95,5 +97,32 @@ public interface ExampleFeignClient{
       @GetMapping(value = "get_map_5" )
     Map<String,List<Boolean>>  getMap5 (
   ExampleDTO dto
+  );
+    /**
+      * 1:GET /example_cms/get_map_6
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+      @GetMapping(value = "get_map_6" )
+    void  example0 (
+  BaseInfo<String,User> req
+  );
+    /**
+      * 1:GET /example_cms/get_map_7
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+      @GetMapping(value = "get_map_7" )
+    void  example2 (
+  Map<Long,User> req
+  );
+    /**
+      * 1:GET /example_cms/get_map_8
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+      @GetMapping(value = "get_map_8" )
+    void  example3 (
+  List<User> req
   );
 }

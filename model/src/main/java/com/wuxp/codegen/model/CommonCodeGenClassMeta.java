@@ -7,8 +7,10 @@ import lombok.experimental.Accessors;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -163,11 +165,16 @@ public class CommonCodeGenClassMeta extends CommonBaseMeta {
             return getTypeIdent();
         }
 
-        String typeDesc = Arrays.stream(this.typeVariables)
+        List<CommonCodeGenClassMeta> metas = new ArrayList<>(Arrays.asList(this.typeVariables));
+        if (metas.getFirst().source == getSource()) {
+            metas.removeFirst();
+        }
+        String typeDesc = metas
+                .stream()
                 .map(CommonCodeGenClassMeta::getFinallyGenericDescription)
                 .collect(Collectors.joining(","));
 
-        if (typeDesc.equals(getTypeIdent())) {
+        if (metas.isEmpty() || typeDesc.equals(getTypeIdent())) {
             // hack 泛型描述和类名相同
             return getTypeIdent();
         }

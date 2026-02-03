@@ -1,5 +1,7 @@
 package com.wuxp.codegen.swagger3.example.controller;
 
+import com.wuxp.codegen.swagger3.example.domain.BaseInfo;
+import com.wuxp.codegen.swagger3.example.domain.User;
 import com.wuxp.codegen.swagger3.example.resp.ExampleDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -72,5 +74,20 @@ public class ExampleController {
         Map<String, List<Boolean>> map = new HashMap<>();
         map.put("num", Arrays.asList(false, true));
         return map;
+    }
+
+    @GetMapping("get_map_6")
+    public void example0(BaseInfo<String, User> req) {
+
+    }
+
+    @GetMapping("get_map_7")
+    public void example2(Map<Long, User> req) {
+
+    }
+
+    @GetMapping("get_map_8")
+    public void example3(List<User> req) {
+
     }
 }

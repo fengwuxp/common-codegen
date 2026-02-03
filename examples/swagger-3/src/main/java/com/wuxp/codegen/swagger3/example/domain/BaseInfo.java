@@ -3,9 +3,9 @@ package com.wuxp.codegen.swagger3.example.domain;
 import lombok.Data;
 
 @Data
-public class BaseInfo<ID, T> {
+public class BaseInfo<I, T> {
 
-    protected ID id;
+    protected I id;
 
     protected T data;
 

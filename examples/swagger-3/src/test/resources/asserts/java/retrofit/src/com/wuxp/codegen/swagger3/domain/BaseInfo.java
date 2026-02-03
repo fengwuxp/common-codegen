@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
 @Accessors(chain = true)
-public class  BaseInfo<ID,T> {
+public class  BaseInfo<I,T> {
 
-        protected ID id;
+        protected I id;
 
         protected T data;
 

@@ -5,6 +5,8 @@ import 'package:built_value/serializer.dart';
 import 'package:fengwuxp_dart_basic/index.dart';
 import 'package:fengwuxp_dart_openfeign/index.dart';
 
+          import '../../domain/user.dart';
+          import '../../domain/base_info.dart';
           import '../../resp/example_dto.dart';
 
 
@@ -152,6 +154,45 @@ ExampleService() : super() {
               specifiedType:FullType(BuiltMap,[FullType(String),FullType(BuiltList,[FullType(bool)])])
           )
     
+  );
+  }
+
+      /// 1:GET /example_cms/get_map_6
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：void
+          @GetMapping(value:"get_map_6",)
+  Future<void>  example0(
+        BaseInfo<String,User> req,
+  [UIOptions? feignOptions]) {
+  return this.delegateInvoke<void>("example0",
+  [req,],
+    feignOptions: feignOptions
+  );
+  }
+
+      /// 1:GET /example_cms/get_map_7
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：void
+          @GetMapping(value:"get_map_7",)
+  Future<void>  example2(
+        BuiltMap<int,User> req,
+  [UIOptions? feignOptions]) {
+  return this.delegateInvoke<void>("example2",
+  [req,],
+    feignOptions: feignOptions
+  );
+  }
+
+      /// 1:GET /example_cms/get_map_8
+      /// 2:Http请求方法：GET
+      /// 3:返回值在java中的类型为：void
+          @GetMapping(value:"get_map_8",)
+  Future<void>  example3(
+        BuiltList<User> req,
+  [UIOptions? feignOptions]) {
+  return this.delegateInvoke<void>("example3",
+  [req,],
+    feignOptions: feignOptions
   );
   }
 }

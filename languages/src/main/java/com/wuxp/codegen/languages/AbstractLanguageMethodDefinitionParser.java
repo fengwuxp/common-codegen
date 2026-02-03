@@ -13,7 +13,6 @@ import com.wuxp.codegen.model.CommonCodeGenClassMeta;
 import com.wuxp.codegen.model.CommonCodeGenFiledMeta;
 import com.wuxp.codegen.model.CommonCodeGenMethodMeta;
 import com.wuxp.codegen.model.enums.AccessPermission;
-import com.wuxp.codegen.model.enums.ClassType;
 import com.wuxp.codegen.model.languages.java.JavaMethodMeta;
 import com.wuxp.codegen.model.languages.java.JavaParameterMeta;
 import com.wuxp.codegen.model.util.JavaTypeUtils;
@@ -41,7 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -182,14 +180,11 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     private M margeParamsAndParseMethod(JavaMethodMeta methodMeta) {
-
-        if (isOnlySingleComplexParameter(methodMeta)) {
-            // 方法只存在一个复杂参数
-            return parseMethod(methodMeta);
-        }
-
         if (isArrayOrCollectComplexParams(methodMeta)) {
             return arrayOrCollectComplexParams(methodMeta);
+        } else if (isOnlySingleComplexParameter(methodMeta)) {
+            // 方法只存在一个复杂参数
+            return parseMethod(methodMeta);
         } else {
             // 用于缓存合并的参数 filedList，合并复杂参数
             final Set<CommonCodeGenFiledMeta> filedMetas = new LinkedHashSet<>(meagreMethodParameters(methodMeta));
@@ -232,7 +227,7 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
 
         String genericDescription = combineTypeDescStrategy.combine(metas.toArray(new CommonCodeGenClassMeta[0]));
         final CommonCodeGenClassMeta argsClassMeta = new CommonCodeGenClassMeta();
-        BeanUtils.copyProperties(metas.remove(0), argsClassMeta);
+        BeanUtils.copyProperties(metas.removeFirst(), argsClassMeta);
         argsClassMeta.setSource(classes[0]);
         argsClassMeta.setGenericDescription(genericDescription);
         Map<String, CommonCodeGenClassMeta> dependencies = new HashMap<>();
@@ -310,18 +305,17 @@ public abstract class AbstractLanguageMethodDefinitionParser<M extends CommonCod
     }
 
     private boolean isOnlySingleComplexParameter(JavaMethodMeta methodMeta) {
+        if (methodMeta.getParams().size() != 1) {
+            return false;
+        }
         List<Class<?>> params = methodMeta.getParams()
                 .values()
                 .stream()
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        if (params.size() > 1) {
-            return false;
-        }
-        return params.stream()
-                .filter(JavaTypeUtils::isNoneJdkComplex)
-                .count() == 1;
+                .toList();
+
+        return params.stream().anyMatch(JavaTypeUtils::isNoneJdkComplex);
     }
 
     // 合并简单参数

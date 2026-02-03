@@ -27,7 +27,7 @@ public final class CombineTypeMethod implements TemplateMethodModelEx {
     @Override
     public Object exec(List arguments) throws TemplateModelException {
         Assert.notEmpty(arguments, "arguments is null or is empty");
-        DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.get(0);
+        DefaultArrayAdapter arrayAdapter = (DefaultArrayAdapter) arguments.getFirst();
         CommonCodeGenClassMeta[] classMetas = (CommonCodeGenClassMeta[]) arrayAdapter.getAdaptedObject(CommonCodeGenClassMeta.class);
         Assert.isTrue(!ObjectUtils.isEmpty(classMetas), "combine type classMetas is null or is empty");
         if (log.isDebugEnabled()) {

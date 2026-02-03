@@ -2,6 +2,8 @@
   import request,{RequestOptionsInit} from 'umi-request';
       import {ExampleServiceGetMap3Req} from "../../req/ExampleServiceGetMap3Req";
       import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
+      import {User} from "../../domain/User";
+      import {BaseInfo} from "../../domain/BaseInfo";
       import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
       import {ExampleServiceGetMapReq} from "../../req/ExampleServiceGetMapReq";
       import {ExampleDTO} from "../../resp/ExampleDTO";
@@ -130,6 +132,51 @@ export const  getMap5=  (req?: ExampleDTO, options?: RequestOptionsInit): Promis
   return request<Record<string,Array<boolean>>>(`/example_cms/get_map_5`, {
       method: 'get',
       params: req || {},
+      responseType: 'json',
+  ...(options || {} as RequestOptionsInit)
+  })
+  }
+
+    /**
+      * 1:GET /example_cms/get_map_6
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+
+export const  example0=  (req?: BaseInfo<string,User>, options?: RequestOptionsInit): Promise<void> =>{
+  return request<void>(`/example_cms/get_map_6`, {
+      method: 'get',
+      params: req || {},
+      responseType: 'json',
+  ...(options || {} as RequestOptionsInit)
+  })
+  }
+
+    /**
+      * 1:GET /example_cms/get_map_7
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+
+export const  example2=  (req: Record<string,User>, options?: RequestOptionsInit): Promise<void> =>{
+  return request<void>(`/example_cms/get_map_7`, {
+      method: 'get',
+      params: req,
+      responseType: 'json',
+  ...(options || {} as RequestOptionsInit)
+  })
+  }
+
+    /**
+      * 1:GET /example_cms/get_map_8
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+
+export const  example3=  (req: Array<User>, options?: RequestOptionsInit): Promise<void> =>{
+  return request<void>(`/example_cms/get_map_8`, {
+      method: 'get',
+      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 通过事件解析不同语言定义的解析器
@@ -32,7 +31,7 @@ public interface LanguageElementDefinitionPublishSourceParser {
                 .map(this::publishParse)
                 .filter(Objects::nonNull)
                 .map(result -> (C) result)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

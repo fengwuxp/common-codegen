@@ -6,9 +6,9 @@ import {DefaultOrderField} from "feign-client";
 
 
 
-export interface  BaseInfo<ID,T> {
+export interface  BaseInfo<I,T> {
 
-        id?: ID;
+        id?: I;
         data?: T;
             /**
                 *字段在java中的类型为：BaseExample

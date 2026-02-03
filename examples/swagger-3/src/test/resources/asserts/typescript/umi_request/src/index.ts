@@ -1,4 +1,4 @@
-                export {getNums,getMaps,getMap,getMap2,getMap3,getMap4,getMap5,} from './example/services/ExampleService';
+                export {getNums,getMaps,getMap,getMap2,getMap3,getMap4,getMap5,example0,example2,example3,} from './example/services/ExampleService';
                 export {index,} from './example/services/HelloService';
                 export {getOrder,queryOrder2,queryOrder,queryOrder3,queryOrder4,queryOrder5,queryOrder6,queryOrder_2,queryPage,createOrder,hello,deleteRequest,} from './example/services/OrderFeignClient';
                 export {getUser,putUser,deleteUser,sample,sample2,sampleMap,uploadFile,test3,test4,test5,test6,test7,test8,test9,} from './example/services/UserService';

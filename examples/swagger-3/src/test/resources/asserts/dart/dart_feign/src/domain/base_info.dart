@@ -11,14 +11,14 @@ import 'package:fengwuxp_dart_basic/index.dart';
 
 
 
-abstract class BaseInfo<ID,T> implements Built<BaseInfo<ID,T>, BaseInfoBuilder<ID,T>>, JsonSerializableObject {
+abstract class BaseInfo<I,T> implements Built<BaseInfo<I,T>, BaseInfoBuilder<I,T>>, JsonSerializableObject {
 
 BaseInfo._();
 
-factory BaseInfo([Function(BaseInfoBuilder<ID,T>) updates]) = _$BaseInfo<ID,T>;
+factory BaseInfo([Function(BaseInfoBuilder<I,T>) updates]) = _$BaseInfo<I,T>;
 
         @BuiltValueField(wireName: 'id')
-        ID? get id;
+        I? get id;
         @BuiltValueField(wireName: 'data')
         T? get data;
             /// 字段在java中的类型为：BaseExample

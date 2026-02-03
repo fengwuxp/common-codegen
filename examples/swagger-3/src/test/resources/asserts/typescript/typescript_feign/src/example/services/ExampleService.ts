@@ -14,6 +14,8 @@ FeignRequestOptions} from "feign-client";
 import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {ExampleServiceGetMap3Req} from "../../req/ExampleServiceGetMap3Req";
       import {ExampleServiceGetMap2Req} from "../../req/ExampleServiceGetMap2Req";
+      import {User} from "../../domain/User";
+      import {BaseInfo} from "../../domain/BaseInfo";
       import {ExampleServiceGetMapsReq} from "../../req/ExampleServiceGetMapsReq";
       import {ExampleServiceGetMapReq} from "../../req/ExampleServiceGetMapReq";
       import {ExampleDTO} from "../../resp/ExampleDTO";
@@ -109,6 +111,33 @@ class ExampleService{
             value:"get_map_5",
       })
     getMap5!:(req?: ExampleDTO, option?: FeignRequestOptions) => Promise<Record<string,Array<boolean>>>;
+    /**
+      * 1:GET /example_cms/get_map_6
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+      @GetMapping({
+            value:"get_map_6",
+      })
+    example0!:(req?: BaseInfo<string,User>, option?: FeignRequestOptions) => Promise<void>;
+    /**
+      * 1:GET /example_cms/get_map_7
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+      @GetMapping({
+            value:"get_map_7",
+      })
+    example2!:(req: Record<string,User>, option?: FeignRequestOptions) => Promise<void>;
+    /**
+      * 1:GET /example_cms/get_map_8
+      * 2:Http请求方法：GET
+      * 3:返回值在java中的类型为：void
+     **/
+      @GetMapping({
+            value:"get_map_8",
+      })
+    example3!:(req: Array<User>, option?: FeignRequestOptions) => Promise<void>;
 }
 
 export default new ExampleService();
