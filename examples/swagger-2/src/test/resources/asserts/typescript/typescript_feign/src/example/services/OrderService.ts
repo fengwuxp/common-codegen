@@ -25,7 +25,6 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
-      import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
       import {PageInfo} from "../../resp/PageInfo";
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
@@ -63,7 +62,7 @@ class OrderService{
       @GetMapping({
             value:"get_order_32",
       })
-    getOrder32!:(req: OrderServiceGetOrder32Req, option?: FeignRequestOptions) => Promise<Array<Order>>;
+    getOrder32!:(req?: null | undefined, option?: FeignRequestOptions) => Promise<Array<Order>>;
     /**
       * 1:GET /order/queryOrder
       * 2:获取订单列表

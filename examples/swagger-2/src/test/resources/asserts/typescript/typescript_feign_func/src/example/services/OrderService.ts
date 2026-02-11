@@ -24,7 +24,6 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
         import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
         import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
         import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
-        import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
         import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
         import {PageInfo} from "../../resp/PageInfo";
         import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
@@ -56,7 +55,7 @@ import {HttpMediaType} from "wind-common-utils/lib/http/HttpMediaType";
       * 4:返回值在java中的类型为：List
       * 5:返回值在java中的类型为：Order
      **/
-    export const getOrder32: FeignHttpClientPromiseFunction<OrderServiceGetOrder32Req ,Array<Order>> = API_FUNCTION_FACTORY.get({
+    export const getOrder32: FeignHttpClientPromiseFunction<void,Array<Order>> = API_FUNCTION_FACTORY.get({
                 value:"get_order_32",
     });
     /**

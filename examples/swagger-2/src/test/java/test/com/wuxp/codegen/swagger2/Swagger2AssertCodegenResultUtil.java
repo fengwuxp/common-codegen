@@ -22,7 +22,7 @@ public final class Swagger2AssertCodegenResultUtil {
 
     private static final String MODEL_DIR = "swagger-2";
 
-    private final static String ASSERT_DIR = "asserts";
+    private static final String ASSERT_DIR = "asserts";
 
     public Swagger2AssertCodegenResultUtil() {
         throw new AssertionError();
