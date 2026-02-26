@@ -57,7 +57,7 @@ public class SpringApiSdkCodegenProcessor extends AbstractProcessor {
         Collection<CodeGenerator> codeGenerators = loongSdkCodeGenerator.getCodeGeneratorBuilders()
                 .stream()
                 .map(CodegenBuilder::buildCodeGenerator)
-                .collect(Collectors.toList());
+                .toList();
         for (TypeElement typeElement : annotations) {
             String className = typeElement.getQualifiedName().toString();
             try {

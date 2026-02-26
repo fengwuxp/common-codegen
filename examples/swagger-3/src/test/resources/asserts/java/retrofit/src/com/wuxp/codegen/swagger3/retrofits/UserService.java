@@ -83,7 +83,7 @@ public interface UserService{
     Map<String,User>  sampleMap (
           @Query(value = "ids" )  Long[] ids,
           @Query(value = "name" )  String name,
-          @QueryMap()  Sex sex,
+          @Query(value = "sex" )  Sex sex,
           @Query(value = "testParam" )  Map<String,String[]>[] testParam
   );
     /**

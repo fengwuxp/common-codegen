@@ -31,7 +31,7 @@ public final class JavaTypeUtils {
             return true;
         }
 
-        return ClassUtils.isPrimitiveOrWrapper(clazz) || isString(clazz) || isDate(clazz);
+        return ClassUtils.isPrimitiveOrWrapper(clazz) || isString(clazz) || isDate(clazz) || isEnum(clazz);
     }
 
     /**

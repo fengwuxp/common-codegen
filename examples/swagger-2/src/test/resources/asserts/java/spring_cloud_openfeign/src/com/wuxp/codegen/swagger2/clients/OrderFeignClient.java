@@ -82,7 +82,7 @@ public interface OrderFeignClient{
       * 4:返回值在java中的类型为：ServiceQueryResponse
       * 5:返回值在java中的类型为：Order
      **/
-      @PostMapping(produces = {MediaType.MULTIPART_FORM_DATA_VALUE} )
+      @PostMapping(produces = {[HttpMediaType.MULTIPART_FORM_DATA]} )
     ServiceResponse<PageInfo<Order>>  queryOrder2 (
           @RequestParam(name = "order_id" ,required = false )  Long oderId,
   String sn

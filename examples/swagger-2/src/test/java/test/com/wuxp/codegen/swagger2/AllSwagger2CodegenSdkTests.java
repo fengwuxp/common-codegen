@@ -7,6 +7,7 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
         Swagger2FeignSdkCodegenDartTest.class,
         Swagger2FeignSdkCodegenFeignClientTest.class,
+        Swagger2FeignSdkCodegenHttpClientTest.class,
         Swagger2FeignSdkCodegenRetrofitTest.class,
         Swagger2FeignSdkCodegenAxiosTest.class,
         Swagger2FeignSdkCodegenTypescriptTest.class,

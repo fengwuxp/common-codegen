@@ -97,7 +97,6 @@ class UserService{
      **/
       @GetMapping({
             value:"sample2",
-            queryArgNames:["sex"],
       })
     sampleMap!:(req?: UserServiceSampleMapReq, option?: FeignRequestOptions) => Promise<Record<string,User>>;
     /**

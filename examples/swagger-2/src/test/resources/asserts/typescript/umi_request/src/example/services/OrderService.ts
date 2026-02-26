@@ -13,7 +13,6 @@
       import {OrderServiceQueryPageReq} from "../../req/OrderServiceQueryPageReq";
       import {CreateOrderEvt} from "../../evt/CreateOrderEvt";
       import {OrderServiceTestEnumNames2Req} from "../../req/OrderServiceTestEnumNames2Req";
-      import {OrderServiceGetOrder32Req} from "../../req/OrderServiceGetOrder32Req";
       import {OrderServiceDeleteReq} from "../../req/OrderServiceDeleteReq";
       import {PageInfo} from "../../resp/PageInfo";
       import {OrderServiceGetOrderReq} from "../../req/OrderServiceGetOrderReq";
@@ -57,10 +56,9 @@ export const  getOrder=  (req: OrderServiceGetOrderReq, options?: RequestOptions
       * 5:返回值在java中的类型为：Order
      **/
 
-export const  getOrder32=  (req: OrderServiceGetOrder32Req, options?: RequestOptionsInit): Promise<Array<Order>> =>{
+export const  getOrder32=  ( options?: RequestOptionsInit): Promise<Array<Order>> =>{
   return request<Array<Order>>(`/order/get_order_32`, {
       method: 'get',
-      params: req,
       responseType: 'json',
   ...(options || {} as RequestOptionsInit)
   })

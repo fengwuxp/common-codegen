@@ -29,11 +29,11 @@ public class TypeScriptRequestMappingTransformer extends SpringRequestMappingTra
     public static final String TS_FEIGN_CLIENT_ANNOTATION_NAME = "Feign";
 
     {
-        mediaTypeMapping.put(MediaType.MULTIPART_FORM_DATA_VALUE, TypescriptFeignMediaTypeConstant.MULTIPART_FORM_DATA);
-        mediaTypeMapping.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, TypescriptFeignMediaTypeConstant.FORM_DATA);
-        mediaTypeMapping.put(MediaType.APPLICATION_JSON_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON);
-        mediaTypeMapping.put(MediaType.APPLICATION_JSON_UTF8_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8);
-        mediaTypeMapping.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_OCTET_STREAM);
+        MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, TypescriptFeignMediaTypeConstant.MULTIPART_FORM_DATA);
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, TypescriptFeignMediaTypeConstant.FORM_DATA);
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON);
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_UTF8_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_JSON_UTF8);
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, TypescriptFeignMediaTypeConstant.APPLICATION_OCTET_STREAM);
     }
 
 

@@ -15,6 +15,12 @@ import com.wuxp.codegen.meta.annotations.factories.spring.RequestHeaderMetaFacto
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestMappingMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestParamMetaFactory;
 import com.wuxp.codegen.meta.annotations.factories.spring.RequestPartMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.service.DeleteExchangeMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.service.GetExchangeMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.service.HttpExchangeMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.service.PatchExchangeMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.service.PostExchangeMetaFactory;
+import com.wuxp.codegen.meta.annotations.factories.spring.service.PutExchangeMetaFactory;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +38,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.service.annotation.DeleteExchange;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PatchExchange;
+import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.web.service.annotation.PutExchange;
+
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -73,6 +86,13 @@ public final class AnnotationMetaFactoryHolder {
         ANNOTATION_META_FACTORIES.put(RequestParam.class, new RequestParamMetaFactory());
         ANNOTATION_META_FACTORIES.put(RequestPart.class, new RequestPartMetaFactory());
         ANNOTATION_META_FACTORIES.put(PathVariable.class, new PathVariableMetaFactory());
+
+        ANNOTATION_META_FACTORIES.put(HttpExchange.class, new HttpExchangeMetaFactory());
+        ANNOTATION_META_FACTORIES.put(PostExchange.class, new PostExchangeMetaFactory());
+        ANNOTATION_META_FACTORIES.put(PutExchange.class, new PutExchangeMetaFactory());
+        ANNOTATION_META_FACTORIES.put(GetExchange.class, new GetExchangeMetaFactory());
+        ANNOTATION_META_FACTORIES.put(DeleteExchange.class, new DeleteExchangeMetaFactory());
+        ANNOTATION_META_FACTORIES.put(PatchExchange.class, new PatchExchangeMetaFactory());
     }
 
     public static <T extends AnnotationCodeGenCommentExtractor, A extends Annotation> Optional<AnnotationMetaFactory<T, A>> getAnnotationMetaFactory(Annotation annotation) {

@@ -10,6 +10,11 @@ import com.wuxp.codegen.model.util.JavaTypeUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -44,28 +49,23 @@ public class SpringRequestMappingTransformer implements
      */
     protected static final Map<RequestMethod, String> METHOD_MAPPING_NAME_MAP = new EnumMap<>(RequestMethod.class);
 
-
     /**
      * 媒体类型映射
      */
-    protected final Map<String, String> mediaTypeMapping = new LinkedHashMap<>();
-
+    protected static final Map<String, String> MEDIA_TYPE_MAPPING = new LinkedHashMap<>();
 
     static {
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.GET, GetMapping.class.getSimpleName());
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.POST, PostMapping.class.getSimpleName());
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.DELETE, DeleteMapping.class.getSimpleName());
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, PutMapping.class.getSimpleName());
+        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, PatchMapping.class.getSimpleName());
 
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.GET, "GetMapping");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.POST, "PostMapping");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.DELETE, "DeleteMapping");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PUT, "PutMapping");
-        METHOD_MAPPING_NAME_MAP.put(RequestMethod.PATCH, "PatchMapping");
-    }
-
-    {
-        mediaTypeMapping.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.MULTIPART_FORM_DATA_VALUE");
-        mediaTypeMapping.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, "MediaType.APPLICATION_FORM_URLENCODED_VALUE");
-        mediaTypeMapping.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.APPLICATION_JSON_VALUE");
-        mediaTypeMapping.put(MediaType.APPLICATION_JSON_UTF8_VALUE, "MediaType.APPLICATION_JSON_UTF8_VALUE");
-        mediaTypeMapping.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, "MediaType.APPLICATION_OCTET_STREAM_VALUE");
+        MEDIA_TYPE_MAPPING.put(MediaType.MULTIPART_FORM_DATA_VALUE, "MediaType.MULTIPART_FORM_DATA_VALUE");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_FORM_URLENCODED_VALUE, "MediaType.APPLICATION_FORM_URLENCODED_VALUE");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_VALUE, "MediaType.APPLICATION_JSON_VALUE");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_JSON_UTF8_VALUE, "MediaType.APPLICATION_JSON_UTF8_VALUE");
+        MEDIA_TYPE_MAPPING.put(MediaType.APPLICATION_OCTET_STREAM_VALUE, "MediaType.APPLICATION_OCTET_STREAM_VALUE");
     }
 
     @Override
@@ -96,7 +96,7 @@ public class SpringRequestMappingTransformer implements
         }
         // 返回文件类型的数据从新设置consumes
         List<String> positionArguments = commonCodeGenAnnotation.getPositionArguments();
-        String fileConsumes = wrapperArraySymbol(mediaTypeMapping.get(MediaType.APPLICATION_OCTET_STREAM_VALUE));
+        String fileConsumes = wrapperArraySymbol(MEDIA_TYPE_MAPPING.get(MediaType.APPLICATION_OCTET_STREAM_VALUE));
         positionArguments.add(fileConsumes);
         namedArguments.put(MappingAnnotationPropNameConstant.CONSUMES, fileConsumes);
         return commonCodeGenAnnotation;
@@ -169,7 +169,7 @@ public class SpringRequestMappingTransformer implements
                 continue;
             }
 
-            String targetMediaType = mediaTypeMapping.get(mediaType);
+            String targetMediaType = MEDIA_TYPE_MAPPING.get(mediaType);
             if (targetMediaType == null) {
                 throw new CodegenRuntimeException("unsupported media type：" + mediaType);
             }

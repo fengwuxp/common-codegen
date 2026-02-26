@@ -7,6 +7,7 @@ import com.wuxp.codegen.meta.annotations.factories.AnnotationMate;
 import com.wuxp.codegen.meta.enums.AuthenticationType;
 import com.wuxp.codegen.meta.transform.retrofit.RetrofitRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.DartRequestMappingTransformer;
+import com.wuxp.codegen.meta.transform.spring.SpringHttpExchangeTransformer;
 import com.wuxp.codegen.meta.transform.spring.SpringRequestMappingTransformer;
 import com.wuxp.codegen.meta.transform.spring.TypeScriptRequestMappingTransformer;
 import com.wuxp.codegen.meta.util.RequestMappingUtils;
@@ -72,6 +73,7 @@ public class RequestMappingMetaFactory extends AbstractAnnotationMetaFactory<Ann
         ANNOTATION_CLASS_MAP.put(PatchMapping.class, RequestMappingMetaFactory.PatchMappingMate.class);
 
 
+        registerAnnotationTransformer(ClientProviderType.SPRING_HTTP, RequestMapping.class, new SpringHttpExchangeTransformer());
         registerAnnotationTransformer(ClientProviderType.SPRING_CLOUD_OPENFEIGN, RequestMapping.class, new SpringRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.RETROFIT, RequestMapping.class, new RetrofitRequestMappingTransformer());
         registerAnnotationTransformer(ClientProviderType.TYPESCRIPT_FEIGN, RequestMapping.class, new TypeScriptRequestMappingTransformer());

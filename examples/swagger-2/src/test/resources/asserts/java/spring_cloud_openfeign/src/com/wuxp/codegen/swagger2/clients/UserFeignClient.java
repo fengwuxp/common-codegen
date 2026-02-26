@@ -123,7 +123,7 @@ public interface UserFeignClient{
       * 4:Http请求方法：POST
       * 5:返回值在java中的类型为：void
      **/
-      @PostMapping(produces = {MediaType.MULTIPART_FORM_DATA_VALUE} )
+      @PostMapping(produces = {[HttpMediaType.MULTIPART_FORM_DATA]} )
     void  uploadFile (
           @RequestParam(name = "file" )  File multipartFile
   );

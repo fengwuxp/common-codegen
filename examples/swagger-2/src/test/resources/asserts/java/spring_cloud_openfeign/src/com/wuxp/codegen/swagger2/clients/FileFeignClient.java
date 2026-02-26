@@ -24,7 +24,7 @@ public interface FileFeignClient{
       * 3:返回值在java中的类型为：HttpEntity
       * 4:返回值在java中的类型为：InputStreamResource
      **/
-      @GetMapping(value = "/download" ,consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE} )
+      @GetMapping(value = "/download" ,consumes = {[HttpMediaType.APPLICATION_STREAM]} )
     File  download (
   String name
   );
@@ -33,7 +33,7 @@ public interface FileFeignClient{
       * 2:Http请求方法：GET
       * 3:返回值在java中的类型为：void
      **/
-      @GetMapping(value = "/download_2" ,consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE} )
+      @GetMapping(value = "/download_2" ,consumes = {[HttpMediaType.APPLICATION_STREAM]} )
     File  download2 (
   String name
   );

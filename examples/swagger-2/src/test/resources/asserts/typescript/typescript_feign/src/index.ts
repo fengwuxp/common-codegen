@@ -14,7 +14,6 @@
         export {FileServiceDownloadReq} from './req/FileServiceDownloadReq';
         export {Order} from './domain/Order';
         export {OrderServiceDeleteReq} from './req/OrderServiceDeleteReq';
-        export {OrderServiceGetOrder32Req} from './req/OrderServiceGetOrder32Req';
         export {OrderServiceGetOrderReq} from './req/OrderServiceGetOrderReq';
         export {OrderServiceHello2Req} from './req/OrderServiceHello2Req';
         export {OrderServiceHello3Req} from './req/OrderServiceHello3Req';

@@ -7,6 +7,11 @@ package com.wuxp.codegen.core;
  */
 public enum ClientProviderType {
 
+    /**
+     * https://github.com/spring-projects/spring-framework/tree/main/spring-web
+     * spring http client
+     */
+    SPRING_HTTP,
 
     /**
      * https://github.com/OpenFeign/feign
