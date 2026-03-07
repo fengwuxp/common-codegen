@@ -10,6 +10,7 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
           import '../../evt/query_order_evt.dart';
           import '../../evt/create_order_evt.dart';
           import '../../resp/example_dto.dart';
+          import '../../serializers.dart';
 
 
       /// 接口：GET

@@ -8,6 +8,7 @@ import 'package:fengwuxp_dart_openfeign/index.dart';
           import '../../domain/user.dart';
           import '../../domain/base_info.dart';
           import '../../resp/example_dto.dart';
+          import '../../serializers.dart';
 
 
       /// 接口：GET

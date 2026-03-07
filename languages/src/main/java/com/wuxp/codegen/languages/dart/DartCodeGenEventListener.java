@@ -125,6 +125,7 @@ public class DartCodeGenEventListener implements CodeGenEventListener {
 
     private DartClassMeta buildSdkIndexMeta() {
         DartClassMeta result = new DartClassMeta();
+        result.setName("index");
         Map<String, Object> tags = new HashMap<>();
         Set<CommonCodeGenClassMeta> dependencies = new TreeSet<>();
         dependencies.addAll(feignClientMetas);

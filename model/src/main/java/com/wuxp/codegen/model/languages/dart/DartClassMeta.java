@@ -5,6 +5,8 @@ import com.wuxp.codegen.model.enums.ClassType;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.Map;
+
 /**
  * 主要用定义 dart 原本支持的类
  *
@@ -101,6 +103,10 @@ public class DartClassMeta extends CommonCodeGenClassMeta {
      * File
      */
     public static final DartClassMeta FILE = new DartClassMeta("File", null, ClassType.CLASS, false, null);
+
+    static {
+        BUILT_SERIALIZERS.setTags(Map.of(FORCE_DEPENDENCIES_TAG_NAME, true));
+    }
 
 
     public DartClassMeta() {

@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 import static com.wuxp.codegen.core.event.CodeGenEventListener.EVENT_CODEGEN_META_TAG_NAME;
 import static com.wuxp.codegen.languages.AbstractLanguageMethodDefinitionParser.MARGE_PARAMS_TAG_NAME;
+import static com.wuxp.codegen.model.CommonBaseMeta.FORCE_DEPENDENCIES_TAG_NAME;
 
 /**
  * @author wuxp
@@ -334,6 +335,10 @@ public abstract class AbstractLoongClassCodeGenerator implements ClassCodeGenera
         Map<String, CommonCodeGenClassMeta> newDependencies = new LinkedHashMap<>();
         Map<String, ? extends CommonCodeGenClassMeta> dependencies = meta.getDependencies();
         dependencies.forEach((key, value) -> {
+            if (Objects.equals(value.getTag(FORCE_DEPENDENCIES_TAG_NAME),true)){
+                newDependencies.put(key, value);
+                return;
+            }
             Class<?> aClass = value.getSource();
             if ((aClass == null && !Objects.equals(Boolean.TRUE, value.getTag(MARGE_PARAMS_TAG_NAME)))) {
                 // 排除掉无效的依赖

@@ -17,6 +17,8 @@ import java.util.TreeMap;
 @Accessors(chain = true)
 public class CommonBaseMeta implements Comparable<CommonBaseMeta> {
 
+    public static final String FORCE_DEPENDENCIES_TAG_NAME ="forceDependenciesFlag";
+
     /**
      * 如果是类则为类的 simple 名(不含包名) 如果为属性或方法则为name
      */
