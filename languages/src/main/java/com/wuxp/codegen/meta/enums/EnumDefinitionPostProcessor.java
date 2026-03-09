@@ -17,8 +17,23 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * 枚举字段值解析
+ *
+ * @author wuxp
+ */
 @Slf4j
 public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProcessor<CommonBaseMeta> {
+
+    private final boolean ignoreFiled;
+
+    public EnumDefinitionPostProcessor(boolean ignoreFiled) {
+        this.ignoreFiled = ignoreFiled;
+    }
+
+    public EnumDefinitionPostProcessor() {
+        this(false);
+    }
 
     @Override
     public void postProcess(CommonBaseMeta meta) {
@@ -45,6 +60,10 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
         CommonCodeGenFiledMeta[] enumConstants = Arrays.stream(classMeta.getFieldMetas())
                 .filter(CommonCodeGenFiledMeta::isEnumConstant)
                 .map(item -> {
+                    if (ignoreFiled) {
+                        item.setEnumFiledConstantValues(new CommonCodeGenEnumFiledValue[0]);
+                        return item;
+                    }
                     CommonCodeGenEnumFiledValue[] values = Arrays.stream(item.getEnumFiledConstantValues())
                             .filter(ec -> ec.getField() == null || Arrays.stream(classMeta.getFieldMetas()).anyMatch(e -> Objects.equals(ec.getField(), e.getSource())))
                             .toArray(CommonCodeGenEnumFiledValue[]::new);
@@ -60,6 +79,10 @@ public class EnumDefinitionPostProcessor implements LanguageDefinitionPostProces
             classMeta.setEnumConstants(enumConstants);
             classMeta.setFieldMetas(fieldMetas);
         }
+        if (ignoreFiled) {
+            classMeta.setFieldMetas(new CommonCodeGenFiledMeta[0]);
+        }
+
     }
 
     public void postProcessFiledMeta(CommonCodeGenFiledMeta fieldMeta) {

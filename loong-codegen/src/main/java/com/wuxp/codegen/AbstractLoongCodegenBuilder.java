@@ -174,6 +174,10 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
      */
     protected boolean enableFieldUnderlineStyle = false;
 
+    /**
+     * 忽略枚举常量的字段定义
+     */
+    protected boolean ignoreEnumField = false;
 
     /**
      * 模板文件版本
@@ -286,6 +290,11 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
         return this;
     }
 
+    public AbstractLoongCodegenBuilder ignoreEnumField(boolean ignoreEnumField) {
+        this.ignoreEnumField = ignoreEnumField;
+        return this;
+    }
+
 
     public AbstractLoongCodegenBuilder templateFileVersion(String templateFileVersion) {
         this.templateFileVersion = templateFileVersion;
@@ -385,7 +394,7 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
     protected void configParserPostProcessors(CommonCodeGenClassMeta clientResponseType) {
         this.elementParsePostProcessors(
                 new RemoveClientResponseTypePostProcessor(clientResponseType),
-                new EnumDefinitionPostProcessor(),
+                new EnumDefinitionPostProcessor(ignoreEnumField),
                 new EnumNamesPostProcessor()
         );
     }
@@ -422,7 +431,8 @@ public abstract class AbstractLoongCodegenBuilder implements CodegenBuilder {
 
     protected abstract LanguageTypeDefinitionParser<? extends CommonCodeGenClassMeta> getMappingTypeDefinitionParser();
 
-    protected abstract List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<? extends CommonCodeGenClassMeta> publishParser);
+    protected abstract List<LanguageElementDefinitionParser<? extends CommonBaseMeta, ? extends Object>> getElementDefinitionParsers(LanguageTypeDefinitionPublishParser<?
+            extends CommonCodeGenClassMeta> publishParser);
 
     protected LoongClassCodeGenerator createCodeGenerator() {
         CombineCodeGenerateAsyncTaskFuture.getInstance().addFuture(new LanguageCodeFormatter());
