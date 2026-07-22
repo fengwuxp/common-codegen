@@ -11,5 +11,5 @@ public final class CodegenVersion {
     /**
      * 项目版本号
      */
-    public static final String VERSION = "4.0.0-SNAPSHOT";
+    public static final String VERSION = "4.1.0-SNAPSHOT";
 }
